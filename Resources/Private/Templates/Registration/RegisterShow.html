@@ -1,0 +1,45 @@
+{namespace vh=RKW\RkwRegistration\ViewHelpers}
+<f:layout name="Default" />
+
+This template displays a NEW form for the current domain object.
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        New.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="main">
+
+	<f:flashMessages renderMode="div"/>
+
+	<f:render partial="FormErrors" arguments="{for:newFrontendUser}"/>
+
+	<f:form action="register" name="newFrontendUser" object="{newFrontendUser}" class="form-fields">
+		<div class="v320-1-of-2">
+
+			<f:render partial="Registration/RegisterFormFields" arguments="{_all}" />
+
+        	<span class="checkbox">
+				<label>
+					<f:form.checkbox name="terms" value="1" />
+					<span class="text-smaller"><f:link.page pageUid="{termsPid}" target="_blank"><f:translate key="templates_registration_registerShow.terms" /></f:link.page></span>
+				</label>
+			</span>
+
+			<span class="checkbox">
+				<label>
+					<f:form.checkbox name="privacy" value="1" />
+					<vh:privacyText textVersion="registration" />
+				</label>
+			</span>
+
+			<button type="submit" class="button">
+				<span><f:translate key="templates_registration_registerShow.labelRegister" /></span>
+			</button>
+		</div>
+	</f:form>
+</f:section>

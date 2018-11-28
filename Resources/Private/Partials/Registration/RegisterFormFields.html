@@ -1,0 +1,28 @@
+
+<div class="v320-1">
+	<label class="form-label" for="gender">
+		<f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender" />
+	</label>
+	<f:form.select id="gender" property="txRkwregistrationGender" options="{0: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.man\")}', 1: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.woman\")}'}" optionValueField="uid" optionLabelField="name" />
+</div>
+
+<div class="v320-1">
+	<label class="form-label" for="firstName">
+		<f:translate key="tx_rkwregistration_domain_model_frontenduser.first_name" />
+	</label>
+	<f:form.textfield property="firstName" id="firstName" additionalAttributes="{autocomplete:'fname'}" />
+</div>
+
+<div class="v320-1">
+	<label class="form-label" for="lastName">
+		<f:translate key="tx_rkwregistration_domain_model_frontenduser.last_name" />
+	</label>
+	<f:form.textfield property="lastName" id="lastName" additionalAttributes="{autocomplete:'lname'}"/>
+</div>
+
+<div class="v320-1">
+	<label class="form-label" for="email">
+		<f:translate key="tx_rkwregistration_domain_model_frontenduser.email" />
+	</label>
+	<f:form.textfield property="email" id="email" type="email" additionalAttributes="{autocomplete:'email'}"/>
+</div>

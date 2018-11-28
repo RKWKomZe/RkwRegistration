@@ -1,0 +1,21 @@
+
+<f:layout name="Default" />
+
+This template displays a NEW form for the current domain object.
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        New.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="main">
+    <span class="text-smaller">
+        <f:translate key="templates_registration_privacy_{textVersion}.firstPart" />
+        <f:link.page pageUid="{privacyPid}" target="_blank"><f:translate key="templates_registration_privacy_default.secondPart" /></f:link.page>
+        <f:translate key="templates_registration_privacy_default.thirdPart" />
+    </span>
+</f:section>

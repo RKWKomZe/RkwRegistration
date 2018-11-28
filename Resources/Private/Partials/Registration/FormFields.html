@@ -1,0 +1,160 @@
+{namespace vh=RKW\RkwRegistration\ViewHelpers}
+
+<div class="v320-1-of-2">
+	<div class="v320-1">
+		<label class="form-label" for="gender">
+			<f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender" />
+			<f:if condition="<vh:isMandatoryField frontendUser='{frontendUser}' fieldName='txRkwregistrationGender' /> == 0">
+				<span class="optional">&nbsp;<f:translate key="partials_registration_formFields.labelOptional" /></span>
+			</f:if>
+		</label>
+		<f:form.select id="gender" property="txRkwregistrationGender" options="{99: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.neutral\")}', 0: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.man\")}', 1: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.woman\")}'}" optionValueField="uid" optionLabelField="name" />
+	</div>
+
+	<div class="v320-1">
+		<label class="form-label" for="title">
+			<f:translate key="tx_rkwregistration_domain_model_frontenduser.title" />
+			<f:if condition="<vh:isMandatoryField frontendUser='{frontendUser}' fieldName='title' /> == 0">
+				<span class="optional">&nbsp;<f:translate key="partials_registration_formFields.labelOptional" /></span>
+			</f:if>
+		</label>
+		<f:form.textfield id="title" property="title" value="{frontendUser.title}"/>
+	</div>
+
+	<div class="v320-1">
+		<label class="form-label" for="firstname">
+			<f:translate key="tx_rkwregistration_domain_model_frontenduser.first_name" />
+			<f:if condition="<vh:isMandatoryField frontendUser='{frontendUser}' fieldName='firstName' /> == 0">
+				<span class="optional">&nbsp;<f:translate key="partials_registration_formFields.labelOptional" /></span>
+			</f:if>
+		</label>
+		<f:form.textfield id="firstname" property="firstName" value="{frontendUser.firstName}" additionalAttributes="{autocomplete:'fname'}"/>
+	</div>
+
+	<div class="v320-1">
+		<label class="form-label" for="lastname">
+			<f:translate key="tx_rkwregistration_domain_model_frontenduser.last_name" />
+			<f:if condition="<vh:isMandatoryField frontendUser='{frontendUser}' fieldName='lastName' /> == 0">
+				<span class="optional">&nbsp;<f:translate key="partials_registration_formFields.labelOptional" /></span>
+			</f:if>
+		</label>
+		<f:form.textfield id="lastname" property="lastName" value="{frontendUser.lastName}" additionalAttributes="{autocomplete:'lname'}" />
+	</div>
+
+	<div class="v320-1">
+		<label class="form-label" for="email">
+			<f:translate key="tx_rkwregistration_domain_model_frontenduser.email" />
+			<f:if condition="<vh:isMandatoryField frontendUser='{frontendUser}' fieldName='email' /> == 0">
+				<span class="optional">&nbsp;<f:translate key="partials_registration_formFields.labelOptional" /></span>
+			</f:if>
+		</label>
+		<f:form.textfield id="email" property="email" value="{frontendUser.email}" additionalAttributes="{autocomplete:'email'}" type="email"/>
+	</div>
+
+	<div class="v320-1">
+		<label class="form-label" for="company">
+			<f:translate key="tx_rkwregistration_domain_model_frontenduser.company" />
+			<f:if condition="<vh:isMandatoryField frontendUser='{frontendUser}' fieldName='company' /> == 0">
+				<span class="optional">&nbsp;<f:translate key="partials_registration_formFields.labelOptional" /></span>
+			</f:if>
+		</label>
+		<f:form.textfield id="company" property="company" value="{frontendUser.company}" />
+	</div>
+
+
+</div>
+
+<div class="v320-2-of-2">
+
+	<div class="v320-1">
+		<label class="form-label" for="address">
+			<f:translate key="tx_rkwregistration_domain_model_frontenduser.address" />
+			<f:if condition="<vh:isMandatoryField frontendUser='{frontendUser}' fieldName='address' /> == 0">
+				<span class="optional">&nbsp;<f:translate key="partials_registration_formFields.labelOptional" /></span>
+			</f:if>
+		</label>
+		<f:form.textfield id="address" property="address" value="{frontendUser.address}" additionalAttributes="{autocomplete:'address'}"/>
+	</div>
+
+	<div class="v320-1">
+		<label class="form-label" for="zip">
+			<f:translate key="tx_rkwregistration_domain_model_frontenduser.zip" />
+			<f:if condition="<vh:isMandatoryField frontendUser='{frontendUser}' fieldName='zip' /> == 0">
+				<span class="optional">&nbsp;<f:translate key="partials_registration_formFields.labelOptional" /></span>
+			</f:if>
+		</label>
+		<f:form.textfield id="zip" property="zip" value="{frontendUser.zip}"  additionalAttributes="{autocomplete:'zip'}"/>
+	</div>
+
+	<div class="v320-1">
+		<label class="form-label" for="city">
+			<f:translate key="tx_rkwregistration_domain_model_frontenduser.city" />
+			<f:if condition="<vh:isMandatoryField frontendUser='{frontendUser}' fieldName='city' /> == 0">
+				<span class="optional">&nbsp;<f:translate key="partials_registration_formFields.labelOptional" /></span>
+			</f:if>
+		</label>
+		<f:form.textfield id="city" property="city" value="{frontendUser.city}" additionalAttributes="{autocomplete:'city'}" />
+	</div>
+
+	<!--
+	<div class="v320-1">
+		<label class="form-label" for="telephone">
+			<f:translate key="tx_rkwregistration_domain_model_frontenduser.telephone" />
+			<f:if condition="<vh:isMandatoryField frontendUser='{frontendUser}' fieldName='telephone' /> == 0">
+				<span class="optional">&nbsp;<f:translate key="partials_registration_formFields.labelOptional" /></span>
+			</f:if>
+		</label>
+		<f:form.textfield id="telephone" property="telephone" value="{frontendUser.telephone}" type="tel" additionalAttributes="{autocomplete:'phone'}"/>
+	</div>
+
+	<div class="v320-1">
+		<label class="form-label" for="fax">
+			<f:translate key="tx_rkwregistration_domain_model_frontenduser.fax" />
+			<f:if condition="<vh:isMandatoryField frontendUser='{frontendUser}' fieldName='fax' /> == 0">
+				<span class="optional">&nbsp;<f:translate key="partials_registration_formFields.labelOptional" /></span>
+			</f:if>
+		</label>
+		<f:form.textfield id="fax" property="fax" value="{frontendUser.fax}" name="frontendUser.fax" type="tel" />
+	</div>
+
+	<div class="v320-1">
+		<label class="form-label" for="mobile">
+			<f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_mobile" />
+			<f:if condition="<vh:isMandatoryField frontendUser='{frontendUser}' fieldName='txRkwregistrationMobile' /> == 0">
+
+			</f:if>
+		</label>
+		<f:form.textfield id="mobile" property="txRkwregistrationMobile" value="{frontendUser.txRkwregistrationMobile}" type="tel" additionalAttributes="{autocomplete:'mobile'}"/>
+	</div>
+	-->
+	<div class="v320-1">
+		<label class="form-label" for="www">
+			<f:translate key="tx_rkwregistration_domain_model_frontenduser.www" />
+			<f:if condition="<vh:isMandatoryField frontendUser='{frontendUser}' fieldName='www' /> == 0">
+				<span class="optional">&nbsp;<f:translate key="partials_registration_formFields.labelOptional" /></span>
+			</f:if>
+		</label>
+		<f:form.textfield id="www" property="www" value="{frontendUser.www}" name="frontendUser.www" type="url" />
+	</div>
+
+	<div class="v320-1">
+		<label class="form-label" for="facebook">
+			<f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_url" />
+			<f:if condition="<vh:isMandatoryField frontendUser='{frontendUser}' fieldName='txRkwregistrationFacebookUrl' /> == 0">
+				<span class="optional">&nbsp;<f:translate key="partials_registration_formFields.labelOptional" /></span>
+			</f:if>
+		</label>
+		<f:form.textfield id="facebook" property="txRkwregistrationFacebookUrl" value="{frontendUser.txRkwregistrationFacebookUrl}" type="url"/>
+	</div>
+
+	<div class="v320-1">
+		<label class="form-label" for="twitter">
+			<f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_url" />
+			<f:if condition="<vh:isMandatoryField frontendUser='{frontendUser}' fieldName='txRkwregistrationTwitterUrl' /> == 0">
+				<span class="optional">&nbsp;<f:translate key="partials_registration_formFields.labelOptional" /></span>
+			</f:if>
+		</label>
+		<f:form.textfield id="twitter" property="txRkwregistrationTwitterUrl" value="{frontendUser.txRkwregistrationTwitterUrl}" type="url"/>
+	</div>
+
+</div>

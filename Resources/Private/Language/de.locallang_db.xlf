@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2014-06-12T13:49:26Z" product-name="rkw_registration">
+		<header/>
+		<body>
+
+            <!-- tx_rkwregistration_domain_model_registration -->
+            <trans-unit id="tx_rkwregistration_domain_model_registration">
+                <source>RKW Registration: Registration (Opt-In)</source>
+                <target>RKW Registration: Registrierung (Opt-In)</target>
+            </trans-unit>
+
+            <!-- tx_rkwregistration_domain_model_service -->
+            <trans-unit id="tx_rkwregistration_domain_model_service">
+                <source>RKW Registration: Service (Opt-In)</source>
+                <target>RKW Registration: Service (Opt-In)</target>
+            </trans-unit>
+
+
+            <!-- tx_rkwregistration_domain_model_frontenduser -->
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser">
+                <source>RKW Registration: Frontend-User</source>
+                <target>RKW Registration: Frontend-Nutzer</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.socialmedia">
+                <source>Social Media</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by">
+				<source>Registered By</source>
+                <target>Registriert über</target>
+            </trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_mobile">
+				<source>Mobile</source>
+                <target>Handy</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender">
+				<source>Salutation</source>
+                <target>Anrede</target>
+			</trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.man">
+                <source>Mr.</source>
+                <target>Herr</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.woman">
+                <source>Mrs.</source>
+                <target>Frau</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.neutral">
+                <source>Not set</source>
+                <target>Nicht gesetzt</target>
+            </trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_id">
+				<source>Twitter Id</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_url">
+				<source>Twitter URL</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_id">
+				<source>Facebook Id</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_url">
+				<source>Facebook URL</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_xing_url">
+				<source>XING URL</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_register_remote_ip">
+				<source>Register Remote Ip</source>
+                <target>IP-Adresse bei Registrierung</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_login_error_count">
+                <source>Login Error Count</source>
+                <target>Anzahl der fehlerhaften Logins seit letztem erfolgreichem Login</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_language_key">
+                <source>Language Key</source>
+                <target>Sprach-Code (z.B. für E-Mails an den Nutzer)</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser">
+				<source>RKW WePstra: Anonymous User</source>
+				<target>RKW WePstra: Anonymer Nutzer</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_is_anonymous">
+				<source>Anonymous User</source>
+				<target>Anonymer Nutzer</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_privacy">
+				<source>Consent to data protection</source>
+				<target>Getätigte Zustimmungen zum Datenschutz</target>
+			</trans-unit>
+
+
+
+            <!-- tx_rkwregistration_domain_model_service -->
+            <trans-unit id="tx_rkwregistration_domain_model_service">
+				<source>Services</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_service.user">
+				<source>User</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_service.usergroup">
+				<source>User Group</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_service.enabled_by_admin">
+				<source>Enabled By Admin</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_service.filled_all_mendatory_fields">
+				<source>Filled All Mendatory Fields</source>
+			</trans-unit>
+
+
+
+            <!-- tx_rkwregistration_domain_model_frontendusergroup -->
+            <trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_is_service">
+                <source>Service</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_is_service.I.enabled">
+                <source>Is Service</source>
+                <target>Gruppe ist Frontend-Service</target>
+            </trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_service_opening_date">
+				<source>Startdate for Service</source>
+                <target>Startdatum für Service</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_service_closing_date">
+				<source>Enddate for Service</source>
+                <target>Enddatum für Service</target>
+			</trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_service_mandatory_fields">
+                <source>Mandatory Fields in FE-User for Service</source>
+                <target>Pflichtfelder im FE-User für Service</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_service_admins">
+                <source>Service Admins</source>
+                <target>Admins für die Freigabe des Services</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_service_pid">
+                <source>Page of Activated Service</source>
+                <target>Link zum Service, wenn freigeschaltet</target>
+            </trans-unit>
+
+
+
+            <!-- tx_rkwregistration_domain_model_privacy -->
+            <trans-unit id="tx_rkwregistration_domain_model_privacy">
+                <source>RKW Registration: Privacy</source>
+                <target>RKW Registration: Privacy</target>
+            </trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.frontend_user">
+				<source>FrontendUser</source>
+				<target>Frontend-Nutzer</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.registration">
+				<source>Registration</source>
+				<target>Registration (temporärer OptIn Datensatz)</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.child">
+				<source>Child</source>
+				<target>Untergeordnetes Element (Bestätigung des OptIn)</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.crdate">
+				<source>Create date</source>
+				<target>Datum und Uhrzeit der Einwilligung</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.foreign_table">
+				<source>Foreign table</source>
+				<target>Fremd-Tabelle</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.foreign_uid">
+				<source>Foreign uid</source>
+				<target>Fremd-UID</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.ip_address">
+				<source>Ip address</source>
+				<target>IP-Adresse</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.user_agent">
+				<source>UserAgent</source>
+				<target>UserAgent (Browser- und Systeminformationen)</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.extension_name">
+				<source>Extension name</source>
+				<target>Name der Extension</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.plugin_name">
+				<source>Plugin name</source>
+				<target>Name des Plugins</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.controller_name">
+				<source>Controller name</source>
+				<target>Name des Controllers</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.action_name">
+				<source>Action name</source>
+				<target>Name der Action</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.comment">
+				<source>Comment</source>
+				<target>Kommentar</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.server_host">
+				<source>Server host name</source>
+				<target>Name der Domain</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.server_uri">
+				<source>Server URI</source>
+				<target>URI zur Domain</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_privacy.server_referer_url">
+				<source>Server referer</source>
+				<target>Referer-URL</target>
+			</trans-unit>
+
+
+
+
+            <!-- Flexform Registration-->
+            <trans-unit id="flexform.registration.sheetTitle">
+                <source>Behavior</source>
+                <target>Verhalten</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.action">
+                <source>Plugin standard action</source>
+                <target>Standard-Funktion</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.action.I.register">
+                <source>Register</source>
+                <target>Registrierung</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.action.I.login">
+                <source>Login / Register</source>
+                <target>Login / Registrierung</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.action.I.logout">
+                <source>Logout</source>
+            </trans-unit>
+            <trans-unit id="flexform.registration.action.I.loginTwitterApi">
+                <source>Login Twitter API</source>
+            </trans-unit>
+            <trans-unit id="flexform.registration.action.I.welcome">
+                <source>Welcome</source>
+                <target>Willkommen-Seite nach Login</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.action.I.editUser">
+                <source>Edit User</source>
+                <target>Profil bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.action.I.deleteUser">
+                <source>Delete User</source>
+                <target>Profil löschen</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.action.I.editPassword">
+                <source>Edit Password</source>
+                <target>Passwort bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.action.I.service">
+                <source>Service</source>
+                <target>RKW Services</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.action.I.serviceAdmin">
+                <source>Service Admin Opt-In</source>
+                <target>Services Admin Opt-In</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.action.I.loginExternal">
+                <source>Login / Resgister / Anonymous Login / Logout / XDL (External)</source>
+                <target>Login / Registrierung / Anonymer Login / Logout / XDL (Extern)</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.action.I.logoutExternal">
+                <source>Logout / XDL (External)</source>
+                <target>Logout (Extern)</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.loginPid">
+                <source>Login Pid</source>
+                <target>Login Pid</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.doXdl">
+                <source>Do XDL</source>
+                <target>XDL aktivieren</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.redirectPidAfterXdlLogin">
+                <source>Redirect Pid After XDL Login</source>
+                <target>Nach erfolgtem XDL-Login zu dieser Seite weiterleiten</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.redirectPidAfterXdlLogout">
+                <source>Redirect Pid After XDL Logout</source>
+                <target>Nach erfolgtem XDL-Logout zu dieser Seite weiterleiten</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.allowAnonymousLogin">
+                <source>Allow Anonmyous Login</source>
+                <target>Anonymen Login erlauben</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.anonymousRedirectPid">
+                <source>Redirect Pid After Anonymous Login</source>
+                <target>Nach anonymen Login auf diese Seite weiterleiten</target>
+            </trans-unit>
+
+        </body>
+	</file>
+</xliff>

@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="de"  datatype="plaintext" original="messages" date="2014-06-12T13:49:26Z" product-name="rkw_registration">
+		<header/>
+		<body>
+
+            <!-- tx_rkwregistration_domain_model_frontenduser -->
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser">
+				<source>Registration</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.username">
+				<source>Username</source>
+                <target>E-Mail</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.password">
+				<source>Password</source>
+                <target>Passwort</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.email">
+				<source>E-Mail</source>
+                <target>E-Mail</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.first_name">
+				<source>Firstname</source>
+                <target>Vorname</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.last_name">
+				<source>Lastname</source>
+                <target>Nachname</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.title">
+				<source>Title</source>
+                <target>Titel</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.company">
+				<source>Company</source>
+                <target>Firma/Organisation</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.address">
+				<source>Address</source>
+                <target>Straße</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.zip">
+				<source>ZIP</source>
+                <target>PLZ</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.city">
+				<source>City</source>
+                <target>Stadt</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.telephone">
+				<source>Telephone</source>
+                <target>Telefon</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.fax">
+				<source>Fax</source>
+                <target>Fax</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.www">
+				<source>Website</source>
+                <target>Website</target>
+			</trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by">
+                <source>Registered By</source>
+                <target>Registriert</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.rkw">
+                <source>RKW</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.facebook">
+                <source>Facebook</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.twitter">
+                <source>Twitter</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.xing">
+                <source>Xing</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_mobile">
+                <source>Mobile</source>
+                <target>Handy</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender">
+                <source>Salutation</source>
+                <target>Anrede</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.man">
+                <source>Mr.</source>
+                <target>Herr</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.woman">
+                <source>Mrs.</source>
+                <target>Frau</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.neutral">
+                <source>-- Please select --</source>
+                <target>-- Bitte wählen --</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_id">
+                <source>Twitter Id</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_url">
+                <source>Twitter URL</source>
+                <target>Link zu Twitter- Profil</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_id">
+                <source>Facebook Id</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_url">
+                <source>Facebook URL</source>
+                <target>Link zu Facebook- Profil</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_xing_url">
+                <source>XING URL</source>
+                <target>Link zu XING- Profil</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_register_remote_ip">
+                <source>Register Remote Ip</source>
+                <target>Registriert über IP</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.password_old">
+                <source>Old Password</source>
+                <target>Bisheriges Passwort</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.password_new">
+                <source>New Password</source>
+                <target>Neues Passwort</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.password_new_repeat">
+                <source>Repeat New Password</source>
+                <target>Neues Passwort - Um sicher zu gehen, bitte noch einmal</target>
+            </trans-unit>
+
+
+
+            <!-- Fields of Model/Service -->
+			<trans-unit id="tx_rkwregistration_domain_model_service">
+				<source>Services</source>
+			</trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_service.name">
+                <source>Name</source>
+                <target>Name</target>
+            </trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_service.description">
+				<source>Description</source>
+                <target>Beschreibung</target>
+			</trans-unit>
+
+
+            <!-- Form Errors: Field-Names -->
+            <trans-unit id="form.error.newFrontendUser.salutation">
+                <source>Salutation</source>
+                <target>Anrede</target>
+            </trans-unit>
+            <trans-unit id="form.error.newFrontendUser.title">
+                <source>Title</source>
+                <target>Titel</target>
+            </trans-unit>            
+            <trans-unit id="form.error.newFrontendUser.email">
+                <source>E-Mail</source>
+                <target>E-Mail</target>
+            </trans-unit>
+            <trans-unit id="form.error.newFrontendUser.firstName">
+                <source>First Name</source>
+                <target>Vorname</target>
+            </trans-unit>
+            <trans-unit id="form.error.newFrontendUser.lastName">
+                <source>Last Name</source>
+                <target>Nachname</target>
+            </trans-unit>
+            <trans-unit id="form.error.newFrontendUser.company">
+                <source>Company</source>
+                <target>Firma/Organisation</target>
+            </trans-unit>
+            <trans-unit id="form.error.newFrontendUser.address">
+                <source>Address</source>
+                <target>Anschrift</target>
+            </trans-unit>
+            <trans-unit id="form.error.newFrontendUser.zip">
+                <source>ZIP</source>
+                <target>PLZ</target>
+            </trans-unit>
+            <trans-unit id="form.error.newFrontendUser.city">
+                <source>City</source>
+                <target>Ort</target>
+            </trans-unit>
+            <trans-unit id="form.error.newFrontendUser.telephone">
+                <source>Telephone</source>
+                <target>Telefon</target>
+            </trans-unit>
+            <trans-unit id="form.error.newFrontendUser.fax">
+                <source>Fax</source>
+                <target>Fax</target>
+            </trans-unit>
+            <trans-unit id="form.error.newFrontendUser.txRkwregistrationMobile">
+                <source>Mobile</source>
+                <target>Handy</target>
+            </trans-unit>
+            <trans-unit id="form.error.newFrontendUser.www">
+                <source>Website</source>
+                <target>Website</target>
+            </trans-unit>
+            <trans-unit id="form.error.newFrontendUser.txRkwregistrationFacebookUrl">
+                <source>Facebook URL</source>
+                <target>Link zu Facebook- Profil</target>
+            </trans-unit>
+            <trans-unit id="form.error.newFrontendUser.txRkwregistrationTwitterUrl">
+                <source>Twitter URL</source>
+                <target>Link zu Twitter- Profil</target>
+            </trans-unit>
+
+
+
+            <trans-unit id="form.error.frontendUser.salutation">
+                <source>Salutation</source>
+                <target>Anrede</target>
+            </trans-unit>
+            <trans-unit id="form.error.frontendUser.title">
+                <source>Title</source>
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="form.error.frontendUser.email">
+                <source>E-Mail</source>
+                <target>E-Mail</target>
+            </trans-unit>
+            <trans-unit id="form.error.frontendUser.firstName">
+                <source>First Name</source>
+                <target>Vorname</target>
+            </trans-unit>
+            <trans-unit id="form.error.frontendUser.lastName">
+                <source>Last Name</source>
+                <target>Nachname</target>
+            </trans-unit>
+            <trans-unit id="form.error.frontendUser.company">
+                <source>Company</source>
+                <target>Firma/Organisation</target>
+            </trans-unit>
+            <trans-unit id="form.error.frontendUser.address">
+                <source>Address</source>
+                <target>Anschrift</target>
+            </trans-unit>
+            <trans-unit id="form.error.frontendUser.zip">
+                <source>ZIP</source>
+                <target>PLZ</target>
+            </trans-unit>
+            <trans-unit id="form.error.frontendUser.city">
+                <source>City</source>
+                <target>Ort</target>
+            </trans-unit>
+            <trans-unit id="form.error.frontendUser.telephone">
+                <source>Telephone</source>
+                <target>Telefon</target>
+            </trans-unit>
+            <trans-unit id="form.error.frontendUser.fax">
+                <source>Fax</source>
+                <target>Fax</target>
+            </trans-unit>
+            <trans-unit id="form.error.frontendUser.txRkwregistrationMobile">
+                <source>Mobile</source>
+                <target>Handy</target>
+            </trans-unit>
+            <trans-unit id="form.error.frontendUser.www">
+                <source>Website</source>
+                <target>Website</target>
+            </trans-unit>
+            <trans-unit id="form.error.frontendUser.txRkwregistrationFacebookUrl">
+                <source>Facebook URL</source>
+                <target>Link zu Facebook- Profil</target>
+            </trans-unit>
+            <trans-unit id="form.error.frontendUser.txRkwregistrationTwitterUrl">
+                <source>Twitter URL</source>
+                <target>Link zu Twitter- Profil</target>
+            </trans-unit>
+
+
+
+            <!-- Form Errors -->
+            <trans-unit id="form.error.1221560718">
+                <source>Please fill out the field '%s'.</source>
+                <target>Bitte füllen Sie das Feld '%s' aus.</target>
+            </trans-unit>
+            <trans-unit id="form.error.1434966688">
+                <source>Please enter a valid e-mail address.</source>
+                <target>Bitte geben Sie eine gültige E-Mailadresse ein (z.B. service@rkw.de).</target>
+            </trans-unit>
+
+
+
+            <trans-unit id="validator.email_alreadyassigned">
+				<source>Email address is already in use. Please choose another.</source>
+                <target>Hm, offenbar wird die angegebene E-Mail-Adresse bereits von einem anderen registrierten Nutzer verwendet. Bitte wählen Sie eine andere E-Mail-Adresse.</target>
+			</trans-unit>
+			<trans-unit id="validator.email_invalid">
+				<source>Specified email address is not valid.</source>
+                <target>Die angegebene E-Mail-Adresse scheint unvollständig zu sein. Bitte überprüfen Sie diese doch noch mal.</target>
+			</trans-unit>
+            <trans-unit id="validator_field_notfilled">
+                <source>Please fill out the field '%s'.</source>
+                <target>Da fehlt noch was. Bitte füllen Sie das Feld '%s' aus.</target>
+            </trans-unit>
+            <trans-unit id="validator.password_too_short">
+                <source>Password is too short. Your password should at least consist of %s signs.</source>
+                <target>Sicher ist sicher: Ihr Passwort sollte mindestens %s Zeichen lang sein.</target>
+            </trans-unit>
+            <trans-unit id="validator.password_missing_signs">
+                <source>Your Password should contain numbers and letters.</source>
+                <target>Weil etwas komplizierter sehr viel sicherer ist: Ihr Passwort sollte Buchstaben und Zahlen enthalten.</target>
+            </trans-unit>
+            <trans-unit id="validator.passwords_not_all_set">
+                <source>Please enter your old and the new password accordingly. Please make sure to repeat the new password once.</source>
+                <target>Bitte geben Sie Ihr bisheriges Passwort und das gewünschte neue Passwort zwei Mal ein.</target>
+            </trans-unit>
+            <trans-unit id="validator.passwords_not_identical">
+                <source>New password and password repeat are not identical. Please check again.</source>
+                <target>Hm, leider stimmen die beiden Versionen des neuen Passworts nicht ganz überein. Bitte schauen Sie doch noch mal drüber.</target>
+            </trans-unit>
+            <trans-unit id="validator.zip.incorrect">
+				<source>ZIP is not correct.</source>
+				<target>Hm, die Postleitzahl scheint nicht korrekt zu sein. Ist sie vielleicht zu lang, oder zu kurz geraten?</target>
+			</trans-unit>
+
+
+
+            <!-- Registration Controller -->
+            <trans-unit id="registrationController.error.user_already_exists">
+				<source>Email address is already in use. Please choose another.</source>
+                <target>Hm, offenbar wird die angegebene E-Mail-Adresse bereits von einem anderen Nutzer verwendet. Sind Sie vielleicht schon registriert? Dann versuchen Sie es doch mal 'Passwort vergessen'.</target>
+			</trans-unit>
+            <trans-unit id="registrationController.message.registration_successfull">
+                <source>You have been successfully registered. Your password has been sent to you via e-mail.</source>
+                <target>Woohoo! Sie wurden erfolgreich registriert. Das Passwort für den Login ist per E-Mail auf dem Weg zu Ihnen. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser Support hilft Ihnen bei Problemen gerne weiter.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.message.registration_watch_for_email">
+                <source>An e-mail has been send to you. Please click the link in the e-mail to confirm your registration.</source>
+                <target>Fast geschafft! Um sicherzustellen, dass Sie auch wirklich Sie sind, haben wir Ihnen gerade eine E-Mail an die angegebene Adresse geschickt. Bitte bestätigen Sie über den Link in der E-Mail Ihre Registrierung. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser Support hilft Ihnen bei Problemen gerne weiter.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.message.registration_canceled">
+                <source>Your registration was canceled.</source>
+                <target>Schade... Ihre Registrierung wurde abgebrochen.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.message.logout_message">
+                <source>You have been successfully logged out.</source>
+                <target>Sie wurden erfolgreich abgemeldet.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.message.login_message">
+                <source><![CDATA[Please login here or <a href="%s">register</a> for free.]]></source>
+                <target><![CDATA[Bitte loggen Sie sich ein oder <a href="%s">registrieren Sie sich</a> kostenlos.]]></target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.registration_error">
+                <source>An error occurred. Please try again</source>
+                <target>Upps, da ist wohl etwas schief gelaufen. Haben Sie Ihre Registrierung vielleicht schon bestätigt?</target>
+            </trans-unit>
+            <trans-unit id="registrationController.message.user_not_logged_in">
+                <source>Please log in.</source>
+                <target>Bitte melden Sie sich an.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.facebook_unexpected">
+                <source>An unexpected error occurred with Facebook Login. Please try another login.</source>
+                <target>Upps, da ist wohl etwas schief gelaufen. Vermutlich ist einer unserer Entwickler gerade über das Facebook- Kabel gestolpert. Wir versuchen das so schnell wie möglich zu beheben und bitten um etwas Geduld. Unser Support hilft Ihnen in der Zwischenzeit gerne mit alternativen Zugangsdaten weiter.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.login_no_username">
+                <source>No username given. Please enter username.</source>
+                <target>Bitte geben Sie Ihre E-Mail-Adresse ein.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.login_no_password">
+                <source>No password given. Please enter password.</source>
+                <target>Bitte geben Sie Ihr Passwort ein.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.wrong_login">
+                <source>Wrong username or password.</source>
+                <target>Hm, leider sind E-Mail oder Passwort falsch. Bitte prüfen Sie die Angaben noch mal.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.invalid_username">
+                <source>Username does not exist.</source>
+                <target>Hm, die angebenene E-Mail-Adresse scheint nicht zu existieren. Sind Sie denn mit dieser E-Mail-Adresse registriert?</target>
+            </trans-unit>
+            <trans-unit id="registrationController.message.new_password">
+                <source>Password was reset and send to you via E-Mail.</source>
+                <target>Das hat geklappt! Wir haben Ihnen das neue Passwort per E-Mail zugesendet. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser Support hilft Ihnen bei Problemen gerne weiter.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.message.update_successfull">
+                <source>Update was successfull.</source>
+                <target>Das hat geklappt! Ihre Profil- Daten wurden aktualisiert.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.twitter_unexpected">
+                <source>An unexpected error occurred with Twitter Login. Please try another login.</source>
+                <target>Upps, da ist wohl etwas schief gelaufen! Vermutlich ist einer unserer Entwickler gerade über das Twitter- Kabel gestolpert. Wir versuchen das so schnell wie möglich zu beheben und bitten um etwas Geduld. Unser Support hilft Ihnen in der Zwischenzeit gerne mit alternativen Zugangsdaten weiter.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.message.update_password">
+                <source>Password was updated. Please use this password from now on for login.</source>
+                <target>Perfekt! Ihr Passwort wurde geändert. Bitte benutzen Sie ab sofort das neue Passwort für den Login.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.password_not_updated">
+                <source>Password could not be updated. Maybe you did not enter your current password right.</source>
+                <target>Da ist etwas schief gelaufen! Das Passwort konnte nicht geändert werden. Hat sich bei der Eingabe Ihres bisherigen Passworts vielleicht ein Fehler eingeschlichen?</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.delete_wrong_password">
+                <source>Entered password was wrong. Please try again.</source>
+                <target>Da ist was schief gelaufen! Hat sich bei der Eingabe Ihres bisherigen Passworts vielleicht ein Fehler eingeschlichen?</target>
+            </trans-unit>
+            <trans-unit id="registrationController.message.delete_successfull">
+                <source>Your account has been successfully deleted.</source>
+                <target>Schade, dass Sie uns verlassen. Ihr Profil wurde erfolgreich gelöscht, wir würden uns aber natürlich freuen, wenn Sie uns trotzdem hin und wieder besuchen.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.password_empty">
+                <source>Please enter a valid password.</source>
+                <target>Bitte geben Sie Ihr Passwort ein.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.user_not_found">
+                <source>User not found.</source>
+                <target>Das hat leider nicht geklappt! Wenn Sie sich  über Facebook oder Twitter angemeldet haben, dann nutzen Sie bitte die Buttons am Ende der Seite. Möglicherweise haben Sie sich aber auch mit einer anderen E-Mail-Adresse registriert. Unser Support hilft Ihnen im Zweifelsfall gerne weiter!</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.login_blocked">
+                <source>Your login was blocked after %s attempts. Please contact support.</source>
+                <target>Nun ist es leider passiert: Aus Sicherheitsgründen wurde Ihr Profil nach %s Fehlversuchen gesperrt. Bitte wenden Sie sich an unseren Support, um Ihren Account wieder freizuschalten.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.accept_terms">
+                <source>You have to accept our terms and conditions to register.</source>
+                <target>Das muss leider sein: Um dieses Angebot nutzen zu können, müssen Sie unseren Nutzungsbedingungen zustimmen.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.accept_privacy">
+				<source>The protection of your data is important to us. Therefore we ask you to agree to the storage of your personal data.</source>
+				<target>Der Schutz Ihrer Daten ist uns wichtig. Daher bitten wir Sie, der Speicherung Ihrer persönlichen Daten zuzustimmen.</target>
+			</trans-unit>
+            <trans-unit id="registrationController.error.username_exists">
+                <source>A Login with this E-Mail-Address already exists.</source>
+                <target>Es existiert bereits ein Login mit dieser E-Mail-Adresse. Haben Sie sich eventuell schon einmal registriert?</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.invalid_socialmedia_login">
+                <source>Login was not possible. It seems like your login has been blocked by an admin.</source>
+                <target>Der Login war leider nicht möglich. Möglicherweise wurde Ihr Login deaktiviert. Bitte kontaktieren Sie unseren Support.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.xdl_login_error">
+                <source>Login was not completed. Please contact support.</source>
+                <target>Der Login konnte nicht abgeschlossen werden. Bitte wenden Sie sich an den Support.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.xdl_logout_error">
+                <source>Logout was not completed. Please contact support.</source>
+                <target>Der Logout konnte nicht abgeschlossen werden. Bitte wenden Sie sich an den Support.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.invalid_anonymous_token">
+                <source>The given token is not valid (any more). Please use a new one or contact support.</source>
+                <target>Der Login- Link ist leider ungültig oder abgelaufen. Bitte verwenden Sie einen neuen anonymen Zugang oder registrieren Sie sich kostenlos.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.anonymous_login_impossible">
+                <source>Anonymous login was not possible. If you are already logged in, please log out before using an anonymous login token. </source>
+                <target>Der anonyme Login war nicht möglich. Wenn Sie bereits eingeloggt sind, loggen Sie sich bitte aus, bevor Sie einen Login-Link verwenden.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.message.anonymous_link">
+                <source><![CDATA[Copy and save the following link. It is valid for %s days.<br><br> %s]]></source>
+                <target><![CDATA[Kopieren Sie den nachstehenden Link und heben Sie ihn gut auf. Nur mit diesem Link können Sie sich zu einem späteren Zeitpunkt erneut einloggen. Der Link ist %s Tage gültig.<br><br> %s]]></target>
+            </trans-unit>
+            <trans-unit id="registrationController.message.xdl_login_hint">
+                <source><![CDATA[You have been logged in via <i>%s</i>. To login into another page of our network, please logout first.]]></source>
+                <target><![CDATA[Sie wurden via <i>%s</i> eingeloggt. Um den Login über eine andere Seite des RKW Netzwerks zu nutzen, loggen Sie sich bitte zunächst aus und rufen Sie anschließend den Login-Bereich über die gewünschte Seite des RKW Netzwerks erneut auf.]]></target>
+            </trans-unit>
+            <trans-unit id="registrationController.message.xdl_login_welcome">
+                <source>Welcome! You are logged in with your e-mail-address "%s".</source>
+                <target>Herzlich willkommen! Sie sind mit Ihrer E-Mailadresse "%s" angemeldet.</target>
+            </trans-unit>
+
+
+
+            <!-- Service Controller -->
+            <trans-unit id="serviceController.message.apply_admin_request">
+                <source>The service you applied to is restricted. The admin of the service will check your request in the next 1-2 days. You will be notified when you can use the service.</source>
+                <target>Fast geschafft! Wir haben Sie für den gewünschten Service registriert. Bevor Sie den Service nutzen können, muss Ihre Anfrage allerdings noch durch einen Admin bestätigt werden. Dies dauert in der Regel 1-2 Werktage. Sie erhalten dann eine entsprechende Info per E-Mail.</target>
+            </trans-unit>
+            <trans-unit id="serviceController.message.apply_successfull">
+                <source>Congratulations! You have been successfully added to our service.</source>
+                <target>Das war ja einfach! Wir haben Sie für den gewünschten Service registriert und wünschen Ihnen viel Spaß bei der Benutzung!</target>
+            </trans-unit>
+            <trans-unit id="serviceController.message.service_optin_successfull">
+                <source>The user has been successfully added to the requested service.</source>
+                <target>Das hat geklappt! Der Nutzer wurde erfolgreich für den gewünschten Service freigeschaltet. Eine entsprechende Info ist per E-Mail an den Nutzer unterwegs.</target>
+            </trans-unit>
+            <trans-unit id="serviceController.message.service_optin_canceled">
+                <source>The service opt-in request for the user has been denied.</source>
+                <target>Schade... Der Nutzer wurde erfolgreich abgelehnt und kann den gewünschten Service nun leider nicht nutzen. Eine entsprechende Info ist per E-Mail an den Nutzer unterwegs.</target>
+            </trans-unit>
+            <trans-unit id="serviceController.error.service_optin_error">
+                <source>An error occurred. Please try again.</source>
+                <target>Da ist etwas schief gelaufen. Haben Sie den Nutzer vielleicht schon freigeschaltet oder abgelehnt?</target>
+            </trans-unit>
+            <trans-unit id="serviceController.message.service_delete">
+                <source>Successfully deleted service.</source>
+                <target>Wirklich schade... aber wir haben den Service nun für Sie nun, wie gewünscht, deaktiviert. Sie können den Service aber selbstverständlich jederzeit wieder aktivieren.</target>
+            </trans-unit>
+
+
+
+            <!-- Abstract Controller -->
+            <trans-unit id="abstractController.error.user_not_logged_in">
+                <source>Please log in.</source>
+                <target>Bitte melden Sie sich an.</target>
+            </trans-unit>
+            <trans-unit id="abstractController.message.enter_valid_email">
+                <source>To be able to use all functions you need to complete your profile with some basic data. Please enter at least you e-mail address.</source>
+                <target>Damit Sie alle Funktionen ohne Einschränkungen benutzen können, brauchen wir von Ihnen ein paar Angaben. Bitte geben Sie mindestens Ihre E-Mail-Adresse an. Und keine Sorge: Das bleibt alles unter uns.</target>
+            </trans-unit>
+            <trans-unit id="abstractController.message.enter_mandatory_fields">
+                <source>To be able to use all functions you need to complete your profile with some basic data.</source>
+                <target>Damit Sie alle Funktionen ohne Einschränkungen benutzen können, brauchen wir von Ihnen ein paar Angaben. Und keine Sorge: Das bleibt alles unter uns.</target>
+            </trans-unit>
+
+
+            <!-- Templates/Service/Index.html -->
+            <trans-unit id="templates_service_index.headline">
+                <source>Default Template (Fallback)</source>
+            </trans-unit>
+
+
+
+            <!-- Templates/Service/List.html -->
+            <trans-unit id="templates_service_list.headline">
+                <source>Services</source>
+                <target>Alle Services im Überblick</target>
+            </trans-unit>
+            <trans-unit id="templates_service_list.joinService">
+                <source>Join Service</source>
+                <target>Jetzt Service nutzen</target>
+            </trans-unit>
+            <trans-unit id="templates_service_list.resignService">
+                <source>Resign Service</source>
+                <target>Service beenden</target>
+            </trans-unit>
+            <trans-unit id="templates_service_list.additionalProfileData">
+                <source>Please check your personal profile to finally join the service.</source>
+                <target>Bitte prüfen Sie Ihre Profildaten auf Vollständigkeit, um diesen Service nutzen zu können.</target>
+            </trans-unit>
+            <trans-unit id="templates_service_list.checkProfile">
+                <source>Check profile now!</source>
+                <target>Jetzt Profildaten prüfen</target>
+            </trans-unit>
+            <trans-unit id="templates_service_list.adminRequestPending">
+                <source>Admin request pending.</source>
+                <target>Bestätigung durch einen Admin steht noch aus.</target>
+            </trans-unit>
+            <trans-unit id="templates_service_list.serviceComingSoon">
+                <source>from:</source>
+                <target>verfügbar ab:</target>
+            </trans-unit>
+            <trans-unit id="templates_service_list.startNow">
+                <source>Start Now</source>
+                <target>Direkt zum Service und loslegen</target>
+            </trans-unit>
+
+
+            <!-- Templates/Service/Optin.html -->
+            <trans-unit id="templates_service_optIn.headline">
+                <source>Admin Opt-In</source>
+            </trans-unit>
+
+
+            <!-- Templates/Service/Show.html -->
+            <trans-unit id="templates_service_show.headline">
+                <source>Show</source>
+            </trans-unit>
+            <trans-unit id="templates_service_show.backToList">
+                <source>Back to list</source>
+            </trans-unit>
+
+
+            <!-- Templates/Registration/LoginInfo.html -->
+            <trans-unit id="templates_registration_loginInfo.default">
+                <source>My RKW</source>
+                <target>Mein RKW</target>
+            </trans-unit>
+
+
+            <!-- Templates/Registration/DeleteUserShow.html -->
+            <trans-unit id="templates_registration_deleteUserShow.headline">
+                <source>Delete Profile</source>
+                <target>Profil löschen</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_deleteUserShow.reallyDelete">
+                <source>Really delete user? All data will be lost!</source>
+                <target>Möchten Sie Ihr Profil wirklich löschen? Alle Daten werden gelöscht!</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_deleteUserShow.labelDelete">
+                <source>Delete</source>
+                <target>Ja, bitte löschen</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_deleteUserShow.labelBack">
+                <source>Back</source>
+                <target>Nein, doch nicht</target>
+            </trans-unit>
+
+
+            <!-- Templates/Registration/EditPassword.html -->
+            <trans-unit id="templates_registration_editPassword.headline">
+                <source>Edit Password</source>
+                <target>Passwort ändern</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_editPassword.labelSave">
+                <source>Save</source>
+                <target>Speichern</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_editPassword.labelBack">
+                <source>Back</source>
+                <target>Zurück</target>
+            </trans-unit>
+
+
+            <!-- Templates/Registration/EditUser.html -->
+            <trans-unit id="templates_registration_editUser.headline">
+                <source>Edit Profile</source>
+                <target>Profil bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_editUser.labelSave">
+                <source>Save</source>
+                <target>Änderungen speichern</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_editUser.labelBack">
+                <source>Back</source>
+                <target>Zurück</target>
+            </trans-unit>
+
+
+
+            <!-- Templates/Registration/Index.html -->
+            <trans-unit id="templates_registration_index.headline">
+                <source>Index (Fallback)</source>
+            </trans-unit>
+
+
+            <!-- Templates/Registration/LoginShow.html -->
+            <trans-unit id="templates_registration_loginShow.headline">
+                <source>Login</source>
+                <target>Anmeldung</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_loginShow.passwordForgot">
+                <source>Forgotten password?</source>
+                <target>Passwort vergessen?</target>
+            </trans-unit>
+
+
+            <!-- Templates/Registration/LoginAnonymous.html -->
+            <trans-unit id="templates_registration_loginHintAnonymous.continue">
+                <source>Continue</source>
+                <target>Fortfahren</target>
+            </trans-unit>
+
+
+            <!-- Templates/Registration/xdlLoginShow.html -->
+            <trans-unit id="templates_registration_loginShowExternal.loginLabel">
+                <source>Continue with existing account</source>
+                <target>Mit "Mein RKW"-Account anmelden</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_loginShowExternal.registerLabel">
+                <source>Create account</source>
+                <target>Kostenlosen "Mein RKW"-Account anlegen</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_loginShowExternal.anonymousLabel">
+                <source>Continue without account</source>
+                <target>Ohne Account weitermachen</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_loginShowExternal.orLabel">
+                <source>or</source>
+                <target>oder</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_loginShowExternal.login">
+                <source>Login</source>
+                <target>Anmelden</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_loginShowExternal.register">
+                <source>Register</source>
+                <target>Registrieren</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_loginShowExternal.logout">
+                <source>Logout</source>
+                <target>Ausloggen</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_loginShowExternal.anonymous">
+                <source>Start anonymously</source>
+                <target>Anonym starten</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_loginShowExternal.login2">
+                <source>Login</source>
+                <target>Jetzt zum persönlichen Bereich</target>
+            </trans-unit>
+
+
+            <!-- Templates/Registration/PasswordForgotShow.html -->
+            <trans-unit id="templates_registration_passwordForgotShow.headline">
+                <source>Password forgot</source>
+                <target>Passwort anfordern</target>
+            </trans-unit>
+
+
+            <!-- Templates/Registration/RegisterShow.html -->
+            <trans-unit id="templates_registration_registerShow.headline">
+                <source>Register</source>
+                <target>Registrieren</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_registerShow.labelRegister">
+                <source>Register</source>
+                <target>Jetzt registrieren</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_registerShow.terms">
+                <source>I accept the terms and conditions.</source>
+                <target>Ich akzeptiere die Nutzungsbedingungen.</target>
+            </trans-unit>
+
+
+            <!-- Templates/Registration/Welcome.html -->
+            <trans-unit id="templates_registration_welcome.headline">
+                <source>Welcome %s %s!</source>
+                <target>Hallo %s %s!</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_welcome.introductionText">
+                <source>What do you wanna do next?</source>
+                <target>Was möchten Sie als nächstes tun?</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_welcome.logout">
+                <source>Logout</source>
+                <target>Ausloggen</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_welcome.editUser">
+                <source>Edit Profile</source>
+                <target>Profil bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_welcome.deleteUser">
+                <source>Delete Profile</source>
+                <target>Profil löschen</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_welcome.editPassword">
+                <source>Change password</source>
+                <target>Passswort ändern</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_welcome.messageServices">
+                <source>There are services pending. Please check or update your profile data to finally enable the pending services.</source>
+                <target>Es warten RKW Services auf Sie. Bitte prüfen Sie Ihre Profildaten auf Vollständigkeit, um die Services nutzen zu können.</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_welcome.checkProfile">
+                <source>Check profile now!</source>
+                <target>Jetzt Profildaten prüfen!</target>
+            </trans-unit>
+
+
+            <!-- Templates/Registration/Privacy.html -->
+            <trans-unit id="templates_registration_privacy_default.firstPart">
+                <source>Yes, I agree that RKW will use my personal data for the above purpose and to create a free user account.  Furthermore, I have read and agree to the extended notes in the</source>
+                <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten zum oben genannten Zweck, sowie zur Erzeugung eines kostenlosen Nutzerkontos verwendet.  Ferner habe ich die erweiterten Hinweise in der</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_privacy_default.secondPart">
+                <source>data protection declaration</source>
+                <target>Datenschutzerklärung </target>
+            </trans-unit>
+            <trans-unit id="templates_registration_privacy_default.thirdPart">
+                <source>. This consent can be revoked at any time.</source>
+                <target>gelesen und bin damit einverstanden. Diese Einwilligung kann jederzeit widerrufen werden.</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_privacy_registration.firstPart">
+                <source>Yes, I agree that RKW uses my personal data to create a free user account. I have also read the extended notes in the</source>
+                <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten zur Erzeugung eines kostenlosen Nutzerkontos verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_privacy_events.firstPart">
+                <source>Yes, I agree that RKW uses my personal data and the personal data of the other participants listed below for my/our participation in the event, as well as for event follow-up and to create a free user account. I have also read the extended notes in the</source>
+                <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten und die persönlichen Daten der unten genannten weiteren Teilnehmer für meine/unsere Teilnahme an der Veranstaltung, sowie zur Veranstaltungsnachbereitung und zur Erzeugung eines kostenlosen Nutzerkontos verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_privacy_order.firstPart">
+                <source>Yes, I agree that RKW uses my personal data to process my order and to create a free user account. Furthermore, I have read and agree to the extended notes in the</source>
+                <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten für die Abwicklung der Bestellung, sowie zur Erzeugung eines kostenlosen Nutzerkontos verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_privacy_newsletter.firstPart">
+                <source>Yes, I agree that the RKW uses my personal data for the newsletter dispatch, as well as for the production of a free user account. Furthermore I have read the extended hints in the</source>
+                <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten für den Newsletterversand, sowie zur Erzeugung eines kostenlosen Nutzerkontos verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_privacy_survey.firstPart">
+                <source>Yes, I agree that the RKW will use my personal data to contact me. Furthermore, I have read the extended information in the</source>
+                <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten für die Kontaktaufnahme verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
+            </trans-unit>
+
+
+            <!-- Templates/Email/RegisterOptInRequest.html -->
+            <trans-unit id="templates_email_registerOptInRequest.headline">
+                <source>Hello %s %s,</source>
+                <target>Fast geschafft, %s %s!</target>
+            </trans-unit>
+            <trans-unit id="templates_email_registerOptInRequest.text1">
+                <source>thank you for registering.</source>
+                <target>Wir freuen uns, dass Sie sich auf unser Website angemeldet haben! Noch ein letzter Klick und Sie können alle Funktionen und Services von "Mein RKW" in vollem Umfang nutzen.</target>
+            </trans-unit>
+            <trans-unit id="templates_email_registerOptInRequest.textOptIn">
+                <source>Click here to finish registration:</source>
+                <target>Um Ihre Registrierung abzuschließen, klicken Sie bitte auf den folgenden Link:</target>
+            </trans-unit>
+            <trans-unit id="templates_email_registerOptInRequest.textOptInLinkLabel">
+                <source>Finish Registration</source>
+                <target>Jetzt Registrierung abschließen</target>
+            </trans-unit>
+            <trans-unit id="templates_email_registerOptInRequest.textOptOut">
+                <source>Click here to cancel registration:</source>
+                <target>Sie haben es sich anders überlegt oder haben die Registrierung gar nicht selbst durchgeführt? Um Ihre Daten zu löschen, klicken Sie bitte auf den folgenden Link:</target>
+            </trans-unit>
+            <trans-unit id="templates_email_registerOptInRequest.textOptOutLinkLabel">
+                <source>Cancel Registration</source>
+                <target>Registrierung abbrechen</target>
+            </trans-unit>
+
+
+
+            <!-- Templates/Email/RegisterOptInSuccess.html -->
+            <trans-unit id="templates_email_registerOptInSuccess.headline">
+                <source>Hello %s %s,</source>
+                <target>Und los geht's!</target>
+            </trans-unit>
+            <trans-unit id="templates_email_registerOptInSuccess.teaser">
+                <source>let's go for it!</source>
+                <target>Mit dem kostenlosen Account für "Mein RKW" können Sie nun alle Services rund um die RKW Website selbst verwalten – von A wie Alerts bis Z wie ... okay, bis V wie Veranstaltungsanmeldungen ;-)</target>
+            </trans-unit>
+            <trans-unit id="templates_email_registerOptInSuccess.text1">
+                <source>Your personal login is</source>
+                <target>Ihr persönlicher Login lautet</target>
+            </trans-unit>
+            <trans-unit id="templates_email_registerOptInSuccess.username">
+                <source>Username</source>
+                <target>Nutzername</target>
+            </trans-unit>
+            <trans-unit id="templates_email_registerOptInSuccess.password">
+                <source>Password</source>
+                <target>Passwort</target>
+            </trans-unit>
+            <trans-unit id="templates_email_registerOptInSuccess.text2">
+                <source>Please change it after login.</source>
+                <target>Bitte ändern Sie Ihr Passwort aus Sicherheitsgründen nach erfolgtem Login.</target>
+            </trans-unit>
+            <trans-unit id="templates_email_registerOptInSuccess.loginLabel">
+                <source>To login</source>
+                <target>Zum Login</target>
+            </trans-unit>
+
+
+
+            <!-- Templates/Email/PasswordReset.html -->
+            <trans-unit id="templates_email_passwordReset.headline">
+                <source>Hello %s %s,</source>
+                <target>Ihr neues Passwort</target>
+            </trans-unit>
+            <trans-unit id="templates_email_passwordReset.text1">
+                <source>your new password for the login is: %s</source>
+                <target>Ihr Passwort wurde wunschgemäß zurückgesetzt. Das neue Passwort lautet nun: %s</target>
+            </trans-unit>
+            <trans-unit id="templates_email_passwordReset.text2">
+                <source>Please change it after login.</source>
+                <target>Bitte ändern Sie dieses Passwort aus Sicherheitsgründen nach erfolgtem Login.</target>
+            </trans-unit>
+            <trans-unit id="templates_email_passwordReset.loginLabel">
+                <source>To login</source>
+                <target>Zum Login</target>
+            </trans-unit>
+
+
+
+            <!-- Templates/Email/ServiceOptInAdminRequest.html -->
+            <trans-unit id="templates_email_serviceOptInAdminRequest.headline">
+                <source>Hello %s,</source>
+                <target>Hallo %s,</target>
+            </trans-unit>
+            <trans-unit id="templates_email_serviceOptInAdminRequest.text1">
+                <source>the user %s %s wants to be activated for the following services:.</source>
+                <target>der Nutzer %s %s möchte für die folgenden RKW Services freigeschaltet werden:</target>
+            </trans-unit>
+            <trans-unit id="templates_email_serviceOptInAdminRequest.textOptIn">
+                <source>Click here to activate him for the services:</source>
+                <target>Klicken Sie hier, um Ihn für die obenstehenden RKW Services freizuschalten:</target>
+            </trans-unit>
+            <trans-unit id="templates_email_serviceOptInAdminRequest.textOptInLinkLabel">
+                <source>Activate User</source>
+                <target>Nutzer freischalten</target>
+            </trans-unit>
+            <trans-unit id="templates_email_serviceOptInAdminRequest.textOptOut">
+                <source>Click here to cancel activation for the services:</source>
+                <target>Klicken Sie hier, um die Freischaltung für die obenstehenden RKW Services zu verweigern:</target>
+            </trans-unit>
+            <trans-unit id="templates_email_serviceOptInAdminRequest.textOptOutLinkLabel">
+                <source>Cancel activation</source>
+                <target>Freischaltung abbrechen</target>
+            </trans-unit>
+
+
+            <!-- Templates/Email/ServiceOptInDenial.html -->
+            <trans-unit id="templates_email_serviceOptInDenial.headline">
+                <source>Hello %s %s,</source>
+                <target>Schlechte Nachrichten, %s %s!</target>
+            </trans-unit>
+            <trans-unit id="templates_email_serviceOptInDenial.text1">
+                <source>your request for activation for the following services was denied:</source>
+                <target>Ihre Anfrage zur Freischaltung für die folgenden RKW Services wurde leider abgelehnt:</target>
+            </trans-unit>
+            <trans-unit id="templates_email_serviceOptInDenial.text2">
+                <source>For questions, please contact our support.</source>
+                <target>Bitte wenden Sie sich an unseren Support unter service@rkw.de. Wir helfen Ihnen hier gerne weiter.</target>
+            </trans-unit>
+
+
+
+            <!-- Templates/Email/ServiceOptInSuccess.html -->
+            <trans-unit id="templates_email_serviceOptInSuccess.headline">
+                <source>Hello %s %s,</source>
+                <target>Gute Nachrichten, %s %s!</target>
+            </trans-unit>
+            <trans-unit id="templates_email_serviceOptInSuccess.text1">
+                <source>your request for activation for the following services was successfull:</source>
+                <target>Sie wurden soeben für die folgenden RKW Services freigeschaltet:</target>
+            </trans-unit>
+            <trans-unit id="templates_email_serviceOptInSuccess.text2">
+                <source>For questions, please contact our support.</source>
+                <target>Melden Sie sich hier an, um die freigeschalteten RKW Services nun zu nutzen:</target>
+            </trans-unit>
+            <trans-unit id="templates_email_serviceOptInSuccess.loginLabel">
+                <source>To login</source>
+                <target>Zum Login</target>
+            </trans-unit>
+
+
+            <!-- Subject for e-mails -->
+            <trans-unit id="rkwMailService.createUserEvent.subject">
+                <source>Confirm registration</source>
+                <target>Registrierung bestätigen</target>
+            </trans-unit>
+            <trans-unit id="rkwMailService.registerUserEvent.subject">
+                <source>Registration successfull</source>
+                <target>Registrierung erfolgreich</target>
+            </trans-unit>
+            <trans-unit id="rkwMailService.passwordResetEvent.subject">
+                <source>New Password</source>
+                <target>Ihr neues Passwort</target>
+            </trans-unit>
+            <trans-unit id="rkwMailService.adminServiceEvent.subject">
+                <source>Service activation request</source>
+                <target>Anfrage für Service-Freischaltung</target>
+            </trans-unit>
+            <trans-unit id="rkwMailService.adminServiceGrantEvent.subject">
+                <source>Service activation successfull</source>
+                <target>Freischaltung für RKW Service erfolgreich</target>
+            </trans-unit>
+            <trans-unit id="rkwMailService.adminServiceDenialEvent.subject">
+                <source>Service activation denied</source>
+                <target>Freischaltung für RKW Service abgelehnt</target>
+            </trans-unit>
+
+
+            <!-- Partials/Registration/Login.html -->
+            <trans-unit id="partials_registration_login.labelLogin">
+                <source>Login</source>
+                <target>Jetzt einloggen</target>
+            </trans-unit>
+
+
+            <!-- Partials/Registration/PasswordForgot.html -->
+            <trans-unit id="partials_registration_passwordForgot.labelSend">
+                <source>Send password</source>
+                <target>Neues Passwort senden</target>
+            </trans-unit>
+            <trans-unit id="partials_registration_passwordForgot.labelBack">
+                <source>Back</source>
+                <target>Zurück</target>
+            </trans-unit>
+
+
+
+            <!-- Partials/Registration/SocialMedia/Facebook.html -->
+            <trans-unit id="partials_registration_socialMedia_facebook.labelLogin">
+                <source>Login with Facebook</source>
+                <target>Mit Facebook einloggen</target>
+            </trans-unit>
+
+
+            <!-- Partials/Registration/SocialMedia/Twitter.html -->
+            <trans-unit id="partials_registration_socialMedia_twitter.labelLogin">
+                <source>Login with Twitter</source>
+                <target>Mit Twitter einloggen</target>
+            </trans-unit>
+
+            <!-- Partials/Registration/FormFields.html -->
+            <trans-unit id="partials_registration_formFields.labelOptional">
+                <source>(Optional)</source>
+                <target>(Optional)</target>
+            </trans-unit>
+        </body>
+	</file>
+</xliff>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-06-12T13:49:26Z" product-name="rkw_registration">
+		<header/>
+		<body>
+			<trans-unit id="user.description">
+				<source>user</source>
+			</trans-unit>
+			<trans-unit id="usergroup.description">
+				<source>userGroup</source>
+			</trans-unit>
+			<trans-unit id="enabled_by_admin.description">
+				<source>enabledByAdmin</source>
+			</trans-unit>
+			<trans-unit id="filled_all_mendatory_fields.description">
+				<source>filledAllMendatoryFields</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

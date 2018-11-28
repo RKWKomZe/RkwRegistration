@@ -1,0 +1,19 @@
+<f:form action="login" name="frontendUser" class="form-fields" >
+	<div class="v320-1-of-2">
+		<div class="v320-1">
+			<label class="form-label" for="username">
+				<f:translate key="tx_rkwregistration_domain_model_frontenduser.username" />
+			</label>
+			<f:form.textfield id="username" name="username" value="{username}" type="email" additionalAttributes="{autocomplete:'email'}"/>
+		</div>
+		<div class="v320-1">
+			<label class="form-label" for="password" >
+				<f:translate key="tx_rkwregistration_domain_model_frontenduser.password" />
+			</label>
+			<f:form.password id="password" name="password" />
+		</div>
+		<button type="submit" class="button">
+			<span><f:translate key="partials_registration_login.labelLogin" /></span>
+		</button>
+	</div>
+</f:form>

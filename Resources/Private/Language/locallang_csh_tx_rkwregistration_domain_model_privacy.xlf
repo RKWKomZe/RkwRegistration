@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2018-16-05T10:35:26Z" product-name="rkw_registration">
+		<header/>
+		<body>
+			<trans-unit id="frontendUser.description">
+				<source>frontendUser</source>
+			</trans-unit>
+			<trans-unit id="registration.description">
+				<source>Registration</source>
+			</trans-unit>
+			<trans-unit id="parent.description">
+				<source>Parent</source>
+			</trans-unit>
+			<trans-unit id="foreign_table.description">
+				<source>Foreign table</source>
+			</trans-unit>
+			<trans-unit id="foreign_uid.description">
+				<source>Foreign Uid</source>
+			</trans-unit>
+			<trans-unit id="ip_address.description">
+				<source>IP Address</source>
+			</trans-unit>
+			<trans-unit id="user_agent.description">
+				<source>Browser UserAgent data</source>
+			</trans-unit>
+			<trans-unit id="extension_name.description">
+				<source>Extension name</source>
+			</trans-unit>
+			<trans-unit id="plugin_name.description">
+				<source>Plugin name</source>
+			</trans-unit>
+			<trans-unit id="controller_name.description">
+				<source>Controller name</source>
+			</trans-unit>
+			<trans-unit id="action_name.description">
+				<source>Action name</source>
+			</trans-unit>
+			<trans-unit id="informed_consent_reason.description">
+				<source>Reason for informed consent</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
