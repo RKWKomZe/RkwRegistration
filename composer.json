@@ -28,12 +28,12 @@
     },
     "autoload": {
         "psr-4": {
-            "RKW\\Quickcheck\\": "Classes/"
+            "RKW\\Registration\\": "Classes/"
         }
     },
     "extra": {
         "typo3/cms": {
-            "extension-key": "rkw_quickcheck"
+            "extension-key": "rkw_registration"
         }
     }
 }
