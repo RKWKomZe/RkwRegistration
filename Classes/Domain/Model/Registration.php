@@ -36,7 +36,7 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * FrontendUser
      *
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @var int
      */
     protected $user;
 
@@ -106,7 +106,7 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the feuser
      *
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser $user
+     * @return int $user
      */
     public function getUser()
     {
@@ -116,12 +116,16 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the feuser
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $user
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser|int $user
      * @return void
      */
-    public function setUser(\RKW\RkwRegistration\Domain\Model\FrontendUser $user)
+    public function setUser($user)
     {
-        $this->user = $user;
+        if ($user instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser) {
+            $this->user = $user->getUid();
+        } else {
+            $this->user = $user;
+        }
     }
 
 
