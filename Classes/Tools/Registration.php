@@ -277,8 +277,8 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
         }
 
         // token mismatch or something strange happened - kill that beast!!!
-        $this->getRegistrationRepository()->remove($register);
-        $this->getPersistenceManager()->persistAll();
+        // $this->getRegistrationRepository()->remove($register);
+        // $this->getPersistenceManager()->persistAll();
 
         $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('Something went wrong when trying to register via opt-in with id "%s".', strtolower($register->getUid())));
 
