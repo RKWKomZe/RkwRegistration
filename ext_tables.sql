@@ -51,8 +51,9 @@ CREATE TABLE tx_rkwregistration_domain_model_service (
 #
 CREATE TABLE fe_users (
 
-	tx_rkwregistration_mobile varchar(255) DEFAULT '' NOT NULL,
+	tx_rkwregistration_title int(11) unsigned DEFAULT '0' NOT NULL,
 	tx_rkwregistration_gender tinyint(4) DEFAULT '99' NOT NULL,
+	tx_rkwregistration_mobile varchar(255) DEFAULT '' NOT NULL,
 	tx_rkwregistration_federal_state varchar(255) DEFAULT '' NOT NULL,
 
     tx_rkwregistration_twitter_id int(11) DEFAULT '0' NOT NULL,
@@ -136,4 +137,33 @@ CREATE TABLE tx_rkwregistration_domain_model_privacy (
 	PRIMARY KEY (uid),
 	KEY parent (pid),
 
+);
+
+
+
+#
+# Table structure for table 'tx_rkwregistration_domain_model_title'
+#
+CREATE TABLE tx_rkwregistration_domain_model_title (
+
+	uid int(11) NOT NULL auto_increment,
+	pid int(11) DEFAULT '0' NOT NULL,
+
+    name varchar(255) DEFAULT '' NOT NULL,
+    name_long varchar(255) DEFAULT '' NOT NULL,
+	is_title_after tinyint(4) unsigned DEFAULT '0' NOT NULL,
+
+	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
+	crdate int(11) unsigned DEFAULT '0' NOT NULL,
+	cruser_id int(11) unsigned DEFAULT '0' NOT NULL,
+	deleted tinyint(4) unsigned DEFAULT '0' NOT NULL,
+	hidden tinyint(4) unsigned DEFAULT '0' NOT NULL,
+	sorting int(11) DEFAULT '0' NOT NULL,
+
+    sys_language_uid int(11) DEFAULT '0' NOT NULL,
+	l10n_parent int(11) DEFAULT '0' NOT NULL,
+	l10n_diffsource mediumblob,
+
+	PRIMARY KEY (uid),
+	KEY parent (pid),
 );

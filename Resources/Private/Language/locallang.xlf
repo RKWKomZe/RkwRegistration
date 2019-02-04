@@ -119,6 +119,7 @@
 			</trans-unit>
 
 
+
             <!-- Form Errors: Field-Names -->
             <trans-unit id="form.error.newFrontendUser.salutation">
                 <source>Salutation</source>
@@ -249,6 +250,9 @@
             <trans-unit id="validator.zip.incorrect">
 				<source>ZIP is not correct.</source>
 			</trans-unit>
+            <trans-unit id="validator.gender.empty">
+                <source>Please enter your salutation.</source>
+            </trans-unit>
 
 
             <!-- Registration Controller -->

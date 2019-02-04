@@ -37,15 +37,15 @@
 				<source>Salutation</source>
                 <target>Anrede</target>
 			</trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.man">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.0">
                 <source>Mr.</source>
                 <target>Herr</target>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.woman">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.1">
                 <source>Mrs.</source>
                 <target>Frau</target>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.neutral">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.99">
                 <source>Not set</source>
                 <target>Nicht gesetzt</target>
             </trans-unit>
@@ -88,12 +88,24 @@
 				<source>Consent to data protection</source>
 				<target>Getätigte Zustimmungen zum Datenschutz</target>
 			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.title">
+				<source>Title (overridden)</source>
+				<target>Titel (wird überschrieben)</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title">
+				<source>Title</source>
+				<target>Titel</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.please_choose">
+				<source>Please choose</source>
+				<target>Bitte wählen</target>
+			</trans-unit>
 
 
 
             <!-- tx_rkwregistration_domain_model_service -->
             <trans-unit id="tx_rkwregistration_domain_model_service">
-				<source>Services</source>
+				<source>RKW Registration: Services</source>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_service.user">
 				<source>User</source>
@@ -211,6 +223,24 @@
 				<target>Referer-URL</target>
 			</trans-unit>
 
+
+			<!-- tx_rkwregistration_domain_model_title -->
+			<trans-unit id="tx_rkwregistration_domain_model_title">
+				<source>RKW Registration: Title</source>
+				<target>RKW Registration: Titel</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.name">
+				<source>Name</source>
+				<target>Titel (z.B. Dr.)</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.name_long">
+				<source>Name long</source>
+				<target>Titel ausgeschrieben (z.B. "Professor Doktor")</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.is_title_after">
+				<source>Is title after</source>
+				<target>Titel wird hinter den Namen der Person gesetzt (z.B. "M.A.")</target>
+			</trans-unit>
 
 
 

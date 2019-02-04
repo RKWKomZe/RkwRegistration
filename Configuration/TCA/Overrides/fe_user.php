@@ -22,20 +22,47 @@ $tempCols = array(
         'config'=>array(
 			'type' => 'select',
             'renderType' => 'selectSingle',
-			'size' => 1,
 			'minitems' => 0,
 			'maxitems' => 1,
 			'default' => 99,
 			'items' => array(
-				array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.man', '0'),
-				array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.woman', '1'),
-                array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.neutral', '99'),
+				array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.0', '0'),
+				array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.1', '1'),
+                array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.99', '99'),
 
             ),
         )
     ),
 
-    'tx_rkwregistration_twitter_id' => array(
+	'title' => array(
+		'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.title',
+		'exclude' => 1,
+		'config' => array(
+            'type'=>'input',
+            'size' => 20,
+            'max' => '256',
+            'eval' => 'trim',
+		)
+	),
+
+
+	'tx_rkwregistration_title' => array(
+		'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title',
+		'exclude' => 0,
+		'config' => array(
+			'type' => 'select',
+			'renderType' => 'selectSingle',
+			'foreign_table' => 'tx_rkwregistration_domain_model_title',
+			'foreign_table_where' => 'AND tx_rkwregistration_domain_model_title.hidden = 0 AND tx_rkwregistration_domain_model_title.deleted = 0 ORDER BY name ASC',
+			'minitems' => 0,
+			'maxitems' => 1,
+			'items' => array(
+				array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.please_choose', 0),
+			),
+		),
+	),
+
+	'tx_rkwregistration_twitter_id' => array(
         'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_id',
         'exclude' => 0,
         'config'=>array(
@@ -272,6 +299,7 @@ $tempCols = array(
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','--div--;LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.socialmedia,tx_rkwregistration_twitter_id', '', '');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_twitter_url,  tx_rkwregistration_facebook_id, tx_rkwregistration_facebook_url, tx_rkwregistration_xing_url', '', 'after:tx_rkwregistration_twitter_id');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_title','','after:title');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_gender','','before:name');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_mobile','','after:telephone');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_federal_state','','after:city');

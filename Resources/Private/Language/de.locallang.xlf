@@ -6,7 +6,7 @@
 
             <!-- tx_rkwregistration_domain_model_frontenduser -->
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser">
-				<source>Registration</source>
+				<source>RKW Registration: FrontendUser</source>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.username">
 				<source>Username</source>
@@ -135,7 +135,7 @@
 
             <!-- Fields of Model/Service -->
 			<trans-unit id="tx_rkwregistration_domain_model_service">
-				<source>Services</source>
+				<source>RKW Registration: Services</source>
 			</trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_service.name">
                 <source>Name</source>
@@ -145,6 +145,7 @@
 				<source>Description</source>
                 <target>Beschreibung</target>
 			</trans-unit>
+
 
 
             <!-- Form Errors: Field-Names -->
@@ -318,6 +319,10 @@
 				<source>ZIP is not correct.</source>
 				<target>Hm, die Postleitzahl scheint nicht korrekt zu sein. Ist sie vielleicht zu lang, oder zu kurz geraten?</target>
 			</trans-unit>
+            <trans-unit id="validator.gender.empty">
+                <source>Please enter your salutation.</source>
+                <target>Bitte geben Sie Ihre Anrede an.</target>
+            </trans-unit>
 
 
 

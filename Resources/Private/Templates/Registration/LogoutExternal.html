@@ -3,6 +3,20 @@
 <f:layout name="Default" />
 <f:section name="main">
 
-	<f:flashMessages renderMode="div" />
+    <f:flashMessages as="flashMessages">
+        <div class="typo3-messages">
+            <div class="alert alert-danger">
+                <div class="media">
+                    <div class="media-body">
+                        <div class="alert-message">
+                            <f:for each="{flashMessages}" as="flashMessage">
+                                {flashMessage.message}
+                            </f:for>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </f:flashMessages>
 
 </f:section>

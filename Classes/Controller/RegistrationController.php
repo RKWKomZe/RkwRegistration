@@ -44,7 +44,7 @@ class RegistrationController extends ControllerAbstract
      * @var \RKW\RkwRegistration\Domain\Repository\RegistrationRepository
      * @inject
      */
-    protected $registrationRepository = null;
+    protected $registrationRepository;
 
 
     /**
@@ -53,7 +53,7 @@ class RegistrationController extends ControllerAbstract
      * @var \RKW\RkwRegistration\Domain\Repository\ServiceRepository
      * @inject
      */
-    protected $serviceRepository = null;
+    protected $serviceRepository;
 
 
     /**
@@ -276,7 +276,7 @@ class RegistrationController extends ControllerAbstract
      * action update password
      *
      * @param string $passwordOld
-     * @param array $passwordNew
+     * @param array  $passwordNew
      * @validate $passwordNew \RKW\RkwRegistration\Validation\PasswordValidator
      * @return void
      * @throws \RKW\RkwRegistration\Exception
@@ -1498,8 +1498,8 @@ class RegistrationController extends ControllerAbstract
      * created a rkw user
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $newFrontendUser
-     * @param integer $terms
-     * @param integer $privacy
+     * @param integer                                        $terms
+     * @param integer                                        $privacy
      * @validate $newFrontendUser \RKW\RkwRegistration\Validation\FormValidator
      * @return void
      * @throws \RKW\RkwRegistration\Exception
