@@ -27,6 +27,7 @@ $EM_CONF[$_EXTKEY] = array(
             'extbase' => '7.6.0-8.7.99',
             'fluid' => '7.6.0-8.7.99',
             'typo3' => '7.6.0-8.7.99',
+            'rkw_basics' => '8.7.2-8.7.99',
             'rkw_mailer' => '8.7.1-8.7.99'
 		),
 		'conflicts' => array(
