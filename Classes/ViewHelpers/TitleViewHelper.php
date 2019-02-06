@@ -1,6 +1,6 @@
 <?php
 
-namespace RKW\RkwMailer\ViewHelpers;
+namespace RKW\RkwRegistration\ViewHelpers;
 
 /*
  * This file is part of the TYPO3 CMS project.
