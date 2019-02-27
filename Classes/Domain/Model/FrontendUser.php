@@ -64,7 +64,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     protected $email;
 
     /**
-     * @var integer
+     * @var string
      */
     protected $title;
 
@@ -228,7 +228,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     /**
      * Returns the title
      *
-     * @return integer
+     * @return string
      * @api
      */
     public function getTitle()
@@ -239,7 +239,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     /**
      * Sets the title
      *
-     * @param integer $title
+     * @param string $title
      * @api
      */
     public function setTitle($title)
