@@ -14,6 +14,20 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 <f:section name="main">
 
-	<f:flashMessages renderMode="div" />
+    <f:flashMessages as="flashMessages">
+        <f:for each="{flashMessages}" as="flashMessage">
+            <div class="typo3-messages">
+                <div class="alert alert-{flashMessage.class}">
+                    <div class="media">
+                        <div class="media-body">
+                            <div class="alert-message">
+                                {flashMessage.message}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </f:for>
+    </f:flashMessages>
 
 </f:section>

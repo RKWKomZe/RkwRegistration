@@ -19,7 +19,7 @@
 
             <!-- tx_rkwregistration_domain_model_frontenduser -->
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser">
-                <source>Frontend-User</source>
+                <source>RKW Registration: Frontend-User</source>
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.socialmedia">
                 <source>Social Media</source>
@@ -45,13 +45,13 @@
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender">
 				<source>Salutation</source>
 			</trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.man">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.0">
                 <source>Mr.</source>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.woman">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.1">
                 <source>Mrs.</source>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.neutral">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.99">
                 <source>Not set</source>
             </trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_id">
@@ -90,6 +90,16 @@
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_privacy">
 				<source>Consent to data protection</source>
 			</trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.title">
+    			<source>Title (overridden)</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.please_choose">
+				<source>Please choose</source>
+			</trans-unit>
+
 
 
             <!-- tx_rkwregistration_domain_model_frontendusergroup -->
@@ -169,6 +179,21 @@
 				<source>Server referer</source>
 			</trans-unit>
 
+
+
+			<!-- tx_rkwregistration_domain_model_title -->
+			<trans-unit id="tx_rkwregistration_domain_model_title">
+				<source>RKW Registration: Title</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.name">
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.name_long">
+				<source>Name long</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.is_title_after">
+				<source>Is title after</source>
+			</trans-unit>
 
 
             <!-- Flexform Registration-->

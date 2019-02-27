@@ -23,6 +23,7 @@ namespace RKW\RkwRegistration\Domain\Model;
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ *
  */
 class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 {
@@ -62,6 +63,10 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     protected $email;
 
+    /**
+     * @var string
+     */
+    protected $title;
 
     /**
      * @var string
@@ -89,6 +94,14 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\FrontendUserGroup>
      */
     protected $usergroup;
+
+    /**
+     * txRkwregistrationTitleBefore
+     *
+     * @var \RKW\RkwRegistration\Domain\Model\Title
+     */
+    protected $txRkwregistrationTitle = null;
+
 
     /**
      * @var string
@@ -176,12 +189,12 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 
     /**
      * initialize objectStorage
+     *
      */
     public function __construct()
     {
         parent::__construct();
         $this->usergroup = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        //$this->txRkwregistrationPrivacy = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
     }
 
 
@@ -210,6 +223,79 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function setEmail($email)
     {
         $this->email = strtolower($email);
+    }
+
+    /**
+     * Returns the title
+     *
+     * @return string
+     * @api
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Sets the title
+     *
+     * @param string $title
+     * @api
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+
+    /**
+     * Returns the txRkwregistrationTitle
+     *
+     * @return \RKW\RkwRegistration\Domain\Model\Title $txRkwregistrationTitle
+     */
+    public function getTxRkwregistrationTitle()
+    {
+        return $this->txRkwregistrationTitle;
+    }
+
+    /**
+     * Sets the txRkwregistrationTitleBefore
+     *
+     * Hint: default "null" is needed to make value in forms optional
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\Title $txRkwregistrationTitle
+     * @return void
+     */
+    public function setTxRkwregistrationTitle(\RKW\RkwRegistration\Domain\Model\Title $txRkwregistrationTitle = null)
+    {
+        $this->txRkwregistrationTitle = $txRkwregistrationTitle;
+    }
+
+
+    /**
+     * Returns the title as text
+     *
+     * @param bool $titleAfter
+     * @return string
+     */
+    public function getTitleText($titleAfter = false)
+    {
+
+        if ($this->getTxRkwregistrationTitle()) {
+
+            if ($this->getTxRkwregistrationTitle()->getIsTitleAfter() == $titleAfter) {
+                return $this->getTxRkwregistrationTitle()->getName();
+                //===
+            }
+        }
+
+        if (!is_numeric($this->getTitle())) {
+            return $this->getTitle();
+            //===
+        }
+
+        return '';
+        //===
     }
 
 
@@ -404,6 +490,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
         //===
     }
 
+
     /**
      * Sets the mobile value
      *
@@ -455,6 +542,29 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
         //===
     }
 
+    /**
+     * Returns the gender as string
+     *
+     * @return string
+     */
+    public function getGenderText()
+    {
+        if ($this->getTxRkwregistrationGender() < 99) {
+
+            return \RKW\RkwBasics\Helper\FrontendLocalization::translate(
+                'tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.' . $this->getTxRkwregistrationGender(),
+                'rkw_registration',
+                array(),
+                $this->getTxRkwregistrationLanguageKey()
+            );
+            //===
+
+        }
+
+        return '';
+        //===
+    }
+
 
     /**
      * Sets the registeredBy value
@@ -487,6 +597,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      *
      * @param string $remoteIp
      * @return void
+     *
      */
     public function setTxRkwregistrationRegisterRemoteIp($remoteIp)
     {
@@ -497,6 +608,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      * Returns the registerRemoteIp value
      *
      * @return string
+     *
      */
     public function getTxRkwregistrationRegisterRemoteIp()
     {
@@ -509,6 +621,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      *
      * @param integer $count
      * @return void
+     *
      */
     public function setTxRkwregistrationLoginErrorCount($count)
     {
@@ -520,6 +633,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      * Increments the loginErrorCount value
      *
      * @return void
+     *
      */
     public function incrementTxRkwregistrationLoginErrorCount()
     {
@@ -531,6 +645,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      * Returns the loginErrorCount value
      *
      * @return integer
+     *
      */
     public function getTxRkwregistrationLoginErrorCount()
     {
@@ -544,6 +659,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      *
      * @param string $languageKey
      * @return void
+     *
      */
     public function setTxRkwregistrationLanguageKey($languageKey)
     {
@@ -555,6 +671,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      * Returns the txRkwregistrationLanguageKey value
      *
      * @return string
+     *
      */
     public function getTxRkwregistrationLanguageKey()
     {
@@ -645,6 +762,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      *
      * @param integer $disable
      * @return void
+     *
      */
     public function setDisable($disable)
     {
@@ -669,6 +787,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      *
      * @param integer $deleted
      * @return void
+     *
      */
     public function setDeleted($deleted)
     {
@@ -680,6 +799,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      * Returns the deleted value
      *
      * @return integer
+     *
      */
     public function getDeleted()
     {
