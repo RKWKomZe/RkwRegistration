@@ -333,11 +333,11 @@
 			</trans-unit>
             <trans-unit id="registrationController.message.registration_successfull">
                 <source>You have been successfully registered. Your password has been sent to you via e-mail.</source>
-                <target>Woohoo! Sie wurden erfolgreich registriert. Das Passwort für den Login ist per E-Mail auf dem Weg zu Ihnen. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser Support hilft Ihnen bei Problemen gerne weiter.</target>
+                <target><![CDATA[Woohoo! Sie wurden erfolgreich registriert. Das Passwort für den Login ist per E-Mail auf dem Weg zu Ihnen. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.message.registration_watch_for_email">
                 <source>An e-mail has been send to you. Please click the link in the e-mail to confirm your registration.</source>
-                <target>Fast geschafft! Um sicherzustellen, dass Sie auch wirklich Sie sind, haben wir Ihnen gerade eine E-Mail an die angegebene Adresse geschickt. Bitte bestätigen Sie über den Link in der E-Mail Ihre Registrierung. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser Support hilft Ihnen bei Problemen gerne weiter.</target>
+                <target><![CDATA[Fast geschafft! Um sicherzustellen, dass Sie auch wirklich Sie sind, haben wir Ihnen gerade eine E-Mail an die angegebene Adresse geschickt. Bitte bestätigen Sie über den Link in der E-Mail Ihre Registrierung. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.message.registration_canceled">
                 <source>Your registration was canceled.</source>
@@ -361,7 +361,7 @@
             </trans-unit>
             <trans-unit id="registrationController.error.facebook_unexpected">
                 <source>An unexpected error occurred with Facebook Login. Please try another login.</source>
-                <target>Upps, da ist wohl etwas schief gelaufen. Vermutlich ist einer unserer Entwickler gerade über das Facebook- Kabel gestolpert. Wir versuchen das so schnell wie möglich zu beheben und bitten um etwas Geduld. Unser Support hilft Ihnen in der Zwischenzeit gerne mit alternativen Zugangsdaten weiter.</target>
+                <target><![CDATA[Upps, da ist wohl etwas schief gelaufen. Vermutlich ist einer unserer Entwickler gerade über das Facebook- Kabel gestolpert. Wir versuchen das so schnell wie möglich zu beheben und bitten um etwas Geduld. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen in der Zwischenzeit gerne mit alternativen Zugangsdaten weiter.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.login_no_username">
                 <source>No username given. Please enter username.</source>
@@ -381,7 +381,7 @@
             </trans-unit>
             <trans-unit id="registrationController.message.new_password">
                 <source>Password was reset and send to you via E-Mail.</source>
-                <target>Das hat geklappt! Wir haben Ihnen das neue Passwort per E-Mail zugesendet. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser Support hilft Ihnen bei Problemen gerne weiter.</target>
+                <target><![CDATA[Das hat geklappt! Wir haben Ihnen das neue Passwort per E-Mail zugesendet. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.message.update_successfull">
                 <source>Update was successfull.</source>
@@ -389,7 +389,7 @@
             </trans-unit>
             <trans-unit id="registrationController.error.twitter_unexpected">
                 <source>An unexpected error occurred with Twitter Login. Please try another login.</source>
-                <target>Upps, da ist wohl etwas schief gelaufen! Vermutlich ist einer unserer Entwickler gerade über das Twitter- Kabel gestolpert. Wir versuchen das so schnell wie möglich zu beheben und bitten um etwas Geduld. Unser Support hilft Ihnen in der Zwischenzeit gerne mit alternativen Zugangsdaten weiter.</target>
+                <target><![CDATA[Upps, da ist wohl etwas schief gelaufen! Vermutlich ist einer unserer Entwickler gerade über das Twitter- Kabel gestolpert. Wir versuchen das so schnell wie möglich zu beheben und bitten um etwas Geduld. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen in der Zwischenzeit gerne mit alternativen Zugangsdaten weiter.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.message.update_password">
                 <source>Password was updated. Please use this password from now on for login.</source>
@@ -413,11 +413,11 @@
             </trans-unit>
             <trans-unit id="registrationController.error.user_not_found">
                 <source>User not found.</source>
-                <target>Das hat leider nicht geklappt! Wenn Sie sich  über Facebook oder Twitter angemeldet haben, dann nutzen Sie bitte die Buttons am Ende der Seite. Möglicherweise haben Sie sich aber auch mit einer anderen E-Mail-Adresse registriert. Unser Support hilft Ihnen im Zweifelsfall gerne weiter!</target>
+                <target><![CDATA[Das hat leider nicht geklappt! Wenn Sie sich  über Facebook oder Twitter angemeldet haben, dann nutzen Sie bitte die Buttons am Ende der Seite. Möglicherweise haben Sie sich aber auch mit einer anderen E-Mail-Adresse registriert. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen im Zweifelsfall gerne weiter!]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.login_blocked">
                 <source>Your login was blocked after %s attempts. Please contact support.</source>
-                <target>Nun ist es leider passiert: Aus Sicherheitsgründen wurde Ihr Profil nach %s Fehlversuchen gesperrt. Bitte wenden Sie sich an unseren Support, um Ihren Account wieder freizuschalten.</target>
+                <target><![CDATA[Nun ist es leider passiert: Aus Sicherheitsgründen wurde Ihr Profil nach %s Fehlversuchen gesperrt. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>, um Ihren Account wieder freizuschalten.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.accept_terms">
                 <source>You have to accept our terms and conditions to register.</source>
@@ -433,15 +433,15 @@
             </trans-unit>
             <trans-unit id="registrationController.error.invalid_socialmedia_login">
                 <source>Login was not possible. It seems like your login has been blocked by an admin.</source>
-                <target>Der Login war leider nicht möglich. Möglicherweise wurde Ihr Login deaktiviert. Bitte kontaktieren Sie unseren Support.</target>
+                <target><![CDATA[Der Login war leider nicht möglich. Möglicherweise wurde Ihr Login deaktiviert. Bitte kontaktieren Sie unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.xdl_login_error">
                 <source>Login was not completed. Please contact support.</source>
-                <target>Der Login konnte nicht abgeschlossen werden. Bitte wenden Sie sich an den Support.</target>
+                <target><![CDATA[Der Login konnte nicht abgeschlossen werden. Bitte wenden Sie sich an den <a href="mailto:service@rkw.de">Support</a>.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.xdl_logout_error">
                 <source>Logout was not completed. Please contact support.</source>
-                <target>Der Logout konnte nicht abgeschlossen werden. Bitte wenden Sie sich an den Support.</target>
+                <target><![CDATA[Der Logout konnte nicht abgeschlossen werden. Bitte wenden Sie sich an den <a href="mailto:service@rkw.de">Support</a>.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.invalid_anonymous_token">
                 <source>The given token is not valid (any more). Please use a new one or contact support.</source>
@@ -896,7 +896,7 @@
             </trans-unit>
             <trans-unit id="templates_email_serviceOptInDenial.text2">
                 <source>For questions, please contact our support.</source>
-                <target>Bitte wenden Sie sich an unseren Support unter service@rkw.de. Wir helfen Ihnen hier gerne weiter.</target>
+                <target><![CDATA[Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a> unter service@rkw.de. Wir helfen Ihnen hier gerne weiter.]]></target>
             </trans-unit>
 
 
