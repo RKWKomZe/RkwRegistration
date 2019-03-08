@@ -156,15 +156,19 @@ config.tx_extbase.persistence {
 plugin.tx_rkwregistration {
 
 	view {
+		layoutRootPaths {
+			0 = EXT:rkw_registration/Resources/Private/Layouts/
+			1 = {$plugin.tx_rkwregistration.view.layoutRootPath}
+		}
 		templateRootPaths {
-            10 = {$plugin.tx_rkwregistration.view.templateRootPath}
+			0 = EXT:rkw_registration/Resources/Private/Templates/
+            1 = {$plugin.tx_rkwregistration.view.templateRootPath}
         }
 		partialRootPaths {
-            10 = {$plugin.tx_rkwregistration.view.partialRootPath}
+			0 = EXT:rkw_registration/Resources/Private/Partials/
+			1 = {$plugin.tx_rkwregistration.view.partialRootPath}
         }
-		layoutRootPaths {
-            10 = {$plugin.tx_rkwregistration.view.layoutRootPath}
-        }
+
 	}
 
 	persistence {
