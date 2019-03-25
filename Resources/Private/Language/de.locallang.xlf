@@ -130,7 +130,14 @@
                 <source>Repeat New Password</source>
                 <target>Neues Passwort - Um sicher zu gehen, bitte noch einmal</target>
             </trans-unit>
-
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title">
+				<source>Title</source>
+				<target>Titel</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.neutral">
+				<source>Please choose</source>
+				<target>Bitte wählen</target>
+			</trans-unit>
 
 
             <!-- Fields of Model/Service -->
@@ -780,8 +787,8 @@
 
             <!-- Templates/Email/RegisterOptInRequest.html -->
             <trans-unit id="templates_email_registerOptInRequest.headline">
-                <source>Hello %s %s,</source>
-                <target>Fast geschafft, %s %s!</target>
+                <source>Nearly done</source>
+                <target>Fast geschafft</target>
             </trans-unit>
             <trans-unit id="templates_email_registerOptInRequest.text1">
                 <source>thank you for registering.</source>
@@ -808,11 +815,11 @@
 
             <!-- Templates/Email/RegisterOptInSuccess.html -->
             <trans-unit id="templates_email_registerOptInSuccess.headline">
-                <source>Hello %s %s,</source>
-                <target>Und los geht's!</target>
+                <source>And here we go</source>
+                <target>Und los geht's</target>
             </trans-unit>
             <trans-unit id="templates_email_registerOptInSuccess.teaser">
-                <source>let's go for it!</source>
+                <source>With the free account for "My RKW" you can now manage all services around the RKW website yourself.</source>
                 <target>Mit dem kostenlosen Account für "Mein RKW" können Sie nun alle Services rund um die RKW Website selbst verwalten – von A wie Alerts bis Z wie ... okay, bis V wie Veranstaltungsanmeldungen ;-)</target>
             </trans-unit>
             <trans-unit id="templates_email_registerOptInSuccess.text1">
@@ -840,7 +847,7 @@
 
             <!-- Templates/Email/PasswordReset.html -->
             <trans-unit id="templates_email_passwordReset.headline">
-                <source>Hello %s %s,</source>
+                <source>Your new password</source>
                 <target>Ihr neues Passwort</target>
             </trans-unit>
             <trans-unit id="templates_email_passwordReset.text1">
@@ -981,6 +988,12 @@
 
             <!-- Partials/Registration/FormFields.html -->
             <trans-unit id="partials_registration_formFields.labelOptional">
+                <source>(Optional)</source>
+                <target>(Optional)</target>
+            </trans-unit>
+
+            <!-- Partials/Registration/RegisterFormFields.html -->
+            <trans-unit id="partials_registration_registerFormFields.labelOptional">
                 <source>(Optional)</source>
                 <target>(Optional)</target>
             </trans-unit>
