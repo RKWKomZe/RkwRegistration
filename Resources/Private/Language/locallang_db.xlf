@@ -96,7 +96,7 @@
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title">
 				<source>Title</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.please_choose">
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.neutral">
 				<source>Please choose</source>
 			</trans-unit>
 

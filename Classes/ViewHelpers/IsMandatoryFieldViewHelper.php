@@ -27,18 +27,13 @@ namespace RKW\RkwRegistration\ViewHelpers;
 class IsMandatoryFieldViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 {
     /**
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @param string $fieldName
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @return boolean
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function render($frontendUser, $fieldName)
+    public function render($fieldName, $frontendUser = null)
     {
-
-        if (!$frontendUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser) {
-            return false;
-        }
-        //===
 
         /** @var \RKW\RkwRegistration\Tools\Service $register */
         $register = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Service');

@@ -91,7 +91,7 @@ $GLOBALS['TCA']['tx_rkwregistration_domain_model_title'] = array(
 			'config' => array(
 				'type' => 'input',
 				'size' => 30,
-				'eval' => 'trim,required'
+				'eval' => 'trim'
 			),
 		),
 		'is_title_after' => array(

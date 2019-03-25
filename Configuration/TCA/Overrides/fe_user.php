@@ -57,7 +57,7 @@ $tempCols = array(
 			'minitems' => 0,
 			'maxitems' => 1,
 			'items' => array(
-				array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.please_choose', 0),
+				array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.neutral', 0),
 			),
 		),
 	),

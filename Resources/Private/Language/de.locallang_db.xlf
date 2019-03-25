@@ -76,6 +76,14 @@
                 <source>Language Key</source>
                 <target>Sprach-Code (z.B. für E-Mails an den Nutzer)</target>
             </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title">
+                <source>Title</source>
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.neutral">
+                <source>Please choose</source>
+                <target>Bitte wählen</target>
+            </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser">
 				<source>RKW WePstra: Anonymous User</source>
 				<target>RKW WePstra: Anonymer Nutzer</target>
@@ -91,14 +99,6 @@
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.title">
 				<source>Title (overridden)</source>
 				<target>Titel (wird überschrieben)</target>
-			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title">
-				<source>Title</source>
-				<target>Titel</target>
-			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.please_choose">
-				<source>Please choose</source>
-				<target>Bitte wählen</target>
 			</trans-unit>
 
 
