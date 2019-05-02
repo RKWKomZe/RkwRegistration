@@ -1,6 +1,7 @@
 {namespace rkwRegistration=RKW\RkwRegistration\ViewHelpers}
 
 <div class="v320-1">
+
     <label class="form-label" for="title">
         <f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title" />
         <f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='txRkwregistrationTitle' /> == 0">
@@ -8,96 +9,11 @@
         </f:if>
     </label>
     <f:form.textfield property="title" id="title" additionalAttributes="{autocomplete: 'off'}"/>
-    <div class="jcf-select-drop" id="autocomplete-container" style="display: none;">
-        <div class="jcf-select-drop-content">
-            <span class="jcf-list">
-                <span class="jcf-list-content">
-                    <ul id="autocomplete-results" class="links-list">
-                    </ul>
-                </span>
-            </span>
-        </div>
-    </div>
-    <style>
-        #autocomplete-results .jcf-option:hover {
-            background: #e6e6e6;
-        }
-    </style>
-    <script type="text/javascript">
+    <rkwRegistration:widget.titleAutoComplete
+        options="<rkwRegistration:titleList showTitleBefore='true' showTitleAfter='false' returnArray='true' returnJson='true' mapProperty='name'/>"
+        container="autocomplete-container"
+        list="autocomplete-results"
+    >
+    </rkwRegistration:widget.titleAutoComplete>
 
-        var Autocomplete = {
-            settings: {
-                input: document.getElementById('title'),
-                options: JSON.parse('<rkwRegistration:titleList showTitleBefore="true" showTitleAfter="false" returnArray="true" returnJson="true" mapProperty="name"/>'),
-                autocomplete_container: document.getElementById("autocomplete-container"),
-                autocomplete_results: document.getElementById("autocomplete-results"),
-                currentFocus: -1
-            },
-            init: function() {
-                this.bindEvents();
-            },
-            bindEvents: function() {
-                var self = this;
-
-                this.settings.input.onkeyup = function(e) {
-                    if (e.keyCode == 40) {
-                        console.log('down');
-                        self.settings.currentFocus++;
-                        self.setFocus();
-                    } else if (e.keyCode == 38) {
-                        console.log('up');
-                        self.settings.currentFocus--;
-                        self.setFocus();
-                    } else if (e.keyCode == 13) {
-                        e.preventDefault();
-                        if (self.settings.currentFocus > -1) {
-                            console.log('simulate the click');
-                            //if (x) x[currentFocus].click();
-                        }
-                    } else {
-                        self.findResults();
-                    }
-                };
-
-                this.settings.autocomplete_results.addEventListener('click', function(e) {
-                    self.settings.input.value = self.settings.options[e.target.dataset.autocompleteIndex];
-                    self.findResults();
-                });
-            },
-            setFocus: function () {
-                console.log(this.settings.currentFocus);
-            },
-            buildResults: function(val) {
-                var resultSet = [],
-                    pattern = new RegExp(val, 'i');
-
-                for (i = 0; i < this.settings.options.length; i++) {
-                    if (pattern.test(this.settings.options[i]) && this.settings.options[i] !== val) {
-                        resultSet.push(i);
-                    }
-                }
-
-                return resultSet;
-            },
-            findResults: function() {
-                var input_val = this.settings.input.value,
-                    resultSet = [];
-
-                if (input_val.length > 0) {
-                    this.settings.autocomplete_results.innerHTML = '';
-                    resultSet = this.buildResults(input_val);
-                    for (i = 0; i < resultSet.length; i++) {
-                        this.settings.autocomplete_results.innerHTML += '<li><span class="jcf-option" data-autocomplete-index="' + resultSet[i] + '">' + this.settings.options[resultSet[i]] + '</span></li>';
-                    }
-                    this.settings.autocomplete_container.style.display = (resultSet.length > 0) ? 'block' : 'none';
-                } else {
-                    this.settings.autocomplete_results.innerHTML = '';
-                    this.settings.autocomplete_container.style.display = 'none';
-                }
-            }
-        };
-
-        Autocomplete.init();
-
-    </script>
 </div>
