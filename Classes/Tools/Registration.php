@@ -348,6 +348,8 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
         $frontendUser->setEmail(strtolower($frontendUser->getEmail()));
         $frontendUser->setUsername(strtolower($frontendUser->getUsername()));
 
+        $frontendUser->setTxRkwregistrationTitle($this->setTitle($frontendUser));
+
         // check if user already exists!
         // then we generate an opt-in for additional data given
         // this may also be the case for logged in users without valid email (e.g. when registered via Facebook or Twitter) !!!
@@ -846,5 +848,35 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
 
         return $this->logger;
         //===
+    }
+
+    /**
+     * Returns \RKW\RkwRegistration\Domain\Model\Title instance
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @return \RKW\RkwRegistration\Domain\Model\Title
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     */
+    public function setTitle(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser)
+    {
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
+        $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
+        $title = $titleRepository->findByName($frontendUser->getTitle())->getFirst();
+
+        if (!$title) {
+
+            $title = new \RKW\RkwRegistration\Domain\Model\Title;
+            $title->setName($frontendUser->getTitle());
+
+            $persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+
+            $titleRepository->add($title);
+            $persistenceManager->persistAll();
+
+        }
+
+        return $title;
     }
 }
