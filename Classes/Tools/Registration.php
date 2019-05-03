@@ -348,7 +348,9 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
         $frontendUser->setEmail(strtolower($frontendUser->getEmail()));
         $frontendUser->setUsername(strtolower($frontendUser->getUsername()));
 
-        $frontendUser->setTxRkwregistrationTitle($this->setTitle($frontendUser));
+        if ($frontendUser->getTitle()) {
+            $frontendUser->setTxRkwregistrationTitle($this->setTitle($frontendUser));
+        }
 
         // check if user already exists!
         // then we generate an opt-in for additional data given

@@ -268,7 +268,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     public function setTxRkwregistrationTitle(\RKW\RkwRegistration\Domain\Model\Title $txRkwregistrationTitle = null)
     {
-        $this->txRkwregistrationTitle = $txRkwregistrationTitle;
+        if ($txRkwregistrationTitle) {
+            $this->txRkwregistrationTitle = $txRkwregistrationTitle;
+        }
     }
 
 

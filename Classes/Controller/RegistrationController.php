@@ -176,9 +176,11 @@ class RegistrationController extends ControllerAbstract
         $serviceClass = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Service');
         $serviceClass->addUserToAllGrantedGroups($frontendUser);
 
-        /** @var \RKW\RkwRegistration\Tools\Registration $registration */
-        $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Registration');
-        $frontendUser->setTxRkwregistrationTitle($registration->setTitle($frontendUser));
+        if ($frontendUser->getTitle()) {
+            /** @var \RKW\RkwRegistration\Tools\Registration $registration */
+            $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Registration');
+            $frontendUser->setTxRkwregistrationTitle($registration->setTitle($frontendUser));
+        }
 
         $this->frontendUserRepository->update($frontendUser);
         $this->addFlashMessage(
