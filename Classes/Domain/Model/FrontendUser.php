@@ -96,7 +96,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     protected $usergroup;
 
     /**
-     * txRkwregistrationTitleBefore
+     * txRkwregistrationTitle
      *
      * @var \RKW\RkwRegistration\Domain\Model\Title
      */
@@ -259,7 +259,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     }
 
     /**
-     * Sets the txRkwregistrationTitleBefore
+     * Sets the txRkwregistrationTitle
      *
      * Hint: default "null" is needed to make value in forms optional
      *
