@@ -1,7 +1,6 @@
 {namespace vh=RKW\RkwRegistration\ViewHelpers}
 
 <div class="v320-1">
-
     <label class="form-label" for="title">
         <f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title" />
         <f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='txRkwregistrationTitle' /> == 0">
@@ -10,8 +9,8 @@
     </label>
     <f:form.textfield property="title" id="title" additionalAttributes="{autocomplete: 'off'}"/>
     <vh:titleAutoComplete
-        container="autocomplete-container"
-        list="autocomplete-results"
-        uid="blabla"
+        inputId="title"
+        container="tx_rkwregistration_pi1_title_autocomplete-container"
+        list="tx_rkwregistration_pi1_title_autocomplete-results"
     ></vh:titleAutoComplete>
 </div>

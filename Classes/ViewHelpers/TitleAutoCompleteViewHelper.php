@@ -35,6 +35,7 @@ class TitleAutoCompleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abstr
      * Returns a dropdown select to serve as an autocomplete list
      * (not a partial because this is more complicated to use it universally in several extensions)
      *
+     * @param string $inputId
      * @param string $options
      * @param string $container
      * @param string $list
@@ -44,7 +45,7 @@ class TitleAutoCompleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abstr
      * @throws \TYPO3\CMS\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function render($options = '', $container = '', $list = '', $uid = '')
+    public function render($inputId = '', $options = '', $container = '', $list = '', $uid = '')
     {
 
         $settingsExtension = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -62,6 +63,7 @@ class TitleAutoCompleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abstr
         $template->assignMultiple(
             array(
                 'type' => 'text/javascript',
+                'inputId' => $inputId,
                 'options'  => json_encode($this->getOptions(true,true,'name')),
                 'container' => $container,
                 'list' => $list,

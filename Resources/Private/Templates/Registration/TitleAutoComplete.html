@@ -17,6 +17,7 @@
 
     var AutoCompleteInitialSettings = {
         <f:comment>wake up, fluid!</f:comment>
+        inputId: '{inputId}',
         options: <f:format.htmlentitiesDecode>{options}</f:format.htmlentitiesDecode>,
         container: '{container}',
         list: '{list}'
@@ -24,7 +25,7 @@
 
     var Autocomplete = {
         settings: {
-            input: document.getElementById('title'),
+            input: document.getElementById(AutoCompleteInitialSettings.inputId),
             options: AutoCompleteInitialSettings.options,
             autocomplete_container: document.getElementById(AutoCompleteInitialSettings.container),
             autocomplete_results: document.getElementById(AutoCompleteInitialSettings.list),
