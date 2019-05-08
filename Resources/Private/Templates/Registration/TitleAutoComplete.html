@@ -9,7 +9,10 @@
     </div>
 </div>
 <style>
-    #autocomplete-results .jcf-option:hover {
+    #{container} {
+        position: absolute;
+    }
+    #{list} .jcf-option:hover {
         background: #e6e6e6;
     }
 </style>
@@ -33,6 +36,10 @@
         },
         init: function() {
             this.bindEvents();
+            this.setup();
+        },
+        setup: function() {
+            this.settings.autocomplete_container.style.width = this.settings.input.offsetWidth + 'px';
         },
         bindEvents: function() {
             var self = this;
