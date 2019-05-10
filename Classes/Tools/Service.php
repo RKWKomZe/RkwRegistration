@@ -124,7 +124,9 @@ class Service implements \TYPO3\CMS\Core\SingletonInterface
                 $requiredFields = explode(',', str_replace(' ', '', $settings['users']['requiredFormFields']));
             }
 
+
             if ($frontendUser) {
+
                 //=======================================
                 // get mandatory fields by fe_groups the user is registered for
                 $groupsOfUser = $frontendUser->getUsergroup();
