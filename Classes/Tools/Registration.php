@@ -349,7 +349,7 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
         $frontendUser->setUsername(strtolower($frontendUser->getUsername()));
 
         if ($frontendUser->getTitle()) {
-            $frontendUser->setTxRkwregistrationTitle($this->setTitle($frontendUser));
+            $frontendUser->setTxRkwregistrationTitle(\RKW\RkwRegistration\Utilities\TitleUtility::extractTxRegistrationTitle($frontendUser->getTitle()));
         }
 
         // check if user already exists!
@@ -852,33 +852,4 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
         //===
     }
 
-    /**
-     * Returns \RKW\RkwRegistration\Domain\Model\Title instance
-     *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @return \RKW\RkwRegistration\Domain\Model\Title
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     */
-    public function setTitle(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser)
-    {
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
-        $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
-        $title = $titleRepository->findByName($frontendUser->getTitle())->getFirst();
-
-        if (!$title) {
-
-            $title = new \RKW\RkwRegistration\Domain\Model\Title;
-            $title->setName($frontendUser->getTitle());
-
-            $persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-
-            $titleRepository->add($title);
-            $persistenceManager->persistAll();
-
-        }
-
-        return $title;
-    }
 }
