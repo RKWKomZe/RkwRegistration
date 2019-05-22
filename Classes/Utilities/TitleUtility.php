@@ -30,16 +30,17 @@ class TitleUtility
      * Returns \RKW\RkwRegistration\Domain\Model\Title instance
      *
      * @param string $title
+     *
      * @return \RKW\RkwRegistration\Domain\Model\Title
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
-    public static function extractTxRegistrationTitle($title = '')  //  @todo: Oder einfach nur den gesuchten title als Parameter übergeben und gar kein komplettes Objekt? Wenn hier das Objekt flexibel sein könnte, wäre es möglich, einen Trait zu nutzen oder eine Static-Function wie \RKW\RkwRegistration\Tools\Registration::validEmail($this->getFrontendUser())
+    public static function extractTxRegistrationTitle($title = '')
     {
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
         $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
-        $txRegistrationTitle = $titleRepository->findByName($title)->getFirst();
+        $txRegistrationTitle = $titleRepository->findOneByName($title);
 
         if (!$txRegistrationTitle) {
 
