@@ -4,7 +4,7 @@ namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Tools\Password;
 use RKW\RkwRegistration\Tools\Authentication;
-use RKW\RkwRegistration\Tools\Registration;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -176,8 +176,8 @@ class RegistrationController extends ControllerAbstract
         $serviceClass = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Service');
         $serviceClass->addUserToAllGrantedGroups($frontendUser);
 
-        if ($frontendUser->getTitle()) {
-            $frontendUser->setTxRkwregistrationTitle(\RKW\RkwRegistration\Tools\Registration::extractTxRegistrationTitle($frontendUser->getTitle()));
+        if ($frontendUser->getTxRkwregistrationTitle()) {
+            $frontendUser->setTxRkwregistrationTitle(\RKW\RkwRegistration\Utilities\TitleUtility::extractTxRegistrationTitle($frontendUser->getTxRkwregistrationTitle()->getName()));
         }
 
         $this->frontendUserRepository->update($frontendUser);
