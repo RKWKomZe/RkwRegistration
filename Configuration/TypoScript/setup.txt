@@ -168,6 +168,11 @@ plugin.tx_rkwregistration {
 			0 = EXT:rkw_registration/Resources/Private/Partials/
 			1 = {$plugin.tx_rkwregistration.view.partialRootPath}
         }
+		widget {
+			TYPO3\CMS\Fluid\ViewHelpers\Widget\AutocompleteViewHelper {
+				templateRootPath = EXT:rkw_registration/Resources/Private/Templates/
+			}
+		}
 
 	}
 

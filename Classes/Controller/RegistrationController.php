@@ -145,14 +145,21 @@ class RegistrationController extends ControllerAbstract
             //===
         }
 
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
+        $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
+
+        $titles = $titleRepository->findAllOfType(true, false, false);
+
         $this->view->assignMultiple(
             array(
                 'frontendUser' => $registeredUser,
                 'welcomePid'   => intval($this->settings['users']['welcomePid']),
+                'titles' => $titles
             )
         );
     }
-
 
     /**
      * action update
@@ -1487,10 +1494,18 @@ class RegistrationController extends ControllerAbstract
         $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
         $redirectLogin->setRedirectUrl($this->request);
 
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
+        $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
+
+        $titles = $titleRepository->findAllOfType(true, false, false);
+
         $this->view->assignMultiple(
             array(
                 'newFrontendUser' => $newFrontendUser,
                 'termsPid'        => intval($this->settings['users']['termsPid']),
+                'titles' => $titles
             )
         );
     }
