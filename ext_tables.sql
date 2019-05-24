@@ -151,7 +151,10 @@ CREATE TABLE tx_rkwregistration_domain_model_title (
 
     name varchar(255) DEFAULT '' NOT NULL,
     name_long varchar(255) DEFAULT '' NOT NULL,
+    name_female varchar(255) DEFAULT '' NOT NULL,
+    name_female_long varchar(255) DEFAULT '' NOT NULL,
 	is_title_after tinyint(4) unsigned DEFAULT '0' NOT NULL,
+	is_included_in_salutation tinyint(4) unsigned DEFAULT '0' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,
@@ -166,4 +169,33 @@ CREATE TABLE tx_rkwregistration_domain_model_title (
 
 	PRIMARY KEY (uid),
 	KEY parent (pid),
+);
+
+#
+# Table structure for table 'tx_rkwregistration_domain_model_shippingaddress'
+#
+CREATE TABLE tx_rkwregistration_domain_model_shippingaddress (
+
+	uid int(11) NOT NULL auto_increment,
+	pid int(11) DEFAULT '0' NOT NULL,
+
+	gender tinyint(4) DEFAULT '0' NOT NULL,
+	title int(11) DEFAULT '0' NOT NULL,
+	first_name varchar(255) DEFAULT '' NOT NULL,
+	last_name varchar(255) DEFAULT '' NOT NULL,
+	company varchar(255) DEFAULT '' NOT NULL,
+	address varchar(255) DEFAULT '' NOT NULL,
+	zip int(11) DEFAULT '0' NOT NULL,
+	city varchar(255) DEFAULT '' NOT NULL,
+
+	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
+	crdate int(11) unsigned DEFAULT '0' NOT NULL,
+	cruser_id int(11) unsigned DEFAULT '0' NOT NULL,
+	deleted tinyint(4) unsigned DEFAULT '0' NOT NULL,
+	hidden tinyint(4) unsigned DEFAULT '0' NOT NULL,
+	status tinyint(4) unsigned DEFAULT '0' NOT NULL,
+
+	PRIMARY KEY (uid),
+	KEY parent (pid),
+
 );

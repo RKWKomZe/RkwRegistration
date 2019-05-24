@@ -57,11 +57,25 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $name = '';
 
     /**
+     * nameFemale
+     *
+     * @var string
+     */
+    protected $nameFemale = '';
+
+    /**
      * nameLong
      *
      * @var string
      */
     protected $nameLong = '';
+
+    /**
+     * nameFemaleLong
+     *
+     * @var string
+     */
+    protected $nameFemaleLong = '';
 
     /**
      * isTitleAfter
@@ -70,6 +84,12 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $isTitleAfter = false;
 
+    /**
+     * isIncludedInSalutation
+     *
+     * @var boolean
+     */
+    protected $isIncludedInSalutation = false;
 
     /**
      * Returns the crdate value
@@ -168,6 +188,27 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
+     * Returns the female variant of the name
+     *
+     * @return string $nameFemale
+     */
+    public function getNameFemale()
+    {
+        return $this->nameFemale;
+    }
+
+    /**
+     * Sets the female variant of the name
+     *
+     * @param string $nameFemale
+     * @return void
+     */
+    public function setNameFemale($nameFemale)
+    {
+        $this->nameFemale = $nameFemale;
+    }
+
+    /**
      * Returns the nameLong
      *
      * @return string $nameLong
@@ -189,6 +230,27 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
+     * Returns the long female variant of the name
+     *
+     * @return string $nameFemaleLong
+     */
+    public function getNameFemaleLong()
+    {
+        return $this->nameFemaleLong;
+    }
+
+    /**
+     * Sets the long female variant of the name
+     *
+     * @param string $nameFemaleLong
+     * @return void
+     */
+    public function setNameFemaleLong($nameFemaleLong)
+    {
+        $this->nameFemaleLong = $nameFemaleLong;
+    }
+
+    /**
      * Returns the isTitleAfter
      *
      * @return string $isTitleAfter
@@ -207,6 +269,27 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function setIsTitleAfter($isTitleAfter)
     {
         $this->isTitleAfter = $isTitleAfter;
+    }
+
+    /**
+     * Returns the isIncludedInSalutation
+     *
+     * @return string $isIncludedInSalutation
+     */
+    public function getIsIncludedInSalutation()
+    {
+        return $this->isIncludedInSalutation;
+    }
+
+    /**
+     * Sets the isIncludedInSalutation
+     *
+     * @param string $isIncludedInSalutation
+     * @return void
+     */
+    public function setIsIncludedInSalutation($isIncludedInSalutation)
+    {
+        $this->isIncludedInSalutation = $isIncludedInSalutation;
     }
 
 }
