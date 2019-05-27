@@ -56,12 +56,14 @@ class TitleRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query = $this->createQuery();
         $result = $query
             ->matching(
-                $query->logicalOr(
-                    $query->equals('isTitleAfter', $showTitleBefore ? false : true),
-                    $query->equals('isTitleAfter', $showTitleAfter)
+                $query->logicalAnd(
+                    $query->logicalOr(
+                        $query->equals('isTitleAfter', $showTitleBefore ? false : true),
+                        $query->equals('isTitleAfter', $showTitleAfter)
+                    ),
+                    $query->equals('isChecked', true)
                 )
-            )
-            ->execute($returnArray);
+            )->execute($returnArray);
 
         return $result;
         //===

@@ -112,6 +112,54 @@ class TitleTest extends FunctionalTestCase
     /**
      * @test
      */
+    public function titlePropertyIsCheckedIsPersistedToTheDatabase()
+    {
+        $fixture['isChecked'] = true;
+
+        $this->title->setName("Dr. med.");
+        $this->title->setIsChecked($fixture['isChecked']);
+
+        $this->titleRepository->add($this->title);
+
+        $this->persistenceManager->persistAll();
+
+        $databaseResult = $this->getDatabaseConnection()->selectSingleRow('*', 'tx_rkwregistration_domain_model_title','name = "Dr. med."');
+
+        $this->assertFalse(empty($databaseResult));
+        $this->assertNotNull($databaseResult['is_checked']);
+        $this->assertTrue(isset($databaseResult['is_checked']));
+        $this->assertEquals($fixture['isChecked'], (bool) $databaseResult['is_checked']);
+    }
+
+    /**
+     * @test
+     */
+    public function onlyTitlesWithPropertyIsCheckedEqualsTrueShouldBePassedToView()
+    {
+
+        $titleDoNotPassToView = $this->objectManager->get(Title::class);
+        $titleDoNotPassToView->setName("Do not pass to view");
+        $titleDoNotPassToView->setIsChecked(false);
+
+        $titleDoPassToView = $this->objectManager->get(Title::class);
+        $titleDoPassToView->setName("Do pass to view");
+        $titleDoPassToView->setIsChecked(true);
+
+        $this->titleRepository->add($titleDoNotPassToView);
+        $this->titleRepository->add($titleDoPassToView);
+
+        $this->persistenceManager->persistAll();
+
+        $titles = $this->titleRepository->findAllOfType(true, false, false);
+
+        $this->assertCount(1, $titles);
+        $this->assertEquals($titleDoPassToView, $titles->getFirst());
+
+    }
+
+    /**
+     * @test
+     */
     public function titlePropertyIsIncludedInSalutationIsPersistedToTheDatabase()
     {
         $fixture['isIncludedInSalutation'] = true;
@@ -126,6 +174,7 @@ class TitleTest extends FunctionalTestCase
         $databaseResult = $this->getDatabaseConnection()->selectSingleRow('*', 'tx_rkwregistration_domain_model_title','name = "Dr. med."');
 
         $this->assertFalse(empty($databaseResult));
+        $this->assertNotNull($databaseResult['is_included_in_salutation']);
         $this->assertTrue(isset($databaseResult['is_included_in_salutation']));
         $this->assertEquals($fixture['isIncludedInSalutation'], (bool) $databaseResult['is_included_in_salutation']);
     }

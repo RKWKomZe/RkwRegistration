@@ -126,5 +126,12 @@ $GLOBALS['TCA']['tx_rkwregistration_domain_model_title'] = array(
                 'type' => 'check',
             ),
         ),
+        'is_checked' => array(
+            'exclude' => 0,
+            'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_title.is_checked',
+            'config' => array(
+                'type' => 'check',
+            ),
+        ),
 	),
 );

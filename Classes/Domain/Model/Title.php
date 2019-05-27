@@ -92,6 +92,13 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $isIncludedInSalutation = false;
 
     /**
+     * isChecked
+     *
+     * @var boolean
+     */
+    protected $isChecked = false;
+
+    /**
      * Returns the crdate value
      *
      * @return integer
@@ -290,6 +297,27 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function setIsIncludedInSalutation($isIncludedInSalutation)
     {
         $this->isIncludedInSalutation = $isIncludedInSalutation;
+    }
+
+    /**
+     * Returns the isChecked
+     *
+     * @return string $isChecked
+     */
+    public function getIsChecked()
+    {
+        return $this->isChecked;
+    }
+
+    /**
+     * Sets the isChecked
+     *
+     * @param string $isChecked
+     * @return void
+     */
+    public function setIsChecked($isChecked)
+    {
+        $this->isChecked = $isChecked;
     }
 
 }

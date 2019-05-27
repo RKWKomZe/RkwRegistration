@@ -155,6 +155,7 @@ CREATE TABLE tx_rkwregistration_domain_model_title (
     name_female_long varchar(255) DEFAULT '' NOT NULL,
 	is_title_after tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	is_included_in_salutation tinyint(4) unsigned DEFAULT '0' NOT NULL,
+	is_checked tinyint(4) unsigned DEFAULT '0' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,
