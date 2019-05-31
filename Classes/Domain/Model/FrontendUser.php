@@ -96,7 +96,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     protected $usergroup;
 
     /**
-     * txRkwregistrationTitleBefore
+     * txRkwregistrationTitle
      *
      * @var \RKW\RkwRegistration\Domain\Model\Title
      */
@@ -259,7 +259,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     }
 
     /**
-     * Sets the txRkwregistrationTitleBefore
+     * Sets the txRkwregistrationTitle
      *
      * Hint: default "null" is needed to make value in forms optional
      *
@@ -268,7 +268,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     public function setTxRkwregistrationTitle(\RKW\RkwRegistration\Domain\Model\Title $txRkwregistrationTitle = null)
     {
-        $this->txRkwregistrationTitle = $txRkwregistrationTitle;
+        if ($txRkwregistrationTitle) {
+            $this->txRkwregistrationTitle = $txRkwregistrationTitle;
+        }
     }
 
 
@@ -298,6 +300,37 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
         //===
     }
 
+    /**
+     * Returns the full salutation including gender, title and name
+     *
+     * @return string
+     */
+    public function getCompleteSalutationText($checkIncludedInSalutation = false)
+    {
+        $fullSalutation = $this->getFirstName() . ' ' . $this->getLastName();
+
+        $title = $this->getTxRkwregistrationTitle();
+
+        if ($title) {
+
+            $titleName = ($this->getTxRkwregistrationGender() === 1 && $title->getNameFemale()) ? $title->getNameFemale() : $title->getName();
+
+            if ($checkIncludedInSalutation) {
+                if ($title->getIsIncludedInSalutation()) {
+                    $fullSalutation = ($title->getIsTitleAfter()) ? $fullSalutation . ', ' . $titleName : $titleName . ' ' . $fullSalutation;
+                }
+            } else {
+                $fullSalutation = ($title->getIsTitleAfter()) ? $fullSalutation . ', ' . $titleName : $titleName . ' ' . $fullSalutation;
+            }
+
+        }
+
+        if ($this->getGenderText()) {
+            $fullSalutation = $this->getGenderText() . ' ' . $fullSalutation;
+        }
+
+        return $fullSalutation;
+    }
 
     /**
      * Sets the firstName

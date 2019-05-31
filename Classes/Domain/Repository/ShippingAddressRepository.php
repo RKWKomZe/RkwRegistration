@@ -16,15 +16,14 @@ namespace RKW\RkwRegistration\Domain\Repository;
  */
 
 /**
- * TitleRepository
+ * ShippingAddressRepository
  *
- * @author Maximilian Fäßler <maximilian@faesslerweb.de>
- * @copyright Fäßler Web UG
- * @date October 2018
+ * @author Christian Dilger <c.dilger@addorange.de>
+ * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class TitleRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class ShippingAddressRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
 
     /**
@@ -42,30 +41,4 @@ class TitleRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $this->setDefaultQuerySettings($querySettings);
     }
 
-
-    /**
-     * function findAllOfType
-     *
-     * @param boolean $showTitleBefore
-     * @param boolean $showTitleAfter
-     * @param boolean $returnArray
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array
-     */
-    public function findAllOfType($showTitleBefore = true, $showTitleAfter = false, $returnArray = false)
-    {
-        $query = $this->createQuery();
-        $result = $query
-            ->matching(
-                $query->logicalAnd(
-                    $query->logicalOr(
-                        $query->equals('isTitleAfter', $showTitleBefore ? false : true),
-                        $query->equals('isTitleAfter', $showTitleAfter)
-                    ),
-                    $query->equals('isChecked', true)
-                )
-            )->execute($returnArray);
-
-        return $result;
-        //===
-    }
 }

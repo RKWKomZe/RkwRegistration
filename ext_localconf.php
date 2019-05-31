@@ -12,7 +12,8 @@ if (!defined('TYPO3_MODE')) {
 	),
 	// non-cacheable actions
 	array(
-        'Registration' => 'index, welcome, welcomeMessage, xdlLoginShow, loginShow, loginShowExternal, loginTwitter, login, xdlLogin, xdlLogout, logout, logoutExternal, loginAnonymous, loginHintAnonymous, registerShow, register, optin, passwordForgot, passwordForgotShow, createTwitterUser, editUser, updateUser, deleteUserShow, deleteUser, editPassword, updatePassword',        'Service' => 'list, show, create, delete, optIn',
+        'Registration' => 'index, welcome, welcomeMessage, xdlLoginShow, loginShow, loginShowExternal, loginTwitter, login, xdlLogin, xdlLogout, logout, logoutExternal, loginAnonymous, loginHintAnonymous, registerShow, register, optin, passwordForgot, passwordForgotShow, createTwitterUser, editUser, updateUser, deleteUserShow, deleteUser, editPassword, updatePassword',
+        'Service' => 'list, show, create, delete, optIn',
 	)
 );
 

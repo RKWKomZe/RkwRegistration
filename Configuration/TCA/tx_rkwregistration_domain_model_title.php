@@ -94,12 +94,44 @@ $GLOBALS['TCA']['tx_rkwregistration_domain_model_title'] = array(
 				'eval' => 'trim'
 			),
 		),
-		'is_title_after' => array(
+        'name_female' => array(
+            'exclude' => 0,
+            'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_title.name_female',
+            'config' => array(
+                'type' => 'input',
+                'size' => 30,
+                'eval' => 'trim'
+            ),
+        ),
+        'name_female_long' => array(
+            'exclude' => 0,
+            'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_title.name_female_long',
+            'config' => array(
+                'type' => 'input',
+                'size' => 30,
+                'eval' => 'trim'
+            ),
+        ),
+        'is_title_after' => array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_title.is_title_after',
 			'config' => array(
 				'type' => 'check',
 			),
 		),
+        'is_included_in_salutation' => array(
+            'exclude' => 0,
+            'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_title.is_included_in_salutation',
+            'config' => array(
+                'type' => 'check',
+            ),
+        ),
+        'is_checked' => array(
+            'exclude' => 0,
+            'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_title.is_checked',
+            'config' => array(
+                'type' => 'check',
+            ),
+        ),
 	),
 );
