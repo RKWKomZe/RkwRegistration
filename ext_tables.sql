@@ -180,13 +180,14 @@ CREATE TABLE tx_rkwregistration_domain_model_shippingaddress (
 	uid int(11) NOT NULL auto_increment,
 	pid int(11) DEFAULT '0' NOT NULL,
 
+    frontend_user int(11) unsigned DEFAULT '0' NOT NULL,
 	gender tinyint(4) DEFAULT '0' NOT NULL,
 	title int(11) DEFAULT '0' NOT NULL,
 	first_name varchar(255) DEFAULT '' NOT NULL,
 	last_name varchar(255) DEFAULT '' NOT NULL,
 	company varchar(255) DEFAULT '' NOT NULL,
 	address varchar(255) DEFAULT '' NOT NULL,
-	zip int(11) DEFAULT '0' NOT NULL,
+	zip varchar(255) DEFAULT '' NOT NULL,
 	city varchar(255) DEFAULT '' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,

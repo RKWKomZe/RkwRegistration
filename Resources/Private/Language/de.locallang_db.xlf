@@ -224,6 +224,70 @@
 			</trans-unit>
 
 
+
+            <!-- tx_rkwregistration_domain_model_shippingaddress -->
+            <trans-unit id="tx_rkwregistration_domain_model_shippingaddress">
+				<source>RKW Registration: Shipping Address</source>
+				<target>RKW Registration: Lieferaddresse</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.frontend_user">
+				<source>Frontend User</source>
+				<target>Frontend User</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.frontend_user.pleaseSelect">
+				<source>Please Select</source>
+				<target>Bitte wählen</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender">
+				<source>Gender</source>
+				<target>Geschlecht</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender.I.man">
+				<source>Man</source>
+				<target>Männlich</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender.I.woman">
+				<source>Woman</source>
+				<target>Weiblich</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender.I.neutral">
+				<source>Please Select</source>
+				<target>Bitte wählen</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.title">
+				<source>Title</source>
+				<target>Titel</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.title.pleaseSelect">
+				<source>Please Select</source>
+				<target>Bitte wählen</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.first_name">
+				<source>First Name</source>
+				<target>Vorname</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.last_name">
+				<source>Last Name</source>
+				<target>Nachname</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.company">
+				<source>Company</source>
+				<target>Firma</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.address">
+				<source>Address</source>
+				<target>Anschrift</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.zip">
+				<source>Zip</source>
+				<target>PLZ</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.city">
+				<source>City</source>
+				<target>Stadt</target>
+			</trans-unit>
+
+
 			<!-- tx_rkwregistration_domain_model_title -->
 			<trans-unit id="tx_rkwregistration_domain_model_title">
 				<source>RKW Registration: Title</source>

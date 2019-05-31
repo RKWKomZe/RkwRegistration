@@ -28,12 +28,18 @@ namespace RKW\RkwRegistration\Domain\Model;
 class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
 
+    /**
+     * frontendUser
+     *
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
+     */
+    protected $frontendUser = null;
 
     /**
      * gender
      *
      * @var integer
-     * @validate \RKW\RkwRegistration\Validation\GenderValidator
+     * @validate \RKW\RkwRegistration\Validation\Validator\GenderValidator
      */
     protected $gender = 99;
 
@@ -88,9 +94,10 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * zip
      *
      * @var string
-     * @validate \RKW\RkwOrder\Validation\Validator\ZipValidator
+     * @validate \RKW\RkwRegistration\Validation\Validator\ZipValidator
      */
     protected $zip;
+
 
     /**
      * city
@@ -99,6 +106,28 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @validate NotEmpty, String
      */
     protected $city;
+
+
+    /**
+     * Returns the frontendUser
+     *
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     */
+    public function getFrontendUser()
+    {
+        return $this->frontendUser;
+    }
+
+    /**
+     * Sets the frontendUser
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @return void
+     */
+    public function setFrontendUser(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser = null)
+    {
+        $this->frontendUser = $frontendUser;
+    }
 
 
     /**
