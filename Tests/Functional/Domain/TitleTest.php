@@ -110,6 +110,211 @@ class TitleTest extends FunctionalTestCase
 
 
     /**
+     * @param $formula
+     * @param $berater_honorarsatz
+     * @param $rkw_honorarsatz
+     * @param $tagwerke
+     */
+    public function calculate($formula, $berater_honorarsatz, $rkw_honorarsatz, $tagwerke)
+    {
+
+        //  feststehende Parameter (via Backend einzugeben
+        $foerderprogramme = [
+            'beratung' => [
+                'name' => 'Beratungsrichtlinie',
+                'subvention' => [
+                    'berater' => 'WENN($tagwerke * $berater_honorarsatz > 2550;2550;$tagwerke * $berater_honorarsatz)',
+                    'rkw' => '$tagwerke * $rkw_honorarsatz'
+                ],
+                'foerdermittel' => '$subvention["gesamt"] * 0.5',
+                'eigenmittel' => [
+                    'netto' => '$honorar["gesamt"] - $foerdermittel',
+                    'brutto' => '$eigenmittel["netto"] + $honorar["gesamt"]["tax"]',
+                ],
+                'meta' => [
+                    'name' => 'Thüringer Beratungsrichtlinie',
+                    'zustaendig' => '',
+                    'unternehmensalter' => 0,
+                    'moeglicheTagwerke' => '',
+                    'zuschuss' => '',
+                    'beratungsinhalte' => ''
+
+                ]
+            ],
+            'gruender' => [
+                'name' => 'Gründerrichtlinie',
+                'formula' => 'WENN($tagwerke * $berater_honorarsatz > 3550;3550;$tagwerke * $berater_honorarsatz)',
+                'foerdermittel' => '$subvention["gesamt"] * 0.7',
+            ],
+            'bafa_jung' => [
+                'name' => 'BAFA_junge_Unternehmen',
+                'formula' => 'WENN($berater_honorarsatz > 800;$tagwerke * 800;$tagwerke * $berater_honorarsatz)',
+                'foerdermittel' => '$subvention["gesamt"] * 0.8',
+            ],
+            'bafa_bestand' => [
+                'name' => 'BAFA_Bestandsunternehmen',
+                'formula' => 'WENN($berater_honorarsatz > 714,28;714,2857142857 * $tagwerke;$berater_honorarsatz * $tagwerke)',
+                'foerdermittel' => '$subvention["gesamt"] * 0.8',
+            ]
+        ];
+
+        switch ($formula) {
+            case 'bafa_bestand':
+                $result = [
+                    'honorar' => [
+                        'berater' => $tagwerke * $berater_honorarsatz,
+                        'rkw' => $tagwerke * $rkw_honorarsatz,
+                        'netto' => ($tagwerke * $berater_honorarsatz) + ($tagwerke * $rkw_honorarsatz),
+                        'tax' => (($tagwerke * $berater_honorarsatz) + ($tagwerke * $rkw_honorarsatz)) * 0.19,
+                        'brutto' => (($tagwerke * $berater_honorarsatz) + ($tagwerke * $rkw_honorarsatz)) * 1.19,
+                    ],
+                    'subvention' => [
+                        'berater' => ($tagwerke * $berater_honorarsatz > 2550) ? 2550 : $tagwerke * $berater_honorarsatz,
+                        'rkw' => $tagwerke * $rkw_honorarsatz,
+                    ]
+                ];
+
+                //  @todo: Fördermittel berechnen - bessere Darstellung für die Fixtures suchen!
+                break;
+            case 'bafa_jung':
+                $result = [
+                    'honorar' => [
+                        'berater' => $tagwerke * $berater_honorarsatz,
+                        'rkw' => $tagwerke * $rkw_honorarsatz,
+                        'netto' => ($tagwerke * $berater_honorarsatz) + ($tagwerke * $rkw_honorarsatz),
+                        'tax' => (($tagwerke * $berater_honorarsatz) + ($tagwerke * $rkw_honorarsatz)) * 0.19,
+                        'brutto' => (($tagwerke * $berater_honorarsatz) + ($tagwerke * $rkw_honorarsatz)) * 1.19,
+                    ],
+                    'subvention' => [
+                        'berater' => ($tagwerke * $berater_honorarsatz > 3550) ? 3550 : $tagwerke * $berater_honorarsatz,
+                        'rkw' => $tagwerke * $rkw_honorarsatz,
+                    ]
+                ];
+                break;
+            case 'beratung':
+                $result = [
+                    'honorar' => [
+                        'berater' => $tagwerke * $berater_honorarsatz,
+                        'rkw' => $tagwerke * $rkw_honorarsatz,
+                        'netto' => ($tagwerke * $berater_honorarsatz) + ($tagwerke * $rkw_honorarsatz),
+                        'tax' => (($tagwerke * $berater_honorarsatz) + ($tagwerke * $rkw_honorarsatz)) * 0.19,
+                        'brutto' => (($tagwerke * $berater_honorarsatz) + ($tagwerke * $rkw_honorarsatz)) * 1.19,
+                    ],
+                    'subvention' => [
+                        'berater' => ($berater_honorarsatz > 800) ? $tagwerke * 800 : $tagwerke * $berater_honorarsatz,
+                        'rkw' => $tagwerke * $rkw_honorarsatz,
+                    ]
+                ];
+                break;
+            case 'gruender':
+                $result = [
+                    'honorar' => [
+                        'berater' => $tagwerke * $berater_honorarsatz,
+                        'rkw' => $tagwerke * $rkw_honorarsatz,
+                        'netto' => ($tagwerke * $berater_honorarsatz) + ($tagwerke * $rkw_honorarsatz),
+                        'tax' => (($tagwerke * $berater_honorarsatz) + ($tagwerke * $rkw_honorarsatz)) * 0.19,
+                        'brutto' => (($tagwerke * $berater_honorarsatz) + ($tagwerke * $rkw_honorarsatz)) * 1.19,
+                    ],
+                    'subvention' => [
+                        'berater' => ($berater_honorarsatz > 714.28) ? 714.2857142857 * $tagwerke : $berater_honorarsatz * $tagwerke,
+                        'rkw' => $tagwerke * $rkw_honorarsatz,
+                    ]
+                ];
+                break;
+        }
+
+        return $result;
+
+    }
+
+    /**
+     * @test
+     */
+    public function calculator()
+    {
+        //  Programme wählen
+        $cellmapping = [
+            'b7' => 'tagwerke',
+            'b9' => 'berater_honorarsatz',
+        ];
+
+        $tagwerke = 10;
+
+        $fixtures = [
+            'beratung' => [
+                'honorar' => [
+                    'berater' => 10000,
+                    'berater_satz' => 1000,
+                    'rkw' => 1000,
+                    'rkw_satz' => 100,
+                ],
+                'subvention' => [
+                    'berater' => 8000,
+                    'rkw' => 1000
+                ],
+            ],
+            'gruender' => [
+                'honorar' => [
+                    'berater' => 10000,
+                    'berater_satz' => 1000,
+                    'rkw' => 1000,
+                    'rkw_satz' => 100,
+                ],
+                'subvention' => [
+                    'berater' => 7142.86,
+                    'rkw' => 1000
+                ],
+            ],
+            'bafa_jung' => [
+                'honorar' => [
+                    'berater' => 10000,
+                    'berater_satz' => 1000,
+                    'rkw' => 450,
+                    'rkw_satz' => 45,
+                ],
+                'subvention' => [
+                    'berater' => 3550,
+                    'rkw' => 450
+                ],
+            ],
+            'bafa_bestand' => [
+                'honorar' => [
+                    'berater' => 10000,
+                    'berater_satz' => 1000,
+                    'rkw' => 450,
+                    'rkw_satz' => 45,
+                ],
+                'subvention' => [
+                    'berater' => 2550,
+                    'rkw' => 450
+                ],
+            ]
+        ];
+
+        foreach ($fixtures as $key => $fixture) {
+
+            $calculation = $this->calculate($key, $fixture['honorar']['berater_satz'], $fixture['honorar']['rkw_satz'], $tagwerke);
+            $this->assertEquals($fixture['subvention']['berater'], round($calculation['subvention']['berater'], 2));
+            $this->assertEquals($fixture['subvention']['rkw'], round($calculation['subvention']['rkw'],2));
+
+        }
+
+    }
+
+    /**
+     * @test
+     */
+    public function taxIsCalculated()
+    {
+        $calculation = $this->calculate('beratung', 1000, 100, 10);
+
+        $this->assertEquals(11000.00, round($calculation['honorar']['netto'], 2));
+        $this->assertEquals(2090.00, round($calculation['honorar']['tax'], 2));
+        $this->assertEquals(13090.00, round($calculation['honorar']['brutto'], 2));
+
+    }
+
+    /**
      * @test
      */
     public function titlePropertyIsCheckedIsPersistedToTheDatabase()

@@ -260,6 +260,10 @@ plugin.tx_rkwregistration {
 	page.includeJSFooterlibs.jquery         = EXT:rkw_registration/Resources/Public/Scripts/jquery-1.11.1.min.js
 [global]
 
+[globalVar = LIT:1 = {$plugin.tx_rkwregistration.settings.includeJQueryUi}]
+	page.includeJSFooterlibs.jqueryUi = EXT:rkw_registration/Resources/Public/Scripts/jquery-ui.js
+[global]
+
 page.includeJSFooter.rkwRegistrationScript     = EXT:rkw_registration/Resources/Public/Scripts/rkw_registration.js
 
 // #########################################################
