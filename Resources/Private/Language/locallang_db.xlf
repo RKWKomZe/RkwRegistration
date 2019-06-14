@@ -191,13 +191,13 @@
 				<source>Please Select</source>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender">
-				<source>Gender</source>
+				<source>Salutation</source>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender.I.man">
-				<source>Man</source>
+				<source>Mr.</source>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender.I.woman">
-				<source>Woman</source>
+				<source>Mrs.</source>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender.I.neutral">
 				<source>Please Select</source>

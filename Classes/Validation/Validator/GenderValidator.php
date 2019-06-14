@@ -39,7 +39,7 @@ class GenderValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVa
             $this->addError(
                 $this->translateErrorMessage(
                     'validator.gender.empty',
-                    'rkw_registration',
+                    'rkw_registration'
                 ),
                 1559301675
             );

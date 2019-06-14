@@ -239,16 +239,16 @@
 				<target>Bitte wählen</target>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender">
-				<source>Gender</source>
-				<target>Geschlecht</target>
+				<source>Salutation</source>
+				<target>Anrede</target>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender.I.man">
-				<source>Man</source>
-				<target>Männlich</target>
+				<source>Mr.</source>
+				<target>Herr</target>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender.I.woman">
-				<source>Woman</source>
-				<target>Weiblich</target>
+				<source>Mrs.</source>
+				<target>Frau</target>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender.I.neutral">
 				<source>Please Select</source>
