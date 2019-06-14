@@ -13,14 +13,14 @@ return array(
         'enablecolumns' => array(
             'disabled' => 'hidden',
         ),
-        'searchFields' => 'first_name,last_name,address,zip,city,email,frontend_user,pages',
+        'searchFields' => 'frontend_user, first_name,last_name,address,zip,city,email,frontend_user,pages',
         'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('rkw_registration') . 'Resources/Public/Icons/tx_rkwregistration_domain_model_shippingaddress.gif'
     ),
     'interface' => array(
-        'showRecordFieldList' => 'hidden, title, gender, company, first_name, last_name, address, zip, city',
+        'showRecordFieldList' => 'hidden, frontend_user, title, gender, company, first_name, last_name, address, zip, city',
     ),
     'types' => array(
-        '1' => array('showitem' => 'hidden;;1, title, gender, company, first_name, last_name, address, zip, city'),
+        '1' => array('showitem' => 'hidden;;1, frontend_user, title, gender, company, first_name, last_name, address, zip, city'),
     ),
     'palettes' => array(
         '1' => array('showitem' => ''),
@@ -33,6 +33,21 @@ return array(
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
             'config' => array(
                 'type' => 'check',
+            ),
+        ),
+        'frontend_user' => array(
+            'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_shippingaddress.frontend_user',
+            'exclude' => 0,
+            'config' => array(
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'foreign_table' => 'fe_users',
+                'foreign_table_where' => 'AND fe_users.disable = 0 AND fe_users.deleted = 0 ORDER BY username ASC',
+                'minitems' => 1,
+                'maxitems' => 1,
+                'items' => array(
+                    array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_shippingaddress.frontend_user.pleaseSelect', 0),
+                ),
             ),
         ),
 
@@ -63,7 +78,7 @@ return array(
                 'minitems' => 0,
                 'maxitems' => 1,
                 'items' => array(
-                    array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_shippingaddress.title.please_choose', 0),
+                    array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_shippingaddress.title.pleaseSelect', 0),
                 ),
             ),
         ),

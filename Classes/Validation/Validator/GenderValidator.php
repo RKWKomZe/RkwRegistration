@@ -1,6 +1,6 @@
 <?php
 
-namespace RKW\RkwRegistration\Validation;
+namespace RKW\RkwRegistration\Validation\Validator;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -35,13 +35,13 @@ class GenderValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVa
     {
 
         if ($value == 99) {
-            $this->result->addError(
-                new \TYPO3\CMS\Extbase\Error\Error(
-                    \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                        'validator.gender.empty',
-                        'rkw_registration'
-                    ), 1540885171
-                )
+
+            $this->addError(
+                $this->translateErrorMessage(
+                    'validator.gender.empty',
+                    'rkw_registration',
+                ),
+                1559301675
             );
 
             return false;

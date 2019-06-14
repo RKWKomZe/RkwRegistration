@@ -330,6 +330,10 @@
                 <source>Please enter your salutation.</source>
                 <target>Bitte geben Sie Ihre Anrede an.</target>
             </trans-unit>
+			<trans-unit id="validator.zip.incorrect">
+				<source>The zip is not valid</source>
+				<target>Die Postleitzahl ist leider nicht korrekt.</target>
+			</trans-unit>
 
 
 

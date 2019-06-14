@@ -266,6 +266,10 @@
             <trans-unit id="validator.gender.empty">
                 <source>Please enter your salutation.</source>
             </trans-unit>
+			<trans-unit id="validator.zip.incorrect">
+				<source>The zip is not valid</source>
+			</trans-unit>
+
 
 
             <!-- Registration Controller -->

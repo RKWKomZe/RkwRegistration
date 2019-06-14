@@ -689,9 +689,8 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
             )
         ) {
             return true;
+            //===
         }
-
-        //===
 
         return false;
         //===
