@@ -63,32 +63,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     protected $email;
 
-    /**
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var string
-     */
-    protected $firstName;
-
-
-    /**
-     * @var string
-     */
-    protected $lastName;
-
-
-    /**
-     * @var string
-     */
-    protected $zip;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\FrontendUserGroup>
@@ -106,7 +80,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     /**
      * @var string
      */
-    protected $txRkwregistrationMobile;
+    protected $txRkwregistrationMobile = '';
 
 
     /**
@@ -124,7 +98,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     /**
      * @var string
      */
-    protected $txRkwregistrationRegisterRemoteIp;
+    protected $txRkwregistrationRegisterRemoteIp = '';
 
     /**
      * @var integer
@@ -134,7 +108,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     /**
      * @var string
      */
-    protected $txRkwregistrationLanguageKey;
+    protected $txRkwregistrationLanguageKey = '';
 
 
     /**
@@ -145,17 +119,17 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     /**
      * @var string
      */
-    protected $txRkwregistrationFacebookUrl;
+    protected $txRkwregistrationFacebookUrl = '';
 
     /**
      * @var string
      */
-    protected $txRkwregistrationTwitterUrl;
+    protected $txRkwregistrationTwitterUrl = '';
 
     /**
      * @var string
      */
-    protected $txRkwregistrationXingUrl;
+    protected $txRkwregistrationXingUrl = '';
 
     /**
      * @var integer
@@ -175,7 +149,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     /**
      * @var string
      */
-    protected $txRkwregistrationCrossDomainToken;
+    protected $txRkwregistrationCrossDomainToken = '';
 
     /**
      * @var string
