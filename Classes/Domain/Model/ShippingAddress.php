@@ -56,7 +56,7 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * firstName
      *
      * @var string
-     * @validate NotEmpty, String
+     * @validate NotEmpty
      */
     protected $firstName;
 
@@ -64,7 +64,7 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * lastName
      *
      * @var string
-     * @validate NotEmpty, String
+     * @validate NotEmpty
      */
     protected $lastName;
 
@@ -86,7 +86,7 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * address
      *
      * @var string
-     * @validate NotEmpty, String
+     * @validate NotEmpty
      */
     protected $address;
 
@@ -103,7 +103,7 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * city
      *
      * @var string
-     * @validate NotEmpty, String
+     * @validate NotEmpty
      */
     protected $city;
 
