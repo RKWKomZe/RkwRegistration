@@ -287,7 +287,6 @@
 				<target>Stadt</target>
 			</trans-unit>
 
-
 			<!-- tx_rkwregistration_domain_model_title -->
 			<trans-unit id="tx_rkwregistration_domain_model_title">
 				<source>RKW Registration: Title</source>
@@ -295,18 +294,32 @@
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_title.name">
 				<source>Name</source>
-				<target>Titel (z.B. Dr.)</target>
+				<target>Titel (z.B. "Dr.")</target>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_title.name_long">
 				<source>Name long</source>
 				<target>Titel ausgeschrieben (z.B. "Professor Doktor")</target>
 			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.name_female">
+				<source>Name (female)</source>
+				<target>Titel (weibliche Form, z.B. "Dipl.-Kffr.")</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.name_female_long">
+				<source>Name long (female)</source>
+				<target>Titel ausgeschrieben (weibliche Form, z.B. "Diplom-Kauffrau")</target>
+			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_title.is_title_after">
 				<source>Is title after</source>
 				<target>Titel wird hinter den Namen der Person gesetzt (z.B. "M.A.")</target>
 			</trans-unit>
-
-
+			<trans-unit id="tx_rkwregistration_domain_model_title.is_included_in_salutation">
+			    <source>Is included in salutation</source>
+			    <target>Titel wird in der Anrede verwendet</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.is_checked">
+			    <source>Title is approved</source>
+			    <target>Titel ist zur Auswahl freigegeben</target>
+			</trans-unit>
 
             <!-- Flexform Registration-->
             <trans-unit id="flexform.registration.sheetTitle">
