@@ -3,7 +3,7 @@ return array(
     'ctrl' => array(
         'title'	=> 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_shippingaddress',
         'label' => 'last_name',
-        'label_alt' => 'last_name,first_name',
+        'label_alt' => 'first_name',
         'label_alt_force' => 1,
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
