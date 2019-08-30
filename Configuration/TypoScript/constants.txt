@@ -102,6 +102,13 @@ plugin.tx_rkwregistration {
 
         }
 
+        titles {
+
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Storage Pid of titles
+            storagePid =
+
+        }
+
 		services {
 
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of admin opt-in page

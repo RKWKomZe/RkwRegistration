@@ -349,7 +349,7 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
         $frontendUser->setUsername(strtolower($frontendUser->getUsername()));
 
         if ($frontendUser->getTitle()) {
-            $frontendUser->setTxRkwregistrationTitle(\RKW\RkwRegistration\Utilities\TitleUtility::extractTxRegistrationTitle($frontendUser->getTitle()));
+            $frontendUser->setTxRkwregistrationTitle(\RKW\RkwRegistration\Utilities\TitleUtility::extractTxRegistrationTitle($frontendUser->getTitle(), $ettings()));
         }
 
         // check if user already exists!

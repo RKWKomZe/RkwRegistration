@@ -146,6 +146,11 @@ config.tx_extbase.persistence {
 		RKW\RkwRegistration\Domain\Model\Privacy {
 			newRecordStoragePid = {$plugin.tx_rkwregistration.persistence.storagePid}
 		}
+
+        # very important to set the storagePid explicit - otherwise it will add to the pid of related objects
+        RKW\RkwRegistration\Domain\Model\Title {
+            newRecordStoragePid = {$plugin.tx_rkwregistration.settings.titles.storagePid}
+        }
 	}
 }
 
@@ -227,6 +232,10 @@ plugin.tx_rkwregistration {
 			}
 
 		}
+
+        titles {
+            storagePid = {$plugin.tx_rkwregistration.settings.titles.storagePid}
+        }
 
 		services {
 

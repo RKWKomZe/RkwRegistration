@@ -30,11 +30,12 @@ class TitleUtility
      * Returns \RKW\RkwRegistration\Domain\Model\Title instance
      *
      * @param string $title
+     * @param array $settings
      *
      * @return \RKW\RkwRegistration\Domain\Model\Title
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
-    public static function extractTxRegistrationTitle($title = '')
+    public static function sextractTxRegistrationTitle($title = '', $settings = [])
     {
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
@@ -45,6 +46,9 @@ class TitleUtility
         if (!$txRegistrationTitle) {
 
             $txRegistrationTitle = new \RKW\RkwRegistration\Domain\Model\Title;
+
+            $txRegistrationTitle->setPid(intval($settings['titles']['storagePid']));
+
             $txRegistrationTitle->setName($title);
 
             $persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
