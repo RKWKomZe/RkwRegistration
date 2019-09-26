@@ -35,7 +35,7 @@ class TitleUtility
      * @return \RKW\RkwRegistration\Domain\Model\Title
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
-    public static function sextractTxRegistrationTitle($title = '', $settings = [])
+    public static function extractTxRegistrationTitle($title = '', $settings = [])
     {
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
