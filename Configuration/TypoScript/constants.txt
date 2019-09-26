@@ -21,6 +21,9 @@ plugin.tx_rkwregistration {
 		# cat=plugin.tx_rkwregistration//a; type=boolean; label=Include jQuery?
 		includeJQuery = 0
 
+		# cat=plugin.tx_rkwregistration//a; type=boolean; label=Include jQueryUi?
+		includeJQueryUi = 0
+
         # cat=plugin.tx_rkwregistration//a; type=string; label=Comma-separated list of allowd domains for redirect after login
         redirectDomains =
 
@@ -96,6 +99,13 @@ plugin.tx_rkwregistration {
                 # cat=plugin.tx_rkwregistration//a; type=boolean; label=Password must contain letters and numbers (default = false)
                 alphaNum =
             }
+
+        }
+
+        titles {
+
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Storage Pid of titles
+            storagePid =
 
         }
 

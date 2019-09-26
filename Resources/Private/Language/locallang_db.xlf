@@ -180,6 +180,52 @@
 			</trans-unit>
 
 
+            <!-- tx_rkwregistration_domain_model_shippingaddress -->
+            <trans-unit id="tx_rkwregistration_domain_model_shippingaddress">
+				<source>RKW Registration: Shipping Address</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.frontend_user">
+				<source>Frontend User</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.frontend_user.pleaseSelect">
+				<source>Please Select</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender">
+				<source>Salutation</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender.I.man">
+				<source>Mr.</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender.I.woman">
+				<source>Mrs.</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender.I.neutral">
+				<source>Please Select</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.title.pleaseSelect">
+				<source>Please Select</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.first_name">
+				<source>First Name</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.last_name">
+				<source>Last Name</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.company">
+				<source>Company</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.address">
+				<source>Address</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.zip">
+				<source>Zip</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.city">
+				<source>City</source>
+			</trans-unit>
 
 			<!-- tx_rkwregistration_domain_model_title -->
 			<trans-unit id="tx_rkwregistration_domain_model_title">
