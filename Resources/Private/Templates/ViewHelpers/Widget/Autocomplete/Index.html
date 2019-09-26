@@ -1,0 +1,40 @@
+<style>
+    .ui-autocomplete {
+        border: 2px solid #e64415;
+        border-radius: 8px;
+    }
+    .ui-menu-item {
+        height: 48px;
+        padding: 0 14px;
+        border: 2px solid transparent;
+    }
+    .ui-menu-item:first-child, .ui-menu-item:last-child {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+    .ui-menu-item.ui-state-focus {
+        background-color: #e6e6e6;
+    }
+    .ui-helper-hidden-accessible {
+        display: none;
+    }
+    .wysiwyg ul.ui-autocomplete li:before {
+        display: none !important;
+    }
+    .wysiwyg ul.ui-autocomplete li {
+        padding-left: 14px !important;
+    }
+</style>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+
+        jQuery(function () <![CDATA[{]]>
+            jQuery("#{id}")
+            .autocomplete(<![CDATA[{]]>
+                source: "{f:widget.uri(action:'autocomplete', ajax: 1)}",
+                minLength: 2,
+            });
+        });
+
+    });
+</script>

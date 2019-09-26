@@ -146,6 +146,11 @@ config.tx_extbase.persistence {
 		RKW\RkwRegistration\Domain\Model\Privacy {
 			newRecordStoragePid = {$plugin.tx_rkwregistration.persistence.storagePid}
 		}
+
+        # very important to set the storagePid explicit - otherwise it will add to the pid of related objects
+        RKW\RkwRegistration\Domain\Model\Title {
+            newRecordStoragePid = {$plugin.tx_rkwregistration.settings.titles.storagePid}
+        }
 	}
 }
 
@@ -168,6 +173,11 @@ plugin.tx_rkwregistration {
 			0 = EXT:rkw_registration/Resources/Private/Partials/
 			1 = {$plugin.tx_rkwregistration.view.partialRootPath}
         }
+		widget {
+			TYPO3\CMS\Fluid\ViewHelpers\Widget\AutocompleteViewHelper {
+				templateRootPath = EXT:rkw_registration/Resources/Private/Templates/
+			}
+		}
 
 	}
 
@@ -223,6 +233,10 @@ plugin.tx_rkwregistration {
 
 		}
 
+        titles {
+            storagePid = {$plugin.tx_rkwregistration.settings.titles.storagePid}
+        }
+
 		services {
 
 			adminOptInPid = {$plugin.tx_rkwregistration.settings.services.adminOptInPid}
@@ -253,6 +267,10 @@ plugin.tx_rkwregistration {
 # Add jquery if not disabled
 [globalVar = LIT:1 = {$plugin.tx_rkwregistration.settings.includeJQuery}]
 	page.includeJSFooterlibs.jquery         = EXT:rkw_registration/Resources/Public/Scripts/jquery-1.11.1.min.js
+[global]
+
+[globalVar = LIT:1 = {$plugin.tx_rkwregistration.settings.includeJQueryUi}]
+	page.includeJSFooterlibs.jqueryUi = EXT:rkw_registration/Resources/Public/Scripts/jquery-ui.js
 [global]
 
 page.includeJSFooter.rkwRegistrationScript     = EXT:rkw_registration/Resources/Public/Scripts/rkw_registration.js
