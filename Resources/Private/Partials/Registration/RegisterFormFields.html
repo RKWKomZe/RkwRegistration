@@ -7,19 +7,11 @@
 			<span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
 		</f:if>
 	</label>
-	<f:form.select id="gender" property="txRkwregistrationGender" options="{99: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.neutral\")}', 0: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.man\")}', 1: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.woman\")}'}" optionValueField="uid" optionLabelField="name" />
+	<f:form.select id="gender" property="txRkwregistrationGender" options="{99: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.99\")}', 0: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.0\")}', 1: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.1\")}'}" optionValueField="uid" optionLabelField="name" />
 </div>
 
 <f:if condition="<rkwRegistration:titleList />">
-	<div class="v320-1">
-		<label class="form-label" for="title">
-			<f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title" />
-			<f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='txRkwregistrationTitle' /> == 0">
-				<span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
-			</f:if>
-		</label>
-		<f:form.select id="title" property="txRkwregistrationTitle" options="<rkwRegistration:titleList />" optionValueField="uid" optionLabelField="name" prependOptionValue="0" prependOptionLabel="{f:translate(key:'tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.neutral')}" />
-	</div>
+	<f:render partial="Registration/SingleFields/TitleField" arguments="{_all}" />
 </f:if>
 
 <div class="v320-1">

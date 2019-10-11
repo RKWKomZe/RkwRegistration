@@ -37,10 +37,12 @@ class TitleListViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewH
      * @param boolean $showTitleBefore
      * @param boolean $showTitleAfter
      * @param boolean $returnArray
+     * @param boolean $returnJson
+     * @param string $mapProperty
      *
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function render($showTitleBefore = true, $showTitleAfter = false, $returnArray = false)
+    public function render($showTitleBefore = true, $showTitleAfter = false, $returnArray = false, $returnJson = false, $mapProperty = '')
     {
         // a) This avoids possible empty results by calling <rkwRegistration:titleList showTitleBefore='false' showTitleAfter='false' />
         // b) Makes a shorter invoke possible for showing up only "isTitleAfter"-Elements (see PHPdocs example above)
@@ -53,7 +55,17 @@ class TitleListViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewH
         /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
         $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
 
-        return $titleRepository->findAllOfType($showTitleBefore, $showTitleAfter, $returnArray);
+        $titles = $titleRepository->findAllOfType($showTitleBefore, $showTitleAfter, $returnArray);
+
+        if ($mapProperty) {
+            $mappedTitles = array_map(function($item) use ($mapProperty) {
+                return $item[$mapProperty];
+            }, $titles);
+
+            $titles = $mappedTitles;
+        }
+
+        return ($returnJson) ? json_encode($titles) : $titles;
         //===
     }
 }
