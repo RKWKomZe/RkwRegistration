@@ -14,13 +14,13 @@ return array(
             'disabled' => 'hidden',
         ),
         'searchFields' => 'frontend_user, first_name,last_name,address,zip,city,email,frontend_user,pages',
-        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('rkw_registration') . 'Resources/Public/Icons/tx_rkwregistration_domain_model_shippingaddress.gif'
+        'iconfile' => 'EXT:rkw_registration/Resources/Public/Icons/tx_rkwregistration_domain_model_shippingaddress.gif'
     ),
     'interface' => array(
         'showRecordFieldList' => 'hidden, frontend_user, title, gender, company, first_name, last_name, address, zip, city',
     ),
     'types' => array(
-        '1' => array('showitem' => 'hidden;;1, frontend_user, title, gender, company, first_name, last_name, address, zip, city'),
+        '1' => array('showitem' => 'hidden,--palette--;;1, frontend_user, title, gender, company, first_name, last_name, address, zip, city'),
     ),
     'palettes' => array(
         '1' => array('showitem' => ''),
