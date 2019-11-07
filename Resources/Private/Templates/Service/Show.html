@@ -15,7 +15,8 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 	<h2><f:translate key="templates_service_show.headline" /></h2>
 
-	<f:flashMessages />
+	<f:render partial="FlashMessages" arguments="{_all}" />
+
 	<f:render partial="Service/Properties" arguments="{frontendUserGroup:frontendUserGroup}" />
 
 	<f:link.action action="list"><f:translate key="templates_service_show.backToList" /></f:link.action><br />

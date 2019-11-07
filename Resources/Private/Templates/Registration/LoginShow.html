@@ -4,21 +4,7 @@
 
 	<h2><f:translate key="templates_registration_loginShow.headline" /></h2>
 
-    <f:flashMessages as="flashMessages">
-        <f:for each="{flashMessages}" as="flashMessage">
-            <div class="typo3-messages">
-                <div class="alert alert-{flashMessage.class}">
-                    <div class="media">
-                        <div class="media-body">
-                            <div class="alert-message">
-                                <f:format.raw>{flashMessage.message}</f:format.raw>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </f:for>
-    </f:flashMessages>
+    <f:render partial="FlashMessages" arguments="{_all}" />
 
 	<f:render partial="Registration/Login" arguments="{_all}" />
 	<f:link.action action="passwordForgotShow" class="text-smaller"><f:translate key="templates_registration_loginShow.passwordForgot" /></f:link.action>
