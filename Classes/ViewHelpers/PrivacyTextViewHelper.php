@@ -51,7 +51,7 @@ class PrivacyTextViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
         }
 
         /** @var \TYPO3\CMS\Fluid\View\StandaloneView $template */
-        $template = GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
+        $template = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
         $template->setLayoutRootPaths($settingsExtension['view']['layoutRootPaths']);
         $template->setPartialRootPaths($settingsExtension['view']['partialRootPaths']);
         $template->setTemplateRootPaths($settingsExtension['view']['templateRootPaths']);
