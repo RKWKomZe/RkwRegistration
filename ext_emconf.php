@@ -10,7 +10,7 @@
  * "version" and "dependencies" must not be touched!
  ***************************************************************/
 
-$EM_CONF[$_EXTKEY] = array(
+$EM_CONF[$_EXTKEY] = [
 	'title' => 'RKW Registration',
 	'description' => '',
 	'category' => 'plugin',
@@ -22,17 +22,15 @@ $EM_CONF[$_EXTKEY] = array(
 	'createDirs' => '',
 	'clearCacheOnLoad' => 0,
 	'version' => '8.7.5',
-	'constraints' => array(
-		'depends' => array(
-            'extbase' => '7.6.0-8.7.99',
-            'fluid' => '7.6.0-8.7.99',
+	'constraints' => [
+		'depends' => [
             'typo3' => '7.6.0-8.7.99',
             'rkw_basics' => '8.7.2-8.7.99',
             'rkw_mailer' => '8.7.1-8.7.99'
-		),
-		'conflicts' => array(
-		),
-		'suggests' => array(
-		),
-	),
-);
+		],
+		'conflicts' => [
+		],
+		'suggests' => [
+		],
+	],
+];

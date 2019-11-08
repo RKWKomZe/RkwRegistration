@@ -1,12 +1,6 @@
 <?php
-if (!defined ('TYPO3_MODE')) {
-	die ('Access denied.');
-}
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_rkwregistration_domain_model_service', 'EXT:rkw_registration/Resources/Private/Language/locallang_csh_tx_rkwregistration_domain_model_service.xlf');
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_rkwregistration_domain_model_service');
-$GLOBALS['TCA']['tx_rkwregistration_domain_model_service'] = array(
-	'ctrl' => array(
+return [
+	'ctrl' => [
 		'title'	=> 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_service',
 		'label' => 'user',
 		'tstamp' => 'tstamp',
@@ -16,22 +10,22 @@ $GLOBALS['TCA']['tx_rkwregistration_domain_model_service'] = array(
 
 		'searchFields' => 'user ,usergroup, enabled_by_admin',
 		'iconfile' => 'EXT:rkw_registration/Resources/Public/Icons/tx_rkwregistration_domain_model_service.gif'
-	),
-	'interface' => array(
+	],
+	'interface' => [
 		'showRecordFieldList' => 'user, usergroup, enabled_by_admin, token_yes, token_no, valid_until, service_sha1',
-	),
-	'types' => array(
-		'1' => array('showitem' => 'user, usergroup, enabled_by_admin, token_yes, token_no, valid_until, service_sha1'),
-	),
-	'palettes' => array(
-		'1' => array('showitem' => ''),
-	),
-	'columns' => array(
+	],
+	'types' => [
+		'1' => ['showitem' => 'user, usergroup, enabled_by_admin, token_yes, token_no, valid_until, service_sha1'],
+	],
+	'palettes' => [
+		'1' => ['showitem' => ''],
+	],
+	'columns' => [
 
-		'user' => array(
+		'user' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_service.user',
-			'config' => array(
+			'config' => [
 				'type' => 'select',
 				'renderType' => 'selectSingle',
 				'size' => 4,
@@ -39,13 +33,13 @@ $GLOBALS['TCA']['tx_rkwregistration_domain_model_service'] = array(
 				'foreign_class' => 'Tx_Extbase_Domain_Model_FrontendUser',
 				'foreign_table' => 'fe_users',
 				'foreign_table_where' => 'AND fe_users.disable = 0',
-			)
-		),
+			],
+		],
 
-		'usergroup' => array(
+		'usergroup' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_service.usergroup',
-			'config' => array(
+			'config' => [
 				'type' => 'select',
 				'renderType' => 'selectSingle',
 				'size' => 4,
@@ -53,62 +47,61 @@ $GLOBALS['TCA']['tx_rkwregistration_domain_model_service'] = array(
 				'foreign_class' => 'Tx_Extbase_Domain_Model_FrontendUserGroup',
 				'foreign_table' => 'fe_groups',
 				'foreign_table_where' => 'AND fe_groups.hidden = 0',
-			)
-		),
+			],
+		],
 
-		'enabled_by_admin' => array(
+		'enabled_by_admin' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_service.enabled_by_admin',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 10,
 				'eval' => 'datetime',
 				'checkbox' => 1,
-				'default' => time()
-			),
-		),
+				'default' => time(),
+			],
+		],
 
-		'token_yes' => array(
+		'token_yes' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_service.token_yes',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-			),
-		),
+			],
+		],
 
-		'token_no' => array(
+		'token_no' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_service.token_no',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-			),
-		),
+			],
+		],
 
-		'valid_until' => array(
+		'valid_until' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_service.valid_until',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 10,
 				'eval' => 'datetime',
 				'checkbox' => 1,
-				'default' => time()
-			),
-		),
+				'default' => time(),
+			],
+		],
 
-		'service_sha1' => array(
+		'service_sha1' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_service.service_sha1',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-			),
-		),
-
-	),
-);
+			],
+		],
+	],
+];
