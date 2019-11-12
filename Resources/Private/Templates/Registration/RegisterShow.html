@@ -14,22 +14,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 <f:section name="main">
 
-    <f:flashMessages as="flashMessages">
-        <f:for each="{flashMessages}" as="flashMessage">
-            <div class="typo3-messages">
-                <div class="alert alert-{flashMessage.class}">
-                    <div class="media">
-                        <div class="media-body">
-                            <div class="alert-message">
-                                <f:format.raw>{flashMessage.message}</f:format.raw>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </f:for>
-    </f:flashMessages>
-
+	<f:render partial="FlashMessages" arguments="{_all}" />
 	<f:render partial="FormErrors" arguments="{for:newFrontendUser}"/>
 
 	<f:form action="register" name="newFrontendUser" object="{newFrontendUser}" class="form-fields">
