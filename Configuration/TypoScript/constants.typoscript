@@ -1,0 +1,149 @@
+
+plugin.tx_rkwregistration {
+	view {
+		# cat=plugin.tx_rkwregistration/file; type=string; label=Path to template root (FE)
+		templateRootPath  = EXT:rkw_registration/Resources/Private/Templates/
+
+		# cat=plugin.tx_rkwregistration/file; type=string; label=Path to template partials (FE)
+		partialRootPath = EXT:rkw_registration/Resources/Private/Partials/
+
+		# cat=plugin.tx_rkwregistration/file; type=string; label=Path to template layouts (FE)
+		layoutRootPath  = EXT:rkw_registration/Resources/Private/Layouts/
+
+	}
+	persistence {
+		# cat=plugin.tx_rkwregistration//a; type=string; label=Default storage PID
+		storagePid =
+	}
+
+	settings {
+
+		# cat=plugin.tx_rkwregistration//a; type=boolean; label=Include jQuery?
+		includeJQuery = 0
+
+		# cat=plugin.tx_rkwregistration//a; type=boolean; label=Include jQueryUi?
+		includeJQueryUi = 0
+
+        # cat=plugin.tx_rkwregistration//a; type=string; label=Comma-separated list of allowd domains for redirect after login
+        redirectDomains =
+
+        # cat=plugin.tx_rkwregistration//a; type=integer; label=Defines how long the generated token for cross domain logins is valid (in seconds, default = 60sec)
+        crossDomainLoginValidTime =
+
+        # cat=plugin.tx_rkwregistration//a; type=boolean; label=Activate Facebook Login
+        activateFacebookLogin= 0
+
+        # cat=plugin.tx_rkwregistration//a; type=boolean; label=Activate Twitter Login
+        activateTwitterLogin = 0
+
+        users {
+
+			# cat=plugin.tx_rkwregistration//a; type=integer; label=Storage Pid
+			storagePid =
+
+			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of login mask
+			loginPid =
+
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of external login mask
+            loginExternalPid =
+
+			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of logout mask
+			logoutPid =
+
+			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of registration mask
+			registrationPid =
+
+			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of welcome page
+			welcomePid =
+
+			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of edit user mask
+			editUserPid =
+
+			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of delete user mask
+			deleteUserPid =
+
+			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of edit password mask
+			editPasswordPid =
+
+			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of terms & conditions
+			termsPid =
+
+			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of privacy & conditions
+			privacyPid =
+
+			# cat=plugin.tx_rkwregistration//a; type=string; label=Groups a user is added to when registering
+			groupsOnRegister =
+
+			# cat=plugin.tx_rkwregistration//a; type=string; label=Groups a user is added to when registering anonymous
+			groupsOnRegisterAnonymous =
+
+			# cat=plugin.tx_rkwregistration//a; type=string; label=Language-key on registering (default:default)
+			languageKeyOnRegister =
+
+			# cat=plugin.tx_rkwregistration//a; type=integer; label=How many days a user has to opt in via email
+			daysForOptIn =
+
+			# cat=plugin.tx_rkwregistration//a; type=integer; label=How many times a user can try to login before his user is disabled
+			maxLoginErrors =
+
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered users (default = 0 = unlimited)
+            lifetime =
+
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered anonymous users (default = 7776000 = 90 days)
+            lifetimeAnonymous = 7776000
+
+            passwordSettings {
+                # cat=plugin.tx_rkwregistration//a; type=integer; label=Minimum password length (default = 8)
+                minLength =
+
+                # cat=plugin.tx_rkwregistration//a; type=boolean; label=Password must contain letters and numbers (default = false)
+                alphaNum =
+            }
+
+        }
+
+        titles {
+
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Storage Pid of titles
+            storagePid =
+
+        }
+
+		services {
+
+			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of admin opt-in page
+			adminOptInPid =
+
+			# cat=plugin.tx_rkwregistration//a; type=integer; label=how many days a admin has to opt in a user via email
+			daysForOptIn =
+		}
+
+        apiData {
+
+            twitter {
+
+                # cat=plugin.tx_rkwregistration//a; type=string; label=Twitter API Url
+                baseUrl =
+
+                # cat=plugin.tx_rkwregistration//a; type=string; label=Twitter Consumer ID
+                consumerId =
+
+                # cat=plugin.tx_rkwregistration//a; type=string; label=Twitter Consumer Secret
+                consumerSecret =
+            }
+
+            facebook {
+
+                # cat=plugin.tx_rkwregistration//a; type=string; label=Facebook Callback Url
+                callbackUrl =
+
+                # cat=plugin.tx_rkwregistration//a; type=string; label=Facebook Consumer ID
+                consumerId =
+
+                # cat=plugin.tx_rkwregistration//a; type=string; label=Facebook Consumer Secret
+                consumerSecret = 
+            }
+
+        }
+	}
+}

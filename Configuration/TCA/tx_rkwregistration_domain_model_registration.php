@@ -1,12 +1,6 @@
 <?php
-if (!defined ('TYPO3_MODE')) {
-	die ('Access denied.');
-}
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_rkwregistration_domain_model_registration', 'EXT:rkw_registration/Resources/Private/Language/locallang_csh_tx_rkwregistration_domain_model_registration.xlf');
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_rkwregistration_domain_model_registration');
-$GLOBALS['TCA']['tx_rkwregistration_domain_model_registration'] = array(
-	'ctrl' => array(
+return [
+	'ctrl' => [
 		'title'	=> 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_registration',
 		'label' => 'valid_until',
 		'tstamp' => 'tstamp',
@@ -16,33 +10,33 @@ $GLOBALS['TCA']['tx_rkwregistration_domain_model_registration'] = array(
 
 		'searchFields' => 'category, user, usergroup',
 		'iconfile' => 'EXT:rkw_registration/Resources/Public/Icons/tx_rkwregistration_domain_model_registration.gif'
-	),
-	'interface' => array(
+	],
+	'interface' => [
 		'showRecordFieldList' => 'category, user, token_yes, token_no, valid_until, data',
-	),
-	'types' => array(
-		'1' => array('showitem' => 'category, user, token_yes, token_no, valid_until, data'),
-	),
-	'palettes' => array(
-		'1' => array('showitem' => ''),
-	),
-	'columns' => array(
+	],
+	'types' => [
+		'1' => ['showitem' => 'category, user, token_yes, token_no, valid_until, data'],
+	],
+	'palettes' => [
+		'1' => ['showitem' => ''],
+	],
+	'columns' => [
 
 
-		'category' => array(
+		'category' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_registration.category',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-			),
-		),
+			],
+		],
 
-		'user' => array(
+		'user' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_registration.user',
-			'config' => array(
+			'config' => [
 				'type' => 'select',
 				'renderType' => 'selectSingle',
 				'size' => 4,
@@ -51,64 +45,62 @@ $GLOBALS['TCA']['tx_rkwregistration_domain_model_registration'] = array(
 				'foreign_table' => 'fe_users',
 				'foreign_table_where' => 'AND disable = 0',
 
-			)
-		),
+			],
+		],
 
-		'user_sha1' => array(
+		'user_sha1' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_registration.user_sha1',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-			),
-		),
+			],
+		],
 
 
-		'token_yes' => array(
+		'token_yes' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_registration.token_yes',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-			),
-		),
+			],
+		],
 
 
-		'token_no' => array(
+		'token_no' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_registration.token_no',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
-			),
-		),
+			],
+		],
 
 
-		'valid_until' => array(
+		'valid_until' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_registration.valid_until',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 10,
 				'eval' => 'datetime',
 				'checkbox' => 1,
-				'default' => time()
-			),
-		),
+				'default' => time(),
+			],
+		],
 
-        'data' => array(
+        'data' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_registration.data',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'eval' => 'trim'
-            ),
-        ),
-
-
-	),
-);
+            ],
+        ],
+	],
+];

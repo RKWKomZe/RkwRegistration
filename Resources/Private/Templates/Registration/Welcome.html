@@ -17,21 +17,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 	<div class="csc-element-n1">
 		<h2><f:translate key="templates_registration_welcome.headline" arguments="{0: frontendUser.firstName, 1: frontendUser.lastname}" /></h2>
 
-        <f:flashMessages as="flashMessages">
-            <f:for each="{flashMessages}" as="flashMessage">
-                <div class="typo3-messages">
-                    <div class="alert alert-{flashMessage.class}">
-                        <div class="media">
-                            <div class="media-body">
-                                <div class="alert-message">
-                                    <f:format.raw>{flashMessage.message}</f:format.raw>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </f:for>
-        </f:flashMessages>
+        <f:render partial="FlashMessages" arguments="{_all}" />
 
 		<f:if condition="{services}">
 			<p><f:translate key="templates_registration_welcome.messageServices"/></p>

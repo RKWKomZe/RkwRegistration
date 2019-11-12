@@ -1,12 +1,6 @@
 <?php
-if (!defined ('TYPO3_MODE')) {
-	die ('Access denied.');
-}
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_rkwregistration_domain_model_privacy', 'EXT:rkw_registration/Resources/Private/Language/locallang_csh_tx_rkwregistration_domain_model_privacy.xlf');
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_rkwregistration_domain_model_privacy');
-$GLOBALS['TCA']['tx_rkwregistration_domain_model_privacy'] = array(
-	'ctrl' => array(
+return [
+	'ctrl' => [
 		'title'	=> 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy',
 		'label' => 'extension_name',
 		'label_alt' => 'action_name,informed_consent_reason',
@@ -18,39 +12,39 @@ $GLOBALS['TCA']['tx_rkwregistration_domain_model_privacy'] = array(
 		'delete' => 'deleted',
 		'searchFields' => 'crdate,foreign_table,foreign_uid,ip_address,user_agent,extension_name,plugin_name,controller_name,action_name,informed_consent_reason,server_host,server_uri,server_referer_url,child',
 		'iconfile' => 'EXT:rkw_registration/Resources/Public/Icons/tx_rkwregistration_domain_model_privacy.gif'
-	),
-	'interface' => array(
+	],
+	'interface' => [
 		'showRecordFieldList' => 'crdate, foreign_table, foreign_uid, ip_address, user_agent, extension_name, plugin_name, controller_name, action_name, informed_consent_reason, server_host, server_uri,server_referer_url, child',
-	),
-	'types' => array(
-		'1' => array('showitem' => 'crdate, foreign_table, foreign_uid, ip_address, user_agent, extension_name, plugin_name, controller_name, action_name, informed_consent_reason, server_host, server_uri,server_referer_url, child'),
-	),
-	'palettes' => array(
-		'1' => array('showitem' => ''),
-	),
-	'columns' => array(
+	],
+	'types' => [
+		'1' => ['showitem' => 'crdate, foreign_table, foreign_uid, ip_address, user_agent, extension_name, plugin_name, controller_name, action_name, informed_consent_reason, server_host, server_uri,server_referer_url, child'],
+	],
+	'palettes' => [
+		'1' => ['showitem' => ''],
+	],
+	'columns' => [
 
-		'frontend_user' => array(
-			'config' => array(
+		'frontend_user' => [
+			'config' => [
 				'type' => 'passthrough',
-			),
-		),
-		'registration_user_sha1' => array(
-            'config' => array(
+			],
+		],
+		'registration_user_sha1' => [
+            'config' => [
                 'type' => 'passthrough',
-            ),
-		),
-		'parent' => array(
-			'config' => array(
+            ],
+		],
+		'parent' => [
+			'config' => [
 				'type' => 'passthrough',
 				'foreign_table' => 'tx_rkwregistration_domain_model_privacy',
 				'foreign_field' => 'uid',
-			)
-		),
-		'child' => array(
+			],
+		],
+		'child' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.child',
-			'config' => array(
+			'config' => [
 				'type' => 'inline',
 				'foreign_table' => 'tx_rkwregistration_domain_model_privacy',
 				'foreign_field' => 'parent',
@@ -66,12 +60,12 @@ $GLOBALS['TCA']['tx_rkwregistration_domain_model_privacy'] = array(
 					],
 				],
 				'readOnly' => 1,
-			)
-		),
-		'crdate' => array(
+			],
+		],
+		'crdate' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.crdate',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 13,
 				'max' => 20,
@@ -79,134 +73,134 @@ $GLOBALS['TCA']['tx_rkwregistration_domain_model_privacy'] = array(
 				'checkbox' => 0,
 				'default' => 0,
 				'readOnly' => 1,
-			),
-		),
+			],
+		],
 
-		'foreign_table' => array(
+		'foreign_table' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.foreign_table',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
 				'eval' => 'trim, required',
 				'readOnly' => 1,
-			),
-		),
-		'foreign_uid' => array(
+			],
+		],
+		'foreign_uid' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.foreign_uid',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 5,
 				'max' => 10,
 				'eval' => 'trim, int, required',
 				'readOnly' => 1,
-			),
-		),
-		'ip_address' => array(
+			],
+		],
+		'ip_address' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.ip_address',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
 				'eval' => 'required',
 				'readOnly' => 1,
-			),
-		),
-		'user_agent' => array(
+			],
+		],
+		'user_agent' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.user_agent',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'readOnly' => 1,
-			),
-		),
-		'extension_name' => array(
+			],
+		],
+		'extension_name' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.extension_name',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
 				'eval' => 'required',
 				'readOnly' => 1,
-			),
-		),
-		'plugin_name' => array(
+			],
+		],
+		'plugin_name' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.plugin_name',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
 				'eval' => 'required',
 				'readOnly' => 1,
-			),
-		),
-		'controller_name' => array(
+			],
+		],
+		'controller_name' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.controller_name',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
 				'eval' => 'required',
 				'readOnly' => 1,
-			),
-		),
-		'action_name' => array(
+			],
+		],
+		'action_name' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.action_name',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
 				'eval' => 'required',
 				'readOnly' => 1,
-			),
-		),
-		'comment' => array(
+			],
+		],
+		'comment' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.comment',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
 				'readOnly' => 1,
-			),
-		),
-		'server_host' => array(
+			],
+		],
+		'server_host' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.server_host',
-			'config' => array(
+			'config' => [
 				'type' => 'input',
 				'size' => 30,
 				'max' => 255,
 				'readOnly' => 1,
-			),
-		),
-		'server_uri' => array(
+			],
+		],
+		'server_uri' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.server_uri',
-			'config' => array(
+			'config' => [
 				'type' => 'text',
 				'cols' => 80,
 				'rows' => 1,
 				'readOnly' => 1,
-			),
-		),
-		'server_referer_url' => array(
+			],
+		],
+		'server_referer_url' => [
 			'exclude' => 0,
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.server_referer_url',
-			'config' => array(
+			'config' => [
 				'type' => 'text',
 				'cols' => 80,
 				'rows' => 1,
 				'readOnly' => 1,
-			),
-		),
-	),
-);
+			],
+		],
+	],
+];
