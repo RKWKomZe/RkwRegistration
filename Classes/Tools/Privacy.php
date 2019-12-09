@@ -45,6 +45,7 @@ class Privacy implements \TYPO3\CMS\Core\SingletonInterface
      * @return void
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      */
     protected static function setPrivacyData(
         \RKW\RkwRegistration\Domain\Model\Privacy $privacy,
@@ -113,10 +114,10 @@ class Privacy implements \TYPO3\CMS\Core\SingletonInterface
 
             // get optIn privacy-entry via registrationUserSha1, because uid may be already re-used and cleanup reference in parent here
             /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
 
             /** @var \RKW\RkwRegistration\Domain\Repository\PrivacyRepository $privacyRepository */
-            $privacyRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\PrivacyRepository');
+            $privacyRepository = $objectManager->get(\RKW\RkwRegistration\Domain\Repository\PrivacyRepository::class);
             $privacyParent = $privacyRepository->findOneByRegistration($referenceObject);
             if ($privacyParent) {
                 $privacy->setParent($privacyParent);
@@ -133,13 +134,18 @@ class Privacy implements \TYPO3\CMS\Core\SingletonInterface
      * @param \RKW\RkwRegistration\Domain\Model\Privacy $privacy
      * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity|\TYPO3\CMS\Extbase\Persistence\ObjectStorage $referenceObject
      * @return void
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      */
     protected static function setReferenceObjectInfo(
         \RKW\RkwRegistration\Domain\Model\Privacy $privacy,
         $referenceObject
     )
     {
-        $dataMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper::class);
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
+
+        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper */
+        $dataMapper = $objectManager->get(\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper::class);
 
         // if we get an object storage we take the first item to determine the table and leave the foreignUid
         if ($referenceObject instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage) {
