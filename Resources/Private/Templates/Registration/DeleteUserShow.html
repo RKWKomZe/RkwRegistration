@@ -14,8 +14,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 <f:section name="main">
 	<h2><f:translate key="templates_registration_deleteUserShow.headline" /></h2>
 
-	<f:flashMessages renderMode="div" />
-
+    <f:render partial="FlashMessages" arguments="{_all}" />
 	<f:render partial="FormErrors" arguments="{for:frontendUser}"/>
 
 	<f:form action="deleteUser" name="frontendUser" object="{frontendUser}" class="form-fields">

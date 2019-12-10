@@ -100,7 +100,7 @@ class Service implements \TYPO3\CMS\Core\SingletonInterface
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function getMandatoryFieldsOfUser(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup = null)
+    public function getMandatoryFieldsOfUser(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser = null, \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup = null)
     {
 
         // get mandatory fields from TypoScript
@@ -124,33 +124,37 @@ class Service implements \TYPO3\CMS\Core\SingletonInterface
                 $requiredFields = explode(',', str_replace(' ', '', $settings['users']['requiredFormFields']));
             }
 
-            //=======================================
-            // get mandatory fields by fe_groups the user is registered for
-            $groupsOfUser = $frontendUser->getUsergroup();
-            foreach ($groupsOfUser as $group) {
-                if ($group instanceof \RKW\RkwRegistration\Domain\Model\FrontendUserGroup) {
-                    if ($groupMandatoryFields = $group->getTxRkwregistrationServiceMandatoryFields()) {
-                        $requiredFields = array_merge($requiredFields, explode(',', str_replace(' ', '', $groupMandatoryFields)));
+
+            if ($frontendUser) {
+
+                //=======================================
+                // get mandatory fields by fe_groups the user is registered for
+                $groupsOfUser = $frontendUser->getUsergroup();
+                foreach ($groupsOfUser as $group) {
+                    if ($group instanceof \RKW\RkwRegistration\Domain\Model\FrontendUserGroup) {
+                        if ($groupMandatoryFields = $group->getTxRkwregistrationServiceMandatoryFields()) {
+                            $requiredFields = array_merge($requiredFields, explode(',', str_replace(' ', '', $groupMandatoryFields)));
+                        }
                     }
                 }
-            }
 
-            //=======================================
-            // get mandatory fields by fe_groups the user is still waiting to be registered but admin has already granted him access
-            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+                //=======================================
+                // get mandatory fields by fe_groups the user is still waiting to be registered but admin has already granted him access
+                /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+                $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 
-            /** @var \RKW\RkwRegistration\Domain\Repository\ServiceRepository $serviceRepository */
-            $serviceRepository = $objectManager->get('RKW\RkwRegistration\Domain\Repository\ServiceRepository');
+                /** @var \RKW\RkwRegistration\Domain\Repository\ServiceRepository $serviceRepository */
+                $serviceRepository = $objectManager->get('RKW\RkwRegistration\Domain\Repository\ServiceRepository');
 
-            $serviceInquiries = $serviceRepository->findEnabledByAdminByUser($frontendUser);
-            foreach ($serviceInquiries as $serviceInquiry) {
+                $serviceInquiries = $serviceRepository->findEnabledByAdminByUser($frontendUser);
+                foreach ($serviceInquiries as $serviceInquiry) {
 
-                if ($groups = $serviceInquiry->getUsergroup()) {
-                    foreach ($groups as $group) {
-                        if ($group instanceof \RKW\RkwRegistration\Domain\Model\FrontendUserGroup) {
-                            if ($groupMandatoryFields = $group->getTxRkwregistrationServiceMandatoryFields()) {
-                                $requiredFields = array_merge($requiredFields, explode(',', str_replace(' ', '', $groupMandatoryFields)));
+                    if ($groups = $serviceInquiry->getUsergroup()) {
+                        foreach ($groups as $group) {
+                            if ($group instanceof \RKW\RkwRegistration\Domain\Model\FrontendUserGroup) {
+                                if ($groupMandatoryFields = $group->getTxRkwregistrationServiceMandatoryFields()) {
+                                    $requiredFields = array_merge($requiredFields, explode(',', str_replace(' ', '', $groupMandatoryFields)));
+                                }
                             }
                         }
                     }

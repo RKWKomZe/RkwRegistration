@@ -4,7 +4,7 @@
 
 	<h2><f:translate key="templates_registration_loginShow.headline" /></h2>
 
-	<f:flashMessages renderMode="div" />
+    <f:render partial="FlashMessages" arguments="{_all}" />
 
 	<f:render partial="Registration/Login" arguments="{_all}" />
 	<f:link.action action="passwordForgotShow" class="text-smaller"><f:translate key="templates_registration_loginShow.passwordForgot" /></f:link.action>

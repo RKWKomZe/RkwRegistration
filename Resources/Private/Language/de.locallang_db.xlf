@@ -37,15 +37,15 @@
 				<source>Salutation</source>
                 <target>Anrede</target>
 			</trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.man">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.0">
                 <source>Mr.</source>
                 <target>Herr</target>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.woman">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.1">
                 <source>Mrs.</source>
                 <target>Frau</target>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.neutral">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.99">
                 <source>Not set</source>
                 <target>Nicht gesetzt</target>
             </trans-unit>
@@ -76,6 +76,14 @@
                 <source>Language Key</source>
                 <target>Sprach-Code (z.B. für E-Mails an den Nutzer)</target>
             </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title">
+                <source>Title</source>
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.neutral">
+                <source>Please choose</source>
+                <target>Bitte wählen</target>
+            </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser">
 				<source>RKW WePstra: Anonymous User</source>
 				<target>RKW WePstra: Anonymer Nutzer</target>
@@ -88,12 +96,16 @@
 				<source>Consent to data protection</source>
 				<target>Getätigte Zustimmungen zum Datenschutz</target>
 			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.title">
+				<source>Title (overridden)</source>
+				<target>Titel (wird überschrieben)</target>
+			</trans-unit>
 
 
 
             <!-- tx_rkwregistration_domain_model_service -->
             <trans-unit id="tx_rkwregistration_domain_model_service">
-				<source>Services</source>
+				<source>RKW Registration: Services</source>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_service.user">
 				<source>User</source>
@@ -213,6 +225,101 @@
 
 
 
+            <!-- tx_rkwregistration_domain_model_shippingaddress -->
+            <trans-unit id="tx_rkwregistration_domain_model_shippingaddress">
+				<source>RKW Registration: Shipping Address</source>
+				<target>RKW Registration: Lieferaddresse</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.frontend_user">
+				<source>Frontend User</source>
+				<target>Frontend User</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.frontend_user.pleaseSelect">
+				<source>Please Select</source>
+				<target>Bitte wählen</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender">
+				<source>Salutation</source>
+				<target>Anrede</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender.I.man">
+				<source>Mr.</source>
+				<target>Herr</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender.I.woman">
+				<source>Mrs.</source>
+				<target>Frau</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.gender.I.neutral">
+				<source>Please Select</source>
+				<target>Bitte wählen</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.title">
+				<source>Title</source>
+				<target>Titel</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.title.pleaseSelect">
+				<source>Please Select</source>
+				<target>Bitte wählen</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.first_name">
+				<source>First Name</source>
+				<target>Vorname</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.last_name">
+				<source>Last Name</source>
+				<target>Nachname</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.company">
+				<source>Company</source>
+				<target>Firma</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.address">
+				<source>Address</source>
+				<target>Anschrift</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.zip">
+				<source>Zip</source>
+				<target>PLZ</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_shippingaddress.city">
+				<source>City</source>
+				<target>Stadt</target>
+			</trans-unit>
+
+			<!-- tx_rkwregistration_domain_model_title -->
+			<trans-unit id="tx_rkwregistration_domain_model_title">
+				<source>RKW Registration: Title</source>
+				<target>RKW Registration: Titel</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.name">
+				<source>Name</source>
+				<target>Titel (z.B. "Dr.")</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.name_long">
+				<source>Name long</source>
+				<target>Titel ausgeschrieben (z.B. "Professor Doktor")</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.name_female">
+				<source>Name (female)</source>
+				<target>Titel (weibliche Form, z.B. "Dipl.-Kffr.")</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.name_female_long">
+				<source>Name long (female)</source>
+				<target>Titel ausgeschrieben (weibliche Form, z.B. "Diplom-Kauffrau")</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.is_title_after">
+				<source>Is title after</source>
+				<target>Titel wird hinter den Namen der Person gesetzt (z.B. "M.A.")</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.is_included_in_salutation">
+			    <source>Is included in salutation</source>
+			    <target>Titel wird in der Anrede verwendet</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.is_checked">
+			    <source>Title is approved</source>
+			    <target>Titel ist zur Auswahl freigegeben</target>
+			</trans-unit>
 
             <!-- Flexform Registration-->
             <trans-unit id="flexform.registration.sheetTitle">

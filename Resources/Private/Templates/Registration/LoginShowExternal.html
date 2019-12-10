@@ -3,136 +3,136 @@
 <f:layout name="Default" />
 <f:section name="main">
 
-	<f:flashMessages renderMode="div" />
+    <f:render partial="FlashMessages" arguments="{_all}" />
 
-        <f:security.ifAuthenticated>
-            <f:then>
-                <p>
-                    <f:link.page pageUid="{settings.users.loginPid}" noCacheHash="true" class="button" target="_blank">
-                        <span>
-                            <f:translate key="templates_registration_loginShowExternal.login2" />
-                        </span>
-                    </f:link.page>
+    <f:security.ifAuthenticated>
+        <f:then>
+            <p>
+                <f:link.page pageUid="{settings.users.loginPid}" noCacheHash="true" class="button" target="_blank">
+                    <span>
+                        <f:translate key="templates_registration_loginShowExternal.login2" />
+                    </span>
+                </f:link.page>
 
-                    <f:if condition="<vh:isUserAnonymous frontendUser='{frontendUser}'/>">
-                        <f:then>
-                            <f:link.action action="logoutAnonymous" class="button secondary">
-                                <span>
-                                    <f:translate key="templates_registration_loginShowExternal.logout" />
-                                </span>
-                            </f:link.action>
-                        </f:then>
-                        <f:else>
-                            <f:link.page pageUid="{settings.users.logoutPid}" noCacheHash="true" class="button secondary" target="{linkTargetLogout}">
-                                <span>
-                                    <f:translate key="templates_registration_loginShowExternal.logout" />
-                                </span>
-                            </f:link.page>
-                        </f:else>
-                    </f:if>
-                </p>
-            </f:then>
-            <f:else>
-
-                <f:if condition="{settings.users.allowAnonymousLogin}">
+                <f:if condition="<vh:isUserAnonymous frontendUser='{frontendUser}'/>">
                     <f:then>
-
-                        <!-- with anonymous login -->
-                        <div class="alternative-logins">
-
-                            <div class="alternative-logins__item">
-
-                                <div class="alternative-logins__item-inner">
-                                    <header class="alternative-logins__item-headline"><f:translate key="templates_registration_loginShowExternal.loginLabel" /></header>
-                                    <p>
-                                        <f:link.page pageUid="{settings.users.loginPid}" noCacheHash="true" additionalParams="{linkParams}" class="button" target="{linkTargetLogin}">
-                                            <span>
-                                                <f:translate key="templates_registration_loginShowExternal.login" />
-                                            </span>
-                                        </f:link.page>
-                                    </p>
-                                </div>
-
-                                <div class="alternative-logins__item-inner">
-                                    <header class="alternative-logins__item-headline"><f:translate key="templates_registration_loginShowExternal.registerLabel" /></header>
-                                    <p>
-                                        <f:link.page pageUid="{settings.users.registrationPid}" noCacheHash="true" additionalParams="{linkParams}" class="button" target="{linkTargetLogin}">
-                                            <span>
-                                                <f:translate key="templates_registration_loginShowExternal.register" />
-                                            </span>
-                                        </f:link.page>
-                                    </p>
-                                </div>
-                            </div>
-
-
-                            <div class="alternative-logins__item alternative-logins__item--between">
-                                <f:translate key="templates_registration_loginShowExternal.orLabel" />
-                            </div>
-
-
-                            <div class="alternative-logins__item">
-                                <div class="alternative-logins__item-inner">
-                                    <header class="alternative-logins__item-headline"><f:translate key="templates_registration_loginShowExternal.anonymousLabel" /></header>
-                                    <p>
-                                        <f:link.action action="loginAnonymous" class="button secondary">
-                                            <span>
-                                                <f:translate key="templates_registration_loginShowExternal.anonymous" />
-                                            </span>
-                                        </f:link.action>
-                                    </p>
-                                </div>
-                            </div>
-
-                        </div>
+                        <f:link.action action="logoutAnonymous" class="button secondary">
+                            <span>
+                                <f:translate key="templates_registration_loginShowExternal.logout" />
+                            </span>
+                        </f:link.action>
                     </f:then>
-
                     <f:else>
-
-                        <!-- without anonymous login -->
-                        <div class="alternative-logins">
-
-                            <div class="alternative-logins__item">
-
-                                <div class="alternative-logins__item-inner">
-                                    <header class="alternative-logins__item-headline"><f:translate key="templates_registration_loginShowExternal.loginLabel" /></header>
-                                    <p>
-                                        <f:link.page pageUid="{settings.users.loginPid}" noCacheHash="true" additionalParams="{linkParams}" class="button" target="{linkTargetLogin}">
-                                            <span>
-                                                <f:translate key="templates_registration_loginShowExternal.login" />
-                                            </span>
-                                        </f:link.page>
-                                    </p>
-                                </div>
-
-                            </div>
-
-
-                            <div class="alternative-logins__item alternative-logins__item--between">
-                                <f:translate key="templates_registration_loginShowExternal.orLabel" />
-                            </div>
-
-
-                            <div class="alternative-logins__item">
-
-                                <div class="alternative-logins__item-inner">
-                                    <header class="alternative-logins__item-headline"><f:translate key="templates_registration_loginShowExternal.registerLabel" /></header>
-                                    <p>
-                                        <f:link.page pageUid="{settings.users.registrationPid}" noCacheHash="true" additionalParams="{linkParams}" class="button" target="{linkTargetLogin}">
-                                            <span>
-                                                <f:translate key="templates_registration_loginShowExternal.register" />
-                                            </span>
-                                        </f:link.page>
-                                    </p>
-                                </div>
-                            </div>
-
-                        </div>
-
+                        <f:link.page pageUid="{settings.users.logoutPid}" noCacheHash="true" class="button secondary" target="{linkTargetLogout}">
+                            <span>
+                                <f:translate key="templates_registration_loginShowExternal.logout" />
+                            </span>
+                        </f:link.page>
                     </f:else>
                 </f:if>
-            </f:else>
-        </f:security.ifAuthenticated>
+            </p>
+        </f:then>
+        <f:else>
+
+            <f:if condition="{settings.users.allowAnonymousLogin}">
+                <f:then>
+
+                    <!-- with anonymous login -->
+                    <div class="alternative-logins">
+
+                        <div class="alternative-logins__item">
+
+                            <div class="alternative-logins__item-inner">
+                                <header class="alternative-logins__item-headline"><f:translate key="templates_registration_loginShowExternal.loginLabel" /></header>
+                                <p>
+                                    <f:link.page pageUid="{settings.users.loginPid}" noCacheHash="true" additionalParams="{linkParams}" class="button" target="{linkTargetLogin}">
+                                        <span>
+                                            <f:translate key="templates_registration_loginShowExternal.login" />
+                                        </span>
+                                    </f:link.page>
+                                </p>
+                            </div>
+
+                            <div class="alternative-logins__item-inner">
+                                <header class="alternative-logins__item-headline"><f:translate key="templates_registration_loginShowExternal.registerLabel" /></header>
+                                <p>
+                                    <f:link.page pageUid="{settings.users.registrationPid}" noCacheHash="true" additionalParams="{linkParams}" class="button" target="{linkTargetLogin}">
+                                        <span>
+                                            <f:translate key="templates_registration_loginShowExternal.register" />
+                                        </span>
+                                    </f:link.page>
+                                </p>
+                            </div>
+                        </div>
+
+
+                        <div class="alternative-logins__item alternative-logins__item--between">
+                            <f:translate key="templates_registration_loginShowExternal.orLabel" />
+                        </div>
+
+
+                        <div class="alternative-logins__item">
+                            <div class="alternative-logins__item-inner">
+                                <header class="alternative-logins__item-headline"><f:translate key="templates_registration_loginShowExternal.anonymousLabel" /></header>
+                                <p>
+                                    <f:link.action action="loginAnonymous" class="button secondary">
+                                        <span>
+                                            <f:translate key="templates_registration_loginShowExternal.anonymous" />
+                                        </span>
+                                    </f:link.action>
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </f:then>
+
+                <f:else>
+
+                    <!-- without anonymous login -->
+                    <div class="alternative-logins">
+
+                        <div class="alternative-logins__item">
+
+                            <div class="alternative-logins__item-inner">
+                                <header class="alternative-logins__item-headline"><f:translate key="templates_registration_loginShowExternal.loginLabel" /></header>
+                                <p>
+                                    <f:link.page pageUid="{settings.users.loginPid}" noCacheHash="true" additionalParams="{linkParams}" class="button" target="{linkTargetLogin}">
+                                        <span>
+                                            <f:translate key="templates_registration_loginShowExternal.login" />
+                                        </span>
+                                    </f:link.page>
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="alternative-logins__item alternative-logins__item--between">
+                            <f:translate key="templates_registration_loginShowExternal.orLabel" />
+                        </div>
+
+
+                        <div class="alternative-logins__item">
+
+                            <div class="alternative-logins__item-inner">
+                                <header class="alternative-logins__item-headline"><f:translate key="templates_registration_loginShowExternal.registerLabel" /></header>
+                                <p>
+                                    <f:link.page pageUid="{settings.users.registrationPid}" noCacheHash="true" additionalParams="{linkParams}" class="button" target="{linkTargetLogin}">
+                                        <span>
+                                            <f:translate key="templates_registration_loginShowExternal.register" />
+                                        </span>
+                                    </f:link.page>
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </f:else>
+            </f:if>
+        </f:else>
+    </f:security.ifAuthenticated>
 
 
 </f:section>

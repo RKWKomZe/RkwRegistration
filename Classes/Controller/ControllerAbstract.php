@@ -31,14 +31,14 @@ class ControllerAbstract extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
      *
      * @var integer
      */
-    protected $frontendUserId = null;
+    protected $frontendUserId;
 
     /**
      * logged in FrontendUser
      *
      * @var \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
-    protected $frontendUser = null;
+    protected $frontendUser;
 
 
     /**

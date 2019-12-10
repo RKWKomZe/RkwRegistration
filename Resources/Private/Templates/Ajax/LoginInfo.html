@@ -13,7 +13,7 @@ in /Configuration/ExtensionBuilder/settings.yaml:
 Otherwise your changes will be overwritten the next time you save the extension in the extension builder
 
 <f:section name="main">
-	<f:flashMessages renderMode="div" />
+    <f:render partial="FlashMessages" arguments="{_all}" />
 
 	<f:cObject typoscriptObjectPath="lib.txRkwRegistrationAjaxCoa" />
 

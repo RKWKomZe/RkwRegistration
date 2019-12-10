@@ -6,7 +6,7 @@
 
             <!-- tx_rkwregistration_domain_model_frontenduser -->
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser">
-				<source>Registration</source>
+				<source>RKW Registration: FrontendUser</source>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.username">
 				<source>Username</source>
@@ -84,15 +84,15 @@
                 <source>Salutation</source>
                 <target>Anrede</target>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.man">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.0">
                 <source>Mr.</source>
                 <target>Herr</target>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.woman">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.1">
                 <source>Mrs.</source>
                 <target>Frau</target>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.neutral">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.99">
                 <source>-- Please select --</source>
                 <target>-- Bitte wählen --</target>
             </trans-unit>
@@ -130,12 +130,19 @@
                 <source>Repeat New Password</source>
                 <target>Neues Passwort - Um sicher zu gehen, bitte noch einmal</target>
             </trans-unit>
-
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title">
+				<source>Title</source>
+				<target>Titel</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.neutral">
+				<source>Please choose</source>
+				<target>Bitte wählen</target>
+			</trans-unit>
 
 
             <!-- Fields of Model/Service -->
 			<trans-unit id="tx_rkwregistration_domain_model_service">
-				<source>Services</source>
+				<source>RKW Registration: Services</source>
 			</trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_service.name">
                 <source>Name</source>
@@ -145,6 +152,7 @@
 				<source>Description</source>
                 <target>Beschreibung</target>
 			</trans-unit>
+
 
 
             <!-- Form Errors: Field-Names -->
@@ -318,6 +326,14 @@
 				<source>ZIP is not correct.</source>
 				<target>Hm, die Postleitzahl scheint nicht korrekt zu sein. Ist sie vielleicht zu lang, oder zu kurz geraten?</target>
 			</trans-unit>
+            <trans-unit id="validator.gender.empty">
+                <source>Please enter your salutation.</source>
+                <target>Bitte geben Sie Ihre Anrede an.</target>
+            </trans-unit>
+			<trans-unit id="validator.zip.incorrect">
+				<source>The zip is not valid</source>
+				<target>Die Postleitzahl ist leider nicht korrekt.</target>
+			</trans-unit>
 
 
 
@@ -328,11 +344,11 @@
 			</trans-unit>
             <trans-unit id="registrationController.message.registration_successfull">
                 <source>You have been successfully registered. Your password has been sent to you via e-mail.</source>
-                <target>Woohoo! Sie wurden erfolgreich registriert. Das Passwort für den Login ist per E-Mail auf dem Weg zu Ihnen. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser Support hilft Ihnen bei Problemen gerne weiter.</target>
+                <target><![CDATA[Woohoo! Sie wurden erfolgreich registriert. Das Passwort für den Login ist per E-Mail auf dem Weg zu Ihnen. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.message.registration_watch_for_email">
                 <source>An e-mail has been send to you. Please click the link in the e-mail to confirm your registration.</source>
-                <target>Fast geschafft! Um sicherzustellen, dass Sie auch wirklich Sie sind, haben wir Ihnen gerade eine E-Mail an die angegebene Adresse geschickt. Bitte bestätigen Sie über den Link in der E-Mail Ihre Registrierung. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser Support hilft Ihnen bei Problemen gerne weiter.</target>
+                <target><![CDATA[Fast geschafft! Um sicherzustellen, dass Sie auch wirklich Sie sind, haben wir Ihnen gerade eine E-Mail an die angegebene Adresse geschickt. Bitte bestätigen Sie über den Link in der E-Mail Ihre Registrierung. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.message.registration_canceled">
                 <source>Your registration was canceled.</source>
@@ -356,7 +372,7 @@
             </trans-unit>
             <trans-unit id="registrationController.error.facebook_unexpected">
                 <source>An unexpected error occurred with Facebook Login. Please try another login.</source>
-                <target>Upps, da ist wohl etwas schief gelaufen. Vermutlich ist einer unserer Entwickler gerade über das Facebook- Kabel gestolpert. Wir versuchen das so schnell wie möglich zu beheben und bitten um etwas Geduld. Unser Support hilft Ihnen in der Zwischenzeit gerne mit alternativen Zugangsdaten weiter.</target>
+                <target><![CDATA[Upps, da ist wohl etwas schief gelaufen. Vermutlich ist einer unserer Entwickler gerade über das Facebook- Kabel gestolpert. Wir versuchen das so schnell wie möglich zu beheben und bitten um etwas Geduld. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen in der Zwischenzeit gerne mit alternativen Zugangsdaten weiter.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.login_no_username">
                 <source>No username given. Please enter username.</source>
@@ -376,7 +392,7 @@
             </trans-unit>
             <trans-unit id="registrationController.message.new_password">
                 <source>Password was reset and send to you via E-Mail.</source>
-                <target>Das hat geklappt! Wir haben Ihnen das neue Passwort per E-Mail zugesendet. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser Support hilft Ihnen bei Problemen gerne weiter.</target>
+                <target><![CDATA[Das hat geklappt! Wir haben Ihnen das neue Passwort per E-Mail zugesendet. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.message.update_successfull">
                 <source>Update was successfull.</source>
@@ -384,7 +400,7 @@
             </trans-unit>
             <trans-unit id="registrationController.error.twitter_unexpected">
                 <source>An unexpected error occurred with Twitter Login. Please try another login.</source>
-                <target>Upps, da ist wohl etwas schief gelaufen! Vermutlich ist einer unserer Entwickler gerade über das Twitter- Kabel gestolpert. Wir versuchen das so schnell wie möglich zu beheben und bitten um etwas Geduld. Unser Support hilft Ihnen in der Zwischenzeit gerne mit alternativen Zugangsdaten weiter.</target>
+                <target><![CDATA[Upps, da ist wohl etwas schief gelaufen! Vermutlich ist einer unserer Entwickler gerade über das Twitter- Kabel gestolpert. Wir versuchen das so schnell wie möglich zu beheben und bitten um etwas Geduld. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen in der Zwischenzeit gerne mit alternativen Zugangsdaten weiter.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.message.update_password">
                 <source>Password was updated. Please use this password from now on for login.</source>
@@ -408,11 +424,11 @@
             </trans-unit>
             <trans-unit id="registrationController.error.user_not_found">
                 <source>User not found.</source>
-                <target>Das hat leider nicht geklappt! Wenn Sie sich  über Facebook oder Twitter angemeldet haben, dann nutzen Sie bitte die Buttons am Ende der Seite. Möglicherweise haben Sie sich aber auch mit einer anderen E-Mail-Adresse registriert. Unser Support hilft Ihnen im Zweifelsfall gerne weiter!</target>
+                <target><![CDATA[Das hat leider nicht geklappt! Wenn Sie sich  über Facebook oder Twitter angemeldet haben, dann nutzen Sie bitte die Buttons am Ende der Seite. Möglicherweise haben Sie sich aber auch mit einer anderen E-Mail-Adresse registriert. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen im Zweifelsfall gerne weiter!]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.login_blocked">
                 <source>Your login was blocked after %s attempts. Please contact support.</source>
-                <target>Nun ist es leider passiert: Aus Sicherheitsgründen wurde Ihr Profil nach %s Fehlversuchen gesperrt. Bitte wenden Sie sich an unseren Support, um Ihren Account wieder freizuschalten.</target>
+                <target><![CDATA[Nun ist es leider passiert: Aus Sicherheitsgründen wurde Ihr Profil nach %s Fehlversuchen gesperrt. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>, um Ihren Account wieder freizuschalten.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.accept_terms">
                 <source>You have to accept our terms and conditions to register.</source>
@@ -428,15 +444,15 @@
             </trans-unit>
             <trans-unit id="registrationController.error.invalid_socialmedia_login">
                 <source>Login was not possible. It seems like your login has been blocked by an admin.</source>
-                <target>Der Login war leider nicht möglich. Möglicherweise wurde Ihr Login deaktiviert. Bitte kontaktieren Sie unseren Support.</target>
+                <target><![CDATA[Der Login war leider nicht möglich. Möglicherweise wurde Ihr Login deaktiviert. Bitte kontaktieren Sie unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.xdl_login_error">
                 <source>Login was not completed. Please contact support.</source>
-                <target>Der Login konnte nicht abgeschlossen werden. Bitte wenden Sie sich an den Support.</target>
+                <target><![CDATA[Der Login konnte nicht abgeschlossen werden. Bitte wenden Sie sich an den <a href="mailto:service@rkw.de">Support</a>.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.xdl_logout_error">
                 <source>Logout was not completed. Please contact support.</source>
-                <target>Der Logout konnte nicht abgeschlossen werden. Bitte wenden Sie sich an den Support.</target>
+                <target><![CDATA[Der Logout konnte nicht abgeschlossen werden. Bitte wenden Sie sich an den <a href="mailto:service@rkw.de">Support</a>.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.invalid_anonymous_token">
                 <source>The given token is not valid (any more). Please use a new one or contact support.</source>
@@ -775,8 +791,8 @@
 
             <!-- Templates/Email/RegisterOptInRequest.html -->
             <trans-unit id="templates_email_registerOptInRequest.headline">
-                <source>Hello %s %s,</source>
-                <target>Fast geschafft, %s %s!</target>
+                <source>Nearly done</source>
+                <target>Fast geschafft</target>
             </trans-unit>
             <trans-unit id="templates_email_registerOptInRequest.text1">
                 <source>thank you for registering.</source>
@@ -803,11 +819,11 @@
 
             <!-- Templates/Email/RegisterOptInSuccess.html -->
             <trans-unit id="templates_email_registerOptInSuccess.headline">
-                <source>Hello %s %s,</source>
-                <target>Und los geht's!</target>
+                <source>And here we go</source>
+                <target>Und los geht's</target>
             </trans-unit>
             <trans-unit id="templates_email_registerOptInSuccess.teaser">
-                <source>let's go for it!</source>
+                <source>With the free account for "My RKW" you can now manage all services around the RKW website yourself.</source>
                 <target>Mit dem kostenlosen Account für "Mein RKW" können Sie nun alle Services rund um die RKW Website selbst verwalten – von A wie Alerts bis Z wie ... okay, bis V wie Veranstaltungsanmeldungen ;-)</target>
             </trans-unit>
             <trans-unit id="templates_email_registerOptInSuccess.text1">
@@ -835,7 +851,7 @@
 
             <!-- Templates/Email/PasswordReset.html -->
             <trans-unit id="templates_email_passwordReset.headline">
-                <source>Hello %s %s,</source>
+                <source>Your new password</source>
                 <target>Ihr neues Passwort</target>
             </trans-unit>
             <trans-unit id="templates_email_passwordReset.text1">
@@ -891,7 +907,7 @@
             </trans-unit>
             <trans-unit id="templates_email_serviceOptInDenial.text2">
                 <source>For questions, please contact our support.</source>
-                <target>Bitte wenden Sie sich an unseren Support unter service@rkw.de. Wir helfen Ihnen hier gerne weiter.</target>
+                <target><![CDATA[Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a> unter service@rkw.de. Wir helfen Ihnen hier gerne weiter.]]></target>
             </trans-unit>
 
 
@@ -976,6 +992,12 @@
 
             <!-- Partials/Registration/FormFields.html -->
             <trans-unit id="partials_registration_formFields.labelOptional">
+                <source>(Optional)</source>
+                <target>(Optional)</target>
+            </trans-unit>
+
+            <!-- Partials/Registration/RegisterFormFields.html -->
+            <trans-unit id="partials_registration_registerFormFields.labelOptional">
                 <source>(Optional)</source>
                 <target>(Optional)</target>
             </trans-unit>

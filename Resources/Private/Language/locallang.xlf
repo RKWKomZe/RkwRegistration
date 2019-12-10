@@ -68,13 +68,13 @@
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender">
                 <source>Salutation</source>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.man">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.0">
                 <source>Mr.</source>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.woman">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.1">
                 <source>Mrs.</source>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.neutral">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.99">
                 <source>-- Please select --</source>
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_id">
@@ -95,6 +95,18 @@
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_register_remote_ip">
                 <source>Register Remote Ip</source>
             </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_login_error_count">
+                <source>Login Error Count</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_language_key">
+                <source>Language Key</source>
+            </trans-unit>
+		    <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.neutral">
+				<source>Please choose</source>
+			</trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.password_old">
                 <source>Old Password</source>
             </trans-unit>
@@ -104,6 +116,7 @@
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.password_new_repeat">
                 <source>Repeat New Password</source>
             </trans-unit>
+
 
 
 
@@ -117,6 +130,7 @@
 			<trans-unit id="tx_rkwregistration_domain_model_service.description">
 				<source>Description</source>
 			</trans-unit>
+
 
 
             <!-- Form Errors: Field-Names -->
@@ -249,6 +263,13 @@
             <trans-unit id="validator.zip.incorrect">
 				<source>ZIP is not correct.</source>
 			</trans-unit>
+            <trans-unit id="validator.gender.empty">
+                <source>Please enter your salutation.</source>
+            </trans-unit>
+			<trans-unit id="validator.zip.incorrect">
+				<source>The zip is not valid</source>
+			</trans-unit>
+
 
 
             <!-- Registration Controller -->
@@ -612,7 +633,7 @@
 
             <!-- Templates/Email/RegisterOptInRequest.html -->
             <trans-unit id="templates_email_registerOptInRequest.headline">
-                <source>Hello %s %s,</source>
+                <source>Nearly done</source>
             </trans-unit>
             <trans-unit id="templates_email_registerOptInRequest.text1">
                 <source>thank you for registering.</source>
@@ -633,10 +654,10 @@
 
             <!-- Templates/Email/RegisterOptInSuccess.html -->
             <trans-unit id="templates_email_registerOptInSuccess.headline">
-                <source>Hello %s %s,</source>
+                <source>And here we go</source>
             </trans-unit>
             <trans-unit id="templates_email_registerOptInSuccess.teaser">
-                <source>let's go for it!</source>
+                <source>With the free account for "My RKW" you can now manage all services around the RKW website yourself.</source>
             </trans-unit>
             <trans-unit id="templates_email_registerOptInSuccess.text1">
                 <source>Your personal login is</source>
@@ -658,7 +679,7 @@
 
             <!-- Templates/Email/PasswordReset.html -->
             <trans-unit id="templates_email_passwordReset.headline">
-                <source>Hello %s %s,</source>
+                <source>Your new password</source>
             </trans-unit>
             <trans-unit id="templates_email_passwordReset.text1">
                 <source>your new password for the login is: %s</source>
@@ -694,7 +715,7 @@
 
             <!-- Templates/Email/ServiceOptInDenial.html -->
             <trans-unit id="templates_email_serviceOptInDenial.headline">
-                <source>Hello %s %s,</source>
+                <source>Hello,</source>
             </trans-unit>
             <trans-unit id="templates_email_serviceOptInDenial.text1">
                 <source>your request for activation for the following services was denied:</source>
@@ -774,6 +795,10 @@
                 <source>(Optional)</source>
             </trans-unit>
 
+            <!-- Partials/Registration/RegisterFormFields.html -->
+            <trans-unit id="partials_registration_registerFormFields.labelOptional">
+                <source>(Optional)</source>
+            </trans-unit>
 
 
         </body>

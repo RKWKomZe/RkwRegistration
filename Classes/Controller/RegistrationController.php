@@ -4,7 +4,6 @@ namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Tools\Password;
 use RKW\RkwRegistration\Tools\Authentication;
-use RKW\RkwRegistration\Tools\Registration;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -44,7 +43,7 @@ class RegistrationController extends ControllerAbstract
      * @var \RKW\RkwRegistration\Domain\Repository\RegistrationRepository
      * @inject
      */
-    protected $registrationRepository = null;
+    protected $registrationRepository;
 
 
     /**
@@ -53,7 +52,7 @@ class RegistrationController extends ControllerAbstract
      * @var \RKW\RkwRegistration\Domain\Repository\ServiceRepository
      * @inject
      */
-    protected $serviceRepository = null;
+    protected $serviceRepository;
 
 
     /**
@@ -145,14 +144,21 @@ class RegistrationController extends ControllerAbstract
             //===
         }
 
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
+        $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
+
+        $titles = $titleRepository->findAllOfType(true, false, false);
+
         $this->view->assignMultiple(
             array(
                 'frontendUser' => $registeredUser,
                 'welcomePid'   => intval($this->settings['users']['welcomePid']),
+                'titles' => $titles
             )
         );
     }
-
 
     /**
      * action update
@@ -175,6 +181,10 @@ class RegistrationController extends ControllerAbstract
         // therefore we can finally add the user to all relevant groups now
         $serviceClass = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Service');
         $serviceClass->addUserToAllGrantedGroups($frontendUser);
+
+        if ($frontendUser->getTxRkwregistrationTitle()) {
+            $frontendUser->setTxRkwregistrationTitle(\RKW\RkwRegistration\Utilities\TitleUtility::extractTxRegistrationTitle($frontendUser->getTxRkwregistrationTitle()->getName()));
+        }
 
         $this->frontendUserRepository->update($frontendUser);
         $this->addFlashMessage(
@@ -276,7 +286,7 @@ class RegistrationController extends ControllerAbstract
      * action update password
      *
      * @param string $passwordOld
-     * @param array $passwordNew
+     * @param array  $passwordNew
      * @validate $passwordNew \RKW\RkwRegistration\Validation\PasswordValidator
      * @return void
      * @throws \RKW\RkwRegistration\Exception
@@ -1468,7 +1478,6 @@ class RegistrationController extends ControllerAbstract
      */
     public function registerShowAction(\RKW\RkwRegistration\Domain\Model\FrontendUser $newFrontendUser = null)
     {
-
         // not for already logged in users!
         if ($this->getFrontendUserId()) {
 
@@ -1484,10 +1493,18 @@ class RegistrationController extends ControllerAbstract
         $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
         $redirectLogin->setRedirectUrl($this->request);
 
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
+        $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
+
+        $titles = $titleRepository->findAllOfType(true, false, false);
+
         $this->view->assignMultiple(
             array(
                 'newFrontendUser' => $newFrontendUser,
                 'termsPid'        => intval($this->settings['users']['termsPid']),
+                'titles' => $titles
             )
         );
     }
@@ -1498,8 +1515,8 @@ class RegistrationController extends ControllerAbstract
      * created a rkw user
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $newFrontendUser
-     * @param integer $terms
-     * @param integer $privacy
+     * @param integer                                        $terms
+     * @param integer                                        $privacy
      * @validate $newFrontendUser \RKW\RkwRegistration\Validation\FormValidator
      * @return void
      * @throws \RKW\RkwRegistration\Exception

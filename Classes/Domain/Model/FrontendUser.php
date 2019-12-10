@@ -23,6 +23,7 @@ namespace RKW\RkwRegistration\Domain\Model;
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ *
  */
 class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 {
@@ -64,36 +65,22 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 
 
     /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var string
-     */
-    protected $firstName;
-
-
-    /**
-     * @var string
-     */
-    protected $lastName;
-
-
-    /**
-     * @var string
-     */
-    protected $zip;
-
-    /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\FrontendUserGroup>
      */
     protected $usergroup;
 
     /**
+     * txRkwregistrationTitle
+     *
+     * @var \RKW\RkwRegistration\Domain\Model\Title
+     */
+    protected $txRkwregistrationTitle = null;
+
+
+    /**
      * @var string
      */
-    protected $txRkwregistrationMobile;
+    protected $txRkwregistrationMobile = '';
 
 
     /**
@@ -111,7 +98,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     /**
      * @var string
      */
-    protected $txRkwregistrationRegisterRemoteIp;
+    protected $txRkwregistrationRegisterRemoteIp = '';
 
     /**
      * @var integer
@@ -121,7 +108,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     /**
      * @var string
      */
-    protected $txRkwregistrationLanguageKey;
+    protected $txRkwregistrationLanguageKey = '';
 
 
     /**
@@ -132,17 +119,17 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     /**
      * @var string
      */
-    protected $txRkwregistrationFacebookUrl;
+    protected $txRkwregistrationFacebookUrl = '';
 
     /**
      * @var string
      */
-    protected $txRkwregistrationTwitterUrl;
+    protected $txRkwregistrationTwitterUrl = '';
 
     /**
      * @var string
      */
-    protected $txRkwregistrationXingUrl;
+    protected $txRkwregistrationXingUrl = '';
 
     /**
      * @var integer
@@ -150,9 +137,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     protected $txRkwregistrationTwitterId = 0;
 
     /**
-     * @var integer
+     * @var string
      */
-    protected $txRkwregistrationFacebookId = 0;
+    protected $txRkwregistrationFacebookId = '';
 
     /**
      * @var boolean
@@ -162,7 +149,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     /**
      * @var string
      */
-    protected $txRkwregistrationCrossDomainToken;
+    protected $txRkwregistrationCrossDomainToken = '';
 
     /**
      * @var string
@@ -176,12 +163,12 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 
     /**
      * initialize objectStorage
+     *
      */
     public function __construct()
     {
         parent::__construct();
         $this->usergroup = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        //$this->txRkwregistrationPrivacy = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
     }
 
 
@@ -212,6 +199,119 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
         $this->email = strtolower($email);
     }
 
+    /**
+     * Returns the title
+     *
+     * @return string
+     * @api
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Sets the title
+     *
+     * @param string $title
+     * @api
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+
+    /**
+     * Returns the txRkwregistrationTitle
+     *
+     * @return \RKW\RkwRegistration\Domain\Model\Title $txRkwregistrationTitle
+     */
+    public function getTxRkwregistrationTitle()
+    {
+        if ($this->txRkwregistrationTitle === null) {
+            $txRkwregistrationTitle = new Title();
+            $txRkwregistrationTitle->setName($this->getTitle());
+
+            return $txRkwregistrationTitle;
+        }
+
+        return $this->txRkwregistrationTitle;
+    }
+
+    /**
+     * Sets the txRkwregistrationTitle
+     *
+     * Hint: default "null" is needed to make value in forms optional
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\Title $txRkwregistrationTitle
+     * @return void
+     */
+    public function setTxRkwregistrationTitle(\RKW\RkwRegistration\Domain\Model\Title $txRkwregistrationTitle = null)
+    {
+        if ($txRkwregistrationTitle) {
+            $this->txRkwregistrationTitle = $txRkwregistrationTitle;
+        }
+    }
+
+
+    /**
+     * Returns the title as text
+     *
+     * @param bool $titleAfter
+     * @return string
+     */
+    public function getTitleText($titleAfter = false)
+    {
+
+        if ($this->getTxRkwregistrationTitle()) {
+
+            if ($this->getTxRkwregistrationTitle()->getIsTitleAfter() == $titleAfter) {
+                return $this->getTxRkwregistrationTitle()->getName();
+                //===
+            }
+        }
+
+        if (!is_numeric($this->getTitle())) {
+            return $this->getTitle();
+            //===
+        }
+
+        return '';
+        //===
+    }
+
+    /**
+     * Returns the full salutation including gender, title and name
+     *
+     * @return string
+     */
+    public function getCompleteSalutationText($checkIncludedInSalutation = false)
+    {
+        $fullSalutation = $this->getFirstName() . ' ' . $this->getLastName();
+
+        $title = $this->getTxRkwregistrationTitle();
+
+        if ($title) {
+
+            $titleName = ($this->getTxRkwregistrationGender() === 1 && $title->getNameFemale()) ? $title->getNameFemale() : $title->getName();
+
+            if ($checkIncludedInSalutation) {
+                if ($title->getIsIncludedInSalutation()) {
+                    $fullSalutation = ($title->getIsTitleAfter()) ? $fullSalutation . ', ' . $titleName : $titleName . ' ' . $fullSalutation;
+                }
+            } else {
+                $fullSalutation = ($title->getIsTitleAfter()) ? $fullSalutation . ', ' . $titleName : $titleName . ' ' . $fullSalutation;
+            }
+
+        }
+
+        if ($this->getGenderText()) {
+            $fullSalutation = $this->getGenderText() . ' ' . $fullSalutation;
+        }
+
+        return $fullSalutation;
+    }
 
     /**
      * Sets the firstName
@@ -404,6 +504,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
         //===
     }
 
+
     /**
      * Sets the mobile value
      *
@@ -455,6 +556,29 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
         //===
     }
 
+    /**
+     * Returns the gender as string
+     *
+     * @return string
+     */
+    public function getGenderText()
+    {
+        if ($this->getTxRkwregistrationGender() < 99) {
+
+            return \RKW\RkwBasics\Helper\FrontendLocalization::translate(
+                'tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.' . $this->getTxRkwregistrationGender(),
+                'rkw_registration',
+                array(),
+                $this->getTxRkwregistrationLanguageKey()
+            );
+            //===
+
+        }
+
+        return '';
+        //===
+    }
+
 
     /**
      * Sets the registeredBy value
@@ -487,6 +611,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      *
      * @param string $remoteIp
      * @return void
+     *
      */
     public function setTxRkwregistrationRegisterRemoteIp($remoteIp)
     {
@@ -497,6 +622,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      * Returns the registerRemoteIp value
      *
      * @return string
+     *
      */
     public function getTxRkwregistrationRegisterRemoteIp()
     {
@@ -509,6 +635,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      *
      * @param integer $count
      * @return void
+     *
      */
     public function setTxRkwregistrationLoginErrorCount($count)
     {
@@ -520,6 +647,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      * Increments the loginErrorCount value
      *
      * @return void
+     *
      */
     public function incrementTxRkwregistrationLoginErrorCount()
     {
@@ -531,6 +659,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      * Returns the loginErrorCount value
      *
      * @return integer
+     *
      */
     public function getTxRkwregistrationLoginErrorCount()
     {
@@ -544,6 +673,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      *
      * @param string $languageKey
      * @return void
+     *
      */
     public function setTxRkwregistrationLanguageKey($languageKey)
     {
@@ -555,6 +685,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      * Returns the txRkwregistrationLanguageKey value
      *
      * @return string
+     *
      */
     public function getTxRkwregistrationLanguageKey()
     {
@@ -645,6 +776,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      *
      * @param integer $disable
      * @return void
+     *
      */
     public function setDisable($disable)
     {
@@ -669,6 +801,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      *
      * @param integer $deleted
      * @return void
+     *
      */
     public function setDeleted($deleted)
     {
@@ -680,6 +813,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      * Returns the deleted value
      *
      * @return integer
+     *
      */
     public function getDeleted()
     {
@@ -722,7 +856,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     public function setTxRkwregistrationFacebookId($facebookId)
     {
-        $this->txRegistrationFacebookId = $facebookId;
+        $this->txRkwregistrationFacebookId = $facebookId;
     }
 
     /**

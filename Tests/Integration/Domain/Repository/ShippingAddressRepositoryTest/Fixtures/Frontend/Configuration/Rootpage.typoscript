@@ -1,0 +1,16 @@
+plugin.tx_rkwshop  {
+    persistence {
+        // cat=plugin.tx_rkwshop_rkwshop//a; type=string; label=Default storage PID
+        storagePid = 1
+    }
+
+    settings {
+
+        # cat=plugin.tx_rkwshop/a; type=boolean; label=Disable admin mails?
+        disableAdminMails = 0
+
+		# cat=plugin.tx_rkwshop//a; type=integer; label=Username of BE-User if none is set in plugin
+		fallbackBackendUserForAdminMails = fallback
+    }
+}
+

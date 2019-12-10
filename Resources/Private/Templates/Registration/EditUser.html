@@ -15,8 +15,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 	<h2><f:translate key="templates_registration_editUser.headline" /></h2>
 
-	<f:flashMessages renderMode="div" />
-
+    <f:render partial="FlashMessages" arguments="{_all}" />
 	<f:render partial="FormErrors" arguments="{for:frontendUser}"/>
 
 	<f:form action="updateUser" name="frontendUser" object="{frontendUser}" class="form-fields">

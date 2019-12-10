@@ -2,20 +2,17 @@
 <f:layout name="Default" />
 <f:section name="main">
 
-	<f:flashMessages renderMode="div" />
+    <f:render partial="FlashMessages" arguments="{_all}" />
 
     <f:if condition="{settings.users.anonymousRedirectPid}">
         <div class="button-footer">
             <div><!-- --></div>
-            <f:link.page pageUid="{settings.users.anonymousRedirectPid}" noCacheHash="true" class="button" >
+            <f:link.page pageUid="{settings.users.anonymousRedirectPid}" class="button" >
             <span>
                 <f:translate key="templates_registration_loginHintAnonymous.continue" />
             </span>
             </f:link.page>
         </div>
-
-
     </f:if>
-
 
 </f:section>

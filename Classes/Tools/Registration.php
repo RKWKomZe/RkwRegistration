@@ -348,6 +348,10 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
         $frontendUser->setEmail(strtolower($frontendUser->getEmail()));
         $frontendUser->setUsername(strtolower($frontendUser->getUsername()));
 
+        if ($frontendUser->getTitle()) {
+            $frontendUser->setTxRkwregistrationTitle(\RKW\RkwRegistration\Utilities\TitleUtility::extractTxRegistrationTitle($frontendUser->getTitle(), $settings()));
+        }
+
         // check if user already exists!
         // then we generate an opt-in for additional data given
         // this may also be the case for logged in users without valid email (e.g. when registered via Facebook or Twitter) !!!
@@ -685,9 +689,8 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
             )
         ) {
             return true;
+            //===
         }
-
-        //===
 
         return false;
         //===
@@ -847,4 +850,5 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
         return $this->logger;
         //===
     }
+
 }

@@ -1,169 +1,192 @@
 <?php
-if (!defined ('TYPO3_MODE')) {
-	die ('Access denied.');
-}
+$tempCols = [
 
-$tempCols = array(
-
-	'tx_rkwregistration_mobile' => array(
+	'tx_rkwregistration_mobile' => [
 		'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_mobile',
 		'exclude' => 0,
-		'config'=>array(
+		'config'=>[
 			'type'=>'input',
             'size' => 20,
             'max' => '256',
             'eval' => 'trim'
-		)
-	),
+		],
+	],
 
-    'tx_rkwregistration_gender' => array(
+    'tx_rkwregistration_gender' => [
         'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender',
         'exclude' => 0,
-        'config'=>array(
+        'config'=>[
 			'type' => 'select',
             'renderType' => 'selectSingle',
-			'size' => 1,
 			'minitems' => 0,
 			'maxitems' => 1,
 			'default' => 99,
-			'items' => array(
-				array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.man', '0'),
-				array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.woman', '1'),
-                array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.neutral', '99'),
+			'items' => [
+				['LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.0', '0'],
+				['LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.1', '1'],
+                ['LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.99', '99'],
 
-            ),
-        )
-    ),
+            ],
+        ],
+    ],
 
-    'tx_rkwregistration_twitter_id' => array(
+	'title' => [
+		'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.title',
+		'exclude' => 1,
+		'config' => [
+            'type'=>'input',
+            'size' => 20,
+            'max' => '256',
+            'eval' => 'trim',
+		],
+	],
+
+
+	'tx_rkwregistration_title' => [
+		'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title',
+		'exclude' => 0,
+		'config' => [
+			'type' => 'select',
+			'renderType' => 'selectSingle',
+			'foreign_table' => 'tx_rkwregistration_domain_model_title',
+			'foreign_table_where' => 'AND tx_rkwregistration_domain_model_title.hidden = 0 AND tx_rkwregistration_domain_model_title.deleted = 0 ORDER BY name ASC',
+			'minitems' => 0,
+			'maxitems' => 1,
+			'items' => [
+				['LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.neutral', 0],
+			],
+		],
+	],
+
+	'tx_rkwregistration_twitter_id' => [
         'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_id',
         'exclude' => 0,
-        'config'=>array(
+        'config'=>[
             'type'=>'input',
             'size' => 30,
             'max' => '256',
             'eval' => 'trim'
-        )
-    ),
+        ],
+    ],
 
-    'tx_rkwregistration_twitter_url' => array(
+    'tx_rkwregistration_twitter_url' => [
         'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_url',
         'exclude' => 0,
-        'config'=>array(
+        'config'=>[
             'type'=>'input',
             'size' => 30,
             'max' => '256',
             'eval' => 'trim',
-            'wizards' => array(
-                'link' => array(
+            'wizards' => [
+                'link' => [
                     'type' => 'popup',
                     'title' => 'LLL:EXT:cms/locallang_ttc.xlf:header_link_formlabel',
                     'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_link.gif',
-                    'module' => array(
+                    'module' => [
                         'name' => 'wizard_link',
-                        'urlParameters' => array(
+                        'urlParameters' => [
                             'mode' => 'wizard',
-                        )
-                    ),
+                        ],
+                    ],
                     'JSopenParams' => 'height=400,width=550,status=0,menubar=0,scrollbars=1',
-                    'params' => Array(
+                    'params' => [
                         // List of tabs to hide in link window. Allowed values are:
                         // file, mail, page, spec, folder, url
                         'blindLinkOptions' => 'mail,file,page,spec,folder',
 
                         // allowed extensions for file
                         //'allowedExtensions' => 'mp3,ogg',
-                    )
-                )
-            ),
+                    ],
+                ],
+            ],
             'softref' => 'typolink'
-        )
-    ),
+        ],
+    ],
 
-    'tx_rkwregistration_facebook_id' => array(
+    'tx_rkwregistration_facebook_id' => [
 		'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_id',
 		'exclude' => 0,
-		'config'=>array(
+		'config'=>[
 			'type'=>'input',
             'size' => 30,
             'max' => '256',
             'eval' => 'trim'
-		)
-	),
+		],
+	],
 
-    'tx_rkwregistration_facebook_url' => array(
+    'tx_rkwregistration_facebook_url' => [
         'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_url',
         'exclude' => 0,
-        'config'=>array(
+        'config'=>[
             'type'=>'input',
             'size' => 30,
             'max' => '256',
             'eval' => 'trim',
-            'wizards' => array(
-                'link' => array(
+            'wizards' => [
+                'link' => [
                     'type' => 'popup',
                     'title' => 'LLL:EXT:cms/locallang_ttc.xlf:header_link_formlabel',
                     'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_link.gif',
-                    'module' => array(
+                    'module' => [
                         'name' => 'wizard_link',
-                        'urlParameters' => array(
+                        'urlParameters' => [
                             'mode' => 'wizard',
-                        )
-                    ),
+                        ],
+                    ],
                     'JSopenParams' => 'height=400,width=550,status=0,menubar=0,scrollbars=1',
-                    'params' => Array(
+                    'params' => [
                         // List of tabs to hide in link window. Allowed values are:
                         // file, mail, page, spec, folder, url
                         'blindLinkOptions' => 'mail,file,page,spec,folder',
 
                         // allowed extensions for file
                         //'allowedExtensions' => 'mp3,ogg',
-                    )
-                )
-            ),
+                    ],
+                ],
+            ],
             'softref' => 'typolink'
-        )
-    ),
+        ],
+    ],
 
-	'tx_rkwregistration_xing_url' => array(
+	'tx_rkwregistration_xing_url' => [
 		'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_xing_url',
 		'exclude' => 0,
-		'config'=>array(
+		'config'=>[
 			'type'=>'input',
             'size' => 30,
             'max' => '256',
             'eval' => 'trim',
-            'wizards' => array(
-                'link' => array(
+            'wizards' => [
+                'link' => [
                     'type' => 'popup',
                     'title' => 'LLL:EXT:cms/locallang_ttc.xlf:header_link_formlabel',
                     'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_link.gif',
-                    'module' => array(
+                    'module' => [
                         'name' => 'wizard_link',
-                        'urlParameters' => array(
+                        'urlParameters' => [
                             'mode' => 'wizard',
-                        )
-                    ),
+                        ],
+                    ],
                     'JSopenParams' => 'height=400,width=550,status=0,menubar=0,scrollbars=1',
-                    'params' => Array(
+                    'params' => [
                         // List of tabs to hide in link window. Allowed values are:
                         // file, mail, page, spec, folder, url
                         'blindLinkOptions' => 'mail,file,page,spec,folder',
 
                         // allowed extensions for file
                         //'allowedExtensions' => 'mp3,ogg',
-                    )
-                )
-            ),
+                    ],
+                ],
+            ],
             'softref' => 'typolink'
-		)
-	),
+		],
+	],
 
 
-    'tx_rkwregistration_registered_by' => array(
+    'tx_rkwregistration_registered_by' => [
         'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by',
         'exclude' => 0,
-		'config'=>array(
+		'config'=>[
 			'type' => 'select',
             'renderType' => 'selectSingle',
 			'size' => 1,
@@ -171,82 +194,82 @@ $tempCols = array(
 			'maxitems' => 1,
 			'default' => 0,
             'readOnly' => 1,
-			'items' => array(
-				array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.rkw', '0'),
-				array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.facebook', '1'),
-				array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.twitter', '2'),
-				array('LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.xing', '3'),
-			),
-		)
-    ),
+			'items' => [
+				['LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.rkw', '0'],
+				['LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.facebook', '1'],
+				['LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.twitter', '2'],
+				['LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.xing', '3'],
+			],
+		],
+    ],
 
-    'tx_rkwregistration_register_remote_ip' => array(
+    'tx_rkwregistration_register_remote_ip' => [
         'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_register_remote_ip',
         'exclude' => 0,
-        'config'=>array(
+        'config'=>[
             'type'=>'input',
             'readOnly' => 1,
             'size' => 30,
             'max' => '256',
             'eval' => 'trim',
-        )
-    ),
+        ],
+    ],
 
-    'tx_rkwregistration_login_error_count' => array(
+    'tx_rkwregistration_login_error_count' => [
         'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_login_error_count',
         'exclude' => 0,
-        'config'=>array(
+        'config'=>[
             'type'=>'input',
             'size' => 20,
             'max' => '256',
             'eval' => 'trim,int'
-        )
-    ),
+        ],
+    ],
 
-    'tx_rkwregistration_language_key' => array(
+    'tx_rkwregistration_language_key' => [
         'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_language_key',
         'exclude' => 0,
-        'config'=>array(
+        'config'=>[
             'type'=>'input',
             'size' => 20,
             'max' => '256',
             'eval' => 'trim',
-        )
-    ),
+        ],
+    ],
 
-	'tx_rkwregistration_is_anonymous' => array(
+	'tx_rkwregistration_is_anonymous' => [
 		'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_is_anonymous',
 		'exclude' => 0,
-		'config'=>array(
+		'config'=>[
 			'type' => 'check',
 			'readOnly' => 1,
 			'default' => 0,
-			'items' => array(
-				'1' => array(
+			'items' => [
+				'1' => [
 					'0' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_is_anonymous'
-				)
-			)
-		)
-	),
+				],
+			],
+		],
+	],
 
-    'tx_rkwregistration_cross_domain_token' => array(
-        'config'=>array(
+    'tx_rkwregistration_cross_domain_token' => [
+        'config'=>[
             'type' => 'passthrough',
-        )
-    ),
+        ],
+    ],
 
-    'tx_rkwregistration_cross_domain_token_tstamp' => array(
-        'config'=>array(
+    'tx_rkwregistration_cross_domain_token_tstamp' => [
+        'config'=>[
             'type' => 'passthrough',
-        )
-    ),
+        ],
+    ],
 
 	# this entry is to show the users privacy entries in backend
 	# this field does not exist in the database, because this is not necessary. This uni-directional relation works fine
-	'tx_rkwregistration_privacy' => array(
+	'tx_rkwregistration_privacy' => [
 		'exclude' => 1,
 		'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_privacy',
-		'config' => array(
+		'config' => [
 			'type' => 'inline',
 			'foreign_table' => 'tx_rkwregistration_domain_model_privacy',
 			'foreign_field' => 'frontend_user',
@@ -264,14 +287,15 @@ $tempCols = array(
 					'new' => FALSE,
 				],
 			],
-		)
-	),
+		],
+	],
+];
 
-);
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('fe_users',$tempCols);
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','--div--;LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.socialmedia,tx_rkwregistration_twitter_id', '', '');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_twitter_url,  tx_rkwregistration_facebook_id, tx_rkwregistration_facebook_url, tx_rkwregistration_xing_url', '', 'after:tx_rkwregistration_twitter_id');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_title','','after:title');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_gender','','before:name');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_mobile','','after:telephone');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_federal_state','','after:city');
