@@ -406,6 +406,74 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
 
     /**
+     * Remove user
+     *
+     * According to General Data Protection Regulation (GDPR), we anonymize their data
+     * This way we can keep the existing relations without having to delete the user data completely
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $object
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @return void
+     */
+    public function remove($object)
+    {
+
+        $propertiesToAnonymize = [
+            'username' => 'anonymous' . $object->getUid() . '@rkw.de',
+            'email' => 'anonymous' . $object->getUid() . '@rkw.de',
+            'name' => 'Deleted Anoymous',
+            'firstName' => 'Deleted',
+            'middleName' => '',
+            'lastName' => 'Anonymous',
+            'address' => '',
+            'telephone' => '',
+            'fax' => '',
+            'title' => '',
+            'zip' => '',
+            'city' => '',
+            'country' => '',
+            'www' => '',
+            'company' => '',
+            'image' => '',
+            'txRkwregistrationMobile' => '',
+            'txRkwregistrationGender' => 99,
+            'txRkwregistrationFacebookUrl' => '',
+            'txRkwregistrationTwitterUrl' => '',
+            'txRkwregistrationXingUrl' =>'',
+            'txRkwregistrationFacebookId' => '',
+            'txRkwregistrationTwitterId' => 0,
+
+        ];
+
+        foreach ($propertiesToAnonymize as $property => $value) {
+            $setter = 'set' . ucfirst($property);
+            $object->$setter($value);
+        }
+
+
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+
+        /** @var \RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository $shippingAddressRepository */
+        $shippingAddressRepository = $objectManager->get(\RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository::class);
+        $shippingAddresses = $shippingAddressRepository->findByFrontendUser($object);
+        foreach ($shippingAddresses as $shippingAddress) {
+            $shippingAddressRepository->remove($shippingAddress);
+        }
+
+
+        $this->update($object);
+
+        /** @toDo: do this via cascadeRemove */
+        // delete shipping addresses
+
+
+        $this->persistenceManager->persistAll();
+        parent::remove($object);
+    }
+
+    /**
      * Delete user from DB (really!)
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser

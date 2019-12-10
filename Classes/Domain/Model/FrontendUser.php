@@ -137,9 +137,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     protected $txRkwregistrationTwitterId = 0;
 
     /**
-     * @var integer
+     * @var string
      */
-    protected $txRkwregistrationFacebookId = 0;
+    protected $txRkwregistrationFacebookId = '';
 
     /**
      * @var boolean
@@ -856,7 +856,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     public function setTxRkwregistrationFacebookId($facebookId)
     {
-        $this->txRegistrationFacebookId = $facebookId;
+        $this->txRkwregistrationFacebookId = $facebookId;
     }
 
     /**

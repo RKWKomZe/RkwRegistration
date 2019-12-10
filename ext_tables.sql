@@ -59,7 +59,7 @@ CREATE TABLE fe_users (
     tx_rkwregistration_twitter_id int(11) DEFAULT '0' NOT NULL,
 	tx_rkwregistration_twitter_url varchar(255) DEFAULT '' NOT NULL,
 
-    tx_rkwregistration_facebook_id int(11) DEFAULT '0' NOT NULL,
+    tx_rkwregistration_facebook_id varchar(255) DEFAULT '' NOT NULL,
 	tx_rkwregistration_facebook_url varchar(255) DEFAULT '' NOT NULL,
 
 	tx_rkwregistration_xing_url varchar(255) DEFAULT '' NOT NULL,

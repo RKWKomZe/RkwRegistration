@@ -26,7 +26,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
- * @package RKW_RkwMailer
+ * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class FrontendUserRepositoryTest extends FunctionalTestCase
@@ -151,6 +151,85 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
 
         $result = $this->subject->findByUidSoap(1);
         static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $result);
+
+    }
+
+    //===================================================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function removeAnonymizesUser()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a frontend user
+         * When I delete the frontend user
+         * Then the user data is anonymized
+         */
+        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check40.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->subject->findByUid(1);
+
+        $this->subject->remove($frontendUser);
+
+        static::assertEquals('anonymous1@rkw.de', $frontendUser->getUsername());
+        static::assertEquals('anonymous1@rkw.de', $frontendUser->getEmail());
+        static::assertEquals('Deleted', $frontendUser->getFirstName());
+        static::assertEquals('Anonymous', $frontendUser->getLastName());
+        static::assertEquals('Deleted Anonymous', $frontendUser->getName());
+        static::assertEquals('', $frontendUser->getCompany());
+        static::assertEquals('', $frontendUser->getAddress());
+        static::assertEquals('', $frontendUser->getZip());
+        static::assertEquals('', $frontendUser->getCity());
+        static::assertEquals('', $frontendUser->getTelephone());
+        static::assertEquals('', $frontendUser->getFax());
+        static::assertEquals('', $frontendUser->getTitle());
+        static::assertEquals('', $frontendUser->getWww());
+        static::assertEquals(99, $frontendUser->getTxRkwregistrationGender());
+        static::assertEquals('', $frontendUser->getTxRkwregistrationMobile());
+        static::assertEquals('', $frontendUser->getTxRkwregistrationFacebookUrl());
+        static::assertEquals('', $frontendUser->getTxRkwregistrationTwitterUrl());
+        static::assertEquals('', $frontendUser->getTxRkwregistrationXingUrl());
+        static::assertEquals(0, $frontendUser->getTxRkwregistrationTwitterId());
+        static::assertEquals('', $frontendUser->getTxRkwregistrationFacebookId());
+
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function removeDeletesShippingAddressesOfUser()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a frontend user
+         * When I delete the frontend user
+         * Then the user data is anonymized
+         */
+        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check50.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->subject->findByUid(1);
+
+        $this->subject->remove($frontendUser);
+
+
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+
+        /** @var \RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository $shippingAddressRepository */
+        $shippingAddressRepository = $objectManager->get(\RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository::class);
+        $shippingAddresses = $shippingAddressRepository->findByFrontendUser($frontendUser);
+
+        static::assertEmpty($shippingAddresses);
 
     }
 

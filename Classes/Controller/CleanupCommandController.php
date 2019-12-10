@@ -119,15 +119,22 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
 
                     /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $user */
                     $cnt = 0;
+                    $cntAnonymous = 0;
                     foreach ($userList as $user) {
-                        $this->frontendUserRepository->removeHard($user);
-                        $cnt++;
+
+                        if ($user->getTxRkwregistrationIsAnonymous()) {
+                            $this->frontendUserRepository->removeHard($user);
+                            $cnt++;
+                        } else {
+                            $this->frontendUserRepository->remove($user);
+                            $cntAnonymous++;
+                        }
                     }
 
-                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully removed %s expired or deleted user(s) completely from the database.', $cnt));
+                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully removed %s expired or deleted user(s) completely from the database and anonymized %s users.', $cnt, $cntAnonymous));
 
                 } else {
-                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, 'No expired or deleted users to remove completely from the database found.');
+                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, 'No expired or deleted users to remove completely from the database or to anonymize found.');
                 }
             }
 
