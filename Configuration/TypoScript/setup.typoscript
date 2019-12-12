@@ -215,6 +215,8 @@ plugin.tx_rkwregistration {
             lifetimeAnonymous = {$plugin.tx_rkwregistration.settings.users.lifetimeAnonymous}
             lifetime = {$plugin.tx_rkwregistration.settings.users.lifetime}
 
+            anonymizeAfterDays = {$plugin.tx_rkwregistration.settings.users.anonymizeAfterDays}
+
 			groupsOnRegister = {$plugin.tx_rkwregistration.settings.users.groupsOnRegister}
 			groupsOnRegisterAnonymous = {$plugin.tx_rkwregistration.settings.users.groupsOnRegisterAnonymous}
 			languageKeyOnRegister = {$plugin.tx_rkwregistration.settings.users.languageKeyOnRegister}
@@ -232,6 +234,39 @@ plugin.tx_rkwregistration {
 			}
 
 		}
+
+		dataProtection {
+
+            anonymizeAfterDays = {$plugin.tx_rkwregistration.settings.dataProtection.anonymizeAfterDays}
+            classes {
+
+                RKW\RkwRegistration\Domain\Model\FrontendUser {
+                    username = anonymous{UID}@rkw.de
+                    email = anonymous{UID}@rkw.de
+                    name = Anonymous Anonymous
+                    firstName = Anonymous
+                    middleName =
+                    lastName = Anonymous
+                    address =
+                    telephone =
+                    fax =
+                    title =
+                    zip =
+                    city =
+                    country =
+                    www =
+                    company =
+                    image =
+                    txRkwregistrationMobile =
+                    txRkwregistrationGender = 99
+                    txRkwregistrationFacebookUrl =
+                    txRkwregistrationTwitterUrl =
+                    txRkwregistrationXingUrl =
+                    txRkwregistrationFacebookId =
+                    txRkwregistrationTwitterId = 0
+                }
+            }
+        }
 
         titles {
             storagePid = {$plugin.tx_rkwregistration.settings.titles.storagePid}
@@ -260,8 +295,11 @@ plugin.tx_rkwregistration {
 
 		}
 	}
-
 }
+
+// for cronjob
+module.tx_rkwregistration < plugin.tx_rkwregistration
+
 
 
 # Add jquery if not disabled

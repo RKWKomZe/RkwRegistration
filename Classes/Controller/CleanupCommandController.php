@@ -100,17 +100,22 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
 
     /**
      * Cleanup for deleted and expired users
-     * !! DANGER !! Cleanup executes a real MySQL-Delete- Query!!!
+     *
+     * !!! The user data should not be anonymised before the end of the period stated in the
+     * data protection declaration, since the consent must still be proven after this period !!!
+     * default: three years
      *
      * @param integer $daysFromNow Users that have been marked as deleted x days from now are deleted
      * @return void
      */
-    public function cleanupExpiredOrDeletedUsersCommand($daysFromNow = 365)
+    public function anonymizeExpiredOrDeletedUsersCommand($daysFromNow = 1095)
     {
 
         try {
 
-            if ($cleanupTimestamp = time() - intval($daysFromNow) * 24 * 60 * 60) {
+            if (
+                ($cleanupTimestamp = time() - intval($daysFromNow) * 24 * 60 * 60)
+            ){
 
                 if (
                     ($userList = $this->frontendUserRepository->findExpiredOrDeleted($cleanupTimestamp))
@@ -119,27 +124,21 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
 
                     /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $user */
                     $cnt = 0;
-                    $cntAnonymous = 0;
                     foreach ($userList as $user) {
 
-                        if ($user->getTxRkwregistrationIsAnonymous()) {
-                            $this->frontendUserRepository->removeHard($user);
-                            $cnt++;
-                        } else {
-                            $this->frontendUserRepository->remove($user);
-                            $cntAnonymous++;
-                        }
+                        $this->frontendUserRepository->anonymize($user);
+                        $cnt++;
                     }
 
-                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully removed %s expired or deleted user(s) completely from the database and anonymized %s users.', $cnt, $cntAnonymous));
+                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully anonymized %s expired or deleted user(s).', $cnt));
 
                 } else {
-                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, 'No expired or deleted users to remove completely from the database or to anonymize found.');
+                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, 'No expired or deleted users to anonymize found.');
                 }
             }
 
         } catch (\Exception $e) {
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('An error occured: %s', $e->getMessage()));
+            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('An error occurred: %s', $e->getMessage()));
         }
     }
 

@@ -94,12 +94,49 @@ plugin.tx_rkwregistration {
 
             passwordSettings {
                 # cat=plugin.tx_rkwregistration//a; type=integer; label=Minimum password length (default = 8)
-                minLength =
+                minLength = 8
 
                 # cat=plugin.tx_rkwregistration//a; type=boolean; label=Password must contain letters and numbers (default = false)
-                alphaNum =
+                alphaNum = true
             }
 
+        }
+
+        dataProtection {
+
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Anonymize user data after x days if user is deleted or expired
+            anonymizeAfterDays = 1095
+
+            classes {
+
+                RKW\RkwRegistration\Domain\Model\FrontendUser {
+
+                    username = anonymous{ID}@rkw.de
+                    email = anonymous{ID}@rkw.de
+                    name = Anonymous Anonymous
+                    firstName = Anonymous
+                    middleName =
+                    lastName = Anonymous
+                    address =
+                    telephone =
+                    fax =
+                    title =
+                    zip =
+                    city =
+                    country =
+                    www =
+                    company =
+                    image =
+                    txRkwregistrationMobile =
+                    txRkwregistrationGender = 99
+                    txRkwregistrationFacebookUrl =
+                    txRkwregistrationTwitterUrl =
+                    txRkwregistrationXingUrl =
+                    txRkwregistrationFacebookId =
+                    txRkwregistrationTwitterId = 0
+
+                }
+            }
         }
 
         titles {

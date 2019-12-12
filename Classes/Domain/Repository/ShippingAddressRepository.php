@@ -42,37 +42,5 @@ class ShippingAddressRepository extends \TYPO3\CMS\Extbase\Persistence\Repositor
     }
 
 
-    /**
-     * Remove shipping address
-     *
-     * According to General Data Protection Regulation (GDPR), we anonymize their data
-     * This way we can keep the existing relations without having to delete the user data completely
-     *
-     * @param \RKW\RkwRegistration\Domain\Model\ShippingAddress $object
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @return void
-     */
-    public function remove($object)
-    {
-
-        $propertiesToAnonymize = [
-            'gender' => 99,
-            'firstName' => 'Deleted',
-            'lastName' => 'Anonymous',
-            'company' => '',
-            'address' => '',
-            'zip' => '',
-            'city' => '',
-        ];
-
-        foreach ($propertiesToAnonymize as $property => $value) {
-            $setter = 'set' . ucfirst($property);
-            $object->$setter($value);
-        }
-
-        $this->update($object);
-        parent::remove($object);
-    }
 
 }
