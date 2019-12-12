@@ -63,7 +63,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     protected $email;
 
-
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\FrontendUserGroup>
      */
@@ -72,28 +71,24 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     /**
      * txRkwregistrationTitle
      *
-     * @var \RKW\RkwRegistration\Domain\Model\Title
+     * @var \RKW\RkwRegistration\Domain\Model\Title|NULL
      */
     protected $txRkwregistrationTitle = null;
-
 
     /**
      * @var string
      */
     protected $txRkwregistrationMobile = '';
 
-
     /**
      * @var integer
      */
     protected $txRkwregistrationGender = 99;
 
-
     /**
      * @var integer
      */
     protected $txRkwregistrationDisabledByOptIn;
-
 
     /**
      * @var string
@@ -109,7 +104,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      * @var string
      */
     protected $txRkwregistrationLanguageKey = '';
-
 
     /**
      * @var integer
@@ -249,11 +243,19 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     public function setTxRkwregistrationTitle(\RKW\RkwRegistration\Domain\Model\Title $txRkwregistrationTitle = null)
     {
-        if ($txRkwregistrationTitle) {
-            $this->txRkwregistrationTitle = $txRkwregistrationTitle;
+        if ($txRkwregistrationTitle->getName() !== '') {
+            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+            /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
+            $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
+
+            if ($existingTitle = $titleRepository->findOneByName($txRkwregistrationTitle->getName())) {
+                $this->txRkwregistrationTitle = $existingTitle;
+            } else {
+                $this->setTitle($txRkwregistrationTitle->getName());
+            }
         }
     }
-
 
     /**
      * Returns the title as text
