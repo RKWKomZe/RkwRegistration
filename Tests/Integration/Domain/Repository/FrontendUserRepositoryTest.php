@@ -211,6 +211,91 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
 
     }
 
+
+    //===================================================================
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \Exception
+     */
+    public function findExpiredSinceDaysReturnsFrontendUsersThatHaveBeenExpiredSinceAGivenDay ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are two frontend user
+         * Given one of the frontend users is expired since five days
+         * Given that the other frontend user is expired since four days
+         * When I fetch the frontend users that have been expired five days before
+         * Then only one frontend user is returned
+         * Then the frontend user that has is expired since five days is returned
+         */
+        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check60.xml');
+
+        $result = $this->subject->findExpiredSinceDays(5, 864000);
+
+        static::assertCount(1,  $result);
+        static::assertEquals(2, $result->getFirst()->getUid());
+
+    }
+
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \Exception
+     */
+    public function findExpiredSinceDaysIgnoresStoragePid ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are two expired frontend user
+         * Given one of the frontend users is expired since five days
+         * Given that this frontend user has a different storage pid
+         * Given the other frontend user is expired since four days
+         * When I fetch the frontend users that have been expired five days before
+         * Then only one frontend user is returned
+         * Then the frontend user that has is expired since five days is returned
+         */
+        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check70.xml');
+
+        $result = $this->subject->findExpiredSinceDays(5, 864000);
+
+        static::assertCount(1,  $result);
+        static::assertEquals(2, $result->getFirst()->getUid());
+
+    }
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \Exception
+     */
+    public function findExpiredSinceDaysExcludesDeleted ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are two expired frontend user
+         * Given one of the frontend users is expired since five days
+         * Given that this frontend user is deleted
+         * Given the other frontend user is expired since four days
+         * When I fetch the frontend users that have been expired five days before
+         * Then only one frontend user is returned
+         * Then the frontend user that has is expired since five days is returned
+         */
+        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check80.xml');
+
+        $result = $this->subject->findExpiredSinceDays(5, 864000);
+
+        static::assertCount(0,  $result);
+
+    }
+
     /**
      * TearDown
      */

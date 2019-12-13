@@ -46,6 +46,12 @@ class DataProtectionUtility
     protected $objectManager;
 
 
+    /**
+     * @var \TYPO3\CMS\Core\Log\Logger
+     */
+    protected $logger;
+
+
 
     /**
      * Anonymizes all data of a frontend user that has been deleted or inactive since a given time
@@ -53,6 +59,7 @@ class DataProtectionUtility
      * !!! The user data should not be anonymised before the end of the period stated in your
      * data protection declaration, since the consent must still be proven after this period !!!
      *
+     * @param $anonymizeAfterDays
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
@@ -61,16 +68,19 @@ class DataProtectionUtility
      * @throws \RKW\RkwRegistration\Exception
      * @return void
      */
-    public function anonymizeAll ()
+    public function anonymizeAll ($anonymizeAfterDays)
     {
 
         $settings = $this->getSettings();
-        $days = intval($settings['dataProtection']['anonymizeAfterDays']) ? intval($settings['dataProtection']['anonymizeAfterDays']) : 365;
         $mappings = $settings['dataProtection']['classes'];
+        if (! $anonymizeAfterDays) {
+            $anonymizeAfterDays = intval($settings['dataProtection']['anonymizeAfterDays']) ? intval($settings['dataProtection']['anonymizeAfterDays']) : 365;
+        }
+
         if (
             (is_array($mappings))
             && (count($mappings))
-            && ($frontendUserList = $this->frontendUserRepository->findDeletedSinceDays($days))
+            && ($frontendUserList = $this->frontendUserRepository->findDeletedSinceDays($anonymizeAfterDays))
             && (count($frontendUserList))
         ) {
 
@@ -83,6 +93,7 @@ class DataProtectionUtility
 
                         $this->anonymize($frontendUser);
                         $this->frontendUserRepository->update($frontendUser);
+                        $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Anonymized data of model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
 
                     } else {
 
@@ -99,6 +110,7 @@ class DataProtectionUtility
                                 foreach ($result as $object) {
                                     $this->anonymize($object, $frontendUser);
                                     $repository->update($object);
+                                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Anonymized data of model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
                                 }
                             }
                         }
@@ -149,7 +161,6 @@ class DataProtectionUtility
             }
         }
     }
-
 
 
     /**
@@ -247,6 +258,23 @@ class DataProtectionUtility
     protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
     {
         return Common::getTyposcriptConfiguration('rkwregistration', $which);
+    }
+
+
+
+    /**
+     * Returns logger instance
+     *
+     * @return \TYPO3\CMS\Core\Log\Logger
+     */
+    protected function getLogger()
+    {
+
+        if (!$this->logger instanceof \TYPO3\CMS\Core\Log\Logger) {
+            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+        }
+
+        return $this->logger;
     }
 
 }

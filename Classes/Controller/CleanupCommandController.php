@@ -45,10 +45,19 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
     /**
      * frontendUserRepository
      *
-     * @var \RKW\RkwWepstra\Domain\Repository\FrontendUserRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
      * @inject
      */
     protected $frontendUserRepository;
+
+
+    /**
+     * frontendUserRepository
+     *
+     * @var \RKW\RkwRegistration\Utilities\DataProtectionUtility
+     * @inject
+     */
+    protected $dataProtectionUtility;
 
 
     /**
@@ -99,43 +108,62 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
 
 
     /**
-     * Cleanup for deleted and expired users
+     * Cleanup for expired users
      *
-     * !!! The user data should not be anonymised before the end of the period stated in the
-     * data protection declaration, since the consent must still be proven after this period !!!
-     * default: three years
+     * Deletes expired users after x days (deleted = 1)
      *
-     * @param integer $daysFromNow Users that have been marked as deleted x days from now are deleted
+     * @param integer $expiredDays Delete users that are expired since x days
      * @return void
      */
-    public function anonymizeExpiredOrDeletedUsersCommand($daysFromNow = 1095)
+    public function deleteExpiredUsersCommand($expiredDays = 1095)
     {
 
         try {
 
             if (
-                ($cleanupTimestamp = time() - intval($daysFromNow) * 24 * 60 * 60)
-            ){
+                ($userList = $this->frontendUserRepository->findExpiredSinceDays($expiredDays))
+                && (count($userList))
+            ) {
 
-                if (
-                    ($userList = $this->frontendUserRepository->findExpiredOrDeleted($cleanupTimestamp))
-                    && (count($userList))
-                ) {
-
-                    /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $user */
-                    $cnt = 0;
-                    foreach ($userList as $user) {
-
-                        $this->frontendUserRepository->anonymize($user);
-                        $cnt++;
-                    }
-
-                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully anonymized %s expired or deleted user(s).', $cnt));
-
-                } else {
-                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, 'No expired or deleted users to anonymize found.');
+                /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $user */
+                $cnt = 0;
+                foreach ($userList as $user) {
+                    $this->frontendUserRepository->remove($user);
+                    $cnt++;
                 }
+
+                $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully deleted %s expired user(s).', $cnt));
+
+            } else {
+                $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, 'No expired users to delete found.');
             }
+
+
+        } catch (\Exception $e) {
+            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('An error occurred: %s', $e->getMessage()));
+        }
+    }
+
+
+
+    /**
+     * Cleanup for deleted users
+     *
+     * Anonymizes data of users that are deleted since x days
+     * !!! The user data should not be anonymised before the end of the period stated in the
+     * data protection declaration, since the consent must still be proven after this period !!!
+     * default: three years
+     *
+     * @param integer $deletedDays Anonymize users that are expired since x days
+     * @return void
+     */
+    public function anonymizeDeletedUsersCommand($deletedDays = 1095)
+    {
+
+        try {
+
+            $this->dataProtectionUtility->anonymizeAll($deletedDays);
+            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully anonymized data of fe-users.'));
 
         } catch (\Exception $e) {
             $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('An error occurred: %s', $e->getMessage()));
@@ -156,10 +184,5 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
         }
 
         return $this->logger;
-        //===
     }
-
-
 }
-
-?>
