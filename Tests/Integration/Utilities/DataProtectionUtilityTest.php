@@ -182,7 +182,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function anonymizeShippingAddressThrowsExceptionIfShippingAddressIsNotExisting()
+    public function anonymizeThrowsExceptionIfShippingAddressIsNotExisting()
     {
 
         /**
@@ -198,7 +198,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
 
         static::expectException(\RKW\RkwRegistration\Exception::class);
 
-        $this->subject->anonymizeShippingAddress($shippingAddress);
+        $this->subject->anonymize($shippingAddress);
 
     }
 
@@ -206,7 +206,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function anonymizeShippingAddressAnonymizesShippingAddressesOfUser()
+    public function anonymizeAnonymizesShippingAddressesOfUser()
     {
 
         /**
@@ -221,18 +221,289 @@ class DataProtectionUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
         $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
 
-        $this->subject->anonymizeShippingAddress($shippingAddress);
+        $this->subject->anonymize($shippingAddress);
 
         static::assertEquals(99, $shippingAddress->getGender());
-        static::assertEquals('Deleted', $shippingAddress->getFirstName());
+        static::assertEquals('Anonymous', $shippingAddress->getFirstName());
         static::assertEquals('Anonymous', $shippingAddress->getLastName());
-        static::assertEquals('Deleted Anonymous', $shippingAddress->getFullName());
+        static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
         static::assertEquals('', $shippingAddress->getCompany());
         static::assertEquals('', $shippingAddress->getAddress());
         static::assertEquals('', $shippingAddress->getZip());
         static::assertEquals('', $shippingAddress->getCity());
 
     }
+
+
+    //===================================================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function anonymizeAllAnonymizesFrontendUser()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a frontend user
+         * Given the frontend user has been deleted since more days then configured for anonymization
+         * When I anonymize all deleted users
+         * Then the user data is anonymised
+         */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check30.xml');
+
+        $this->subject->anonymizeAll();
+        $this->persistenceManager->persistAll();
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        static::assertEquals('anonymous1@rkw.de', $frontendUser->getUsername());
+        static::assertEquals('anonymous1@rkw.de', $frontendUser->getEmail());
+
+    }
+
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function anonymizeAllAnonymizesRelatedData()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a frontend user
+         * Given this frontend user has a shipping address
+         * Given the frontend user has been deleted since more days then configured for anonymization
+         * When I anonymize all deleted users
+         * Then the shipping address of the frontend user is anonymised
+         */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check40.xml');
+
+        $this->subject->anonymizeAll();
+        $this->persistenceManager->persistAll();
+
+        /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
+        $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
+
+        static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function anonymizeAllAnonymizesDeletedRelatedData()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a frontend user
+         * Given this frontend user has a deleted shipping address
+         * Given the frontend user has been deleted since more days then configured for anonymization
+         * When I anonymize all deleted users
+         * Then the shipping address of the frontend user is anonymised
+         */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check50.xml');
+
+        $this->subject->anonymizeAll();
+        $this->persistenceManager->persistAll();
+
+        /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
+        $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
+
+        static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function anonymizeAllAnonymizesHiddenRelatedData()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a frontend user
+         * Given this frontend user has a hidden shipping address
+         * Given the frontend user has been deleted since more days then configured for anonymization
+         * When I anonymize all deleted users
+         * Then the shipping address of the frontend user is anonymised
+         */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check60.xml');
+
+        $this->subject->anonymizeAll();
+        $this->persistenceManager->persistAll();
+
+        /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
+        $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
+
+        static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function anonymizeAllAnonymizesIgnoresStoragePidForRelatedData()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a frontend user
+         * Given this frontend user has a shipping address with a different storage pid
+         * Given the frontend user has been deleted since more days then configured for anonymization
+         * When I anonymize all deleted users
+         * Then the shipping address of the frontend user is anonymised
+         */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check70.xml');
+
+        $this->subject->anonymizeAll();
+        $this->persistenceManager->persistAll();
+
+        /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
+        $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
+
+        static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
+
+    }
+
+    //===================================================================
+
+    /**
+     * @test
+     */
+    public function getRepositoryByModelClassNameChecksForExistingClasses()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a non existing model-class
+         * When I try to fetch the repository for this model-class
+         * Then null is returned
+         */
+        static::assertNull($this->subject->getRepositoryByModelClassName('Test\Model'));
+    }
+
+
+    /**
+     * @test
+     */
+    public function getRepositoryByModelClassNameReturnsRepository()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is an existing model-class
+         * When I try to fetch the repository for this model-class
+         * Then the corresponding repository is returned
+         */
+        static::assertInstanceOf(
+            \RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository::class,
+            $this->subject->getRepositoryByModelClassName('RKW\RkwRegistration\Domain\Model\ShippingAddress')
+        );
+    }
+
+
+
+    //===================================================================
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function getFrontendUserPropertyByModelClassNameChecksForExistingClasses()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a non existing model-class
+         * When I try to fetch the frontendUserGetter for this model-class
+         * Then null is returned
+         */
+        static::assertNull($this->subject->getFrontendUserPropertyByModelClassName('Test\Model'));
+    }
+
+
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function getFrontendUserPropertyByModelClassNameChecksForFrontendUserMethod()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a existing model-class
+         * Given this model class has no reference to a frontend user
+         * When I try to fetch the frontendUserGetter for this model-class
+         * Then null is returned
+         */
+        static::assertNull($this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\BackendUser'));
+    }
+
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function getFrontendUserPropertyByModelClassNameChecksForValidReference()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a existing model-class
+         * Given this model class has a reference to a frontend user
+         * Given the configured mapping field does not refer to the fe_user table
+         * When I try to fetch the frontendUserGetter for this model-class
+         * Then null is returned
+         */
+        static::assertNull($this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\Privacy'));
+    }
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function getFrontendUserPropertyByModelClassNameReturnsGetterMethod()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a existing model-class
+         * Given this model class has a reference to a frontend user
+         * When I try to fetch the frontendUserGetter for this model-class
+         * Then the corresponding frontendUserGetter is returned
+         */
+        static::assertEquals('frontendUser', $this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\ShippingAddress'));
+    }
+
+
 
 
     /**

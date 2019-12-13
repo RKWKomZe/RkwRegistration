@@ -18,21 +18,20 @@
         <deleted>1</deleted>
         <tstamp>518400</tstamp>
     </fe_users>
-    <fe_users>
-        <uid>2</uid>
+
+
+    <tx_rkwregistration_domain_model_shippingaddress>
+        <uid>1</uid>
         <pid>1</pid>
-        <username>spd@test.de</username>
-        <email>lauterbach@spd.de</email>
-        <first_name />
-        <last_name />
-        <company />
-        <address />
+        <gender>1</gender>
+        <first_name>Karl</first_name>
+        <last_name>Lauterbach</last_name>
+        <company>SPD</company>
+        <address>Straßenring 123</address>
         <zip>10969</zip>
         <city>Hamburg</city>
-        <tx_rkwregistration_gender>0</tx_rkwregistration_gender>
-        <tx_rkwregistration_title>0</tx_rkwregistration_title>
-        <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
+        <frontend_user>1</frontend_user>
         <deleted>1</deleted>
-        <tstamp>432000</tstamp>
-    </fe_users>
+    </tx_rkwregistration_domain_model_shippingaddress>
+
 </dataset>

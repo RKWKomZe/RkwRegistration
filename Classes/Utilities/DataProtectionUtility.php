@@ -2,7 +2,8 @@
 
 namespace RKW\RkwRegistration\Utilities;
 
-use http\Exception;
+use \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
+use \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
 use \RKW\RkwBasics\Helper\Common;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -33,37 +34,18 @@ class DataProtectionUtility
 
 
     /**
-     * Signal name for use in ext_localconf.php
-     *
-     * @const string
-     */
-    const SIGNAL_ANONYMIZE_FRONTEND_USER = 'anonymizeFrontendUser';
-
-    /**
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
      * @inject
      */
     protected $frontendUserRepository;
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
      * @inject
      */
-    protected $shippingAddressRepository;
+    protected $objectManager;
 
-    /**
-     * @var \RKW\RkwRegistration\Domain\Repository\PrivacyRepository
-     * @inject
-     */
-    protected $privacyRepository;
 
-    /**
-     * Signal-Slot Dispatcher
-     *
-     * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
-     * @inject
-     */
-    protected $signalSlotDispatcher;
 
     /**
      * Anonymizes all data of a frontend user that has been deleted or inactive since a given time
@@ -71,12 +53,11 @@ class DataProtectionUtility
      * !!! The user data should not be anonymised before the end of the period stated in your
      * data protection declaration, since the consent must still be proven after this period !!!
      *
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \RKW\RkwRegistration\Exception
      * @return void
      */
@@ -84,30 +65,42 @@ class DataProtectionUtility
     {
 
         $settings = $this->getSettings();
-        $days = intval($settings['dataProtection.']['anonymizeAfterDays']) ? intval($settings['dataProtection.']['anonymizeAfterDays']) : 365;
-        if ($cleanupTimestamp = time() - intval($days) * 24 * 60 * 60){
+        $days = intval($settings['dataProtection']['anonymizeAfterDays']) ? intval($settings['dataProtection']['anonymizeAfterDays']) : 365;
+        $mappings = $settings['dataProtection']['classes'];
+        if (
+            (is_array($mappings))
+            && (count($mappings))
+            && ($frontendUserList = $this->frontendUserRepository->findDeletedSinceDays($days))
+            && (count($frontendUserList))
+        ) {
 
-            if (
-                ($frontendUserList = $this->frontendUserRepository->findExpiredOrDeleted($cleanupTimestamp))
-                && (count($frontendUserList))
-            ) {
+            /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+            foreach ($frontendUserList as $frontendUser) {
 
-                /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-                foreach ($frontendUserList as $frontendUser) {
+                foreach ($mappings as $modelClassName => $propertyMap) {
 
-                    // signal slot
-                    $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_ANONYMIZE_FRONTEND_USER, array($frontendUser, $formRequest));
+                    if ($modelClassName == 'RKW\RkwRegistration\Domain\Model\FrontendUser') {
 
+                        $this->anonymize($frontendUser);
+                        $this->frontendUserRepository->update($frontendUser);
 
-                    $this->anonymize($frontendUser);
-                    $this->frontendUserRepository->update($frontendUser);
+                    } else {
 
+                        /** @var \TYPO3\CMS\Extbase\Persistence\Repository $repository */
+                        if (
+                            ($frontendUserProperty = $this->getFrontendUserPropertyByModelClassName($modelClassName))
+                            && ($repository = $this->getRepositoryByModelClassName($modelClassName))
+                        ) {
 
-                    if ($shippingAddresses = $this->shippingAddressRepository->findByFrontendUser($frontendUser)) {
-                        foreach ($shippingAddresses as $shippingAddress) {
-                            $this->anonymize($shippingAddress);
-                            $this->shippingAddressRepository->update($shippingAddress);
+                            /** @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $result */
+                            if ($result = $this->getRepositoryResults($repository, $frontendUser, $frontendUserProperty)) {
 
+                                /** @var \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object */
+                                foreach ($result as $object) {
+                                    $this->anonymize($object, $frontendUser);
+                                    $repository->update($object);
+                                }
+                            }
                         }
                     }
                 }
@@ -124,79 +117,125 @@ class DataProtectionUtility
      * data protection declaration, since the consent must still be proven after this period !!!
      *
      * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \RKW\RkwRegistration\Exception
-
      * @return void
      */
-    public function anonymize(\TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object)
+    public function anonymize(\TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object, $frontendUser = null)
     {
 
         if ($object->_isNew()) {
             throw new \RKW\RkwRegistration\Exception('Given object is not persisted.');
         }
 
+        if (! $frontendUser) {
+            $frontendUser = $object;
+        }
+
         $settings = $this->getSettings();
         $mappings = $settings['dataProtection']['classes'];
+        if (
+            (is_array($mappings))
+            && ($class = get_class($object))
+            && (in_array($class, array_keys($mappings)))
+            && ($propertyMap = $mappings[$class]['fields'])
+            && (is_array($propertyMap))
+        ){
 
-        var_dump($mappings);
-        if (is_array($mappings)) {
-
-            foreach ($mappings as $class => $propertyMap) {
-                if (
-                    ($object instanceof $class)
-                    && (is_array($propertyMap))
-                ){
-                    foreach ($propertyMap as $property => $newValue) {
-                        $setter = 'set' . ucfirst($property);
-                        $object->$setter(str_replace($object->getUid(), '{UID}', $newValue));
-                    }
-                }
+            foreach ($propertyMap as $property => $newValue) {
+                $setter = 'set' . ucfirst($property);
+                $object->$setter(str_replace('{UID}', $frontendUser->getUid(), $newValue));
             }
         }
     }
 
 
+
     /**
-     * anonymize the shipping address
+     * Get frontend user property for given model class name
      *
-     * According to General Data Protection Regulation (GDPR), we anonymize their data
-     * This way we can keep the existing relations without having to delete the user data completely
-     *
-     * !!! The user data should not be anonymised before the end of the period stated in your
-     * data protection declaration, since the consent must still be proven after this period !!!
-     *
-     * @param \RKW\RkwRegistration\Domain\Model\ShippingAddress $object
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @throws \RKW\RkwRegistration\Exception
-     * @return void
+     * @param $modelClassName
+     * @return string
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function anonymizeShippingAddress(\RKW\RkwRegistration\Domain\Model\ShippingAddress $object)
+    public function getFrontendUserPropertyByModelClassName ($modelClassName)
     {
 
-        if ($object->_isNew()) {
-            throw new \RKW\RkwRegistration\Exception('Given object is not persisted.');
+        $frontendUserProperty = null;
+        $settings = $this->getSettings();
+
+        if (
+            (class_exists($modelClassName))
+            && ($mappingField = $settings['dataProtection']['classes'][$modelClassName]['mappingField'])
+        ) {
+
+            /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper */
+            $dataMapper = $this->objectManager->get(DataMapper::class);
+
+            /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMap $dataMap */
+            if ($dataMap = $dataMapper->getDataMap($modelClassName)) {
+
+                /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap $columnMap */
+                $columnMap = $dataMap->getColumnMap($mappingField);
+                if (
+                    ($columnMap->getTypeOfRelation() == ColumnMap::RELATION_HAS_ONE)
+                    && ($columnMap->getChildTableName() == 'fe_users')) {
+                    $frontendUserProperty = $mappingField;
+                }
+            }
         }
 
-
-        $propertiesToAnonymize = [
-            'gender' => 99,
-            'firstName' => 'Deleted',
-            'lastName' => 'Anonymous',
-            'company' => '',
-            'address' => '',
-            'zip' => '',
-            'city' => '',
-        ];
-
-        foreach ($propertiesToAnonymize as $property => $value) {
-            $setter = 'set' . ucfirst($property);
-            $object->$setter($value);
-        }
-
-        $this->shippingAddressRepository->update($object);
+        return $frontendUserProperty;
     }
+
+
+
+    /**
+     * Get repository of given model class name
+     *
+     * @param $modelClassName
+     * @return \TYPO3\CMS\Extbase\Persistence\Repository|object|null
+     */
+    public function getRepositoryByModelClassName ($modelClassName)
+    {
+        // get repository class
+        $repositoryClassName = str_replace('Model', 'Repository', $modelClassName) . 'Repository';
+        if (
+            (class_exists($repositoryClassName))
+            && (class_exists($modelClassName))
+        ){
+            return $this->objectManager->get($repositoryClassName);
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Get results from repository
+     *
+     * @param \TYPO3\CMS\Extbase\Persistence\Repository $repository
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param string $frontendUserProperty
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    protected function getRepositoryResults(\TYPO3\CMS\Extbase\Persistence\Repository $repository, \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser , $frontendUserProperty)
+    {
+        $query  = $repository->createQuery();
+        $query->getQuerySettings()->setIncludeDeleted(true);
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+        $query->getQuerySettings()->setRespectStoragePage(false);
+
+        $query->matching(
+            $query->equals($frontendUserProperty, $frontendUser->getUid())
+        );
+
+        return $query->execute();
+    }
+
+
 
     /**
      * Returns TYPO3 settings
@@ -208,7 +247,6 @@ class DataProtectionUtility
     protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
     {
         return Common::getTyposcriptConfiguration('rkwregistration', $which);
-        //===
     }
 
 }

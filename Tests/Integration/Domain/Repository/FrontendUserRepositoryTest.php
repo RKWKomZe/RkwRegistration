@@ -154,7 +154,62 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
 
     }
 
+    //===================================================================
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \Exception
+     */
+    public function findDeletedSinceDaysReturnsFrontendUsersThatHaveBeenDeletedSinceAGivenDay ()
+    {
 
+        /**
+         * Scenario:
+         *
+         * Given there are two deleted frontend user
+         * Given one of the frontend users is deleted since five days
+         * Given that the other frontend user is deleted since four days
+         * When I fetch the frontend users that have been deleted five days before
+         * Then only one frontend user is returned
+         * Then the frontend user that has is deleted since five days is returned
+         */
+        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check40.xml');
+
+        $result = $this->subject->findDeletedSinceDays(5, 864000);
+
+        static::assertCount(1,  $result);
+        static::assertEquals(2, $result->getFirst()->getUid());
+
+    }
+
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \Exception
+     */
+    public function findDeletedSinceDaysIgnoresStoragePid ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are two deleted frontend user
+         * Given one of the frontend users is deleted since five days
+         * Given that this frontend user has a different storage pid
+         * Given the other frontend user is deleted since four days
+         * When I fetch the frontend users that have been deleted five days before
+         * Then only one frontend user is returned
+         * Then the frontend user that has is deleted since five days is returned
+         */
+        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check50.xml');
+
+        $result = $this->subject->findDeletedSinceDays(5, 864000);
+
+        static::assertCount(1,  $result);
+        static::assertEquals(2, $result->getFirst()->getUid());
+
+    }
 
     /**
      * TearDown

@@ -241,29 +241,50 @@ plugin.tx_rkwregistration {
             classes {
 
                 RKW\RkwRegistration\Domain\Model\FrontendUser {
-                    username = anonymous{UID}@rkw.de
-                    email = anonymous{UID}@rkw.de
-                    name = Anonymous Anonymous
-                    firstName = Anonymous
-                    middleName =
-                    lastName = Anonymous
-                    address =
-                    telephone =
-                    fax =
-                    title =
-                    zip =
-                    city =
-                    country =
-                    www =
-                    company =
-                    image =
-                    txRkwregistrationMobile =
-                    txRkwregistrationGender = 99
-                    txRkwregistrationFacebookUrl =
-                    txRkwregistrationTwitterUrl =
-                    txRkwregistrationXingUrl =
-                    txRkwregistrationFacebookId =
-                    txRkwregistrationTwitterId = 0
+
+                    mappingField =
+                    fields {
+
+                        username = anonymous{UID}@rkw.de
+                        email = anonymous{UID}@rkw.de
+                        name = Anonymous Anonymous
+                        firstName = Anonymous
+                        middleName =
+                        lastName = Anonymous
+                        address =
+                        telephone =
+                        fax =
+                        title =
+                        zip =
+                        city =
+                        country =
+                        www =
+                        company =
+                        image =
+                        txRkwregistrationMobile =
+                        txRkwregistrationGender = 99
+                        txRkwregistrationFacebookUrl =
+                        txRkwregistrationTwitterUrl =
+                        txRkwregistrationXingUrl =
+                        txRkwregistrationFacebookId =
+                        txRkwregistrationTwitterId = 0
+                    }
+                }
+
+
+                RKW\RkwRegistration\Domain\Model\ShippingAddress {
+
+                    mappingField = frontendUser
+                    fields {
+
+                        gender = 99
+                        firstName = Anonymous
+                        lastName = Anonymous
+                        company =
+                        address =
+                        zip =
+                        city =
+                    }
                 }
             }
         }
