@@ -260,6 +260,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findExpired($tolerance = 0, $anonymousOnly = false)
     {
+        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
@@ -298,6 +299,8 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findDeletedOrDisabled($tolerance = 0, $anonymousOnly = false)
     {
+
+        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);
@@ -380,6 +383,33 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         //===
     }
 
+    /**
+     * Find all expired frontend users that have been expired x days ago
+     *
+     * @param int $daysSinceExpire
+     * @param int $base base for the calculation. if not set, time() is used
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     */
+    public function findExpiredSinceDays ($daysSinceExpire = 0, $base = 0)
+    {
+
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+
+        $base = ($base ? $base : time());
+        $timestamp = $base - (intval($daysSinceExpire) * 24 * 60 * 60);
+
+        $query->matching(
+            $query->logicalAnd(
+                $query->greaterThan('endtime', 0),
+                $query->lessThanOrEqual('endtime', $timestamp)
+            )
+        );
+
+        return $query->execute();
+    }
 
 
 
@@ -395,13 +425,14 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     {
 
         $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
         $query->getQuerySettings()->setIncludeDeleted(true);
         $query->getQuerySettings()->setIgnoreEnableFields(true);
 
         $base = ($base ? $base : time());
         $timestamp = $base - (intval($daysSinceDelete) * 24 * 60 * 60);
 
-        $constraints = array(
+        $query->matching(
             $query->logicalAnd(
                 $query->equals('deleted', 1),
                 $query->logicalAnd(
@@ -409,10 +440,6 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     $query->lessThanOrEqual('tstamp', $timestamp)
                 )
             )
-        );
-
-        $query->matching(
-            $query->logicalAnd($constraints)
         );
 
         return $query->execute();
