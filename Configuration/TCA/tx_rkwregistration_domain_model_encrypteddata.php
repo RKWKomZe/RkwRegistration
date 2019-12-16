@@ -44,7 +44,7 @@ return [
                 'type' => 'passthrough',
             ],
         ],
-        'encrypted_value' => [
+        'encrypted_data' => [
             'config' => [
                 'type' => 'passthrough',
             ],

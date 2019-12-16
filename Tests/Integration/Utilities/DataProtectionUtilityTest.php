@@ -8,6 +8,7 @@ use RKW\RkwRegistration\Utilities\DataProtectionUtility;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository;
 use RKW\RkwRegistration\Domain\Repository\PrivacyRepository;
+use RKW\RkwRegistration\Domain\Repository\EncryptedDataRepository;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -67,6 +68,11 @@ class DataProtectionUtilityTest extends FunctionalTestCase
     private $privacyRepository = null;
 
     /**
+     * @var \RKW\RkwRegistration\Domain\Repository\EncryptedDataRepository
+     */
+    private $encryptedDataRepository = null;
+
+    /**
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
      */
     private $persistenceManager = null;
@@ -100,8 +106,41 @@ class DataProtectionUtilityTest extends FunctionalTestCase
         $this->frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
         $this->shippingAddressRepository = $this->objectManager->get(ShippingAddressRepository::class);
         $this->privacyRepository = $this->objectManager->get(PrivacyRepository::class);
+        $this->encryptedDataRepository = $this->objectManager->get(EncryptedDataRepository::class);
 
     }
+    //===================================================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function deleteAllExpiredDeletesAllExpiredFrontendUsers()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are three frontend user
+         * Given that one of the frontend user has been expired since more days then configured for deletion
+         * Given that one of the frontend user will expire in the future
+         * When I delete all expired users
+         * Then the expired frontend user is deleted
+         */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check120.xml');
+
+        $this->subject->deleteAllExpired();
+        $this->persistenceManager->persistAll();
+
+        /** @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $result*/
+        $result = $this->frontendUserRepository->findAll()->toArray();
+
+        static::assertCount(2, $result);
+        static::assertEquals(2, $result[0]->getUid());
+        static::assertEquals(3, $result[1]->getUid());
+
+    }
+
 
     //===================================================================
 
@@ -109,7 +148,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function anonymizeAllAnonymizesFrontendUser()
+    public function anonymizeAndEncryptAllAnonymizesAndEncryptsFrontendUserData()
     {
 
         /**
@@ -119,10 +158,12 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Given the frontend user has been deleted since more days then configured for anonymization
          * When I anonymize all deleted users
          * Then the user data is anonymised
+         * Then the dataProtectionStatus is set to 1
+         * Then the user data is encrypted in separate table
          */
         $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check30.xml');
 
-        $this->subject->anonymizeAll();
+        $this->subject->anonymizeAndEncryptAll();
         $this->persistenceManager->persistAll();
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
@@ -130,6 +171,18 @@ class DataProtectionUtilityTest extends FunctionalTestCase
 
         static::assertEquals('anonymous1@rkw.de', $frontendUser->getUsername());
         static::assertEquals('anonymous1@rkw.de', $frontendUser->getEmail());
+        static::assertEquals(1, $frontendUser->getTxRkwregistrationDataProtectionStatus());
+
+        /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
+        $encryptedData = $this->encryptedDataRepository->findByUid(1);
+
+        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        static::assertEquals($frontendUser, $encryptedData->getFrontendUser());
+        static::assertEquals('fe_users', $encryptedData->getForeignTable());
+        static::assertEquals(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getForeignClass());
+        static::assertEquals(1, $encryptedData->getForeignUid());
+
+
 
     }
 
@@ -139,7 +192,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function anonymizeAllAnonymizesRelatedData()
+    public function anonymizeAndEncryptAllAnonymizesAndEncryptsRelatedData()
     {
 
         /**
@@ -150,16 +203,30 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Given the frontend user has been deleted since more days then configured for anonymization
          * When I anonymize all deleted users
          * Then the shipping address of the frontend user is anonymised
+         * Then the shipping address of the frontend user is encrypted
          */
         $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check40.xml');
 
-        $this->subject->anonymizeAll();
+        $this->subject->anonymizeAndEncryptAll();
         $this->persistenceManager->persistAll();
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
         $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
 
         static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
+
+        /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
+        $encryptedData = $this->encryptedDataRepository->findByUid(2);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        static::assertEquals($frontendUser, $encryptedData->getFrontendUser());
+        static::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
+        static::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
+        static::assertEquals(1, $encryptedData->getForeignUid());
+
 
     }
 
@@ -168,7 +235,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function anonymizeAllAnonymizesDeletedRelatedData()
+    public function anonymizeAndEncryptAllAnonymizesAndEncryptsDeletedRelatedData()
     {
 
         /**
@@ -179,16 +246,29 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Given the frontend user has been deleted since more days then configured for anonymization
          * When I anonymize all deleted users
          * Then the shipping address of the frontend user is anonymised
+         * Then the shipping address of the frontend user is encrypted
          */
         $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check50.xml');
 
-        $this->subject->anonymizeAll();
+        $this->subject->anonymizeAndEncryptAll();
         $this->persistenceManager->persistAll();
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
         $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
 
         static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
+
+        /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
+        $encryptedData = $this->encryptedDataRepository->findByUid(2);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        static::assertEquals($frontendUser, $encryptedData->getFrontendUser());
+        static::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
+        static::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
+        static::assertEquals(1, $encryptedData->getForeignUid());
 
     }
 
@@ -197,7 +277,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function anonymizeAllAnonymizesHiddenRelatedData()
+    public function anonymizeAndEncryptAllAnonymizesAndEncryptsHiddenRelatedData()
     {
 
         /**
@@ -208,16 +288,29 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Given the frontend user has been deleted since more days then configured for anonymization
          * When I anonymize all deleted users
          * Then the shipping address of the frontend user is anonymised
+         * Then the shipping address of the frontend user is encrypted
          */
         $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check60.xml');
 
-        $this->subject->anonymizeAll();
+        $this->subject->anonymizeAndEncryptAll();
         $this->persistenceManager->persistAll();
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
         $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
 
         static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
+
+        /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
+        $encryptedData = $this->encryptedDataRepository->findByUid(2);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        static::assertEquals($frontendUser, $encryptedData->getFrontendUser());
+        static::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
+        static::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
+        static::assertEquals(1, $encryptedData->getForeignUid());
 
     }
 
@@ -226,7 +319,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function anonymizeAllAnonymizesIgnoresStoragePidForRelatedData()
+    public function anonymizeAndEncryptAllAnonymizesIgnoresStoragePidForRelatedData()
     {
 
         /**
@@ -237,16 +330,29 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Given the frontend user has been deleted since more days then configured for anonymization
          * When I anonymize all deleted users
          * Then the shipping address of the frontend user is anonymised
+         * Then the shipping address of the frontend user is encrypted
          */
         $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check70.xml');
 
-        $this->subject->anonymizeAll();
+        $this->subject->anonymizeAndEncryptAll();
         $this->persistenceManager->persistAll();
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
         $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
 
         static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
+
+        /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
+        $encryptedData = $this->encryptedDataRepository->findByUid(2);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        static::assertEquals($frontendUser, $encryptedData->getFrontendUser());
+        static::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
+        static::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
+        static::assertEquals(1, $encryptedData->getForeignUid());
 
     }
 
@@ -273,7 +379,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
 
         static::expectException(\RKW\RkwRegistration\Exception::class);
 
-        $this->subject->anonymizeObject($frontendUser);
+        $this->subject->anonymizeObject($frontendUser, $frontendUser);
 
     }
 
@@ -296,7 +402,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
 
-        $this->subject->anonymizeObject($frontendUser);
+        $this->subject->anonymizeObject($frontendUser, $frontendUser);
 
         static::assertEquals('anonymous1@rkw.de', $frontendUser->getUsername());
         static::assertEquals('anonymous1@rkw.de', $frontendUser->getEmail());
@@ -338,13 +444,17 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * When I anonymize the shipping address
          * Then an error is thrown
          */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check10.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
         $shippingAddress = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class);
 
         static::expectException(\RKW\RkwRegistration\Exception::class);
 
-        $this->subject->anonymizeObject($shippingAddress);
+        $this->subject->anonymizeObject($shippingAddress, $frontendUser);
 
     }
 
@@ -405,7 +515,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
 
         static::expectException(\RKW\RkwRegistration\Exception::class);
 
-        $this->subject->encryptObject($frontendUser);
+        $this->subject->encryptObject($frontendUser, $frontendUser);
 
     }
 
@@ -429,12 +539,14 @@ class DataProtectionUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
 
-        $encryptedData = $this->subject->encryptObject($frontendUser);
+        $encryptedData = $this->subject->encryptObject($frontendUser, $frontendUser);
 
         static::assertEquals('spd@test.de', $frontendUser->getUsername());
         static::assertEquals('lauterbach@spd.de', $frontendUser->getEmail());
 
         static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+
+        echo $encryptedData->encryptedData;
         $encryptedDataArray = $encryptedData->getEncryptedData();
 
         static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
@@ -465,13 +577,17 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * When I encrypt the shipping address
          * Then an error is thrown
          */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check20.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
         $shippingAddress = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class);
 
         static::expectException(\RKW\RkwRegistration\Exception::class);
 
-        $this->subject->encryptObject($shippingAddress);
+        $this->subject->encryptObject($shippingAddress, $frontendUser);
 
     }
 
@@ -516,8 +632,8 @@ class DataProtectionUtilityTest extends FunctionalTestCase
         static::assertEquals(49, strlen($encryptedDataArray['firstName']));
         static::assertEquals(49, strlen($encryptedDataArray['lastName']));
 
-
     }
+
 
     //===================================================================
 
@@ -525,23 +641,124 @@ class DataProtectionUtilityTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function decryptObjectThrowsExceptionIfForeignClassDoesNotExist()
+    public function decryptObjectReturnsNullIfForeignClassDoesNotExist()
     {
 
         /**
          * Scenario:
          *
-         * Given there is a non persisted frontend user
-         * When I encrypt the frontend user
-         * Then an error is thrown
+         * Given there is an encryptedData-object
+         * Given that encryptedData-object has no valid foreignClass set
+         * When I decrypt the encryptedData-object
+         * Then null is returned
          */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check80.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
+        $encryptedData = $this->encryptedDataRepository->findByUid(1);
+
+        static::assertNull($this->subject->decryptObject($encryptedData));
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function decryptObjectReturnsNullIfForeignClassHasNoPropertyMap()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is an encryptedData-object
+         * Given that encryptedData-object has an existing foreignClass set
+         * Given that foreignClass has no propertyMap defined
+         * When I decrypt the encryptedData-object
+         * Then null is returned
+         */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check90.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
+        $encryptedData = $this->encryptedDataRepository->findByUid(1);
+
+        static::assertNull($this->subject->decryptObject($encryptedData));
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function decryptObjectReturnsNullIfForeignUidDoesNotExists()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is an encryptedData-object
+         * Given that encryptedData-object has an existing foreignClass set
+         * Given that foreignClass has no propertyMap defined
+         * When I decrypt the encryptedData-object
+         * Then null is returned
+         */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check100.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
+        $encryptedData = $this->encryptedDataRepository->findByUid(1);
+
+        static::assertNull($this->subject->decryptObject($encryptedData));
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function decryptObjectReturnsDecryptedObject()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is an encryptedData-object
+         * Given that encryptedData-object has an existing foreignClass set
+         * Given that foreignClass has a propertyMap defined
+         * When I decrypt the encryptedData-object
+         * Then the decrypted object is returned
+         * Then all data has been decrypted again
+         */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check110.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
+        $encryptedData = $this->encryptedDataRepository->findByUid(1);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\FrontendUser::class);
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
 
-        static::expectException(\RKW\RkwRegistration\Exception::class);
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
+        $result = $this->subject->decryptObject($encryptedData);
 
-        $this->subject->encryptObject($frontendUser);
+        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $this->subject->decryptObject($encryptedData));
+        static::assertEquals($frontendUser->getUid(), $result->getUid());
+        static::assertEquals('spd@test.de', $result->getUsername());
+        static::assertEquals('lauterbach@spd.de', $result->getEmail());
+        static::assertEquals('Karl', $result->getFirstName());
+        static::assertEquals('Lauterbach', $result->getLastName());
+        static::assertEquals('SPD', $result->getCompany());
+        static::assertEquals('Straßenring 123', $result->getAddress());
+        static::assertEquals('10969', $result->getZip());
+        static::assertEquals('Hamburg', $result->getCity());
+        static::assertEquals('069/1346', $result->getTelephone());
+        static::assertEquals('069/123456789', $result->getFax());
+        static::assertEquals('Dr. Prof.', $result->getTitle());
+        static::assertEquals('https://www.spd.de', $result->getWww());
+        static::assertEquals(1, $result->getTxRkwregistrationGender());
+        static::assertEquals('0179/100224557', $result->getTxRkwregistrationMobile());
+        static::assertEquals('https://www.facebook.com/lauterbach', $result->getTxRkwregistrationFacebookUrl());
+        static::assertEquals('https://www.twitter.com/lauterbach', $result->getTxRkwregistrationTwitterUrl());
+        static::assertEquals('https://www.xing.de/lauterbach', $result->getTxRkwregistrationXingUrl());
+        static::assertEquals('12345', $result->getTxRkwregistrationFacebookId());
+        static::assertEquals('12345', $result->getTxRkwregistrationTwitterId());
 
     }
 

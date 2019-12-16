@@ -39,6 +39,13 @@ class DataProtectionUtility
      */
     protected $frontendUserRepository;
 
+
+    /**
+     * @var \RKW\RkwRegistration\Domain\Repository\EncryptedDataRepository
+     * @inject
+     */
+    protected $encryptedDataRepository;
+
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManager
      * @inject
@@ -51,6 +58,37 @@ class DataProtectionUtility
      */
     protected $logger;
 
+
+
+    /**
+     * Deletes expired users after x days (deleted = 1)
+     *
+     * @param $deleteExpiredAfterDays
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @return void
+     */
+    public function deleteAllExpired ($deleteExpiredAfterDays = 30)
+    {
+
+        $settings = $this->getSettings();
+        if (! $deleteExpiredAfterDays) {
+            $deleteExpiredAfterDays = intval($settings['dataProtection']['deleteExpiredAfterDays']) ? intval($settings['dataProtection']['deleteExpiredAfterDays']) : 30;
+        }
+
+        if (
+            ($frontendUserList = $this->frontendUserRepository->findExpiredSinceDays($deleteExpiredAfterDays))
+            && (count($frontendUserList))
+        ) {
+            /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+            foreach ($frontendUserList as $frontendUser) {
+                $this->frontendUserRepository->remove($frontendUser);
+                $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Deleted expired users with id %s.', $frontendUser->getUid()));
+
+            }
+        }
+    }
 
 
     /**
@@ -68,7 +106,7 @@ class DataProtectionUtility
      * @throws \RKW\RkwRegistration\Exception
      * @return void
      */
-    public function anonymizeAll ($anonymizeAfterDays = 365)
+    public function anonymizeAndEncryptAll ($anonymizeAfterDays = 365)
     {
 
         $settings = $this->getSettings();
@@ -89,11 +127,19 @@ class DataProtectionUtility
 
                 foreach ($mappings as $modelClassName => $propertyMap) {
 
+                    // anonymize and encrypt the frontend user
                     if ($modelClassName == 'RKW\RkwRegistration\Domain\Model\FrontendUser') {
 
-                        $this->anonymizeObject($frontendUser);
-                        $this->frontendUserRepository->update($frontendUser);
-                        $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Anonymized data of model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
+                        /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
+                        if ($encryptedData = $this->encryptObject($frontendUser, $frontendUser)) {
+                            $this->encryptedDataRepository->add($encryptedData);
+
+                            $this->anonymizeObject($frontendUser, $frontendUser);
+                            $frontendUser->setTxRkwregistrationDataProtectionStatus(1);
+                            $this->frontendUserRepository->update($frontendUser);
+
+                            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Anonymized and encrypted data of model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
+                        }
 
                     } else {
 
@@ -103,14 +149,22 @@ class DataProtectionUtility
                             && ($repository = $this->getRepositoryByModelClassName($modelClassName))
                         ) {
 
+                            // find all by mappingProperty and frontendUser
                             /** @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $result */
-                            if ($result = $this->getRepositoryResults($repository, $frontendUser, $frontendUserProperty)) {
+                            if ($result = $this->getRepositoryResults($repository, $frontendUserProperty, $frontendUser->getUid())) {
 
                                 /** @var \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object */
                                 foreach ($result as $object) {
-                                    $this->anonymizeObject($object, $frontendUser);
-                                    $repository->update($object);
-                                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Anonymized data of model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
+
+                                    /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
+                                    if ($encryptedData = $this->encryptObject($object, $frontendUser)) {
+                                        $this->encryptedDataRepository->add($encryptedData);
+
+                                        $this->anonymizeObject($object, $frontendUser);
+                                        $repository->update($object);
+
+                                        $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Anonymized and encrypted data of model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
+                                    }
                                 }
                             }
                         }
@@ -134,15 +188,11 @@ class DataProtectionUtility
      * @throws \RKW\RkwRegistration\Exception
      * @return void
      */
-    public function anonymizeObject(\TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object, $frontendUser = null)
+    public function anonymizeObject(\TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object, \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser)
     {
 
         if ($object->_isNew()) {
             throw new \RKW\RkwRegistration\Exception('Given object is not persisted.');
-        }
-
-        if (! $frontendUser) {
-            $frontendUser = $object;
         }
 
         if ($propertyMap = $this->getPropertyMapByModelClassName(get_class($object))){
@@ -166,15 +216,11 @@ class DataProtectionUtility
      * @throws \RKW\RkwRegistration\Exception
      * @return \RKW\RkwRegistration\Domain\Model\EncryptedData|null
      */
-    public function encryptObject(\TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object, $frontendUser = null)
+    public function encryptObject(\TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object, \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser)
     {
 
         if ($object->_isNew()) {
             throw new \RKW\RkwRegistration\Exception('Given object is not persisted.');
-        }
-
-        if (! $frontendUser) {
-            $frontendUser = $object;
         }
 
         if ($propertyMap = $this->getPropertyMapByModelClassName(get_class($object))){
@@ -222,24 +268,30 @@ class DataProtectionUtility
             && ($propertyMap = $this->getPropertyMapByModelClassName($encryptedData->getForeignClass()))
         ){
 
-            /** @var \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object */
-            $object = GeneralUtility::makeInstance($encryptedData->getForeignClass());
             $data = $encryptedData->getEncryptedData();
-
             if (is_array($data)) {
-                foreach ($data as $property => $value) {
-                    $setter = 'set' . ucfirst($property);
-                    if (method_exists($object, $setter)) {
-                        $object->$setter($this->getDecryptedString($value));
+
+                /** @var \TYPO3\CMS\Extbase\Persistence\Repository $repository */
+                /** @var \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object */
+                if (
+                    ($repository = $this->getRepositoryByModelClassName($encryptedData->getForeignClass()))
+                    && ($object = $this->getRepositoryResults($repository, 'uid', $encryptedData->getForeignUid())->getFirst())
+                ){
+                    foreach ($data as $property => $value) {
+                        $setter = 'set' . ucfirst($property);
+                        if (method_exists($object, $setter)) {
+                            $object->$setter($this->getDecryptedString($value));
+                        }
                     }
+                    return $object;
                 }
             }
-
-            return $object;
         }
 
         return null;
     }
+
+
     /**
      * Get property map for given model class name
      *
@@ -396,11 +448,11 @@ class DataProtectionUtility
      * Get results from repository
      *
      * @param \TYPO3\CMS\Extbase\Persistence\Repository $repository
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param string $frontendUserProperty
+     * @param string $propery
+     * @param integer $uid
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    protected function getRepositoryResults(\TYPO3\CMS\Extbase\Persistence\Repository $repository, \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser , $frontendUserProperty)
+    protected function getRepositoryResults(\TYPO3\CMS\Extbase\Persistence\Repository $repository, $property, $uid)
     {
         $query  = $repository->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);
@@ -408,7 +460,7 @@ class DataProtectionUtility
         $query->getQuerySettings()->setRespectStoragePage(false);
 
         $query->matching(
-            $query->equals($frontendUserProperty, $frontendUser->getUid())
+            $query->equals($property, $uid)
         );
 
         return $query->execute();

@@ -211,6 +211,34 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
 
     }
 
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \Exception
+     */
+    public function findDeletedSinceDaysIgnoresAlreadyAnonymized ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are three deleted frontend user
+         * Given one of frontend users is deleted since four days
+         * Given two of the frontend users are deleted since five days
+         * Given that one of the later has already been anonymized
+         * When I fetch the frontend users that have been deleted five days before
+         * Then only one frontend user is returned
+         * Then the frontend user that has is deleted since five days and not yet anonymized is returned
+         */
+        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check51.xml');
+
+        $result = $this->subject->findDeletedSinceDays(5, 864000);
+
+        static::assertCount(1,  $result);
+        static::assertEquals(2, $result->getFirst()->getUid());
+
+    }
+
 
     //===================================================================
     /**

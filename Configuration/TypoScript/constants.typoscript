@@ -104,42 +104,16 @@ plugin.tx_rkwregistration {
 
         dataProtection {
 
-            # cat=plugin.tx_rkwregistration//a; type=integer; label=Anonymize user data after x days if user is deleted or expired
-            anonymizeAfterDays = 1095
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Anonymize and encrypt user data after x days if user is already deleted
+            anonymizeAfterDays = 365
+
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Delete expired users after x days if user is expired
+            deleteExpiredAfterDays = 30
 
             # cat=plugin.tx_rkwregistration//a; type=string; label=Encryption key for original data of anonymized user data
             encryptionKey =
 
-            classes {
 
-                RKW\RkwRegistration\Domain\Model\FrontendUser {
-
-                    username = anonymous{ID}@rkw.de
-                    email = anonymous{ID}@rkw.de
-                    name = Anonymous Anonymous
-                    firstName = Anonymous
-                    middleName =
-                    lastName = Anonymous
-                    address =
-                    telephone =
-                    fax =
-                    title =
-                    zip =
-                    city =
-                    country =
-                    www =
-                    company =
-                    image =
-                    txRkwregistrationMobile =
-                    txRkwregistrationGender = 99
-                    txRkwregistrationFacebookUrl =
-                    txRkwregistrationTwitterUrl =
-                    txRkwregistrationXingUrl =
-                    txRkwregistrationFacebookId =
-                    txRkwregistrationTwitterId = 0
-
-                }
-            }
         }
 
         titles {

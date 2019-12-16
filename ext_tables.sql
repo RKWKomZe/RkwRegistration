@@ -73,6 +73,8 @@ CREATE TABLE fe_users (
     tx_rkwregistration_cross_domain_token varchar(255) DEFAULT '' NOT NULL,
     tx_rkwregistration_cross_domain_token_tstamp int(11) DEFAULT '0' NOT NULL,
 
+    tx_rkwregistration_data_protection_status tinyint(4) DEFAULT '0' NOT NULL,
+
     tx_rkwregistration_privacy varchar(255) DEFAULT '' NOT NULL,
 
 );

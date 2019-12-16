@@ -414,7 +414,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
 
     /**
-     * Find all deleted frontend users that have been deleted x days ago
+     * Find all deleted frontend users that have been deleted x days ago and have not yet been anonymized/encrypted
      *
      * @param int $daysSinceDelete
      * @param int $base base for the calculation. if not set, time() is used
@@ -435,6 +435,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->matching(
             $query->logicalAnd(
                 $query->equals('deleted', 1),
+                $query->lessThan('txRkwregistrationDataProtectionStatus', 1),
                 $query->logicalAnd(
                     $query->greaterThan('tstamp', 0),
                     $query->lessThanOrEqual('tstamp', $timestamp)
