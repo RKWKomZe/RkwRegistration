@@ -237,7 +237,7 @@ plugin.tx_rkwregistration {
 
 		dataProtection {
 
-            anonymizeAfterDays = {$plugin.tx_rkwregistration.settings.dataProtection.anonymizeAfterDays}
+            anonymizeDeletedAfterDays = {$plugin.tx_rkwregistration.settings.dataProtection.anonymizeDeletedAfterDays}
             deleteExpiredAfterDays = {$plugin.tx_rkwregistration.settings.dataProtection.deleteExpiredAfterDays}
             encryptionKey = {$plugin.tx_rkwregistration.settings.dataProtection.encryptionKey}
 

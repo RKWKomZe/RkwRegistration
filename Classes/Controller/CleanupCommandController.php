@@ -110,10 +110,10 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
     /**
      * Cleanup for expired users
      *
-     * Deletes expired users after x days (deleted = 1)
+     * Deletes expired users after x days (only sets deleted = 1)
      * default: 30 days
      *
-     * @param integer $expiredDays Delete users that are expired since x days
+     * @param integer $deleteExpiredAfterDays Delete users that are expired since x days
      * @return void
      */
     public function deleteExpiredUsersCommand($deleteExpiredAfterDays = 30)
@@ -134,20 +134,19 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
     /**
      * Data-protection cleanup for deleted users
      *
-     * Anonymizes and encrypts data of users that are deleted since x days
-     * !!! The user data should not be anonymised before the end of the period stated in the
-     * data protection declaration, since the consent must still be proven after this period !!!
-     * default: 365 days
+     * Anonymizes and encrypts all data of users that are deleted since x days
+     * Also includes user-related data if configured
+     * default: 30 days
      *
-     * @param integer $deletedDays Anonymize users that are expired since x days
+     * @param integer $anonymizeDeletedAfterDays Anonymize and encrypt data of users that have been deleted x days before
      * @return void
      */
-    public function anonymizeAndEncryptDeletedUsersCommand($anonymizeAfterDays = 365)
+    public function anonymizeAndEncryptDeletedUsersCommand($anonymizeDeletedAfterDays = 30)
     {
 
         try {
 
-            $this->dataProtectionUtility->anonymizeAndEncryptAll($anonymizeAfterDays);
+            $this->dataProtectionUtility->anonymizeAndEncryptAll($anonymizeDeletedAfterDays);
             $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully anonymized data of fe-users.'));
 
         } catch (\Exception $e) {

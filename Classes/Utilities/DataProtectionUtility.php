@@ -61,7 +61,7 @@ class DataProtectionUtility
 
 
     /**
-     * Deletes expired users after x days (deleted = 1)
+     * Deletes expired frontend users after x days (only sets deleted = 1)
      *
      * @param $deleteExpiredAfterDays
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
@@ -92,10 +92,9 @@ class DataProtectionUtility
 
 
     /**
-     * Anonymizes all data of a frontend user that has been deleted or inactive since a given time
+     * Anonymizes and encrypts all data of a frontend user that has been deleted x days before
      *
-     * !!! The user data should not be anonymised before the end of the period stated in your
-     * data protection declaration, since the consent must still be proven after this period !!!
+     * Also includes user-related data if configured
      *
      * @param $anonymizeAfterDays
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
@@ -106,13 +105,13 @@ class DataProtectionUtility
      * @throws \RKW\RkwRegistration\Exception
      * @return void
      */
-    public function anonymizeAndEncryptAll ($anonymizeAfterDays = 365)
+    public function anonymizeAndEncryptAll ($anonymizeAfterDays = 30)
     {
 
         $settings = $this->getSettings();
         $mappings = $settings['dataProtection']['classes'];
         if (! $anonymizeAfterDays) {
-            $anonymizeAfterDays = intval($settings['dataProtection']['anonymizeAfterDays']) ? intval($settings['dataProtection']['anonymizeAfterDays']) : 365;
+            $anonymizeAfterDays = intval($settings['dataProtection']['anonymizeDeletedAfterDays']) ? intval($settings['dataProtection']['anonymizeDeletedAfterDays']) : 30;
         }
 
         if (
@@ -178,9 +177,6 @@ class DataProtectionUtility
 
     /**
      * Anonymizes data of a given object
-     *
-     * !!! The user data should not be anonymised before the end of the period stated in your
-     * data protection declaration, since the consent must still be proven after this period !!!
      *
      * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser

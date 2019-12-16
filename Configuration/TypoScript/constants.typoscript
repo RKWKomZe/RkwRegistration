@@ -105,7 +105,7 @@ plugin.tx_rkwregistration {
         dataProtection {
 
             # cat=plugin.tx_rkwregistration//a; type=integer; label=Anonymize and encrypt user data after x days if user is already deleted
-            anonymizeAfterDays = 365
+            anonymizeDeletedAfterDays = 30
 
             # cat=plugin.tx_rkwregistration//a; type=integer; label=Delete expired users after x days if user is expired
             deleteExpiredAfterDays = 30
