@@ -115,7 +115,7 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
      * @param integer $expiredDays Delete users that are expired since x days
      * @return void
      */
-    public function deleteExpiredUsersCommand($expiredDays = 1095)
+    public function deleteExpiredUsersCommand($expiredDays = 30)
     {
 
         try {

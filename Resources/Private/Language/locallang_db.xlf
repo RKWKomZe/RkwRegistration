@@ -4,6 +4,11 @@
 		<header/>
 		<body>
 
+            <!-- tx_rkwregistration_domain_model_encrypteddata -->
+            <trans-unit id="tx_rkwregistration_domain_model_encrypteddata">
+                <source>RKW Registration: Encrypted Data</source>
+            </trans-unit>
+
 
             <!-- tx_rkwregistration_domain_model_registration -->
             <trans-unit id="tx_rkwregistration_domain_model_registration">

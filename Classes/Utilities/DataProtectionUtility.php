@@ -68,7 +68,7 @@ class DataProtectionUtility
      * @throws \RKW\RkwRegistration\Exception
      * @return void
      */
-    public function anonymizeAll ($anonymizeAfterDays)
+    public function anonymizeAll ($anonymizeAfterDays = 365)
     {
 
         $settings = $this->getSettings();
@@ -91,7 +91,7 @@ class DataProtectionUtility
 
                     if ($modelClassName == 'RKW\RkwRegistration\Domain\Model\FrontendUser') {
 
-                        $this->anonymize($frontendUser);
+                        $this->anonymizeObject($frontendUser);
                         $this->frontendUserRepository->update($frontendUser);
                         $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Anonymized data of model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
 
@@ -108,7 +108,7 @@ class DataProtectionUtility
 
                                 /** @var \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object */
                                 foreach ($result as $object) {
-                                    $this->anonymize($object, $frontendUser);
+                                    $this->anonymizeObject($object, $frontendUser);
                                     $repository->update($object);
                                     $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Anonymized data of model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
                                 }
@@ -134,7 +134,7 @@ class DataProtectionUtility
      * @throws \RKW\RkwRegistration\Exception
      * @return void
      */
-    public function anonymize(\TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object, $frontendUser = null)
+    public function anonymizeObject(\TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object, $frontendUser = null)
     {
 
         if ($object->_isNew()) {
@@ -145,22 +145,124 @@ class DataProtectionUtility
             $frontendUser = $object;
         }
 
+        if ($propertyMap = $this->getPropertyMapByModelClassName(get_class($object))){
+            foreach ($propertyMap as $property => $newValue) {
+                $setter = 'set' . ucfirst($property);
+                if (method_exists($object, $setter)) {
+                    $object->$setter(str_replace('{UID}', $frontendUser->getUid(), $newValue));
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Encrypts data of a given object
+     **
+     * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \RKW\RkwRegistration\Exception
+     * @return \RKW\RkwRegistration\Domain\Model\EncryptedData|null
+     */
+    public function encryptObject(\TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object, $frontendUser = null)
+    {
+
+        if ($object->_isNew()) {
+            throw new \RKW\RkwRegistration\Exception('Given object is not persisted.');
+        }
+
+        if (! $frontendUser) {
+            $frontendUser = $object;
+        }
+
+        if ($propertyMap = $this->getPropertyMapByModelClassName(get_class($object))){
+
+            /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper */
+            $dataMapper = $this->objectManager->get(DataMapper::class);
+            $tableName = $dataMapper->getDataMap(get_class($object))->getTableName();
+
+            /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
+            $encryptedData = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\EncryptedData::class);
+            $encryptedData->setFrontendUser($frontendUser);
+            $encryptedData->setForeignUid($object->getUid());
+            $encryptedData->setForeignTable($tableName);
+            $encryptedData->setForeignClass(get_class($object));
+
+            $data = [];
+            foreach ($propertyMap as $property => $newValue) {
+                $getter = 'get' . ucfirst($property);
+                if (method_exists($object, $getter)) {
+                    $data[$property] = $this->getEncryptedString($object->$getter());
+                }
+            }
+
+            $encryptedData->setEncryptedData($data);
+            return $encryptedData;
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Decrypts data for given object
+     **
+     * @param \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @throws \RKW\RkwRegistration\Exception
+     * @return \TYPO3\CMS\Extbase\DomainObject\AbstractEntity|null
+     */
+    public function decryptObject(\RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData)
+    {
+
+        if (
+            (class_exists($encryptedData->getForeignClass()))
+            && ($propertyMap = $this->getPropertyMapByModelClassName($encryptedData->getForeignClass()))
+        ){
+
+            /** @var \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object */
+            $object = GeneralUtility::makeInstance($encryptedData->getForeignClass());
+            $data = $encryptedData->getEncryptedData();
+
+            if (is_array($data)) {
+                foreach ($data as $property => $value) {
+                    $setter = 'set' . ucfirst($property);
+                    if (method_exists($object, $setter)) {
+                        $object->$setter($this->getDecryptedString($value));
+                    }
+                }
+            }
+
+            return $object;
+        }
+
+        return null;
+    }
+    /**
+     * Get property map for given model class name
+     *
+     * @param $modelClassName
+     * @return array
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function getPropertyMapByModelClassName ($modelClassName)
+    {
+
         $settings = $this->getSettings();
         $mappings = $settings['dataProtection']['classes'];
         if (
             (is_array($mappings))
-            && ($class = get_class($object))
-            && (in_array($class, array_keys($mappings)))
-            && ($propertyMap = $mappings[$class]['fields'])
+            && (in_array($modelClassName, array_keys($mappings)))
+            && ($propertyMap = $mappings[$modelClassName]['fields'])
             && (is_array($propertyMap))
-        ){
-
-            foreach ($propertyMap as $property => $newValue) {
-                $setter = 'set' . ucfirst($property);
-                $object->$setter(str_replace('{UID}', $frontendUser->getUid(), $newValue));
-            }
+        ) {
+            return $propertyMap;
         }
+        return [];
     }
+
 
 
     /**
@@ -221,6 +323,72 @@ class DataProtectionUtility
         }
 
         return null;
+    }
+
+
+    /**
+     * Get encrypted string using a given key
+     *
+     * @param string $data
+     * @param string $key
+     * @return string
+     * @throws \RKW\RkwRegistration\Exception
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @see https://gist.github.com/turret-io/957e82d44fd6f4493533, thanks!
+     */
+    public function getEncryptedString($data)
+    {
+        define('AES_256_CBC', 'aes-256-cbc');
+
+        $settings = $this->getSettings();
+        $encryptionKey = $settings['dataProtection']['encryptionKey'];
+        if (! $encryptionKey) {
+            throw new \RKW\RkwRegistration\Exception('No encryption key configured.');
+        }
+
+        // Generate an initialization vector
+        // This *MUST* be available for decryption as well
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(AES_256_CBC));
+
+        // Encrypt $data using aes-256-cbc cipher with the given encryption key and
+        // our initialization vector. The 0 gives us the default options, but can
+        // be changed to OPENSSL_RAW_DATA or OPENSSL_ZERO_PADDING
+        $encrypted = openssl_encrypt($data, AES_256_CBC, $encryptionKey, 0, $iv);
+
+        // If we lose the $iv variable, we can't decrypt this, so:
+        // - $encrypted is already base64-encoded from openssl_encrypt
+        // - Append a separator that we know won't exist in base64, ":"
+        // - And then append a base64-encoded $iv
+        return $encrypted . ':' . base64_encode($iv);
+    }
+
+
+    /**
+     * Get decrypted string using a given key
+     *
+     * @param string $data
+     * @return string
+     * @throws \RKW\RkwRegistration\Exception
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @see https://gist.github.com/turret-io/957e82d44fd6f4493533, thanks!
+     */
+    public function getDecryptedString($data)
+    {
+        define('AES_256_CBC', 'aes-256-cbc');
+
+        $settings = $this->getSettings();
+        $encryptionKey = $settings['dataProtection']['encryptionKey'];
+        if (! $encryptionKey) {
+            throw new \RKW\RkwRegistration\Exception('No encryption key configured.');
+        }
+
+        // To decrypt, separate the encrypted data from the initialization vector ($iv).
+        $parts = explode(':', $data);
+
+        // $parts[0] = encrypted data
+        // $parts[1] = base-64 encoded initialization vector
+        // Don't forget to base64-decode the $iv before feeding it back to openssl_decrypt
+        return openssl_decrypt($parts[0], AES_256_CBC, $encryptionKey, 0, base64_decode($parts[1]));
     }
 
 

@@ -238,6 +238,8 @@ plugin.tx_rkwregistration {
 		dataProtection {
 
             anonymizeAfterDays = {$plugin.tx_rkwregistration.settings.dataProtection.anonymizeAfterDays}
+            encryptionKey = {$plugin.tx_rkwregistration.settings.dataProtection.encryptionKey}
+
             classes {
 
                 RKW\RkwRegistration\Domain\Model\FrontendUser {

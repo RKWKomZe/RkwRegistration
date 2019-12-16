@@ -14,10 +14,10 @@ plugin.tx_rkwshop  {
 
 		dataProtection {
 
+            encryptionKey = TestMe!
             classes {
 
                 RKW\RkwRegistration\Domain\Model\Privacy {
-
                     mappingField = parent
                 }
             }

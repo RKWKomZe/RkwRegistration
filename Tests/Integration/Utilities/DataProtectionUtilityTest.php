@@ -103,138 +103,6 @@ class DataProtectionUtilityTest extends FunctionalTestCase
 
     }
 
-
-
-    //===================================================================
-
-    /**
-     * @test
-     * @throws \Exception
-     */
-    public function anonymizeThrowsExceptionIfFeUserIsNotExisting()
-    {
-
-        /**
-         * Scenario:
-         *
-         * Given there is a non persisted frontend user
-         * When I anonymize the frontend user
-         * Then an error is thrown
-         */
-
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\FrontendUser::class);
-
-        static::expectException(\RKW\RkwRegistration\Exception::class);
-
-        $this->subject->anonymize($frontendUser);
-
-    }
-
-    /**
-     * @test
-     * @throws \Exception
-     */
-    public function anonymizeAnonymizesFrontendUserData()
-    {
-
-        /**
-         * Scenario:
-         *
-         * Given there is a frontend user
-         * When I anonymize the frontend user
-         * Then the user data is anonymized
-         */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check10.xml');
-
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
-
-        $this->subject->anonymize($frontendUser);
-
-        static::assertEquals('anonymous1@rkw.de', $frontendUser->getUsername());
-        static::assertEquals('anonymous1@rkw.de', $frontendUser->getEmail());
-        static::assertEquals('Anonymous', $frontendUser->getFirstName());
-        static::assertEquals('Anonymous', $frontendUser->getLastName());
-        static::assertEquals('Anonymous Anonymous', $frontendUser->getName());
-        static::assertEquals('', $frontendUser->getCompany());
-        static::assertEquals('', $frontendUser->getAddress());
-        static::assertEquals('', $frontendUser->getZip());
-        static::assertEquals('', $frontendUser->getCity());
-        static::assertEquals('', $frontendUser->getTelephone());
-        static::assertEquals('', $frontendUser->getFax());
-        static::assertEquals('', $frontendUser->getTitle());
-        static::assertEquals('', $frontendUser->getWww());
-        static::assertEquals(99, $frontendUser->getTxRkwregistrationGender());
-        static::assertEquals('', $frontendUser->getTxRkwregistrationMobile());
-        static::assertEquals('', $frontendUser->getTxRkwregistrationFacebookUrl());
-        static::assertEquals('', $frontendUser->getTxRkwregistrationTwitterUrl());
-        static::assertEquals('', $frontendUser->getTxRkwregistrationXingUrl());
-        static::assertEquals(0, $frontendUser->getTxRkwregistrationTwitterId());
-        static::assertEquals('', $frontendUser->getTxRkwregistrationFacebookId());
-
-    }
-
-
-    //===================================================================
-
-    /**
-     * @test
-     * @throws \Exception
-     */
-    public function anonymizeThrowsExceptionIfShippingAddressIsNotExisting()
-    {
-
-        /**
-         * Scenario:
-         *
-         * Given there is a non persisted shipping address
-         * When I anonymize the shipping address
-         * Then an error is thrown
-         */
-
-        /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
-        $shippingAddress = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class);
-
-        static::expectException(\RKW\RkwRegistration\Exception::class);
-
-        $this->subject->anonymize($shippingAddress);
-
-    }
-
-    /**
-     * @test
-     * @throws \Exception
-     */
-    public function anonymizeAnonymizesShippingAddressesOfUser()
-    {
-
-        /**
-         * Scenario:
-         *
-         * Given there is a shipping address
-         * When I anonymize the shipping address
-         * Then the shipping address is anonymized
-         */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check20.xml');
-
-        /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
-        $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
-
-        $this->subject->anonymize($shippingAddress);
-
-        static::assertEquals(99, $shippingAddress->getGender());
-        static::assertEquals('Anonymous', $shippingAddress->getFirstName());
-        static::assertEquals('Anonymous', $shippingAddress->getLastName());
-        static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
-        static::assertEquals('', $shippingAddress->getCompany());
-        static::assertEquals('', $shippingAddress->getAddress());
-        static::assertEquals('', $shippingAddress->getZip());
-        static::assertEquals('', $shippingAddress->getCity());
-
-    }
-
-
     //===================================================================
 
     /**
@@ -382,45 +250,341 @@ class DataProtectionUtilityTest extends FunctionalTestCase
 
     }
 
+
     //===================================================================
 
     /**
      * @test
+     * @throws \Exception
      */
-    public function getRepositoryByModelClassNameChecksForExistingClasses()
+    public function anonymizeObjectThrowsExceptionIfFeUserIsNotExisting()
     {
 
         /**
          * Scenario:
          *
-         * Given there is a non existing model-class
-         * When I try to fetch the repository for this model-class
-         * Then null is returned
+         * Given there is a non persisted frontend user
+         * When I anonymize the frontend user
+         * Then an error is thrown
          */
-        static::assertNull($this->subject->getRepositoryByModelClassName('Test\Model'));
-    }
 
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\FrontendUser::class);
+
+        static::expectException(\RKW\RkwRegistration\Exception::class);
+
+        $this->subject->anonymizeObject($frontendUser);
+
+    }
 
     /**
      * @test
+     * @throws \Exception
      */
-    public function getRepositoryByModelClassNameReturnsRepository()
+    public function anonymizeObjectAnonymizesFrontendUserData()
     {
 
         /**
          * Scenario:
          *
-         * Given there is an existing model-class
-         * When I try to fetch the repository for this model-class
-         * Then the corresponding repository is returned
+         * Given there is a frontend user
+         * When I anonymize the frontend user
+         * Then the user data is anonymized
          */
-        static::assertInstanceOf(
-            \RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository::class,
-            $this->subject->getRepositoryByModelClassName('RKW\RkwRegistration\Domain\Model\ShippingAddress')
-        );
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check10.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        $this->subject->anonymizeObject($frontendUser);
+
+        static::assertEquals('anonymous1@rkw.de', $frontendUser->getUsername());
+        static::assertEquals('anonymous1@rkw.de', $frontendUser->getEmail());
+        static::assertEquals('Anonymous', $frontendUser->getFirstName());
+        static::assertEquals('Anonymous', $frontendUser->getLastName());
+        static::assertEquals('Anonymous Anonymous', $frontendUser->getName());
+        static::assertEquals('', $frontendUser->getCompany());
+        static::assertEquals('', $frontendUser->getAddress());
+        static::assertEquals('', $frontendUser->getZip());
+        static::assertEquals('', $frontendUser->getCity());
+        static::assertEquals('', $frontendUser->getTelephone());
+        static::assertEquals('', $frontendUser->getFax());
+        static::assertEquals('', $frontendUser->getTitle());
+        static::assertEquals('', $frontendUser->getWww());
+        static::assertEquals(99, $frontendUser->getTxRkwregistrationGender());
+        static::assertEquals('', $frontendUser->getTxRkwregistrationMobile());
+        static::assertEquals('', $frontendUser->getTxRkwregistrationFacebookUrl());
+        static::assertEquals('', $frontendUser->getTxRkwregistrationTwitterUrl());
+        static::assertEquals('', $frontendUser->getTxRkwregistrationXingUrl());
+        static::assertEquals(0, $frontendUser->getTxRkwregistrationTwitterId());
+        static::assertEquals('', $frontendUser->getTxRkwregistrationFacebookId());
+
     }
 
 
+    //===================================================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function anonymizeObjectThrowsExceptionIfShippingAddressIsNotExisting()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a non persisted shipping address
+         * When I anonymize the shipping address
+         * Then an error is thrown
+         */
+
+        /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
+        $shippingAddress = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class);
+
+        static::expectException(\RKW\RkwRegistration\Exception::class);
+
+        $this->subject->anonymizeObject($shippingAddress);
+
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function anonymizeObjectAnonymizesShippingAddressesOfUser()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a shipping address
+         * When I anonymize the shipping address
+         * Then the shipping address is anonymized
+         */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check20.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
+        $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        $this->subject->anonymizeObject($shippingAddress, $frontendUser);
+
+        static::assertEquals(99, $shippingAddress->getGender());
+        static::assertEquals('Anonymous', $shippingAddress->getFirstName());
+        static::assertEquals('Anonymous', $shippingAddress->getLastName());
+        static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
+        static::assertEquals('', $shippingAddress->getCompany());
+        static::assertEquals('', $shippingAddress->getAddress());
+        static::assertEquals('', $shippingAddress->getZip());
+        static::assertEquals('', $shippingAddress->getCity());
+
+    }
+
+    //===================================================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function encryptObjectThrowsExceptionIfFeUserIsNotExisting()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a non persisted frontend user
+         * When I encrypt the frontend user
+         * Then an error is thrown
+         */
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\FrontendUser::class);
+
+        static::expectException(\RKW\RkwRegistration\Exception::class);
+
+        $this->subject->encryptObject($frontendUser);
+
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function encryptObjectEncryptsFrontendUserData()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a frontend user
+         * When I encrypt the frontend user
+         * Then the original object is not encrypted
+         * Then the encrypted user data is returned
+         */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check10.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        $encryptedData = $this->subject->encryptObject($frontendUser);
+
+        static::assertEquals('spd@test.de', $frontendUser->getUsername());
+        static::assertEquals('lauterbach@spd.de', $frontendUser->getEmail());
+
+        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        $encryptedDataArray = $encryptedData->getEncryptedData();
+
+        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
+        static::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
+        static::assertEquals(1, $encryptedData->getForeignUid());
+        static::assertEquals('fe_users', $encryptedData->getForeignTable());
+        static::assertEquals('RKW\RkwRegistration\Domain\Model\FrontendUser', $encryptedData->getForeignClass());
+
+        static::assertCount(23, $encryptedDataArray);
+        static::assertEquals(49, strlen($encryptedDataArray['username']));
+
+    }
+
+
+    //===================================================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function encryptObjectThrowsExceptionIfShippingAddressIsNotExisting()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a non persisted shipping address
+         * When I encrypt the shipping address
+         * Then an error is thrown
+         */
+
+        /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
+        $shippingAddress = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class);
+
+        static::expectException(\RKW\RkwRegistration\Exception::class);
+
+        $this->subject->encryptObject($shippingAddress);
+
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function encryptObjectEncryptsShippingAddressesOfUser()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a shipping address
+         * When I encrypt the shipping address
+         * Then the original object is not encrypted
+         * Then the encrypted user data is returned
+         */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check20.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
+        $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        $encryptedData = $this->subject->encryptObject($shippingAddress, $frontendUser);
+
+        static::assertEquals('Karl', $shippingAddress->getFirstName());
+        static::assertEquals('Lauterbach', $shippingAddress->getLastName());
+
+        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        $encryptedDataArray = $encryptedData->getEncryptedData();
+
+        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
+        static::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
+        static::assertEquals(1, $encryptedData->getForeignUid());
+        static::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
+        static::assertEquals('RKW\RkwRegistration\Domain\Model\ShippingAddress', $encryptedData->getForeignClass());
+
+        static::assertCount(7, $encryptedDataArray);
+        static::assertEquals(49, strlen($encryptedDataArray['firstName']));
+        static::assertEquals(49, strlen($encryptedDataArray['lastName']));
+
+
+    }
+
+    //===================================================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function decryptObjectThrowsExceptionIfForeignClassDoesNotExist()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a non persisted frontend user
+         * When I encrypt the frontend user
+         * Then an error is thrown
+         */
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\FrontendUser::class);
+
+        static::expectException(\RKW\RkwRegistration\Exception::class);
+
+        $this->subject->encryptObject($frontendUser);
+
+    }
+
+    //===================================================================
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function getPropertyMapByModelClassNameChecksForExistingClasses()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is no configuration for a model-class
+         * When I try to fetch the propertyMap for this model-class
+         * Then an empty array is returned
+         */
+        static::assertEmpty($this->subject->getPropertyMapByModelClassName('Test\Model'));
+    }
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function getPropertyMapByModelClassNameReturnsPropertyMap()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a configuration for a model-class
+         * When I try to fetch the propertyMap for this model-class
+         * Then the propertyMap is returned
+         * Then the propertyMap contains the configured properties and their values
+         */
+
+        $result = $this->subject->getPropertyMapByModelClassName('RKW\RkwRegistration\Domain\Model\FrontendUser');
+        static::assertInternalType('array', $result);
+        static::assertEquals($result['username'], 'anonymous{UID}@rkw.de');
+
+    }
 
     //===================================================================
 
@@ -503,7 +667,43 @@ class DataProtectionUtilityTest extends FunctionalTestCase
         static::assertEquals('frontendUser', $this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\ShippingAddress'));
     }
 
+    //===================================================================
 
+    /**
+     * @test
+     */
+    public function getRepositoryByModelClassNameChecksForExistingClasses()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a non existing model-class
+         * When I try to fetch the repository for this model-class
+         * Then null is returned
+         */
+        static::assertNull($this->subject->getRepositoryByModelClassName('Test\Model'));
+    }
+
+
+    /**
+     * @test
+     */
+    public function getRepositoryByModelClassNameReturnsRepository()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is an existing model-class
+         * When I try to fetch the repository for this model-class
+         * Then the corresponding repository is returned
+         */
+        static::assertInstanceOf(
+            \RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository::class,
+            $this->subject->getRepositoryByModelClassName('RKW\RkwRegistration\Domain\Model\ShippingAddress')
+        );
+    }
 
 
     /**

@@ -107,6 +107,9 @@ plugin.tx_rkwregistration {
             # cat=plugin.tx_rkwregistration//a; type=integer; label=Anonymize user data after x days if user is deleted or expired
             anonymizeAfterDays = 1095
 
+            # cat=plugin.tx_rkwregistration//a; type=string; label=Encryption key for original data of anonymized user data
+            encryptionKey =
+
             classes {
 
                 RKW\RkwRegistration\Domain\Model\FrontendUser {
