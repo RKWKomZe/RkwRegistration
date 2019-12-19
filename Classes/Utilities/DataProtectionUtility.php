@@ -403,7 +403,7 @@ class DataProtectionUtility
         define('AES_256_CBC', 'aes-256-cbc');
 
         $settings = $this->getSettings();
-        $encryptionKey = $settings['dataProtection']['encryptionKey'];
+        $encryptionKey = base64_decode($settings['dataProtection']['encryptionKey']);
         if (! $encryptionKey) {
             throw new \RKW\RkwRegistration\Exception('No encryption key configured.');
         }
@@ -439,7 +439,7 @@ class DataProtectionUtility
         define('AES_256_CBC', 'aes-256-cbc');
 
         $settings = $this->getSettings();
-        $encryptionKey = $settings['dataProtection']['encryptionKey'];
+        $encryptionKey = base64_decode($settings['dataProtection']['encryptionKey']);
         if (! $encryptionKey) {
             throw new \RKW\RkwRegistration\Exception('No encryption key configured.');
         }
