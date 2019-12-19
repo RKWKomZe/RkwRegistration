@@ -151,6 +151,11 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     protected $txRkwregistrationCrossDomainTokenTstamp;
 
     /**
+     * @var string
+     */
+    protected $txRkwregistrationDataProtectionStatus = 0;
+
+    /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\Privacy>
      */
     //protected $txRkwregistrationPrivacy;
@@ -936,6 +941,32 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function setTxRkwregistrationCrossDomainTokenTstamp($txRkwregistrationCrossDomainTokenTstamp)
     {
         $this->txRkwregistrationCrossDomainTokenTstamp = $txRkwregistrationCrossDomainTokenTstamp;
+    }
+
+
+    /**
+     * Sets the txRkwregistrationDataProtectionStatus value
+     *
+     * @param integer $txRkwregistrationDataProtectionStatus
+     * @return void
+     *
+     */
+    public function setTxRkwregistrationDataProtectionStatus($txRkwregistrationDataProtectionStatus)
+    {
+        $this->txRkwregistrationDataProtectionStatus = $txRkwregistrationDataProtectionStatus;
+    }
+
+
+    /**
+     * Returns the txRkwregistrationDataProtectionStatus value
+     *
+     * @return integer
+     *
+     */
+    public function getTxRkwregistrationDataProtectionStatus()
+    {
+        return $this->txRkwregistrationDataProtectionStatus;
+        //===
     }
 
 }

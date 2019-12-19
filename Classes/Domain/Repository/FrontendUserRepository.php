@@ -255,11 +255,12 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param int $tolerance Tolerance timestamp
      * @param bool $anonymousOnly Only return anonymous users
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     * @deprecated since 26.06.2018
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @deprecated since 26.06.2018
      */
     public function findExpired($tolerance = 0, $anonymousOnly = false)
     {
+        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
@@ -298,6 +299,8 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findDeletedOrDisabled($tolerance = 0, $anonymousOnly = false)
     {
+
+        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);
@@ -339,9 +342,11 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param bool $anonymousOnly if true only anonymous users will be checked
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @deprecated since 19.12.2019
      */
-    public function findExpiredOrDeleted($tolerance = 0, $anonymousOnly = false)
+    public function findExpiredOrDeletedByTstamp($tolerance = 0, $anonymousOnly = false)
     {
+        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);
@@ -380,6 +385,77 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         //===
     }
 
+    /**
+     * Find all expired frontend users that have been expired x days ago
+     *
+     * @param int $daysSinceExpiredOrDisabled
+     * @param int $base set the timebase for the calculation. if not set, time() is used
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     */
+    public function findExpiredAndDisabledSinceDays ($daysSinceExpiredOrDisabled = 0, $timebase = 0)
+    {
+
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+
+        $timebase = ($timebase ? $timebase : time());
+        $timestamp = $timebase - (intval($daysSinceExpiredOrDisabled) * 24 * 60 * 60);
+
+        $query->matching(
+            $query->logicalOr(
+                $query->logicalAnd(
+                    $query->greaterThan('endtime', 0),
+                    $query->lessThanOrEqual('endtime', $timestamp)
+                ),
+                $query->logicalAnd(
+                    $query->equals('disable', 1),
+                    $query->lessThanOrEqual('tstamp', $timestamp)
+                )
+            )
+        );
+
+        return $query->execute();
+    }
+
+
+
+    /**
+     * Find all deleted frontend users that have been deleted x days ago and have not yet been anonymized/encrypted
+     *
+     * @param int $daysSinceDelete
+     * @param int $timebase sets the timebase for the calculation. if not set, time() is used
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     */
+    public function findDeletedSinceDays ($daysSinceDelete = 0, $timebase = 0)
+    {
+
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $query->getQuerySettings()->setIncludeDeleted(true);
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+
+        $timebase = ($timebase ? $timebase : time());
+        $timestamp = $timebase - (intval($daysSinceDelete) * 24 * 60 * 60);
+
+        $query->matching(
+            $query->logicalAnd(
+                $query->equals('deleted', 1),
+                $query->lessThan('txRkwregistrationDataProtectionStatus', 1),
+                $query->logicalAnd(
+                    $query->greaterThan('tstamp', 0),
+                    $query->lessThanOrEqual('tstamp', $timestamp)
+                )
+            )
+        );
+
+        return $query->execute();
+    }
+
+
+
 
     /**
      * Finds an object matching the given identifier.
@@ -405,73 +481,6 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     }
 
 
-    /**
-     * Remove user
-     *
-     * According to General Data Protection Regulation (GDPR), we anonymize their data
-     * This way we can keep the existing relations without having to delete the user data completely
-     *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $object
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @return void
-     */
-    public function remove($object)
-    {
-
-        $propertiesToAnonymize = [
-            'username' => 'anonymous' . $object->getUid() . '@rkw.de',
-            'email' => 'anonymous' . $object->getUid() . '@rkw.de',
-            'name' => 'Deleted Anoymous',
-            'firstName' => 'Deleted',
-            'middleName' => '',
-            'lastName' => 'Anonymous',
-            'address' => '',
-            'telephone' => '',
-            'fax' => '',
-            'title' => '',
-            'zip' => '',
-            'city' => '',
-            'country' => '',
-            'www' => '',
-            'company' => '',
-            'image' => '',
-            'txRkwregistrationMobile' => '',
-            'txRkwregistrationGender' => 99,
-            'txRkwregistrationFacebookUrl' => '',
-            'txRkwregistrationTwitterUrl' => '',
-            'txRkwregistrationXingUrl' =>'',
-            'txRkwregistrationFacebookId' => '',
-            'txRkwregistrationTwitterId' => 0,
-
-        ];
-
-        foreach ($propertiesToAnonymize as $property => $value) {
-            $setter = 'set' . ucfirst($property);
-            $object->$setter($value);
-        }
-
-
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-
-        /** @var \RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository $shippingAddressRepository */
-        $shippingAddressRepository = $objectManager->get(\RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository::class);
-        $shippingAddresses = $shippingAddressRepository->findByFrontendUser($object);
-        foreach ($shippingAddresses as $shippingAddress) {
-            $shippingAddressRepository->remove($shippingAddress);
-        }
-
-
-        $this->update($object);
-
-        /** @toDo: do this via cascadeRemove */
-        // delete shipping addresses
-
-
-        $this->persistenceManager->persistAll();
-        parent::remove($object);
-    }
 
     /**
      * Delete user from DB (really!)
