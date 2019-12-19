@@ -255,8 +255,8 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param int $tolerance Tolerance timestamp
      * @param bool $anonymousOnly Only return anonymous users
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     * @deprecated since 26.06.2018
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @deprecated since 26.06.2018
      */
     public function findExpired($tolerance = 0, $anonymousOnly = false)
     {
@@ -342,9 +342,11 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param bool $anonymousOnly if true only anonymous users will be checked
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @deprecated since 19.12.2019
      */
     public function findExpiredOrDeletedByTstamp($tolerance = 0, $anonymousOnly = false)
     {
+        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);
@@ -386,25 +388,31 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Find all expired frontend users that have been expired x days ago
      *
-     * @param int $daysSinceExpire
-     * @param int $base base for the calculation. if not set, time() is used
+     * @param int $daysSinceExpiredOrDisabled
+     * @param int $base set the timebase for the calculation. if not set, time() is used
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findExpiredSinceDays ($daysSinceExpire = 0, $base = 0)
+    public function findExpiredAndDisabledSinceDays ($daysSinceExpiredOrDisabled = 0, $timebase = 0)
     {
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
         $query->getQuerySettings()->setIgnoreEnableFields(true);
 
-        $base = ($base ? $base : time());
-        $timestamp = $base - (intval($daysSinceExpire) * 24 * 60 * 60);
+        $timebase = ($timebase ? $timebase : time());
+        $timestamp = $timebase - (intval($daysSinceExpiredOrDisabled) * 24 * 60 * 60);
 
         $query->matching(
-            $query->logicalAnd(
-                $query->greaterThan('endtime', 0),
-                $query->lessThanOrEqual('endtime', $timestamp)
+            $query->logicalOr(
+                $query->logicalAnd(
+                    $query->greaterThan('endtime', 0),
+                    $query->lessThanOrEqual('endtime', $timestamp)
+                ),
+                $query->logicalAnd(
+                    $query->equals('disable', 1),
+                    $query->lessThanOrEqual('tstamp', $timestamp)
+                )
             )
         );
 
@@ -417,11 +425,11 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Find all deleted frontend users that have been deleted x days ago and have not yet been anonymized/encrypted
      *
      * @param int $daysSinceDelete
-     * @param int $base base for the calculation. if not set, time() is used
+     * @param int $timebase sets the timebase for the calculation. if not set, time() is used
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findDeletedSinceDays ($daysSinceDelete = 0, $base = 0)
+    public function findDeletedSinceDays ($daysSinceDelete = 0, $timebase = 0)
     {
 
         $query = $this->createQuery();
@@ -429,8 +437,8 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->getQuerySettings()->setIncludeDeleted(true);
         $query->getQuerySettings()->setIgnoreEnableFields(true);
 
-        $base = ($base ? $base : time());
-        $timestamp = $base - (intval($daysSinceDelete) * 24 * 60 * 60);
+        $timebase = ($timebase ? $timebase : time());
+        $timestamp = $timebase - (intval($daysSinceDelete) * 24 * 60 * 60);
 
         $query->matching(
             $query->logicalAnd(

@@ -108,7 +108,7 @@ plugin.tx_rkwregistration {
             anonymizeDeletedAfterDays = 30
 
             # cat=plugin.tx_rkwregistration//a; type=integer; label=Delete expired users after x days if user is expired
-            deleteExpiredAfterDays = 30
+            deleteExpiredAndDisabledAfterDays = 30
 
             # cat=plugin.tx_rkwregistration//a; type=string; label=Encryption key for original data of anonymized user data
             encryptionKey =

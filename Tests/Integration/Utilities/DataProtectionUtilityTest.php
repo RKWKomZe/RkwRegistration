@@ -6,6 +6,7 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
 use RKW\RkwRegistration\Utilities\DataProtectionUtility;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use RKW\RkwRegistration\Domain\Repository\BackendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository;
 use RKW\RkwRegistration\Domain\Repository\PrivacyRepository;
 use RKW\RkwRegistration\Domain\Repository\EncryptedDataRepository;
@@ -58,6 +59,11 @@ class DataProtectionUtilityTest extends FunctionalTestCase
     private $frontendUserRepository = null;
 
     /**
+     * @var \RKW\RkwRegistration\Domain\Repository\BackendUserRepository
+     */
+    private $backendUserRepository = null;
+
+    /**
      * @var \RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository
      */
     private $shippingAddressRepository = null;
@@ -104,6 +110,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->subject = $this->objectManager->get(DataProtectionUtility::class);
         $this->frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
+        $this->backendUserRepository = $this->objectManager->get(BackendUserRepository::class);
         $this->shippingAddressRepository = $this->objectManager->get(ShippingAddressRepository::class);
         $this->privacyRepository = $this->objectManager->get(PrivacyRepository::class);
         $this->encryptedDataRepository = $this->objectManager->get(EncryptedDataRepository::class);
@@ -115,29 +122,39 @@ class DataProtectionUtilityTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function deleteAllExpiredDeletesAllExpiredFrontendUsers()
+    public function deleteAllExpiredAndDisabledDeletesAllExpiredAndDisabledFrontendUsers()
     {
 
         /**
          * Scenario:
          *
-         * Given there are three frontend user
-         * Given that one of the frontend user has been expired since more days then configured for deletion
-         * Given that one of the frontend user will expire in the future
+         * Given there are five frontend user
+         * Given that one of the frontend users has been expired since more days then configured for deletion
+         * Given that one of the frontend users will expire in the future
+         * Given that one of the frontend users is disabled since more days then configured for deletion
+         * Given that one of the frontend users is disabled since less than days then configured for deletion
+         * Given that one of the frontend users is neither disabled nor expired
          * When I delete all expired users
-         * Then the expired frontend user is deleted
+         * Then the frontend user which expired since more days then configured for deletion is deleted
+         * Then the frontend user which is disabled since more days then configured for deletion is deleted
+         * Then the other three frontend users are not deleted
          */
         $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check120.xml');
 
-        $this->subject->deleteAllExpired();
+        $this->subject->deleteAllExpiredAndDisabled();
         $this->persistenceManager->persistAll();
 
         /** @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $result*/
-        $result = $this->frontendUserRepository->findAll()->toArray();
+        $query = $this->frontendUserRepository->createQuery();
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
 
-        static::assertCount(2, $result);
+        $result = $query->execute()->toArray();
+
+        static::assertCount(3, $result);
         static::assertEquals(2, $result[0]->getUid());
         static::assertEquals(3, $result[1]->getUid());
+        static::assertEquals(5, $result[2]->getUid());
+
 
     }
 
@@ -387,6 +404,31 @@ class DataProtectionUtilityTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
+    public function anonymizeObjectDoesNotAnonymizeIfClassIsNotConfigured()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is dataset for which no configuration is defined
+         * When I anonymize this data
+         * Then the data is not anonymized
+         */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check10.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\BackendUser $backendUser */
+        $backendUser = $this->backendUserRepository->findByUid(1);
+
+        static::assertFalse($this->subject->anonymizeObject($backendUser, $frontendUser));
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
     public function anonymizeObjectAnonymizesFrontendUserData()
     {
 
@@ -397,12 +439,12 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * When I anonymize the frontend user
          * Then the user data is anonymized
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check11.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
 
-        $this->subject->anonymizeObject($frontendUser, $frontendUser);
+        static::assertTrue($this->subject->anonymizeObject($frontendUser, $frontendUser));
 
         static::assertEquals('anonymous1@rkw.de', $frontendUser->getUsername());
         static::assertEquals('anonymous1@rkw.de', $frontendUser->getEmail());
@@ -480,8 +522,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
 
-        $this->subject->anonymizeObject($shippingAddress, $frontendUser);
-
+        static::assertTrue($this->subject->anonymizeObject($shippingAddress, $frontendUser));
         static::assertEquals(99, $shippingAddress->getGender());
         static::assertEquals('Anonymous', $shippingAddress->getFirstName());
         static::assertEquals('Anonymous', $shippingAddress->getLastName());

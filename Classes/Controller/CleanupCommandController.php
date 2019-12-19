@@ -108,21 +108,20 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
 
 
     /**
-     * Cleanup for expired users
+     * Cleanup for expired and disabled users
      *
-     * Deletes expired users after x days (only sets deleted = 1)
+     * Deletes expired and disabled users after x days (only sets deleted = 1)
      * default: 30 days
      *
-     * @param integer $deleteExpiredAfterDays Delete users that are expired since x days
+     * @param integer $deleteExpiredAndDisabledAfterDays Delete users that are expired or disabled since x days
      * @return void
      */
-    public function deleteExpiredUsersCommand($deleteExpiredAfterDays = 30)
+    public function deleteExpiredAndDisabledUsersCommand($deleteExpiredAndDisabledAfterDays = 30)
     {
 
-
         try {
-            $this->dataProtectionUtility->anonymizeAndEncryptAll($deleteExpiredAfterDays);
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully deleted expired fe-users.'));
+            $this->dataProtectionUtility->deleteAllExpiredAndDisabled($deleteExpiredAndDisabledAfterDays);
+            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully deleted expired or disabled fe-users.'));
 
         } catch (\Exception $e) {
             $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('An error occurred: %s', $e->getMessage()));

@@ -238,7 +238,7 @@ plugin.tx_rkwregistration {
 		dataProtection {
 
             anonymizeDeletedAfterDays = {$plugin.tx_rkwregistration.settings.dataProtection.anonymizeDeletedAfterDays}
-            deleteExpiredAfterDays = {$plugin.tx_rkwregistration.settings.dataProtection.deleteExpiredAfterDays}
+            deleteExpiredAndDisabledAfterDays = {$plugin.tx_rkwregistration.settings.dataProtection.deleteExpiredAndDisabledAfterDays}
             encryptionKey = {$plugin.tx_rkwregistration.settings.dataProtection.encryptionKey}
 
             classes {
@@ -289,6 +289,58 @@ plugin.tx_rkwregistration {
                         city =
                     }
                 }
+
+                RKW\RkwRegistration\Domain\Model\Privacy {
+
+                    mappingField = frontendUser
+                    fields {
+
+                        ipAddress = 127.0.0.1
+                        userAgent = Anonymous 1.0
+
+                    }
+                }
+
+                RKW\RkwShop\Domain\Model\Order {
+
+                    mappingField = frontendUser
+                    fields {
+
+                        email = anonymous{UID}@rkw.de
+                    }
+                }
+
+                RKW\RkwEvents\Domain\Model\EventReservation {
+
+                    mappingField = feUser
+                    fields {
+
+                        salutation = 99
+                        firstName = Anonymous
+                        lastName = Anonymous
+                        company =
+                        address =
+                        zip =
+                        city =
+                        phone =
+                        fax =
+                        email = anonymous{UID}@rkw.de
+
+                    }
+                }
+
+                /*
+                RKW\RkwEvents\Domain\Model\EventReservationAddPerson {
+
+                    mappingField = feUser
+                    fields {
+
+                        salutation = 99
+                        firstName = Anonymous
+                        lastName = Anonymous
+                    }
+                }
+                */
             }
         }
 

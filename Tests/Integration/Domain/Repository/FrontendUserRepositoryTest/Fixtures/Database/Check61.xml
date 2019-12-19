@@ -15,9 +15,9 @@
         <tx_rkwregistration_gender>0</tx_rkwregistration_gender>
         <tx_rkwregistration_title>0</tx_rkwregistration_title>
         <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
-        <endtime>432000</endtime>
+        <tstamp>518400</tstamp>
+        <disable>1</disable>
     </fe_users>
-
     <fe_users>
         <uid>2</uid>
         <pid>1</pid>
@@ -32,9 +32,9 @@
         <tx_rkwregistration_gender>0</tx_rkwregistration_gender>
         <tx_rkwregistration_title>0</tx_rkwregistration_title>
         <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
-        <endtime>2144611536</endtime>
+        <tstamp>432000</tstamp>
+        <disable>1</disable>
     </fe_users>
-
     <fe_users>
         <uid>3</uid>
         <pid>1</pid>
@@ -50,41 +50,5 @@
         <tx_rkwregistration_title>0</tx_rkwregistration_title>
         <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
         <tstamp>432000</tstamp>
-    </fe_users>
-
-    <fe_users>
-        <uid>4</uid>
-        <pid>1</pid>
-        <username>spd@test.de</username>
-        <email>lauterbach@spd.de</email>
-        <first_name />
-        <last_name />
-        <company />
-        <address />
-        <zip>10969</zip>
-        <city>Hamburg</city>
-        <tx_rkwregistration_gender>0</tx_rkwregistration_gender>
-        <tx_rkwregistration_title>0</tx_rkwregistration_title>
-        <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
-        <tstamp>432000</tstamp>
-        <disable>1</disable>
-    </fe_users>
-
-    <fe_users>
-        <uid>5</uid>
-        <pid>1</pid>
-        <username>spd@test.de</username>
-        <email>lauterbach@spd.de</email>
-        <first_name />
-        <last_name />
-        <company />
-        <address />
-        <zip>10969</zip>
-        <city>Hamburg</city>
-        <tx_rkwregistration_gender>0</tx_rkwregistration_gender>
-        <tx_rkwregistration_title>0</tx_rkwregistration_title>
-        <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
-        <tstamp>2144611536</tstamp>
-        <disable>1</disable>
     </fe_users>
 </dataset>

@@ -246,7 +246,7 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \Exception
      */
-    public function findExpiredSinceDaysReturnsFrontendUsersThatHaveBeenExpiredSinceAGivenDay ()
+    public function findExpiredAndDisabledSinceDaysReturnsFrontendUsersThatHaveBeenExpiredSinceAGivenDay ()
     {
 
         /**
@@ -261,7 +261,34 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
          */
         $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check60.xml');
 
-        $result = $this->subject->findExpiredSinceDays(5, 864000);
+        $result = $this->subject->findExpiredAndDisabledSinceDays(5, 864000);
+
+        static::assertCount(1,  $result);
+        static::assertEquals(2, $result->getFirst()->getUid());
+
+    }
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \Exception
+     */
+    public function findExpiredAndDisabledSinceDaysReturnsFrontendUsersThatHaveBeenDisabledSinceAGivenDay ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are two frontend user
+         * Given one of the frontend users is disabled since five days
+         * Given that the other frontend user is disabled since four days
+         * When I fetch the frontend users that have been disabled five days before
+         * Then only one frontend user is returned
+         * Then the frontend user that has is disabled since five days is returned
+         */
+        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check61.xml');
+
+        $result = $this->subject->findExpiredAndDisabledSinceDays(5, 864000);
 
         static::assertCount(1,  $result);
         static::assertEquals(2, $result->getFirst()->getUid());
@@ -274,7 +301,7 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \Exception
      */
-    public function findExpiredSinceDaysIgnoresStoragePid ()
+    public function findExpiredAndDisabledSinceDaysIgnoresStoragePid ()
     {
 
         /**
@@ -290,7 +317,7 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
          */
         $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check70.xml');
 
-        $result = $this->subject->findExpiredSinceDays(5, 864000);
+        $result = $this->subject->findExpiredAndDisabledSinceDays(5, 864000);
 
         static::assertCount(1,  $result);
         static::assertEquals(2, $result->getFirst()->getUid());
@@ -302,7 +329,7 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \Exception
      */
-    public function findExpiredSinceDaysExcludesDeleted ()
+    public function findExpiredAndDisabledSinceDaysExcludesDeleted ()
     {
 
         /**
@@ -318,7 +345,7 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
          */
         $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check80.xml');
 
-        $result = $this->subject->findExpiredSinceDays(5, 864000);
+        $result = $this->subject->findExpiredAndDisabledSinceDays(5, 864000);
 
         static::assertCount(0,  $result);
 
