@@ -101,7 +101,11 @@ class DataProtectionUtilityTest extends FunctionalTestCase
             1,
             [
                 'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
+                'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
+                'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
+                'EXT:rkw_registration/Tests/Integration/Utilities/DataProtectionUtilityTest/Fixtures/Frontend/Configuration/Rootpage.typoscript',
+
             ]
         );
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
@@ -587,7 +591,6 @@ class DataProtectionUtilityTest extends FunctionalTestCase
 
         static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
 
-        echo $encryptedData->encryptedData;
         $encryptedDataArray = $encryptedData->getEncryptedData();
 
         static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
