@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <fe_users>
+        <uid>1</uid>
+        <pid>1</pid>
+        <username>spd@test.de</username>
+        <email>lauterbach@spd.de</email>
+        <first_name />
+        <last_name />
+        <company />
+        <address />
+        <zip>10969</zip>
+        <city>Hamburg</city>
+        <tx_rkwregistration_gender>0</tx_rkwregistration_gender>
+        <tx_rkwregistration_title>0</tx_rkwregistration_title>
+        <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
+        <deleted>1</deleted>
+        <tstamp>518400</tstamp>
+    </fe_users>
+    <fe_users>
+        <uid>2</uid>
+        <pid>1</pid>
+        <username>spd@test.de</username>
+        <email>lauterbach@spd.de</email>
+        <first_name />
+        <last_name />
+        <company />
+        <address />
+        <zip>10969</zip>
+        <city>Hamburg</city>
+        <tx_rkwregistration_gender>0</tx_rkwregistration_gender>
+        <tx_rkwregistration_title>0</tx_rkwregistration_title>
+        <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
+        <deleted>1</deleted>
+        <tstamp>432000</tstamp>
+    </fe_users>
+</dataset>

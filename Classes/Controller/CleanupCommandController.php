@@ -45,10 +45,19 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
     /**
      * frontendUserRepository
      *
-     * @var \RKW\RkwWepstra\Domain\Repository\FrontendUserRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
      * @inject
      */
     protected $frontendUserRepository;
+
+
+    /**
+     * frontendUserRepository
+     *
+     * @var \RKW\RkwRegistration\Utilities\DataProtectionUtility
+     * @inject
+     */
+    protected $dataProtectionUtility;
 
 
     /**
@@ -99,40 +108,48 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
 
 
     /**
-     * Cleanup for deleted and expired users
-     * !! DANGER !! Cleanup executes a real MySQL-Delete- Query!!!
+     * Cleanup for expired and disabled users
      *
-     * @param integer $daysFromNow Users that have been marked as deleted x days from now are deleted
+     * Deletes expired and disabled users after x days (only sets deleted = 1)
+     * default: 30 days
+     *
+     * @param integer $deleteExpiredAndDisabledAfterDays Delete users that are expired or disabled since x days
      * @return void
      */
-    public function cleanupExpiredOrDeletedUsersCommand($daysFromNow = 365)
+    public function deleteExpiredAndDisabledUsersCommand($deleteExpiredAndDisabledAfterDays = 30)
+    {
+
+        try {
+            $this->dataProtectionUtility->deleteAllExpiredAndDisabled($deleteExpiredAndDisabledAfterDays);
+            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully deleted expired or disabled fe-users.'));
+
+        } catch (\Exception $e) {
+            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('An error occurred: %s', $e->getMessage()));
+        }
+    }
+
+
+
+    /**
+     * Data-protection cleanup for deleted users
+     *
+     * Anonymizes and encrypts all data of users that are deleted since x days
+     * Also includes user-related data if configured
+     * default: 30 days
+     *
+     * @param integer $anonymizeDeletedAfterDays Anonymize and encrypt data of users that have been deleted x days before
+     * @return void
+     */
+    public function anonymizeAndEncryptDeletedUsersCommand($anonymizeDeletedAfterDays = 30)
     {
 
         try {
 
-            if ($cleanupTimestamp = time() - intval($daysFromNow) * 24 * 60 * 60) {
-
-                if (
-                    ($userList = $this->frontendUserRepository->findExpiredOrDeleted($cleanupTimestamp))
-                    && (count($userList))
-                ) {
-
-                    /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $user */
-                    $cnt = 0;
-                    foreach ($userList as $user) {
-                        $this->frontendUserRepository->removeHard($user);
-                        $cnt++;
-                    }
-
-                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully removed %s expired or deleted user(s) completely from the database.', $cnt));
-
-                } else {
-                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, 'No expired or deleted users to remove completely from the database found.');
-                }
-            }
+            $this->dataProtectionUtility->anonymizeAndEncryptAll($anonymizeDeletedAfterDays);
+            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully anonymized data of fe-users.'));
 
         } catch (\Exception $e) {
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('An error occured: %s', $e->getMessage()));
+            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('An error occurred: %s', $e->getMessage()));
         }
     }
 
@@ -150,10 +167,5 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
         }
 
         return $this->logger;
-        //===
     }
-
-
 }
-
-?>

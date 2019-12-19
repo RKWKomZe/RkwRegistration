@@ -94,11 +94,25 @@ plugin.tx_rkwregistration {
 
             passwordSettings {
                 # cat=plugin.tx_rkwregistration//a; type=integer; label=Minimum password length (default = 8)
-                minLength =
+                minLength = 8
 
                 # cat=plugin.tx_rkwregistration//a; type=boolean; label=Password must contain letters and numbers (default = false)
-                alphaNum =
+                alphaNum = true
             }
+
+        }
+
+        dataProtection {
+
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Anonymize and encrypt user data after x days if user is already deleted
+            anonymizeDeletedAfterDays = 30
+
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Delete expired users after x days if user is expired
+            deleteExpiredAndDisabledAfterDays = 30
+
+            # cat=plugin.tx_rkwregistration//a; type=string; label=Encryption key for original data of anonymized user data
+            encryptionKey =
+
 
         }
 

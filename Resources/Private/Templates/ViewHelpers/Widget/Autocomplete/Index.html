@@ -1,16 +1,25 @@
 <style>
+    div.ui-front {
+        position: relative;
+    }
     .ui-autocomplete {
         border: 2px solid #e64415;
         border-radius: 8px;
+        position: absolute;
+        background-color: #ffffff;
     }
     .ui-menu-item {
         height: 48px;
-        padding: 0 14px;
         border: 2px solid transparent;
+        margin-top: 0 !important;
     }
-    .ui-menu-item:first-child, .ui-menu-item:last-child {
+    .ui-menu-item:first-child {
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;
+    }
+    .ui-menu-item:last-child {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
     }
     .ui-menu-item.ui-state-focus {
         background-color: #e6e6e6;

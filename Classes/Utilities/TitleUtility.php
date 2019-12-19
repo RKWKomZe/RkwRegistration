@@ -43,7 +43,7 @@ class TitleUtility
         $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
         $txRegistrationTitle = $titleRepository->findOneByName($title);
 
-        if (!$txRegistrationTitle) {
+        if (!$txRegistrationTitle && $title !== '') {
 
             $txRegistrationTitle = new \RKW\RkwRegistration\Domain\Model\Title;
 

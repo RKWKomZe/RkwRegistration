@@ -255,11 +255,12 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param int $tolerance Tolerance timestamp
      * @param bool $anonymousOnly Only return anonymous users
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     * @deprecated since 26.06.2018
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @deprecated since 26.06.2018
      */
     public function findExpired($tolerance = 0, $anonymousOnly = false)
     {
+        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
@@ -298,6 +299,8 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findDeletedOrDisabled($tolerance = 0, $anonymousOnly = false)
     {
+
+        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);
@@ -339,9 +342,11 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param bool $anonymousOnly if true only anonymous users will be checked
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @deprecated since 19.12.2019
      */
-    public function findExpiredOrDeleted($tolerance = 0, $anonymousOnly = false)
+    public function findExpiredOrDeletedByTstamp($tolerance = 0, $anonymousOnly = false)
     {
+        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);
@@ -380,6 +385,77 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         //===
     }
 
+    /**
+     * Find all expired frontend users that have been expired x days ago
+     *
+     * @param int $daysSinceExpiredOrDisabled
+     * @param int $base set the timebase for the calculation. if not set, time() is used
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     */
+    public function findExpiredAndDisabledSinceDays ($daysSinceExpiredOrDisabled = 0, $timebase = 0)
+    {
+
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+
+        $timebase = ($timebase ? $timebase : time());
+        $timestamp = $timebase - (intval($daysSinceExpiredOrDisabled) * 24 * 60 * 60);
+
+        $query->matching(
+            $query->logicalOr(
+                $query->logicalAnd(
+                    $query->greaterThan('endtime', 0),
+                    $query->lessThanOrEqual('endtime', $timestamp)
+                ),
+                $query->logicalAnd(
+                    $query->equals('disable', 1),
+                    $query->lessThanOrEqual('tstamp', $timestamp)
+                )
+            )
+        );
+
+        return $query->execute();
+    }
+
+
+
+    /**
+     * Find all deleted frontend users that have been deleted x days ago and have not yet been anonymized/encrypted
+     *
+     * @param int $daysSinceDelete
+     * @param int $timebase sets the timebase for the calculation. if not set, time() is used
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     */
+    public function findDeletedSinceDays ($daysSinceDelete = 0, $timebase = 0)
+    {
+
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $query->getQuerySettings()->setIncludeDeleted(true);
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+
+        $timebase = ($timebase ? $timebase : time());
+        $timestamp = $timebase - (intval($daysSinceDelete) * 24 * 60 * 60);
+
+        $query->matching(
+            $query->logicalAnd(
+                $query->equals('deleted', 1),
+                $query->lessThan('txRkwregistrationDataProtectionStatus', 1),
+                $query->logicalAnd(
+                    $query->greaterThan('tstamp', 0),
+                    $query->lessThanOrEqual('tstamp', $timestamp)
+                )
+            )
+        );
+
+        return $query->execute();
+    }
+
+
+
 
     /**
      * Finds an object matching the given identifier.
@@ -403,6 +479,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         return $query->execute()->getFirst();
     }
+
 
 
     /**
