@@ -155,84 +155,201 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
     }
 
     //===================================================================
-
     /**
      * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \Exception
      */
-    public function removeAnonymizesUser()
+    public function findDeletedSinceDaysReturnsFrontendUsersThatHaveBeenDeletedSinceAGivenDay ()
     {
 
         /**
          * Scenario:
          *
-         * Given there is a frontend user
-         * When I delete the frontend user
-         * Then the user data is anonymized
+         * Given there are two deleted frontend user
+         * Given one of the frontend users is deleted since five days
+         * Given that the other frontend user is deleted since four days
+         * When I fetch the frontend users that have been deleted five days before
+         * Then only one frontend user is returned
+         * Then the frontend user that has is deleted since five days is returned
          */
         $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check40.xml');
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->subject->findByUid(1);
+        $result = $this->subject->findDeletedSinceDays(5, 864000);
 
-        $this->subject->remove($frontendUser);
-
-        static::assertEquals('anonymous1@rkw.de', $frontendUser->getUsername());
-        static::assertEquals('anonymous1@rkw.de', $frontendUser->getEmail());
-        static::assertEquals('Deleted', $frontendUser->getFirstName());
-        static::assertEquals('Anonymous', $frontendUser->getLastName());
-        static::assertEquals('Deleted Anonymous', $frontendUser->getName());
-        static::assertEquals('', $frontendUser->getCompany());
-        static::assertEquals('', $frontendUser->getAddress());
-        static::assertEquals('', $frontendUser->getZip());
-        static::assertEquals('', $frontendUser->getCity());
-        static::assertEquals('', $frontendUser->getTelephone());
-        static::assertEquals('', $frontendUser->getFax());
-        static::assertEquals('', $frontendUser->getTitle());
-        static::assertEquals('', $frontendUser->getWww());
-        static::assertEquals(99, $frontendUser->getTxRkwregistrationGender());
-        static::assertEquals('', $frontendUser->getTxRkwregistrationMobile());
-        static::assertEquals('', $frontendUser->getTxRkwregistrationFacebookUrl());
-        static::assertEquals('', $frontendUser->getTxRkwregistrationTwitterUrl());
-        static::assertEquals('', $frontendUser->getTxRkwregistrationXingUrl());
-        static::assertEquals(0, $frontendUser->getTxRkwregistrationTwitterId());
-        static::assertEquals('', $frontendUser->getTxRkwregistrationFacebookId());
+        static::assertCount(1,  $result);
+        static::assertEquals(2, $result->getFirst()->getUid());
 
     }
 
+
     /**
      * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \Exception
      */
-    public function removeDeletesShippingAddressesOfUser()
+    public function findDeletedSinceDaysIgnoresStoragePid ()
     {
 
         /**
          * Scenario:
          *
-         * Given there is a frontend user
-         * When I delete the frontend user
-         * Then the user data is anonymized
+         * Given there are two deleted frontend user
+         * Given one of the frontend users is deleted since five days
+         * Given that this frontend user has a different storage pid
+         * Given the other frontend user is deleted since four days
+         * When I fetch the frontend users that have been deleted five days before
+         * Then only one frontend user is returned
+         * Then the frontend user that has is deleted since five days is returned
          */
         $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check50.xml');
 
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->subject->findByUid(1);
+        $result = $this->subject->findDeletedSinceDays(5, 864000);
 
-        $this->subject->remove($frontendUser);
-
-
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-
-        /** @var \RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository $shippingAddressRepository */
-        $shippingAddressRepository = $objectManager->get(\RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository::class);
-        $shippingAddresses = $shippingAddressRepository->findByFrontendUser($frontendUser);
-
-        static::assertEmpty($shippingAddresses);
+        static::assertCount(1,  $result);
+        static::assertEquals(2, $result->getFirst()->getUid());
 
     }
 
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \Exception
+     */
+    public function findDeletedSinceDaysIgnoresAlreadyAnonymized ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are three deleted frontend user
+         * Given one of frontend users is deleted since four days
+         * Given two of the frontend users are deleted since five days
+         * Given that one of the later has already been anonymized
+         * When I fetch the frontend users that have been deleted five days before
+         * Then only one frontend user is returned
+         * Then the frontend user that has is deleted since five days and not yet anonymized is returned
+         */
+        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check51.xml');
+
+        $result = $this->subject->findDeletedSinceDays(5, 864000);
+
+        static::assertCount(1,  $result);
+        static::assertEquals(2, $result->getFirst()->getUid());
+
+    }
+
+
+    //===================================================================
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \Exception
+     */
+    public function findExpiredAndDisabledSinceDaysReturnsFrontendUsersThatHaveBeenExpiredSinceAGivenDay ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are two frontend user
+         * Given one of the frontend users is expired since five days
+         * Given that the other frontend user is expired since four days
+         * When I fetch the frontend users that have been expired five days before
+         * Then only one frontend user is returned
+         * Then the frontend user that has is expired since five days is returned
+         */
+        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check60.xml');
+
+        $result = $this->subject->findExpiredAndDisabledSinceDays(5, 864000);
+
+        static::assertCount(1,  $result);
+        static::assertEquals(2, $result->getFirst()->getUid());
+
+    }
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \Exception
+     */
+    public function findExpiredAndDisabledSinceDaysReturnsFrontendUsersThatHaveBeenDisabledSinceAGivenDay ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are two frontend user
+         * Given one of the frontend users is disabled since five days
+         * Given that the other frontend user is disabled since four days
+         * When I fetch the frontend users that have been disabled five days before
+         * Then only one frontend user is returned
+         * Then the frontend user that has is disabled since five days is returned
+         */
+        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check61.xml');
+
+        $result = $this->subject->findExpiredAndDisabledSinceDays(5, 864000);
+
+        static::assertCount(1,  $result);
+        static::assertEquals(2, $result->getFirst()->getUid());
+
+    }
+
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \Exception
+     */
+    public function findExpiredAndDisabledSinceDaysIgnoresStoragePid ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are two expired frontend user
+         * Given one of the frontend users is expired since five days
+         * Given that this frontend user has a different storage pid
+         * Given the other frontend user is expired since four days
+         * When I fetch the frontend users that have been expired five days before
+         * Then only one frontend user is returned
+         * Then the frontend user that has is expired since five days is returned
+         */
+        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check70.xml');
+
+        $result = $this->subject->findExpiredAndDisabledSinceDays(5, 864000);
+
+        static::assertCount(1,  $result);
+        static::assertEquals(2, $result->getFirst()->getUid());
+
+    }
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \Exception
+     */
+    public function findExpiredAndDisabledSinceDaysExcludesDeleted ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there are two expired frontend user
+         * Given one of the frontend users is expired since five days
+         * Given that this frontend user is deleted
+         * Given the other frontend user is expired since four days
+         * When I fetch the frontend users that have been expired five days before
+         * Then only one frontend user is returned
+         * Then the frontend user that has is expired since five days is returned
+         */
+        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check80.xml');
+
+        $result = $this->subject->findExpiredAndDisabledSinceDays(5, 864000);
+
+        static::assertCount(0,  $result);
+
+    }
 
     /**
      * TearDown

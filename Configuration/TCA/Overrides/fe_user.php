@@ -264,6 +264,12 @@ $tempCols = [
         ],
     ],
 
+    'tx_rkwregistration_data_protection_status' => [
+        'config'=>[
+            'type' => 'passthrough',
+        ],
+    ],
+
 	# this entry is to show the users privacy entries in backend
 	# this field does not exist in the database, because this is not necessary. This uni-directional relation works fine
 	'tx_rkwregistration_privacy' => [

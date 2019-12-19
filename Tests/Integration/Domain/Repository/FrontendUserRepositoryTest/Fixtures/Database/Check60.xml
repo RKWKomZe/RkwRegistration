@@ -15,8 +15,7 @@
         <tx_rkwregistration_gender>0</tx_rkwregistration_gender>
         <tx_rkwregistration_title>0</tx_rkwregistration_title>
         <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
-        <deleted>1</deleted>
-        <tstamp>518400</tstamp>
+        <endtime>518400</endtime>
     </fe_users>
     <fe_users>
         <uid>2</uid>
@@ -32,7 +31,6 @@
         <tx_rkwregistration_gender>0</tx_rkwregistration_gender>
         <tx_rkwregistration_title>0</tx_rkwregistration_title>
         <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
-        <deleted>1</deleted>
-        <tstamp>432000</tstamp>
+        <endtime>432000</endtime>
     </fe_users>
 </dataset>

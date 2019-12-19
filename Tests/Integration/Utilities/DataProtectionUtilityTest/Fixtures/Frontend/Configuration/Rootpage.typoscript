@@ -11,6 +11,17 @@ plugin.tx_rkwshop  {
 
 		# cat=plugin.tx_rkwshop//a; type=integer; label=Username of BE-User if none is set in plugin
 		fallbackBackendUserForAdminMails = fallback
+
+		dataProtection {
+
+            encryptionKey = TestMe!
+            classes {
+
+                RKW\RkwRegistration\Domain\Model\Privacy {
+                    mappingField = parent
+                }
+            }
+        }
     }
 }
 
