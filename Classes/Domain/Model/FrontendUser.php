@@ -71,7 +71,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     /**
      * txRkwregistrationTitle
      *
-     * @var \RKW\RkwRegistration\Domain\Model\Title|NULL
+     * @var \RKW\RkwRegistration\Domain\Model\Title|null
      */
     protected $txRkwregistrationTitle = null;
 
