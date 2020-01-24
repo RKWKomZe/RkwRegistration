@@ -260,7 +260,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the isTitleAfter
      *
-     * @return string $isTitleAfter
+     * @return boolean $isTitleAfter
      */
     public function getIsTitleAfter()
     {
@@ -270,7 +270,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the isTitleAfter
      *
-     * @param string $isTitleAfter
+     * @param boolean $isTitleAfter
      * @return void
      */
     public function setIsTitleAfter($isTitleAfter)
@@ -281,7 +281,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the isIncludedInSalutation
      *
-     * @return string $isIncludedInSalutation
+     * @return boolean $isIncludedInSalutation
      */
     public function getIsIncludedInSalutation()
     {
@@ -291,7 +291,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the isIncludedInSalutation
      *
-     * @param string $isIncludedInSalutation
+     * @param boolean $isIncludedInSalutation
      * @return void
      */
     public function setIsIncludedInSalutation($isIncludedInSalutation)
@@ -302,7 +302,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the isChecked
      *
-     * @return string $isChecked
+     * @return booelan $isChecked
      */
     public function getIsChecked()
     {
@@ -312,7 +312,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the isChecked
      *
-     * @param string $isChecked
+     * @param boolean $isChecked
      * @return void
      */
     public function setIsChecked($isChecked)

@@ -299,7 +299,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 
         $title = $this->getTxRkwregistrationTitle();
 
-        if ($title) {
+        if ($title && $title->getName()) {
 
             $titleName = ($this->getTxRkwregistrationGender() === 1 && $title->getNameFemale()) ? $title->getNameFemale() : $title->getName();
 
