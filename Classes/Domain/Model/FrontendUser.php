@@ -248,7 +248,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     public function setTxRkwregistrationTitle(\RKW\RkwRegistration\Domain\Model\Title $txRkwregistrationTitle = null)
     {
-        if ($txRkwregistrationTitle->getName() !== '') {
+        if ($txRkwregistrationTitle && $txRkwregistrationTitle->getName() !== '') {
             /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
             $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
             /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
@@ -299,7 +299,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 
         $title = $this->getTxRkwregistrationTitle();
 
-        if ($title) {
+        if ($title && $title->getName()) {
 
             $titleName = ($this->getTxRkwregistrationGender() === 1 && $title->getNameFemale()) ? $title->getNameFemale() : $title->getName();
 
