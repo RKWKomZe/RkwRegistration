@@ -787,9 +787,9 @@ class DataProtectionUtilityTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByUid(1);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
-        $result = $this->subject->decryptObject($encryptedData);
+        $result = $this->subject->decryptObject($encryptedData, 'lauterbach@spd.de');
 
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $this->subject->decryptObject($encryptedData));
+        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
         static::assertEquals($frontendUser->getUid(), $result->getUid());
         static::assertEquals('spd@test.de', $result->getUsername());
         static::assertEquals('lauterbach@spd.de', $result->getEmail());
