@@ -252,7 +252,7 @@ class DataProtectionUtility
             foreach ($propertyMap as $property => $newValue) {
                 $getter = 'get' . ucfirst($property);
                 if (method_exists($object, $getter)) {
-                    $data[$property] = $this->getEncryptedString($object->$getter());
+                    $data[$property] = $this->getEncryptedString($object->$getter(), $frontendUser->getEmail());
                 }
             }
 
@@ -268,11 +268,12 @@ class DataProtectionUtility
      * Decrypts data for given object
      **
      * @param \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData
+     * @param string $email
      * @return \TYPO3\CMS\Extbase\DomainObject\AbstractEntity|null
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \RKW\RkwRegistration\Exception
      */
-    public function decryptObject(\RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData)
+    public function decryptObject(\RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData, $email)
     {
 
         if (
@@ -292,7 +293,7 @@ class DataProtectionUtility
                     foreach ($data as $property => $value) {
                         $setter = 'set' . ucfirst($property);
                         if (method_exists($object, $setter)) {
-                            $object->$setter($this->getDecryptedString($value));
+                            $object->$setter($this->getDecryptedString($value, $email));
                         }
                     }
                     return $object;
@@ -395,21 +396,22 @@ class DataProtectionUtility
      * Get encrypted string using a given key
      *
      * @param string $data
-     * @param string $key
+     * @param string $email
      * @return string
      * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @see https://gist.github.com/turret-io/957e82d44fd6f4493533, thanks!
      */
-    public function getEncryptedString($data)
+    public function getEncryptedString($data, $email)
     {
         define('AES_256_CBC', 'aes-256-cbc');
 
         $settings = $this->getSettings();
-        $encryptionKey = base64_decode($settings['dataProtection']['encryptionKey']);
+        $encryptionKey = $settings['dataProtection']['encryptionKey'];
         if (! $encryptionKey) {
             throw new \RKW\RkwRegistration\Exception('No encryption key configured.');
         }
+        $hash = hash('md5', $encryptionKey . $email);
 
         // Generate an initialization vector
         // This *MUST* be available for decryption as well
@@ -418,7 +420,7 @@ class DataProtectionUtility
         // Encrypt $data using aes-256-cbc cipher with the given encryption key and
         // our initialization vector. The 0 gives us the default options, but can
         // be changed to OPENSSL_RAW_DATA or OPENSSL_ZERO_PADDING
-        $encrypted = openssl_encrypt($data, AES_256_CBC, $encryptionKey, 0, $iv);
+        $encrypted = openssl_encrypt($data, AES_256_CBC, base64_decode($hash), 0, $iv);
 
         // If we lose the $iv variable, we can't decrypt this, so:
         // - $encrypted is already base64-encoded from openssl_encrypt
@@ -432,20 +434,22 @@ class DataProtectionUtility
      * Get decrypted string using a given key
      *
      * @param string $data
+     * @param string $email
      * @return string
      * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @see https://gist.github.com/turret-io/957e82d44fd6f4493533, thanks!
      */
-    public function getDecryptedString($data)
+    public function getDecryptedString($data, $email)
     {
         define('AES_256_CBC', 'aes-256-cbc');
 
         $settings = $this->getSettings();
-        $encryptionKey = base64_decode($settings['dataProtection']['encryptionKey']);
+        $encryptionKey = $settings['dataProtection']['encryptionKey'];
         if (! $encryptionKey) {
             throw new \RKW\RkwRegistration\Exception('No encryption key configured.');
         }
+        $hash = hash('md5', $encryptionKey . $email);
 
         // To decrypt, separate the encrypted data from the initialization vector ($iv).
         $parts = explode(':', $data);
@@ -453,7 +457,7 @@ class DataProtectionUtility
         // $parts[0] = encrypted data
         // $parts[1] = base-64 encoded initialization vector
         // Don't forget to base64-decode the $iv before feeding it back to openssl_decrypt
-        return openssl_decrypt($parts[0], AES_256_CBC, $encryptionKey, 0, base64_decode($parts[1]));
+        return openssl_decrypt($parts[0], AES_256_CBC, base64_decode($hash), 0, base64_decode($parts[1]));
     }
 
 
