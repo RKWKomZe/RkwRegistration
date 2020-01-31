@@ -29,6 +29,11 @@ return [
 				'type' => 'passthrough',
 			],
 		],
+        'search_key' => [
+            'config'=>[
+                'type' => 'passthrough',
+            ],
+        ],
         'foreign_uid' => [
             'config' => [
                 'type' => 'passthrough',

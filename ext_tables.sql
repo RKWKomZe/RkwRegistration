@@ -153,6 +153,7 @@ CREATE TABLE tx_rkwregistration_domain_model_encrypteddata (
     foreign_uid int(11) DEFAULT '0' NOT NULL,
 	foreign_table varchar(255) DEFAULT '' NOT NULL,
 	foreign_class varchar(255) DEFAULT '' NOT NULL,
+    search_key varchar(255) DEFAULT '' NOT NULL,
 	encrypted_data text NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,

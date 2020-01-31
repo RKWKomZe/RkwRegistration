@@ -151,9 +151,10 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     protected $txRkwregistrationCrossDomainTokenTstamp;
 
     /**
-     * @var string
+     * @var bool
      */
     protected $txRkwregistrationDataProtectionStatus = 0;
+
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\Privacy>
@@ -966,7 +967,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getTxRkwregistrationDataProtectionStatus()
     {
         return $this->txRkwregistrationDataProtectionStatus;
-        //===
     }
+
 
 }
