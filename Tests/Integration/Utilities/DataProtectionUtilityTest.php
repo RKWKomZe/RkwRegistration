@@ -199,6 +199,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
 
         static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
         static::assertEquals($frontendUser, $encryptedData->getFrontendUser());
+        static::assertEquals(hash('sha256', 'lauterbach@spd.de'), $encryptedData->getSearchKey());
         static::assertEquals('fe_users', $encryptedData->getForeignTable());
         static::assertEquals(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getForeignClass());
         static::assertEquals(1, $encryptedData->getForeignUid());
@@ -244,6 +245,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
 
         static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
         static::assertEquals($frontendUser, $encryptedData->getFrontendUser());
+        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
         static::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
         static::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
         static::assertEquals(1, $encryptedData->getForeignUid());
@@ -287,6 +289,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
 
         static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
         static::assertEquals($frontendUser, $encryptedData->getFrontendUser());
+        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
         static::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
         static::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
         static::assertEquals(1, $encryptedData->getForeignUid());
@@ -329,6 +332,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
 
         static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
         static::assertEquals($frontendUser, $encryptedData->getFrontendUser());
+        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
         static::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
         static::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
         static::assertEquals(1, $encryptedData->getForeignUid());
@@ -371,6 +375,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
 
         static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
         static::assertEquals($frontendUser, $encryptedData->getFrontendUser());
+        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
         static::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
         static::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
         static::assertEquals(1, $encryptedData->getForeignUid());
@@ -595,6 +600,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
 
         static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
         static::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
+        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
         static::assertEquals(1, $encryptedData->getForeignUid());
         static::assertEquals('fe_users', $encryptedData->getForeignTable());
         static::assertEquals('RKW\RkwRegistration\Domain\Model\FrontendUser', $encryptedData->getForeignClass());
@@ -668,6 +674,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
 
         static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
         static::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
+        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
         static::assertEquals(1, $encryptedData->getForeignUid());
         static::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
         static::assertEquals('RKW\RkwRegistration\Domain\Model\ShippingAddress', $encryptedData->getForeignClass());

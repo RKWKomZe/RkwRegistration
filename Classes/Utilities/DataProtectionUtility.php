@@ -128,6 +128,7 @@ class DataProtectionUtility
                     // anonymize and encrypt the frontend user
                     if ($modelClassName == 'RKW\RkwRegistration\Domain\Model\FrontendUser') {
 
+
                         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
                         if (
                             ($encryptedData = $this->encryptObject($frontendUser, $frontendUser))
@@ -135,6 +136,7 @@ class DataProtectionUtility
                         ){
 
                             $frontendUser->setTxRkwregistrationDataProtectionStatus(1);
+
                             $this->frontendUserRepository->update($frontendUser);
                             $this->encryptedDataRepository->add($encryptedData);
 
@@ -241,6 +243,7 @@ class DataProtectionUtility
             /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
             $encryptedData = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\EncryptedData::class);
             $encryptedData->setFrontendUser($frontendUser);
+            $encryptedData->setSearchKey(hash('sha256', $frontendUser->getEmail()));
             $encryptedData->setForeignUid($object->getUid());
             $encryptedData->setForeignTable($tableName);
             $encryptedData->setForeignClass(get_class($object));

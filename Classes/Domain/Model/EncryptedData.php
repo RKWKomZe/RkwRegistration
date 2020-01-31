@@ -32,6 +32,12 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $frontendUser;
 
+
+    /**
+     * @var string
+     */
+    protected $searchKey;
+
     /**
      * foreignUid
      *
@@ -52,6 +58,7 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var string
      */
     public $foreignClass;
+
 
     /**
      * encryptedData
@@ -80,6 +87,31 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function getFrontendUser()
     {
         return $this->frontendUser;
+    }
+
+
+    /**
+     * Sets the searchKey value
+     *
+     * @param integer $searchKey
+     * @return void
+     *
+     */
+    public function setSearchKey($searchKey)
+    {
+        $this->searchKey = $searchKey;
+    }
+
+
+    /**
+     * Returns the searchKey value
+     *
+     * @return integer
+     *
+     */
+    public function getSearchKey()
+    {
+        return $this->searchKey;
     }
 
     /**
@@ -144,7 +176,8 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->foreignClass;
     }
-    
+
+
     /**
      * Sets the encryptedValue value
      *

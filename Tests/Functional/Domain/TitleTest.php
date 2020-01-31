@@ -236,13 +236,17 @@ class TitleTest extends FunctionalTestCase
         $this->title->setIsTitleAfter(true);
         $this->title->setIsIncludedInSalutation(true);
 
+        $this->titleRepository->add($this->title);
+
+        $this->persistenceManager->persistAll();
+
         $this->frontendUser->setFirstName("Max");
         $this->frontendUser->setLastName("Mustermann");
         $this->frontendUser->setTxRkwregistrationGender(0);
         $this->frontendUser->setTxRkwregistrationTitle($this->title);
         $this->frontendUser->setTxRkwregistrationLanguageKey('de');
 
-        static::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText());
+        static::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText($checkIncludedInSalutation = true));
 
     }
 
@@ -325,6 +329,10 @@ class TitleTest extends FunctionalTestCase
         $this->title->setIsTitleAfter(false);
         $this->title->setIsIncludedInSalutation(true);
 
+        $this->titleRepository->add($this->title);
+
+        $this->persistenceManager->persistAll();
+
         $this->frontendUser->setFirstName("Max");
         $this->frontendUser->setLastName("Mustermann");
         $this->frontendUser->setTxRkwregistrationTitle($this->title);
@@ -347,6 +355,10 @@ class TitleTest extends FunctionalTestCase
         $this->title->setIsTitleAfter(false);
         $this->title->setIsIncludedInSalutation(true);
 
+        $this->titleRepository->add($this->title);
+
+        $this->persistenceManager->persistAll();
+
         $this->frontendUser->setFirstName("Erika");
         $this->frontendUser->setLastName("Musterfrau");
         $this->frontendUser->setTxRkwregistrationTitle($this->title);
@@ -368,6 +380,10 @@ class TitleTest extends FunctionalTestCase
         $this->title->setIsTitleAfter(false);
         $this->title->setIsIncludedInSalutation(true);
 
+        $this->titleRepository->add($this->title);
+
+        $this->persistenceManager->persistAll();
+
         $this->frontendUser->setFirstName("Erika");
         $this->frontendUser->setLastName("Musterfrau");
         $this->frontendUser->setTxRkwregistrationTitle($this->title);
@@ -375,6 +391,24 @@ class TitleTest extends FunctionalTestCase
         $this->frontendUser->setTxRkwregistrationLanguageKey('de');
 
         static::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText($checkIncludedInSalutation = true));
+
+    }
+
+    /**
+     * @test
+     */
+    public function aFrontendUserCanBeSavedWithTitleEqualsNull()
+    {
+
+        $this->title = null;
+
+        $this->frontendUser->setFirstName("Max");
+        $this->frontendUser->setLastName("Mustermann");
+        $this->frontendUser->setTxRkwregistrationGender(0);
+        $this->frontendUser->setTxRkwregistrationTitle($this->title);
+        $this->frontendUser->setTxRkwregistrationLanguageKey('de');
+
+        static::assertEquals('Max Mustermann', $this->frontendUser->getName());
 
     }
 
