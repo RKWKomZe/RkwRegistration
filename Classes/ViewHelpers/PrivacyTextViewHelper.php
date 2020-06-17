@@ -66,7 +66,6 @@ class PrivacyTextViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
         );
 
         return $template->render();
-        //===
     }
 
 
@@ -80,7 +79,6 @@ class PrivacyTextViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
     public function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
     {
         return Common::getTyposcriptConfiguration('Rkwregistration', $which);
-        //===
     }
 
 
