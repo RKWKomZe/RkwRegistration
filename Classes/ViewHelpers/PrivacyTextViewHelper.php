@@ -30,6 +30,14 @@ use \TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PrivacyTextViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 {
+
+    /**
+     * As this ViewHelper renders HTML, the output must not be escaped.
+     *
+     * @var bool
+     */
+    protected $escapeOutput = false;
+
     /**
      * Returns a standard text for the privacy checkbox
      * (not a partial because this is more complicated to use it universally in several extensions)
