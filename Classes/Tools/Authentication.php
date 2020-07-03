@@ -3,6 +3,7 @@
 namespace RKW\RkwRegistration\Tools;
 
 use \RKW\RkwBasics\Helper\Common;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -153,13 +154,10 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
             $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Authentication failed for user "%s".', strtolower(trim($username))));
 
             return $status;
-            //===
         }
 
         $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('User "%s" not found.', strtolower(trim($username))));
-
         return 0;
-        //===
     }
 
 
@@ -185,14 +183,12 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
             $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully authenticated anonymous user with token "%s".', trim($token)));
 
             return $anonymousUser;
-            //===
 
         }
 
         $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Anonymous user with token "%s" not found.', trim($token)));
 
         return false;
-        //===
     }
 
     /**
@@ -214,15 +210,11 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
             $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully authenticated social media user with username "%s".', strtolower(trim($frontendUser->getUsername()))));
 
             return $databaseFrontendUser;
-            //===
-
         }
 
         $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Anonymous user with token "%s" not found.', strtolower(trim($frontendUser->getUsername()))));
 
         return false;
-        //===
-
 
     }
 
@@ -270,7 +262,6 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
         }
 
         return $result;
-        //===
     }
 
 
@@ -309,14 +300,12 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
             $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully generated cross domain login token for user with id %s.', $feAuth->user['uid']));
 
             return $token;
-            //===
 
         }
 
         $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Could not generat cross domain login token.'));
 
         return null;
-        //===
 
     }
 
@@ -334,25 +323,39 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
 
         if (!$frontendUser->getUid()) {
             throw new \RKW\RkwRegistration\Exception('No valid uid for user given.', 1435002338);
-            //===
         }
 
         $userArray = array(
             'uid' => $frontendUser->getUid(),
         );
 
-        // set 1 for a permanent cookie, 0 for session cookie
-        $GLOBALS['TSFE']->fe_user->is_permanent = 0;
+        /** @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $GLOBALS['TSFE']*/
+        /** @var \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication $GLOBALS['TSFE']->fe_user */
+        $GLOBALS['TSFE']->fe_user->is_permanent = 0; //set 1 for a permanent cookie, 0 for session cookie
         $GLOBALS['TSFE']->fe_user->checkPid = 0;
-        $GLOBALS['TSFE']->fe_user->createUserSession($userArray);
-        $GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession();
-        $GLOBALS['TSFE']->fe_user->fetchGroupData();
-        $GLOBALS['TSFE']->loginUser = true;
+        $GLOBALS['TSFE']->fe_user->dontSetCookie = false;
 
-        // set a dummy cookie
-        $GLOBALS['TSFE']->fe_user->setAndSaveSessionData('dummy', true);
+        $version = VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
+        if ($version >=  8000000) {
+            $GLOBALS['TSFE']->fe_user->start(); // set cookie and initiate login
+            $GLOBALS['TSFE']->fe_user->createUserSession($userArray);  // create user session in database
+            $GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession(); // get user session from database
+            $GLOBALS['TSFE']->fe_user->loginSessionStarted = true; // set session as started equal to a successful login
+            $GLOBALS['TSFE']->initUserGroups(); // Initializes the front-end user groups based on all fe_groups records that the current fe_user is member of
+            $GLOBALS['TSFE']->loginUser = true; //  Global flag indicating that a frontend user is logged in. Should already by set by \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::initUserGroups();
+            $GLOBALS['TSFE']->storeSessionData(); // store session in database
+
+        } else {
+            $GLOBALS['TSFE']->fe_user->createUserSession($userArray);
+            $GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession();
+            $GLOBALS['TSFE']->fe_user->fetchGroupData();
+            $GLOBALS['TSFE']->loginUser = true;
+
+            // set a dummy cookie
+            $GLOBALS['TSFE']->fe_user->setAndSaveSessionData('dummy', true);
+        }
+
         self::getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Logging in User "%s" with uid %s.', strtolower($frontendUser->getUsername()), $frontendUser->getUid()));
-
     }
 
 
@@ -374,12 +377,9 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
             if ($frontendUser->getUid() == intval($GLOBALS['TSFE']->fe_user->user['uid'])) {
                 return true;
             }
-            //===
         }
 
         return false;
-        //===
-
     }
 
 
@@ -409,12 +409,9 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
         $match = array();
         if (preg_match('#^http(s)?://([[:alnum:]._-]+)/#', $url, $match)) {
             return $match[2];
-            //===
         }
 
         return null;
-        //===
-
     }
 
 
@@ -425,9 +422,7 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
      */
     public static function getLogger()
     {
-
         return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-        //===
     }
 
 
@@ -445,7 +440,6 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
         }
 
         return $this->frontendUserRepository;
-        //===
     }
 
 
@@ -463,7 +457,6 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
         }
 
         return $this->persistenceManager;
-        //===
     }
 
 
@@ -485,10 +478,7 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
             return array();
         }
 
-        //===
-
         return $this->settings;
-        //===
     }
 
 
