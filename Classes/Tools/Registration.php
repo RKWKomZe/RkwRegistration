@@ -218,7 +218,7 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
                     }
 
                     $this->getFrontendUserRepository()->update($frontendUser);
-
+                    $this->getPersistenceManager()->persistAll();
 
                     // Signal for E-Mails
                     $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_GRANT, array($frontendUser, $plaintextPassword, $register));
