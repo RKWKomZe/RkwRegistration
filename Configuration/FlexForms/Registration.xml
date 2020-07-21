@@ -83,10 +83,8 @@
                             <label>LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.redirectPidAfterXdlLogin</label>
                             <displayCond>
                                 <AND>
-                                    <numIndex>FIELD:settings.users.doXdl:REQ:TRUE</numIndex>
-                                    <AND>
-                                        <numIndex>FIELD:switchableControllerActions:=:Registration->loginShowExternal;Registration->loginAnonymous;Registration->loginHintAnonymous;Registration->xdlLogin;Registration->xdlLogout;Registration->logoutExternal;Registration->index;</numIndex>
-                                    </AND>
+                                    <numIndex index="0">FIELD:settings.users.doXdl:REQ:TRUE</numIndex>
+                                    <numIndex index="1">FIELD:switchableControllerActions:=:Registration->loginShowExternal;Registration->loginAnonymous;Registration->loginHintAnonymous;Registration->xdlLogin;Registration->xdlLogout;Registration->logoutExternal;Registration->index;</numIndex>
                                 </AND>
                             </displayCond>
                             <config>
@@ -106,10 +104,8 @@
                             <label>LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.redirectPidAfterXdlLogout</label>
                             <displayCond>
                                 <AND>
-                                    <numIndex>FIELD:settings.users.doXdl:REQ:TRUE</numIndex>
-                                    <AND>
-                                        <numIndex>FIELD:switchableControllerActions:=:Registration->loginShowExternal;Registration->loginAnonymous;Registration->loginHintAnonymous;Registration->xdlLogin;Registration->xdlLogout;Registration->logoutExternal;Registration->index;</numIndex>
-                                    </AND>
+                                    <numIndex index="0">FIELD:settings.users.doXdl:REQ:TRUE</numIndex>
+                                    <numIndex index="1">FIELD:switchableControllerActions:=:Registration->loginShowExternal;Registration->loginAnonymous;Registration->loginHintAnonymous;Registration->xdlLogin;Registration->xdlLogout;Registration->logoutExternal;Registration->index;</numIndex>
                                 </AND>
                             </displayCond>
                             <config>
@@ -140,10 +136,8 @@
                             <label>LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.anonymousRedirectPid</label>
                             <displayCond>
                                 <AND>
-                                    <numIndex>FIELD:settings.users.allowAnonymousLogin:REQ:TRUE</numIndex>
-                                    <AND>
-                                        <numIndex>FIELD:switchableControllerActions:=:Registration->loginShowExternal;Registration->loginAnonymous;Registration->loginHintAnonymous;Registration->xdlLogin;Registration->xdlLogout;Registration->logoutExternal;Registration->index;</numIndex>
-                                    </AND>
+                                    <numIndex index="0">FIELD:settings.users.allowAnonymousLogin:REQ:TRUE</numIndex>
+                                    <numIndex index="1">FIELD:switchableControllerActions:=:Registration->loginShowExternal;Registration->loginAnonymous;Registration->loginHintAnonymous;Registration->xdlLogin;Registration->xdlLogout;Registration->logoutExternal;Registration->index;</numIndex>
                                 </AND>
                             </displayCond>
                             <config>
