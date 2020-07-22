@@ -494,7 +494,7 @@ class RegistrationController extends ControllerAbstract
         }
 
         // load facebook- object since this needs a special treatment
-        /** @var \RKW\RkwRegistration\SocialMedia\Facebook $facebook */
+        /** @var \RKW\RkwRegistration\SocialMedia\Facebook $facebook
         $facebookLogin = null;
         try {
 
@@ -505,11 +505,12 @@ class RegistrationController extends ControllerAbstract
 
         } catch (\Exception $e) {
             $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('Error using Facebook-API for Login. Message: %s', str_replace(array("\n", "\r"), '', $e->getMessage())));
-        }
+        }*/
 
 
         //=============================
         // if user is logged in
+        /*
         if (
             (is_object($facebookLogin))
             && ($facebookLogin instanceof \Facebook\GraphNodes\GraphUser)
@@ -517,11 +518,11 @@ class RegistrationController extends ControllerAbstract
 
             try {
 
-                /** @var \RKW\RkwRegistration\Tools\Authentication $authentication */
+                /** @var \RKW\RkwRegistration\Tools\Authentication $authentication
                 $authentication = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Authentication');
 
                 // load data into model
-                /** @var \RKW\RkwRegistration\Domain\Model\FacebookUser $facebookUser */
+                /** @var \RKW\RkwRegistration\Domain\Model\FacebookUser $facebookUser
                 $facebookUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\FacebookUser');
                 $facebookUser->insertData($facebookLogin);
 
@@ -534,7 +535,7 @@ class RegistrationController extends ControllerAbstract
                         // login user
                         $authentication->loginUser($registeredUser);
 
-                        /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin */
+                        /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin
                         $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
                         if ($url = $redirectLogin->getRedirectUrlLogin()) {
                             $this->redirectToUri($url);
@@ -563,7 +564,7 @@ class RegistrationController extends ControllerAbstract
                 } else {
 
                     // register user
-                    /** @var \RKW\RkwRegistration\Tools\Registration $registration */
+                    /** @var \RKW\RkwRegistration\Tools\Registration $registration
                     $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Registration');
                     $registeredUser = $registration->register($facebookUser, true);
 
@@ -573,7 +574,7 @@ class RegistrationController extends ControllerAbstract
                         // login user
                         $authentication->loginUser($registeredUser);
 
-                        /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin */
+                        /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin
                         $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
                         if ($url = $redirectLogin->getRedirectUrlLogin()) {
                             $this->redirectToUri($url);
@@ -609,67 +610,68 @@ class RegistrationController extends ControllerAbstract
                 );
             }
         } else {
+        */
 
+        /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin */
+        $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
+        $redirectLogin->setRedirectUrl($this->request);
 
-            /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin */
-            $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
-            $redirectLogin->setRedirectUrl($this->request);
+        if (
+            ($this->controllerContext->getFlashMessageQueue()->isEmpty())
+            && (!$logoutMessage)
+        ) {
 
-            if (
-                ($this->controllerContext->getFlashMessageQueue()->isEmpty())
-                && (!$logoutMessage)
-            ) {
+            // set message including link
+            $registerLink = '';
+            if ($this->settings['users']['registrationPid']) {
 
-                // set message including link
-                $registerLink = '';
-                if ($this->settings['users']['registrationPid']) {
+                /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+                $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 
-                    /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-                    $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-
-                    /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
-                    $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
-                    $registerLink = $uriBuilder->reset()
-                        ->setTargetPageUid(intval($this->settings['users']['registrationPid']))
-                        ->setUseCacheHash(false)
-                        ->setArguments(
-                            array(
-                                'tx_rkwregistration_rkwregistration' => array(
-                                    'controller' => 'Registration',
-                                    'action'     => 'registerShow',
-                                ),
-                            )
+                /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
+                $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
+                $registerLink = $uriBuilder->reset()
+                    ->setTargetPageUid(intval($this->settings['users']['registrationPid']))
+                    ->setUseCacheHash(false)
+                    ->setArguments(
+                        array(
+                            'tx_rkwregistration_rkwregistration' => array(
+                                'controller' => 'Registration',
+                                'action'     => 'registerShow',
+                            ),
                         )
-                        ->build();
-                }
-
-                $this->addFlashMessage(
-                    \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                        'registrationController.message.login_message',
-                        $this->extensionName,
-                        array($registerLink)
                     )
-                );
+                    ->build();
             }
 
+            $this->addFlashMessage(
+                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                    'registrationController.message.login_message',
+                    $this->extensionName,
+                    array($registerLink)
+                )
+            );
+        }
 
-            if ($logoutMessage) {
 
-                $this->addFlashMessage(
-                    \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                        'registrationController.message.logout_message', $this->extensionName
-                    )
-                );
-            }
+        if ($logoutMessage) {
+
+            $this->addFlashMessage(
+                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                    'registrationController.message.logout_message', $this->extensionName
+                )
+            );
+        }
 
             //=============================
             // default
+        /*
             $this->view->assignMultiple(
                 array(
                     'facebookLogin' => $facebookLogin,
                 )
             );
-        }
+        }*/
 
     }
 
