@@ -350,13 +350,10 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
             $GLOBALS['TSFE']->fe_user->loginSessionStarted = true; // set session as started equal to a successful login
             $GLOBALS['TSFE']->initUserGroups(); // Initializes the front-end user groups based on all fe_groups records that the current fe_user is member of
             $GLOBALS['TSFE']->loginUser = true; //  Global flag indicating that a frontend user is logged in. Should already by set by \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::initUserGroups();
-            // re-set data for redirect
             $GLOBALS['TSFE']->storeSessionData(); // store session in database
-
+            // re-set data for redirect
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'rkw_registration_redirect_referrer', $rkwRegistrationRedirectReferrer);
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'rkw_registration_redirect_xdl_url', $rkwRegistrationRedirectXdlUrl);
-            //$GLOBALS['TSFE']->storeSessionData(); // store session in database
-            //DebuggerUtility::var_dump($GLOBALS['TSFE']->fe_user);
         } else {
             $GLOBALS['TSFE']->fe_user->createUserSession($userArray);
             $GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession();
