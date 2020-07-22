@@ -787,7 +787,10 @@
                 <source>Yes, I agree that the RKW will use my personal data to contact me. Furthermore, I have read the extended information in the</source>
                 <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten für die Kontaktaufnahme verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
             </trans-unit>
-
+            <trans-unit id="templates_registration_privacy_form.firstPart">
+                <source>Yes, I agree that RKW will use my personal data for the above purpose. Furthermore, I have read and agree to the extended notes in the</source>
+                <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten zur Kontaktaufnahme verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
+            </trans-unit>
 
             <!-- Templates/Email/RegisterOptInRequest.html -->
             <trans-unit id="templates_email_registerOptInRequest.headline">

@@ -629,6 +629,9 @@
             <trans-unit id="templates_registration_privacy_survey.firstPart">
                 <source>Yes, I agree that the RKW will use my personal data to contact me. Furthermore, I have read the extended information in the</source>
             </trans-unit>
+            <trans-unit id="templates_registration_privacy_form.firstPart">
+                <source>Yes, I agree that RKW will use my personal data for the above purpose. Furthermore, I have read and agree to the extended notes in the</source>
+            </trans-unit>
 
 
             <!-- Templates/Email/RegisterOptInRequest.html -->
