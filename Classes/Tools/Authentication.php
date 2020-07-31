@@ -5,7 +5,6 @@ namespace RKW\RkwRegistration\Tools;
 use \RKW\RkwBasics\Helper\Common;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use RKW\RkwBasics\Service\CookieService;
-use RKW\RkwBasics\Service\CacheService;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
@@ -351,12 +350,7 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
             $GLOBALS['TSFE']->storeSessionData(); // store session in database
 
             // re-set data for redirect
-            if ($GLOBALS['TYPO3_CONF_VARS']['FE']['cookieNameRkwBasics']) {
-                CookieService::copyCookieDataToFeUserSession();
-            } else {
-                CacheService::copyCacheDataToFeUserSession();
-            }
-
+            CookieService::copyCookieDataToFeUserSession();
 
         } else {
             $GLOBALS['TSFE']->fe_user->createUserSession($userArray);
@@ -411,11 +405,7 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
         $version = VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
         if ($version >=  8000000) {
             // re-set url for further logouts
-            if ($GLOBALS['TYPO3_CONF_VARS']['FE']['cookieNameRkwBasics']) {
-                CookieService::copyCookieDataToFeUserSession();
-            } else {
-                CacheService::copyCacheDataToFeUserSession();
-            }
+            CookieService::copyCookieDataToFeUserSession();
         }
     }
 
