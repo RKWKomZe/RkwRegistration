@@ -4,6 +4,7 @@ namespace RKW\RkwRegistration\Tools;
 
 use \RKW\RkwBasics\Helper\Common;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use RKW\RkwBasics\Service\CookieService;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -103,6 +104,8 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
                     && ($checkedUrl = $this->checkRedirectUrl($referrer))
                 ) {
                     $feAuth->setKey('ses', 'rkw_registration_redirect_referrer', $checkedUrl);
+                    // add also to rkw cookie
+                    CookieService::setKey('rkw_registration_redirect_referrer', $checkedUrl);
                     $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::DEBUG, sprintf('Referrer redirect set to %s.', $checkedUrl));
                 }
 
@@ -118,6 +121,8 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
                     && ($checkedUrl = $this->checkRedirectUrl($xdlUrl))
                 ) {
                     $feAuth->setKey('ses', 'rkw_registration_redirect_xdl_url', $checkedUrl);
+                    // add also to rkw cookie
+                    CookieService::setKey('rkw_registration_redirect_xdl_url', $checkedUrl);
                     $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::DEBUG, sprintf('XDL redirect set to %s.', $checkedUrl));
                 }
             }
@@ -215,6 +220,8 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
 
             // reset referrer in cookie. Everything else is kept - except for logout!
             $feAuth->setKey('ses', 'rkw_registration_redirect_referrer', null);
+            // remove it also from RkwCookie
+            CookieService::removeKey('rkw_registration_redirect_referrer');
 
         }
 
@@ -293,6 +300,9 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
             $feAuth->setKey('ses', 'rkw_registration_redirect_referrer', null);
             $feAuth->setKey('ses', 'rkw_registration_redirect_xdl_url', null);
 
+            // remove it also from RkwCookie
+            CookieService::removeKey('rkw_registration_redirect_referrer');
+            CookieService::removeKey('rkw_registration_redirect_xdl_url');
         }
 
         return $url;

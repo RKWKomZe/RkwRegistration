@@ -4,6 +4,7 @@ namespace RKW\RkwRegistration\Tools;
 
 use \RKW\RkwBasics\Helper\Common;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
+use RKW\RkwBasics\Service\CookieService;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
@@ -340,10 +341,6 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
         $version = VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
         if ($version >=  8000000) {
 
-            // buffering data for redirect (necessary in TYPO 8.7)
-            $rkwRegistrationRedirectReferrer = strip_tags($GLOBALS['TSFE']->fe_user->getKey('ses', 'rkw_registration_redirect_referrer'));
-            $rkwRegistrationRedirectXdlUrl = strip_tags($GLOBALS['TSFE']->fe_user->getKey('ses', 'rkw_registration_redirect_xdl_url'));
-
             $GLOBALS['TSFE']->fe_user->start(); // set cookie and initiate login
             $GLOBALS['TSFE']->fe_user->createUserSession($userArray);  // create user session in database
             $GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession(); // get user session from database
@@ -351,9 +348,10 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
             $GLOBALS['TSFE']->initUserGroups(); // Initializes the front-end user groups based on all fe_groups records that the current fe_user is member of
             $GLOBALS['TSFE']->loginUser = true; //  Global flag indicating that a frontend user is logged in. Should already by set by \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::initUserGroups();
             $GLOBALS['TSFE']->storeSessionData(); // store session in database
+
             // re-set data for redirect
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'rkw_registration_redirect_referrer', $rkwRegistrationRedirectReferrer);
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'rkw_registration_redirect_xdl_url', $rkwRegistrationRedirectXdlUrl);
+            CookieService::copyCookieDataToFeUserSession();
+
         } else {
             $GLOBALS['TSFE']->fe_user->createUserSession($userArray);
             $GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession();
@@ -399,20 +397,15 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
      */
     public static function logoutUser()
     {
-        // same like in login action: The following actions kills session data which we need afterwards
-        $version = VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
-        $rkwRegistrationRedirectXdlUrl = '';
-        if ($version >=  8000000) {
-            $rkwRegistrationRedirectXdlUrl = strip_tags($GLOBALS['TSFE']->fe_user->getKey('ses', 'rkw_registration_redirect_xdl_url'));
-        }
-
         self::getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Logging out user with uid %s.', intval($GLOBALS['TSFE']->fe_user->user['uid'])));
         $GLOBALS['TSFE']->fe_user->removeSessionData();
         $GLOBALS['TSFE']->fe_user->logoff();
 
+        // same like in login action: We have to reset data we need for further (multi-)domain logouts
+        $version = VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
         if ($version >=  8000000) {
             // re-set url for further logouts
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'rkw_registration_redirect_xdl_url', $rkwRegistrationRedirectXdlUrl);
+            CookieService::copyCookieDataToFeUserSession();
         }
     }
 
