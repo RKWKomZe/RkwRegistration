@@ -1248,6 +1248,11 @@ class RegistrationController extends ControllerAbstract
                     /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin */
                     $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
                     if ($url = $redirectLogin->checkRedirectUrl($xdlRedirect)) {
+                        $version = \TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
+                        if ($version >=  8000000) {
+                            // Fix for TYPO3 8.7: Without setting this cookie the user would have to reload the browser manually
+                            setcookie('fe_typo_user', $GLOBALS['TSFE']->fe_user->id, null, "/");
+                        }
                         $this->redirectToUri($url);
                     } else {
                         $error = true;
