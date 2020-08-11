@@ -344,7 +344,7 @@
 			</trans-unit>
             <trans-unit id="registrationController.message.registration_successfull">
                 <source>You have been successfully registered. Your password has been sent to you via e-mail.</source>
-                <target><![CDATA[Woohoo! Sie wurden erfolgreich registriert. Das Passwort für den Login ist per E-Mail auf dem Weg zu Ihnen. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
+                <target><![CDATA[Wohoo! Sie wurden erfolgreich registriert. Das Passwort für den Login ist per E-Mail auf dem Weg zu Ihnen. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.message.registration_watch_for_email">
                 <source>An e-mail has been send to you. Please click the link in the e-mail to confirm your registration.</source>
@@ -787,7 +787,10 @@
                 <source>Yes, I agree that the RKW will use my personal data to contact me. Furthermore, I have read the extended information in the</source>
                 <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten für die Kontaktaufnahme verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
             </trans-unit>
-
+            <trans-unit id="templates_registration_privacy_form.firstPart">
+                <source>Yes, I agree that RKW will use my personal data for the above purpose. Furthermore, I have read and agree to the extended notes in the</source>
+                <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten zur Kontaktaufnahme verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
+            </trans-unit>
 
             <!-- Templates/Email/RegisterOptInRequest.html -->
             <trans-unit id="templates_email_registerOptInRequest.headline">
