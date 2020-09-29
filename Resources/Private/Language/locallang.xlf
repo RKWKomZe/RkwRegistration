@@ -802,6 +802,9 @@
             <trans-unit id="partials_registration_registerFormFields.labelOptional">
                 <source>(Optional)</source>
             </trans-unit>
+            <trans-unit id="partials_registration_registerFormFields.labelRequired">
+                <source>(Required)</source>
+            </trans-unit>
 
 
         </body>

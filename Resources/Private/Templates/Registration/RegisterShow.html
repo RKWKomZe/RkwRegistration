@@ -1,44 +1,59 @@
-{namespace vh=RKW\RkwRegistration\ViewHelpers}
-<f:layout name="Default" />
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:vh="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
+    data-namespace-typo3-fluid="true">
 
-This template displays a NEW form for the current domain object.
+    <f:layout name="Default" />
 
-If you modify this template, do not forget to change the overwrite settings
-in /Configuration/ExtensionBuilder/settings.yaml:
-  Resources:
-    Private:
-      Templates:
-        New.html: keep
+    This template displays a NEW form for the current domain object.
 
-Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+    If you modify this template, do not forget to change the overwrite settings
+    in /Configuration/ExtensionBuilder/settings.yaml:
+      Resources:
+        Private:
+          Templates:
+            New.html: keep
 
-<f:section name="main">
+    Otherwise your changes will be overwritten the next time you save the extension in the extension builder
 
-	<f:render partial="FlashMessages" arguments="{_all}" />
-	<f:render partial="FormErrors" arguments="{for:newFrontendUser}"/>
+    <f:section name="main">
 
-	<f:form action="register" name="newFrontendUser" object="{newFrontendUser}" class="form-fields">
-		<div class="v320-1-of-2">
+        <f:render partial="FlashMessages" arguments="{_all}" />
+        <f:render partial="FormErrors" arguments="{for:newFrontendUser}"/>
 
-			<f:render partial="Registration/RegisterFormFields" arguments="{_all}" />
+        <f:form action="register" name="newFrontendUser" object="{newFrontendUser}" class="form-fields">
+            <div class="flex-container">
+                <div class="form flex flex-basis-6 full-width-medium space-between">
+                    <f:render partial="Registration/RegisterFormFields" arguments="{_all}" />
 
-        	<span class="checkbox">
-				<label>
-					<f:form.checkbox name="terms" value="1" />
-					<span class="text-smaller"><f:link.page pageUid="{termsPid}" target="_blank"><f:translate key="templates_registration_registerShow.terms" /></f:link.page></span>
-				</label>
-			</span>
+                    <div class="form__field">
+                        <f:form.checkbox
+                            class="checkbox"
+                            id="terms"
+                            name="terms"
+                            value="1"
+                        />
+                        <label for="terms" class="checkbox-label">
+                            <span class="text-smaller"><f:link.page pageUid="{termsPid}" target="_blank"><f:translate key="templates_registration_registerShow.terms" /></f:link.page></span>
+                        </label>
+                    </div>
 
-			<span class="checkbox">
-				<label>
-					<f:form.checkbox name="privacy" value="1" />
-					<vh:privacyText textVersion="registration" />
-				</label>
-			</span>
+                    <div class="form__field">
+                        <f:form.checkbox
+                            class="checkbox"
+                            id="privacy"
+                            name="privacy"
+                            value="1"
+                        />
+                        <label for="privacy" class="checkbox-label">
+                            <vh:privacyText textVersion="registration"/>
+                        </label>
+                    </div>
 
-			<button type="submit" class="button">
-				<span><f:translate key="templates_registration_registerShow.labelRegister" /></span>
-			</button>
-		</div>
-	</f:form>
-</f:section>
+                    <button type="submit" class="btn btn--primary btn--small">
+                        <span><f:translate key="templates_registration_registerShow.labelRegister" /></span>
+                    </button>
+                </div>
+            </div>
+        </f:form>
+    </f:section>
+</html>

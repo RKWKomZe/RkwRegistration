@@ -1004,6 +1004,10 @@
                 <source>(Optional)</source>
                 <target>(Optional)</target>
             </trans-unit>
+            <trans-unit id="partials_registration_registerFormFields.labelRequired">
+                <source>(Required)</source>
+                <target>(Pflichtfeld)</target>
+            </trans-unit>
         </body>
 	</file>
 </xliff>

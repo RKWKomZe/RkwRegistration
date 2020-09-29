@@ -276,7 +276,7 @@ class ControllerAbstract extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
     protected function redirectToLogin()
     {
 
-        $this->addFlashmessage(
+        $this->addFlashMessage(
             \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
                 'abstractController.error.user_not_logged_in', 'rkw_registration'
             ),
