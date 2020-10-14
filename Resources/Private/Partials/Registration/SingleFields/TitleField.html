@@ -1,12 +1,15 @@
-{namespace rkwRegistration=RKW\RkwRegistration\ViewHelpers}
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:rkwRegistration="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
+    data-namespace-typo3-fluid="true">
 
-<div class="v320-1 ui-front">
-    <label class="form-label" for="title">
-        <f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title" />
-        <f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='txRkwregistrationTitle' /> == 0">
-            <span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
-        </f:if>
-    </label>
-    <f:form.textfield property="txRkwregistrationTitle.name" id="title" additionalAttributes="{autocomplete: 'off'}"/>
-    <f:widget.autocomplete objects="{titles}" for="title" searchProperty="name"></f:widget.autocomplete>
-</div>
+    <div class="form__field ui-front">
+        <label class="form-label" for="title">
+            <f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title" />
+            <f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='txRkwregistrationTitle' /> == 0">
+                <span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
+            </f:if>
+        </label>
+        <f:form.textfield property="txRkwregistrationTitle.name" id="title" additionalAttributes="{autocomplete: 'off'}"/>
+        <f:widget.autocomplete objects="{titles}" for="title" searchProperty="name"></f:widget.autocomplete>
+    </div>
+</html>

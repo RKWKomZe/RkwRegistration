@@ -16,56 +16,30 @@ namespace RKW\RkwRegistration\Controller;
  */
 
 /**
- * Class AjaxController
+ * Class InfoController
  *
- * @author Maximilian Fäßler <maximilian@faesslerweb.de>
+
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
- * @deprecated This class is deprecated and will be removed soon
  */
-class AjaxController extends ControllerAbstract
+class InfoController extends ControllerAbstract
 {
-    /**
-     * Returns the init for personal info- action
-     *
-     * @return void
-     */
-    public function loginInfoInitAction()
-    {
-
-        $this->view->assignMultiple(
-            array(
-                'pageUid'     => intval($GLOBALS['TSFE']->id),
-                'languageUid' => intval($GLOBALS['TSFE']->sys_language_uid),
-            )
-        );
-    }
 
     /**
      * Returns personal info of user, used via AJAX
      *
-     * @return string
+     * @return void
      */
     public function loginInfoAction()
     {
-
-        $this->view->assignMultiple(
-            array(
+         $this->view->assignMultiple(
+            [
                 'frontendUser' => $this->getFrontendUser(),
                 'logoutPid'    => intval($this->settings['users']['logoutPid']),
-            )
+            ]
         );
-
-        $content = $this->view->render();
-
-        return json_encode(
-            array(
-                'data' => str_replace(array("\n", "\r", "\t"), '', $content),
-            )
-        );
-        //===
     }
 
 

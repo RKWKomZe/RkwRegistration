@@ -1,24 +1,27 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true">
 
-<f:layout name="Default" />
-<f:section name="main">
+    <f:layout name="Default" />
+    <f:section name="main">
 
-	<h2><f:translate key="templates_registration_loginShow.headline" /></h2>
+        <h2><f:translate key="templates_registration_loginShow.headline" /></h2>
 
-    <f:render partial="FlashMessages" arguments="{_all}" />
+        <f:render partial="FlashMessages" arguments="{_all}" />
 
-	<f:render partial="Registration/Login" arguments="{_all}" />
-	<f:link.action action="passwordForgotShow" class="text-smaller"><f:translate key="templates_registration_loginShow.passwordForgot" /></f:link.action>
+        <f:render partial="Registration/Login" arguments="{_all}" />
+        <f:link.action action="passwordForgotShow" class="text-smaller"><f:translate key="templates_registration_loginShow.passwordForgot" /></f:link.action>
 
-    <p>&nbsp;</p>
-    <f:if condition="{settings.activateFacebookLogin}">
-        <p>
-            <f:render partial="Registration/SocialMedia/Facebook" arguments="{_all}" />
-        </p>
-    </f:if>
-    <f:if condition="{settings.activateTwitterLogin}">
-        <p>
-            <f:render partial="Registration/SocialMedia/Twitter" arguments="{_all}" />
-        </p>
-    </f:if>
+        <p>&nbsp;</p>
+        <f:if condition="{settings.activateFacebookLogin}">
+            <p>
+                <f:render partial="Registration/SocialMedia/Facebook" arguments="{_all}" />
+            </p>
+        </f:if>
+        <f:if condition="{settings.activateTwitterLogin}">
+            <p>
+                <f:render partial="Registration/SocialMedia/Twitter" arguments="{_all}" />
+            </p>
+        </f:if>
 
-</f:section>
+    </f:section>
+</html>

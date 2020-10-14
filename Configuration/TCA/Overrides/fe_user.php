@@ -74,31 +74,10 @@ $tempCols = [
         'exclude' => 0,
         'config'=>[
             'type'=>'input',
+            'renderType' => 'inputLink',
             'size' => 30,
             'max' => '256',
             'eval' => 'trim',
-            'wizards' => [
-                'link' => [
-                    'type' => 'popup',
-                    'title' => 'LLL:EXT:cms/locallang_ttc.xlf:header_link_formlabel',
-                    'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_link.gif',
-                    'module' => [
-                        'name' => 'wizard_link',
-                        'urlParameters' => [
-                            'mode' => 'wizard',
-                        ],
-                    ],
-                    'JSopenParams' => 'height=400,width=550,status=0,menubar=0,scrollbars=1',
-                    'params' => [
-                        // List of tabs to hide in link window. Allowed values are:
-                        // file, mail, page, spec, folder, url
-                        'blindLinkOptions' => 'mail,file,page,spec,folder',
-
-                        // allowed extensions for file
-                        //'allowedExtensions' => 'mp3,ogg',
-                    ],
-                ],
-            ],
             'softref' => 'typolink'
         ],
     ],
@@ -118,32 +97,11 @@ $tempCols = [
         'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_url',
         'exclude' => 0,
         'config'=>[
-            'type'=>'input',
+            'type' => 'input',
+            'renderType' => 'inputLink',
             'size' => 30,
             'max' => '256',
             'eval' => 'trim',
-            'wizards' => [
-                'link' => [
-                    'type' => 'popup',
-                    'title' => 'LLL:EXT:cms/locallang_ttc.xlf:header_link_formlabel',
-                    'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_link.gif',
-                    'module' => [
-                        'name' => 'wizard_link',
-                        'urlParameters' => [
-                            'mode' => 'wizard',
-                        ],
-                    ],
-                    'JSopenParams' => 'height=400,width=550,status=0,menubar=0,scrollbars=1',
-                    'params' => [
-                        // List of tabs to hide in link window. Allowed values are:
-                        // file, mail, page, spec, folder, url
-                        'blindLinkOptions' => 'mail,file,page,spec,folder',
-
-                        // allowed extensions for file
-                        //'allowedExtensions' => 'mp3,ogg',
-                    ],
-                ],
-            ],
             'softref' => 'typolink'
         ],
     ],
@@ -152,32 +110,11 @@ $tempCols = [
 		'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_xing_url',
 		'exclude' => 0,
 		'config'=>[
-			'type'=>'input',
+			'type' => 'input',
+            'renderType' => 'inputLink',
             'size' => 30,
             'max' => '256',
             'eval' => 'trim',
-            'wizards' => [
-                'link' => [
-                    'type' => 'popup',
-                    'title' => 'LLL:EXT:cms/locallang_ttc.xlf:header_link_formlabel',
-                    'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_link.gif',
-                    'module' => [
-                        'name' => 'wizard_link',
-                        'urlParameters' => [
-                            'mode' => 'wizard',
-                        ],
-                    ],
-                    'JSopenParams' => 'height=400,width=550,status=0,menubar=0,scrollbars=1',
-                    'params' => [
-                        // List of tabs to hide in link window. Allowed values are:
-                        // file, mail, page, spec, folder, url
-                        'blindLinkOptions' => 'mail,file,page,spec,folder',
-
-                        // allowed extensions for file
-                        //'allowedExtensions' => 'mp3,ogg',
-                    ],
-                ],
-            ],
             'softref' => 'typolink'
 		],
 	],

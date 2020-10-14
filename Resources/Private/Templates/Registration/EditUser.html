@@ -1,37 +1,45 @@
-<f:layout name="Default" />
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true">
 
-This template displays a EDIT form for the current domain object.
+    <f:layout name="Default" />
 
-If you modify this template, do not forget to change the overwrite settings
-in /Configuration/ExtensionBuilder/settings.yaml:
-  Resources:
-    Private:
-      Templates:
-        Edit.html: keep
+    This template displays a EDIT form for the current domain object.
 
-Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+    If you modify this template, do not forget to change the overwrite settings
+    in /Configuration/ExtensionBuilder/settings.yaml:
+      Resources:
+        Private:
+          Templates:
+            Edit.html: keep
 
-<f:section name="main">
+    Otherwise your changes will be overwritten the next time you save the extension in the extension builder
 
-	<h2><f:translate key="templates_registration_editUser.headline" /></h2>
+    <f:section name="main">
 
-    <f:render partial="FlashMessages" arguments="{_all}" />
-	<f:render partial="FormErrors" arguments="{for:frontendUser}"/>
+        <h2><f:translate key="templates_registration_editUser.headline" /></h2>
 
-	<f:form action="updateUser" name="frontendUser" object="{frontendUser}" class="form-fields">
-		<f:render partial="Registration/FormFields" arguments="{_all}" />
+        <f:render partial="FlashMessages" arguments="{_all}" />
+        <f:render partial="FormErrors" arguments="{for:frontendUser}"/>
 
-		<p>
-			<f:link.action pageUid="{welcomePid}" action="welcome" class="button secondary">
-				<span><f:translate key="templates_registration_editUser.labelBack"/></span>
-			</f:link.action>
+        <f:form action="updateUser" name="frontendUser" object="{frontendUser}" class="form-fields">
+            <div class="flex-container">
+                <div class="form flex flex-basis-8 full-width-medium space-between">
+                    <f:render partial="Registration/FormFields" arguments="{_all}" />
+                    <p>
+                        <f:link.action pageUid="{welcomePid}" action="welcome" class="btn btn--secondary btn--small">
+                            <span><f:translate key="templates_registration_editUser.labelBack"/></span>
+                        </f:link.action>
 
-			<button type="submit" class="button">
-				<span><f:translate key="templates_registration_editUser.labelSave" /></span>
-			</button>
-		</p>
+                        <button type="submit" class="btn btn--primary btn--small">
+                            <span><f:translate key="templates_registration_editUser.labelSave" /></span>
+                        </button>
+                    </p>
+                </div>
+            </div>
 
-	</f:form>
+        </f:form>
 
 
-</f:section>
+    </f:section>
+
+</html>

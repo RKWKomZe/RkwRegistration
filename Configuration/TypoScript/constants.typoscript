@@ -18,6 +18,9 @@ plugin.tx_rkwregistration {
 
 	settings {
 
+        # cat=plugin.tx_rkwregistration//a; type=integer; label=Version to use
+        version = 2
+
 		# cat=plugin.tx_rkwregistration//a; type=boolean; label=Include jQuery?
 		includeJQuery = 0
 
@@ -91,6 +94,9 @@ plugin.tx_rkwregistration {
 
             # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered anonymous users (default = 7776000 = 90 days)
             lifetimeAnonymous = 7776000
+
+            # cat=plugin.tx_rkwregistration//a; type=string; label=Login text
+            loginText = Logged in
 
             passwordSettings {
                 # cat=plugin.tx_rkwregistration//a; type=integer; label=Minimum password length (default = 8)

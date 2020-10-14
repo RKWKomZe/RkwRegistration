@@ -1,0 +1,21 @@
+<f:comment>
+    <!--
+    @param $frontendUser
+    @param $field The field to check if is required or optional
+    @use arguments="{field: 'firstName', frontendUser: frontendUser}"
+    -->
+</f:comment>
+
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:rkwRegistration="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
+    data-namespace-typo3-fluid="true">
+
+    <f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='{field}' />">
+        <f:then>
+            <span class="is-required"><f:translate key="partials_registration_registerFormFields.labelRequired" /></span>
+        </f:then>
+        <f:else>
+            <span class="is-optional"><f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
+        </f:else>
+    </f:if>
+</html>

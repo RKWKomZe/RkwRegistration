@@ -1,23 +1,27 @@
-<f:layout name="Default" />
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true">
 
-This Template is responsible for displaying a single view for a domain object
+    <f:layout name="Default" />
 
-If you modify this template, do not forget to change the overwrite settings
-in /Configuration/ExtensionBuilder/settings.yaml:
-Resources:
-Private:
-Templates:
-Show.html: keep
+    This Template is responsible for displaying a single view for a domain object
 
-Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+    If you modify this template, do not forget to change the overwrite settings
+    in /Configuration/ExtensionBuilder/settings.yaml:
+    Resources:
+    Private:
+    Templates:
+    Show.html: keep
 
-<f:section name="main">
+    Otherwise your changes will be overwritten the next time you save the extension in the extension builder
 
-	<h2><f:translate key="templates_service_show.headline" /></h2>
+    <f:section name="main">
 
-	<f:render partial="FlashMessages" arguments="{_all}" />
+        <h2><f:translate key="templates_service_show.headline" /></h2>
 
-	<f:render partial="Service/Properties" arguments="{frontendUserGroup:frontendUserGroup}" />
+        <f:render partial="FlashMessages" arguments="{_all}" />
 
-	<f:link.action action="list"><f:translate key="templates_service_show.backToList" /></f:link.action><br />
-</f:section>
+        <f:render partial="Service/Properties" arguments="{frontendUserGroup:frontendUserGroup}" />
+
+        <f:link.action action="list"><f:translate key="templates_service_show.backToList" /></f:link.action><br />
+    </f:section>
+</html>

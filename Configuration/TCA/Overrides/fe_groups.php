@@ -21,8 +21,8 @@ $tempCols = [
 		'exclude' => 0,
 		'config' => [
 			'type' => 'input',
+            'renderType' => 'inputDateTime',
 			'size' => '13',
-			'max' => '20',
 			'eval' => 'date',
 			'default' => '0'
 		],
@@ -33,8 +33,8 @@ $tempCols = [
 		'exclude' => 0,
 		'config'=>[
 			'type' => 'input',
+            'renderType' => 'inputDateTime',
 			'size' => '13',
-			'max' => '20',
 			'eval' => 'date',
 			'default' => '0'
 		],
@@ -70,29 +70,10 @@ $tempCols = [
         'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_service_pid',
         'config' => [
             'type' => 'input',
+            'renderType' => 'inputLink',
             'size' => '30',
             'max' => '256',
             'eval' => 'trim',
-            'wizards' => [
-                '_PADDING' => 2,
-                'link' => [
-                    'type' => 'popup',
-                    'title' => 'LLL:EXT:cms/locallang_ttc.xlf:header_link_formlabel',
-                    'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_link.gif',
-                    'module' => [
-                        'name' => 'wizard_link',
-                    ],
-                    'JSopenParams' => 'height=400,width=550,status=0,menubar=0,scrollbars=1',
-                    'params' => [
-                        // List of tabs to hide in link window. Allowed values are:
-                        // file, mail, page, spec, folder, url
-                        'blindLinkOptions' => 'mail,file,spec,folder,url',
-
-                        // allowed extensions for file
-                        //'allowedExtensions' => 'mp3,ogg',
-                    ],
-                ],
-            ],
             'softref' => 'typolink'
         ],
     ],

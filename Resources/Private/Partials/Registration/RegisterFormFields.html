@@ -1,45 +1,64 @@
-{namespace rkwRegistration=RKW\RkwRegistration\ViewHelpers}
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:rkwRegistration="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
+    data-namespace-typo3-fluid="true">
 
-<div class="v320-1">
-	<label class="form-label" for="gender">
-		<f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender" />
-		<f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='txRkwregistrationGender' /> == 0">
-			<span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
-		</f:if>
-	</label>
-	<f:form.select id="gender" property="txRkwregistrationGender" options="{99: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.99\")}', 0: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.0\")}', 1: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.1\")}'}" optionValueField="uid" optionLabelField="name" />
-</div>
+    <div class="form__field width100">
+        <label class="form-label" for="gender">
+            <f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender" />
+            <f:render partial="LabelSuffix" arguments="{field: 'gender', frontendUser: frontendUser}" />
+        </label>
+        <f:form.select
+            id="gender"
+            class="select-field select-field--longer"
+            property="txRkwregistrationGender"
+            options="{99: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.99\")}', 0: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.0\")}', 1: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.1\")}'}" optionValueField="uid" optionLabelField="name"
+        />
+    </div>
 
-<f:if condition="<rkwRegistration:titleList />">
-	<f:render partial="Registration/SingleFields/TitleField" arguments="{_all}" />
-</f:if>
+    <f:if condition="<rkwRegistration:titleList />">
+        <f:render partial="Registration/SingleFields/TitleField" arguments="{_all}" />
+    </f:if>
 
-<div class="v320-1">
-	<label class="form-label" for="firstName">
-		<f:translate key="tx_rkwregistration_domain_model_frontenduser.first_name" />
-		<f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='firstName' /> == 0">
-			<span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
-		</f:if>		
-	</label>
-	<f:form.textfield property="firstName" id="firstName" additionalAttributes="{autocomplete:'fname'}" />
-</div>
+    <div class="form__field width100">
+        <label class="form-label" for="firstName">
+            <f:translate key="tx_rkwregistration_domain_model_frontenduser.first_name" />
+            <f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='firstName' /> == 0">
+                <span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
+            </f:if>
+        </label>
+        <f:form.textfield
+            property="firstName"
+            id="firstName"
+            additionalAttributes="{autocomplete:'fname'}"
+        />
+    </div>
 
-<div class="v320-1">
-	<label class="form-label" for="lastName">
-		<f:translate key="tx_rkwregistration_domain_model_frontenduser.last_name" />
-		<f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='lastName' /> == 0">
-			<span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
-		</f:if>		
-	</label>
-	<f:form.textfield property="lastName" id="lastName" additionalAttributes="{autocomplete:'lname'}"/>
-</div>
+    <div class="form__field width100">
+        <label class="form-label" for="lastName">
+            <f:translate key="tx_rkwregistration_domain_model_frontenduser.last_name" />
+            <f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='lastName' /> == 0">
+                <span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
+            </f:if>
+        </label>
+        <f:form.textfield
+            property="lastName"
+            id="lastName"
+            additionalAttributes="{autocomplete:'lname'}"
+        />
+    </div>
 
-<div class="v320-1">
-	<label class="form-label" for="email">
-		<f:translate key="tx_rkwregistration_domain_model_frontenduser.email" />
-		<f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='email' /> == 0">
-			<span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
-		</f:if>		
-	</label>
-	<f:form.textfield property="email" id="email" type="email" additionalAttributes="{autocomplete:'email'}"/>
-</div>
+    <div class="form__field width100">
+        <label class="form-label" for="email">
+            <f:translate key="tx_rkwregistration_domain_model_frontenduser.email" />
+            <f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='email' /> == 0">
+                <span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
+            </f:if>
+        </label>
+        <f:form.textfield
+            property="email"
+            id="email"
+            type="email"
+            additionalAttributes="{autocomplete:'email'}"
+        />
+    </div>
+</html>
