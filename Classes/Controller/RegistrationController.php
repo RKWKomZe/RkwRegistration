@@ -935,16 +935,15 @@ class RegistrationController extends ControllerAbstract
             ->setUseCacheHash(false)
             ->setArguments(
                 array('tx_rkwregistration_rkwregistration' =>
-                          array(
-                              'controller' => 'Registration',
-                              'action'     => 'loginAnonymous',
-                              'token'      => $this->getFrontendUserAnonymous()->getUsername(),
-                          ),
+                    array(
+                      'controller' => 'Registration',
+                      'action'     => 'loginAnonymous',
+                      'token'      => $this->getFrontendUserAnonymous()->getUsername(),
+                    ),
                 )
             )
             ->setCreateAbsoluteUri(true)
             ->build();
-
 
         // show link with token to anonymous user
         $this->addFlashMessage(

@@ -1,0 +1,37 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:rkwAjax="http://typo3.org/ns/RKW/RkwAjax/ViewHelpers"
+    data-namespace-typo3-fluid="true">
+
+    <f:layout name="Default" />
+
+    <f:section name="main">
+
+        <template class="ajax" data-ajax-url="{f:uri.action(action:'loginInfo', absolute:'1', additionalParams:'{rkw_ajax : \'{key: ajaxHelper.key, cid: ajaxHelper.contentUid, idl: \\\'1\\\'}\'}')}"></template>
+
+        <rkwAjax:ajaxWrapper ajaxHelper="{ajaxHelper}" ajaxAction="replace" ajaxId="1">
+            <div>
+                <f:if condition="{ajaxHelper.isAjaxCall}">
+                    <f:if condition="{frontendUser}">
+                        <f:then>
+                            <f:if condition="{frontendUser.lastName}">
+                                <script>
+                                    jQuery('#tx-rkwregistration-username').html('<f:format.crop maxCharacters="15" respectWordBoundaries="false">{frontendUser.lastName}</f:format.crop>');
+                                </script>
+                            </f:if>
+                            <script>
+                                  jQuery('.tx-rkwregistration-login-class').addClass('is-logged-in');
+                                  jQuery('.tx-rkwregistration-login-text').html('{settings.users.loginText}');
+                            </script>
+                        </f:then>
+                        <f:else>
+                            <script>
+                                jQuery('.tx-rkwregistration-login-class').addClass('is-logged-out');
+                            </script>
+                        </f:else>
+                    </f:if>
+                </f:if>
+            </div>
+        </rkwAjax:ajaxWrapper>
+
+    </f:section>
+</html>

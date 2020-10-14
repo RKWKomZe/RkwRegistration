@@ -16,6 +16,12 @@ defined('TYPO3_MODE') || die('Access denied.');
     'RKW Registration Ajax'
 );
 
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'RKW.RkwRegistration',
+    'RkwregistrationInfo',
+    'RKW Registration Info'
+);
+
 //=================================================================
 // Add Flexform
 //=================================================================

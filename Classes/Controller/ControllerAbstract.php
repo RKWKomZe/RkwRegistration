@@ -24,7 +24,7 @@ namespace RKW\RkwRegistration\Controller;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ControllerAbstract extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class ControllerAbstract extends \RKW\RkwAjax\Controller\AjaxAbstractController
 {
     /**
      * ID of logged in FrontendUser
