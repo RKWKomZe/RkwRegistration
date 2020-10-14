@@ -86,6 +86,7 @@ return [
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_registration.valid_until',
 			'config' => [
 				'type' => 'input',
+                'renderType' => 'inputDateTime',
 				'size' => 10,
 				'eval' => 'datetime',
 				'checkbox' => 1,

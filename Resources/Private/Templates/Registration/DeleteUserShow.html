@@ -1,36 +1,42 @@
-<f:layout name="Default" />
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true">
 
-This template displays a EDIT form for the current domain object.
+    <f:layout name="Default" />
 
-If you modify this template, do not forget to change the overwrite settings
-in /Configuration/ExtensionBuilder/settings.yaml:
-  Resources:
-    Private:
-      Templates:
-        Edit.html: keep
+    This template displays a EDIT form for the current domain object.
 
-Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+    If you modify this template, do not forget to change the overwrite settings
+    in /Configuration/ExtensionBuilder/settings.yaml:
+      Resources:
+        Private:
+          Templates:
+            Edit.html: keep
 
-<f:section name="main">
-	<h2><f:translate key="templates_registration_deleteUserShow.headline" /></h2>
+    Otherwise your changes will be overwritten the next time you save the extension in the extension builder
 
-    <f:render partial="FlashMessages" arguments="{_all}" />
-	<f:render partial="FormErrors" arguments="{for:frontendUser}"/>
+    <f:section name="main">
+        <h2><f:translate key="templates_registration_deleteUserShow.headline" /></h2>
 
-	<f:form action="deleteUser" name="frontendUser" object="{frontendUser}" class="form-fields">
+        <f:render partial="FlashMessages" arguments="{_all}" />
+        <f:render partial="FormErrors" arguments="{for:frontendUser}"/>
 
-		<p><f:translate key="templates_registration_deleteUserShow.reallyDelete" /></p>
+        <f:form action="deleteUser" name="frontendUser" object="{frontendUser}" class="form-fields">
 
-		<p>
-			<f:link.action pageUid="{welcomePid}" action="welcome" class="button">
-				<span><f:translate key="templates_registration_deleteUserShow.labelBack"/></span>
-			</f:link.action>
+            <p><f:translate key="templates_registration_deleteUserShow.reallyDelete" /></p>
 
-			<button type="submit" class="button secondary">
-				<span><f:translate key="templates_registration_deleteUserShow.labelDelete" /></span>
-			</button>
-		</p>
+            <p>
+                <f:link.action pageUid="{welcomePid}" action="welcome" class="button">
+                    <span><f:translate key="templates_registration_deleteUserShow.labelBack"/></span>
+                </f:link.action>
 
-	</f:form>
+                <button type="submit" class="button secondary">
+                    <span><f:translate key="templates_registration_deleteUserShow.labelDelete" /></span>
+                </button>
+            </p>
 
-</f:section>
+        </f:form>
+
+    </f:section>
+
+</html>
+

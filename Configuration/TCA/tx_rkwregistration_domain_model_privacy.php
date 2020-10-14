@@ -67,8 +67,8 @@ return [
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.crdate',
 			'config' => [
 				'type' => 'input',
+                'renderType' => 'inputDateTime',
 				'size' => 13,
-				'max' => 20,
 				'eval' => 'datetime, required',
 				'checkbox' => 0,
 				'default' => 0,
@@ -81,8 +81,8 @@ return [
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_privacy.foreign_table',
 			'config' => [
 				'type' => 'input',
+                'renderType' => 'inputDateTime',
 				'size' => 30,
-				'max' => 255,
 				'eval' => 'trim, required',
 				'readOnly' => 1,
 			],

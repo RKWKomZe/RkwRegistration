@@ -35,6 +35,18 @@ call_user_func(
             )
         );
 
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
+            'RkwregistrationInfo',
+            array(
+                'Info' => 'loginInfo'
+            ),
+            // non-cacheable actions
+            array(
+                'Info' => 'loginInfo'
+            )
+        );
+
         //=================================================================
         // Register CommandController
         //=================================================================

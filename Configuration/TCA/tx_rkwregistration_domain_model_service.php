@@ -55,6 +55,7 @@ return [
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_service.enabled_by_admin',
 			'config' => [
 				'type' => 'input',
+                'renderType' => 'inputDateTime',
 				'size' => 10,
 				'eval' => 'datetime',
 				'checkbox' => 1,
@@ -87,6 +88,7 @@ return [
 			'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_service.valid_until',
 			'config' => [
 				'type' => 'input',
+                'renderType' => 'inputDateTime',
 				'size' => 10,
 				'eval' => 'datetime',
 				'checkbox' => 1,
