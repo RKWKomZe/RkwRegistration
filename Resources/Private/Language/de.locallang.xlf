@@ -756,8 +756,8 @@
 
             <!-- Templates/Registration/Privacy.html -->
             <trans-unit id="templates_registration_privacy_default.firstPart">
-                <source>Yes, I agree that RKW will use my personal data for the above purpose and to create a free user account.  Furthermore, I have read and agree to the extended notes in the</source>
-                <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten zum oben genannten Zweck, sowie zur Erzeugung eines kostenlosen Nutzerkontos verwendet.  Ferner habe ich die erweiterten Hinweise in der</target>
+                <source>Yes, I agree that RKW will use my personal data for the above purpose and to create a free user account. Furthermore, I have read and agree to the extended notes in the</source>
+                <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten zum oben genannten Zweck, sowie zur Erzeugung eines kostenlosen Nutzerkontos verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
             </trans-unit>
             <trans-unit id="templates_registration_privacy_default.secondPart">
                 <source>data protection declaration</source>

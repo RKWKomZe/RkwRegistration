@@ -83,7 +83,7 @@ return [
 				'type' => 'input',
                 'renderType' => 'inputDateTime',
 				'size' => 30,
-				'eval' => 'trim, required',
+				'eval' => 'datetime',
 				'readOnly' => 1,
 			],
 		],
