@@ -6,7 +6,15 @@
 
     <f:section name="main">
 
-        <template class="ajax" data-ajax-url="{f:uri.action(action:'loginInfo', absolute:'1', additionalParams:'{rkw_ajax : \'{key: ajaxHelper.key, cid: ajaxHelper.contentUid, idl: \\\'1\\\'}\'}')}"></template>
+        <template class="ajax" id="tx-rkwregistration-login-info-ajax"></template>
+        <script type="text/javascript">
+
+            // only do an ajax-call if fe-cookie is set. This is to reduce requests to the server
+            var txRkwRegistrationAjaxUrl = "{f:uri.action(action:'loginInfo', absolute:'1', additionalParams:'{rkw_ajax : \'{key: ajaxHelper.key, cid: ajaxHelper.contentUid, idl: \\\'1\\\'}\'}') -> f:format.raw()}";
+            if (document.cookie.split(';').some((item) => item.trim().startsWith('fe_typo_user='))) {
+                document.getElementById('tx-rkwregistration-login-info-ajax').setAttribute('data-ajax-url', txRkwRegistrationAjaxUrl);
+            }
+        </script>
 
         <rkwAjax:ajaxWrapper ajaxHelper="{ajaxHelper}" ajaxAction="replace" ajaxId="1">
             <div>
