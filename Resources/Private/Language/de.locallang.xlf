@@ -767,6 +767,18 @@
                 <source>. This consent can be revoked at any time.</source>
                 <target>gelesen und bin damit einverstanden. Diese Einwilligung kann jederzeit widerrufen werden.</target>
             </trans-unit>
+            <trans-unit id="templates_registration_privacy_defaultAlternative.firstPart">
+                <source>Yes, I agree that RKW will use my personal data for the above purpose. Furthermore, I have read and agree to the extended notes in the</source>
+                <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten zum oben genannten Zweck verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_privacy_defaultAlternative.secondPart">
+                <source>data protection declaration</source>
+                <target>Datenschutzerklärung </target>
+            </trans-unit>
+            <trans-unit id="templates_registration_privacy_defaultAlternative.thirdPart">
+                <source>. This consent can be revoked at any time.</source>
+                <target>gelesen und bin damit einverstanden. Diese Einwilligung kann jederzeit widerrufen werden.</target>
+            </trans-unit>
             <trans-unit id="templates_registration_privacy_registration.firstPart">
                 <source>Yes, I agree that RKW uses my personal data to create a free user account. I have also read the extended notes in the</source>
                 <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten zur Erzeugung eines kostenlosen Nutzerkontos verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
