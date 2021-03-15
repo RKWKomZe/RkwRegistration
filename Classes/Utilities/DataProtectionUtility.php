@@ -2,6 +2,7 @@
 
 namespace RKW\RkwRegistration\Utilities;
 
+use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
 use \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
 use \RKW\RkwBasics\Helper\Common;
@@ -138,11 +139,12 @@ class DataProtectionUtility
             /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
             foreach ($frontendUserList as $frontendUser) {
 
+                $updates = [];
+                $adds = [];
                 foreach ($mappings as $modelClassName => $propertyMap) {
 
                     // anonymize and encrypt the frontend user
                     if ($modelClassName == 'RKW\RkwRegistration\Domain\Model\FrontendUser') {
-
 
                         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
                         if (
@@ -152,13 +154,18 @@ class DataProtectionUtility
 
                             $frontendUser->setTxRkwregistrationDataProtectionStatus(1);
 
-                            $this->frontendUserRepository->update($frontendUser);
-                            $this->encryptedDataRepository->add($encryptedData);
+                            // store changes temporarily. Only if no error occurs we will persist it
+                            $updates[] = [
+                                'repository' =>$this->frontendUserRepository,
+                                'data' => $frontendUser
+                            ];
+                            $adds[] = $encryptedData;
 
-                            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Anonymized and encrypted data of model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
+                            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Anonymized and encrypted data of main-model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
 
                         } else {
-                            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Could not anonymize and encrypt data of model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
+                            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Could not anonymize and encrypt data of main-model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
+                            continue(2);
                         }
 
                     } else {
@@ -182,12 +189,17 @@ class DataProtectionUtility
                                         && ($this->anonymizeObject($object, $frontendUser))
                                     ){
 
-                                        $this->encryptedDataRepository->add($encryptedData);
-                                        $repository->update($object);
+                                        // store changes temporarily. Only if no error occurs we will persist it
+                                        $updates[] = [
+                                            'repository' => $repository,
+                                            'data' => $object
+                                        ];
+                                        $adds[] = $encryptedData;
 
                                         $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Anonymized and encrypted data of model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
                                     } else {
                                         $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Could not anonymize and encrypt data of model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
+                                        continue(2);
                                     }
                                 }
                             }
@@ -196,6 +208,23 @@ class DataProtectionUtility
                         }
                     }
                 }
+
+                // now save everything
+                foreach ($adds as $data) {
+                    $this->encryptedDataRepository->add($data);
+                }
+
+                foreach ($updates as $subArray) {
+                    /** @var \TYPO3\CMS\Extbase\Persistence\Repository $repository */
+                    if (
+                        ($repository = $subArray['repository'])
+                        && ($data = $subArray['data'])
+                    ) {
+                       $repository->update($data);
+                    }
+                }
+
+                $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Saved and updated all data for user-id %s.', $frontendUser->getUid()));
             }
         }
     }
@@ -218,7 +247,11 @@ class DataProtectionUtility
             throw new \RKW\RkwRegistration\Exception('Given object is not persisted.');
         }
 
-        if ($propertyMap = $this->getPropertyMapByModelClassName(get_class($object))){
+        // try property-mapping with current and parent class
+        if (
+            ($propertyMap = $this->getPropertyMapByModelClassName(get_class($object)))
+            || ($propertyMap = $this->getPropertyMapByModelClassName(get_parent_class($object)))
+        ){
             foreach ($propertyMap as $property => $newValue) {
                 $setter = 'set' . ucfirst($property);
                 if (method_exists($object, $setter)) {
@@ -249,11 +282,22 @@ class DataProtectionUtility
             throw new \RKW\RkwRegistration\Exception('Given object is not persisted.');
         }
 
+        // try property-mapping with current and parent class
+        $propertyMap = null;
+        $className = null;
         if ($propertyMap = $this->getPropertyMapByModelClassName(get_class($object))){
+            $className = get_class($object);
+        } else if ($propertyMap = $this->getPropertyMapByModelClassName(get_parent_class($object))){
+            $className = get_parent_class($object);
+        }
 
+        if (
+            ($propertyMap)
+            && ($className)
+        ){
             /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper */
             $dataMapper = $this->objectManager->get(DataMapper::class);
-            $tableName = $dataMapper->getDataMap(get_class($object))->getTableName();
+            $tableName = $dataMapper->getDataMap($className)->getTableName();
 
             /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
             $encryptedData = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\EncryptedData::class);
@@ -261,7 +305,7 @@ class DataProtectionUtility
             $encryptedData->setSearchKey(hash('sha256', $frontendUser->getEmail()));
             $encryptedData->setForeignUid($object->getUid());
             $encryptedData->setForeignTable($tableName);
-            $encryptedData->setForeignClass(get_class($object));
+            $encryptedData->setForeignClass($className);
 
             $data = [];
             foreach ($propertyMap as $property => $newValue) {
