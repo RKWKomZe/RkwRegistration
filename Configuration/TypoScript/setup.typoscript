@@ -330,7 +330,7 @@ plugin.tx_rkwregistration {
                     }
                 }
 
-
+                /*
                 RKW\RkwEvents\Domain\Model\EventReservationAddPerson {
 
                     mappingField = feUser
@@ -341,7 +341,7 @@ plugin.tx_rkwregistration {
                         lastName = Anonymous
                     }
                 }
-
+                */
             }
         }
 

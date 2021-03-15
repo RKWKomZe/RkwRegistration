@@ -6,12 +6,12 @@ plugin.tx_rkwregistration  {
 
     settings {
 
-		dataProtection {
+        dataProtection {
 
             classes {
 
-                RKW\RkwRegistration\Domain\Model\Privacy {
-                    mappingField = parent
+                RKW\RkwRegistration\Domain\Model\Service {
+                    mappingField = usergroup
                 }
             }
         }

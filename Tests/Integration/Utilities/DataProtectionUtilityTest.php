@@ -4,6 +4,7 @@ namespace RKW\RkwRegistration\Tests\Integration\Utilities;
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
+use RKW\RkwRegistration\Domain\Model\Privacy;
 use RKW\RkwRegistration\Utilities\DataProtectionUtility;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\BackendUserRepository;
@@ -224,10 +225,13 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          *
          * Given there is a frontend user
          * Given this frontend user has a shipping address
+         * Given this frontend user has privacy data according to his order
          * Given the frontend user has been deleted since more days then configured for anonymization
          * When I anonymize all deleted users
          * Then the shipping address of the frontend user is anonymised
          * Then the shipping address of the frontend user is encrypted
+         * Then the shipping address of the privacy data is anonymised
+         * Then the shipping address of the privacy data is encrypted
          */
         $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check40.xml');
 
@@ -252,6 +256,24 @@ class DataProtectionUtilityTest extends FunctionalTestCase
         static::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
         static::assertEquals(1, $encryptedData->getForeignUid());
 
+
+        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $privacy */
+        $privacy  = $this->privacyRepository->findByUid(1);
+
+        static::assertEquals('127.0.0.1', $privacy->getIpAddress());
+        static::assertEquals('Anonymous 1.0', $privacy->getUserAgent());
+
+        /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
+        $encryptedData = $this->encryptedDataRepository->findByUid(3);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        static::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
+        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
+        static::assertEquals(1, $encryptedData->getForeignUid());
+        static::assertEquals('tx_rkwregistration_domain_model_privacy', $encryptedData->getForeignTable());
+        static::assertEquals('RKW\RkwRegistration\Domain\Model\Privacy', $encryptedData->getForeignClass());
 
     }
 
@@ -694,6 +716,81 @@ class DataProtectionUtilityTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
+    public function encryptObjectThrowsExceptionIfPrivacyDataIsNotExisting()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a non persisted privacy data
+         * When I encrypt the shipping address
+         * Then an error is thrown
+         */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check25.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $privacy*/
+        $privacy = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\Privacy::class);
+
+        static::expectException(\RKW\RkwRegistration\Exception::class);
+
+        $this->subject->encryptObject($privacy, $frontendUser);
+
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function encryptObjectEncryptsPrivacyDataOfUser()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a shipping address
+         * When I encrypt the shipping address
+         * Then the original object is not encrypted
+         * Then the encrypted user data is returned
+         */
+        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check25.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $privacy */
+        $privacy  = $this->privacyRepository->findByUid(1);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        $encryptedData = $this->subject->encryptObject($privacy, $frontendUser);
+
+        static::assertEquals('172.28.128.1', $privacy->getIpAddress());
+        static::assertEquals('Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0', $privacy->getUserAgent());
+
+        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        $encryptedDataArray = $encryptedData->getEncryptedData();
+
+        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
+        static::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
+        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
+        static::assertEquals(1, $encryptedData->getForeignUid());
+        static::assertEquals('tx_rkwregistration_domain_model_privacy', $encryptedData->getForeignTable());
+        static::assertEquals('RKW\RkwRegistration\Domain\Model\Privacy', $encryptedData->getForeignClass());
+
+        static::assertCount(2, $encryptedDataArray);
+        static::assertEquals(49, strlen($encryptedDataArray['ipAddress']));
+        static::assertEquals(133, strlen($encryptedDataArray['userAgent']));
+
+    }
+
+
+    //===================================================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
     public function decryptObjectReturnsNullIfForeignClassDoesNotExist()
     {
 
@@ -902,7 +999,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
      * @test
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     */
+    */
     public function getFrontendUserPropertyByModelClassNameChecksForValidReference()
     {
 
@@ -914,8 +1011,8 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Given the configured mapping field does not refer to the fe_user table
          * When I try to fetch the frontendUserGetter for this model-class
          * Then empty is returned
-         */
-        static::assertEmpty($this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\Privacy'));
+        */
+        static::assertEmpty($this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\Service'));
     }
 
     /**
