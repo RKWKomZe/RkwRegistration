@@ -375,7 +375,14 @@ class DataProtectionUtility
                 if (
                     ( $columnMap = $dataMap->getColumnMap($mappingField))
                     && ($columnMap->getTypeOfRelation() == ColumnMap::RELATION_HAS_ONE)
-                    && ($columnMap->getChildTableName() == 'fe_users')) {
+                    && (
+                        ($columnMap->getChildTableName() == 'fe_users')
+                        || (
+                            (! $columnMap->getChildTableName())
+                            && ($columnMap->getType()->equals('PASSTHROUGH'))
+                        )
+                    )
+                ) {
                     $frontendUserProperty = $mappingField;
                 }
             }
