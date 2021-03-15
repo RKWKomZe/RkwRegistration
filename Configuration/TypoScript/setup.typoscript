@@ -329,19 +329,6 @@ plugin.tx_rkwregistration {
 
                     }
                 }
-
-                /*
-                RKW\RkwEvents\Domain\Model\EventReservationAddPerson {
-
-                    mappingField = feUser
-                    fields {
-
-                        salutation = 99
-                        firstName = Anonymous
-                        lastName = Anonymous
-                    }
-                }
-                */
             }
         }
 
