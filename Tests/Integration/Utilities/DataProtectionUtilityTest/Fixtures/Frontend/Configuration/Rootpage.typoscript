@@ -8,7 +8,6 @@ plugin.tx_rkwregistration  {
 
 		dataProtection {
 
-            encryptionKey = o4uSZ0oo4zTFIIoN2NkuBBwyS6Lv3v/EYVObucPHcW8=
             classes {
 
                 RKW\RkwRegistration\Domain\Model\Privacy {

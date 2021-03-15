@@ -242,7 +242,6 @@ plugin.tx_rkwregistration {
 
             anonymizeDeletedAfterDays = {$plugin.tx_rkwregistration.settings.dataProtection.anonymizeDeletedAfterDays}
             deleteExpiredAndDisabledAfterDays = {$plugin.tx_rkwregistration.settings.dataProtection.deleteExpiredAndDisabledAfterDays}
-            encryptionKey = {$plugin.tx_rkwregistration.settings.dataProtection.encryptionKey}
 
             classes {
 
@@ -266,7 +265,6 @@ plugin.tx_rkwregistration {
                         country =
                         www =
                         company =
-                        image =
                         txRkwregistrationMobile =
                         txRkwregistrationGender = 99
                         txRkwregistrationFacebookUrl =
@@ -332,7 +330,7 @@ plugin.tx_rkwregistration {
                     }
                 }
 
-                /*
+
                 RKW\RkwEvents\Domain\Model\EventReservationAddPerson {
 
                     mappingField = feUser
@@ -343,7 +341,7 @@ plugin.tx_rkwregistration {
                         lastName = Anonymous
                     }
                 }
-                */
+
             }
         }
 

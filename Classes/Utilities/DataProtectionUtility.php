@@ -59,17 +59,32 @@ class DataProtectionUtility
     protected $logger;
 
 
+    /**
+     * @var string
+     */
+    protected $encryptionKey;
 
     /**
      * Deletes expired and disabled frontend users after x days (only sets deleted = 1)
      *
-     * @param $deleteExpiredAndDisabledAfterDays
+     * @param string $encryptionKey
+     * @return void
+     */
+    public function setEncryptionKey (string $encryptionKey): void
+    {
+        $this->encryptionKey = $encryptionKey;
+    }
+
+    /**
+     * Deletes expired and disabled frontend users after x days (only sets deleted = 1)
+     *
+     * @param int $deleteExpiredAndDisabledAfterDays
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @return void
      */
-    public function deleteAllExpiredAndDisabled ($deleteExpiredAndDisabledAfterDays = 30)
+    public function deleteAllExpiredAndDisabled (int $deleteExpiredAndDisabledAfterDays = 30): void
     {
 
         $settings = $this->getSettings();
@@ -104,7 +119,7 @@ class DataProtectionUtility
      * @throws \RKW\RkwRegistration\Exception
      * @return void
      */
-    public function anonymizeAndEncryptAll ($anonymizeAfterDays = 30)
+    public function anonymizeAndEncryptAll (int $anonymizeAfterDays = 30): void
     {
 
         $settings = $this->getSettings();
@@ -196,7 +211,7 @@ class DataProtectionUtility
      * @throws \RKW\RkwRegistration\Exception
      * @return bool
      */
-    public function anonymizeObject(\TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object, \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser)
+    public function anonymizeObject(\TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object, \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser): bool
     {
 
         if ($object->_isNew()) {
@@ -273,7 +288,7 @@ class DataProtectionUtility
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \RKW\RkwRegistration\Exception
      */
-    public function decryptObject(\RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData, $email)
+    public function decryptObject(\RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData, string $email)
     {
 
         if (
@@ -292,7 +307,7 @@ class DataProtectionUtility
                 ){
                     foreach ($data as $property => $value) {
                         $setter = 'set' . ucfirst($property);
-                        if (method_exists($object, $setter)) {
+                        if(method_exists($object, $setter)) {
                             $object->$setter($this->getDecryptedString($value, $email));
                         }
                     }
@@ -308,11 +323,11 @@ class DataProtectionUtility
     /**
      * Get property map for given model class name
      *
-     * @param $modelClassName
+     * @param string $modelClassName
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function getPropertyMapByModelClassName ($modelClassName)
+    public function getPropertyMapByModelClassName (string $modelClassName): array
     {
 
         $settings = $this->getSettings();
@@ -339,10 +354,10 @@ class DataProtectionUtility
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function getFrontendUserPropertyByModelClassName ($modelClassName)
+    public function getFrontendUserPropertyByModelClassName (string $modelClassName): string
     {
 
-        $frontendUserProperty = null;
+        $frontendUserProperty = '';
         $settings = $this->getSettings();
 
         if (
@@ -377,7 +392,7 @@ class DataProtectionUtility
      * @param $modelClassName
      * @return \TYPO3\CMS\Extbase\Persistence\Repository|object|null
      */
-    public function getRepositoryByModelClassName ($modelClassName)
+    public function getRepositoryByModelClassName (string $modelClassName)
     {
         // get repository class
         $repositoryClassName = str_replace('Model', 'Repository', $modelClassName) . 'Repository';
@@ -395,23 +410,21 @@ class DataProtectionUtility
     /**
      * Get encrypted string using a given key
      *
-     * @param string $data
+     * @param mixed $data
      * @param string $email
      * @return string
      * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @see https://gist.github.com/turret-io/957e82d44fd6f4493533, thanks!
      */
-    public function getEncryptedString($data, $email)
+    public function getEncryptedString($data, string $email): string
     {
         define('AES_256_CBC', 'aes-256-cbc');
 
-        $settings = $this->getSettings();
-        $encryptionKey = $settings['dataProtection']['encryptionKey'];
-        if (! $encryptionKey) {
+        if (! $this->encryptionKey) {
             throw new \RKW\RkwRegistration\Exception('No encryption key configured.');
         }
-        $hash = hash('md5', $encryptionKey . $email);
+        $hash = hash('md5', $this->encryptionKey . $email);
 
         // Generate an initialization vector
         // This *MUST* be available for decryption as well
@@ -440,16 +453,14 @@ class DataProtectionUtility
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @see https://gist.github.com/turret-io/957e82d44fd6f4493533, thanks!
      */
-    public function getDecryptedString($data, $email)
+    public function getDecryptedString(string $data, string $email): string
     {
         define('AES_256_CBC', 'aes-256-cbc');
 
-        $settings = $this->getSettings();
-        $encryptionKey = $settings['dataProtection']['encryptionKey'];
-        if (! $encryptionKey) {
+        if (! $this->encryptionKey) {
             throw new \RKW\RkwRegistration\Exception('No encryption key configured.');
         }
-        $hash = hash('md5', $encryptionKey . $email);
+        $hash = hash('md5', $this->encryptionKey . $email);
 
         // To decrypt, separate the encrypted data from the initialization vector ($iv).
         $parts = explode(':', $data);
@@ -465,11 +476,11 @@ class DataProtectionUtility
      * Get results from repository
      *
      * @param \TYPO3\CMS\Extbase\Persistence\Repository $repository
-     * @param string $propery
+     * @param string $property
      * @param integer $uid
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    protected function getRepositoryResults(\TYPO3\CMS\Extbase\Persistence\Repository $repository, $property, $uid)
+    protected function getRepositoryResults(\TYPO3\CMS\Extbase\Persistence\Repository $repository, string $property, int $uid)
     {
         $query  = $repository->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);
@@ -504,7 +515,7 @@ class DataProtectionUtility
      *
      * @return \TYPO3\CMS\Core\Log\Logger
      */
-    protected function getLogger()
+    protected function getLogger(): \TYPO3\CMS\Core\Log\Logger
     {
 
         if (!$this->logger instanceof \TYPO3\CMS\Core\Log\Logger) {

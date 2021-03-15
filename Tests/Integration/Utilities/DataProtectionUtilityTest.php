@@ -119,6 +119,8 @@ class DataProtectionUtilityTest extends FunctionalTestCase
         $this->privacyRepository = $this->objectManager->get(PrivacyRepository::class);
         $this->encryptedDataRepository = $this->objectManager->get(EncryptedDataRepository::class);
 
+        $this->subject->setEncryptionKey('o4uSZ0oo4zTFIIoN2NkuBBwyS6Lv3v/EYVObucPHcW8=');
+
     }
     //===================================================================
 
@@ -605,7 +607,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
         static::assertEquals('fe_users', $encryptedData->getForeignTable());
         static::assertEquals('RKW\RkwRegistration\Domain\Model\FrontendUser', $encryptedData->getForeignClass());
 
-        static::assertCount(23, $encryptedDataArray);
+        static::assertCount(22, $encryptedDataArray);
         static::assertEquals(49, strlen($encryptedDataArray['username']));
 
     }
@@ -708,7 +710,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(1);
 
-        static::assertNull($this->subject->decryptObject($encryptedData));
+        static::assertNull($this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
 
     }
 
@@ -734,7 +736,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(1);
 
-        static::assertNull($this->subject->decryptObject($encryptedData));
+        static::assertNull($this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
     }
 
     /**
@@ -758,7 +760,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(1);
 
-        static::assertNull($this->subject->decryptObject($encryptedData));
+        static::assertNull($this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
     }
 
     /**
@@ -869,9 +871,9 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          *
          * Given there is a non existing model-class
          * When I try to fetch the frontendUserGetter for this model-class
-         * Then null is returned
+         * Then empty is returned
          */
-        static::assertNull($this->subject->getFrontendUserPropertyByModelClassName('Test\Model'));
+        static::assertEmpty($this->subject->getFrontendUserPropertyByModelClassName('Test\Model'));
     }
 
 
@@ -890,9 +892,9 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Given there is a existing model-class
          * Given this model class has no reference to a frontend user
          * When I try to fetch the frontendUserGetter for this model-class
-         * Then null is returned
+         * Then empty is returned
          */
-        static::assertNull($this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\BackendUser'));
+        static::assertEmpty($this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\BackendUser'));
     }
 
 
@@ -911,9 +913,9 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Given this model class has a reference to a frontend user
          * Given the configured mapping field does not refer to the fe_user table
          * When I try to fetch the frontendUserGetter for this model-class
-         * Then null is returned
+         * Then empty is returned
          */
-        static::assertNull($this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\Privacy'));
+        static::assertEmpty($this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\Privacy'));
     }
 
     /**
