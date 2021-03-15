@@ -69,7 +69,7 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
     /**
      * Removes old service and registration requests
      */
-    public function cleanupOptInAndServiceCommand()
+    public function cleanupOptInAndServiceCommand(): void
     {
 
         try {
@@ -101,7 +101,7 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
      * @param integer $daysFromNow Users that have been marked as deleted x days from now are deleted
      * @return void
      */
-    public function cleanupDeletedAndExportPrivacyData($daysFromNow = 365)
+    public function cleanupDeletedAndExportPrivacyData(int $daysFromNow = 365): void
     {
         // WRITE THIS ;-)
     }
@@ -116,7 +116,7 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
      * @param integer $deleteExpiredAndDisabledAfterDays Delete users that are expired or disabled since x days
      * @return void
      */
-    public function deleteExpiredAndDisabledUsersCommand($deleteExpiredAndDisabledAfterDays = 30)
+    public function deleteExpiredAndDisabledUsersCommand(int $deleteExpiredAndDisabledAfterDays = 30): void
     {
 
         try {
@@ -137,14 +137,16 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
      * Also includes user-related data if configured
      * default: 30 days
      *
+     * @param string $encryptionKey
      * @param integer $anonymizeDeletedAfterDays Anonymize and encrypt data of users that have been deleted x days before
      * @return void
      */
-    public function anonymizeAndEncryptDeletedUsersCommand($anonymizeDeletedAfterDays = 30)
+    public function anonymizeAndEncryptDeletedUsersCommand(string $encryptionKey, int $anonymizeDeletedAfterDays = 30): void
     {
 
         try {
 
+            $this->dataProtectionUtility->setEncryptionKey($encryptionKey);
             $this->dataProtectionUtility->anonymizeAndEncryptAll($anonymizeDeletedAfterDays);
             $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully anonymized data of fe-users.'));
 
@@ -159,7 +161,7 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
      *
      * @return \TYPO3\CMS\Core\Log\Logger
      */
-    protected function getLogger()
+    protected function getLogger(): \TYPO3\CMS\Core\Log\Logger
     {
 
         if (!$this->logger instanceof \TYPO3\CMS\Core\Log\Logger) {
