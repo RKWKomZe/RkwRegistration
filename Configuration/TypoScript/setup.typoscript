@@ -58,50 +58,6 @@ config.tx_extbase.persistence {
 			}
 		}
 
-
-        #===============================================
-
-        RKW\RkwRegistration\Domain\Model\FrontendUser {
-            subclasses {
-                Tx_RkwRegistration_FacebookUser = RKW\RkwRegistration\Domain\Model\FacebookUser
-            }
-        }
-
-		RKW\RkwRegistration\Domain\Model\FacebookUser {
-			mapping {
-
-				# tablename
-				tableName = fe_users
-
-				# if we set an value, we filter by it
-				# if do not set anything, all records are found
-				recordType =
-
-			}
-		}
-
-        #===============================================
-
-        RKW\RkwRegistration\Domain\Model\FrontendUser {
-            subclasses {
-                Tx_RkwRegistration_TwitterUser = RKW\RkwRegistration\Domain\Model\TwitterUser
-            }
-        }
-
-		RKW\RkwRegistration\Domain\Model\TwitterUser {
-
-			mapping {
-
-				# tablename
-				tableName = fe_users
-
-				# if we set an value, we filter by it
-				# if do not set anything, all records are found
-				recordType =
-
-			}
-		}
-
 		#===============================================
 
 		\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup {
@@ -227,7 +183,7 @@ plugin.tx_rkwregistration {
             daysForOptIn = {$plugin.tx_rkwregistration.settings.users.daysForOptIn}
             maxLoginErrors = {$plugin.tx_rkwregistration.settings.users.maxLoginErrors}
 
-			# values ​​must be comma-separated
+			# values must be comma-separated
 			requiredFormFields = email, firstName, lastName
 
             # security settings for password changes by the user
@@ -380,74 +336,10 @@ module.tx_rkwregistration < plugin.tx_rkwregistration
 
 # Add jquery if not disabled
 [globalVar = LIT:1 = {$plugin.tx_rkwregistration.settings.includeJQuery}]
-	page.includeJSFooterlibs.jquery         = EXT:rkw_registration/Resources/Public/Scripts/jquery-1.11.1.min.js
+	page.includeJSFooterlibs.jquery = EXT:rkw_registration/Resources/Public/Scripts/jquery-1.11.1.min.js
 [global]
 
 [globalVar = LIT:1 = {$plugin.tx_rkwregistration.settings.includeJQueryUi}]
 	page.includeJSFooterlibs.jqueryUi = EXT:rkw_registration/Resources/Public/Scripts/jquery-ui.js
 [global]
 
-
-// ======================================
-// @deprecated below
-//=======================================
-[globalVar = LIT:1 = {$plugin.tx_rkwregistration.settings.version}]
-
-    page.includeJSFooter.rkwRegistrationScript     = EXT:rkw_registration/Resources/Public/Scripts/rkw_registration.js
-
-    // #########################################################
-    // AJAX Configuration
-    // #########################################################
-    txRkwRegistrationAjaxPage = PAGE
-    txRkwRegistrationAjaxPage {
-
-
-        typeNum = 1449722003
-        config {
-
-            disableAllHeaderCode = 1
-            xhtml_cleaning = 0
-            admPanel = 0
-            no_cache = 0
-            debug = 0
-
-            additionalHeaders.10.header = Content-type: application/json
-            metaCharset = utf-8
-
-            index_enable = 0
-            index_metatags = 0
-            index_externals = 0
-        }
-
-
-        10 = USER_INT
-        10 {
-            userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
-            extensionName = RkwRegistration
-            pluginName = RkwregistrationAjax
-            vendorName = RKW
-            controller =  Ajax
-            switchableControllerActions {
-
-                # Again: Controller-Name and Action
-                Ajax {
-                    1 = loginInfo
-
-                }
-            }
-
-            view < plugin.tx_rkwregistration.view
-            persistence < plugin.tx_rkwregistration.persistence
-            settings < plugin.tx_rkwregistration.settings
-        }
-    }
-
-    lib.txRkwRegistrationAjaxCoa = COA
-    lib.txRkwRegistrationAjaxCoa {
-
-        10 = TEXT
-        10.value = Hello
-        10.wrap = |&nbsp;<span id="tx-rkwregistration-username"></span>
-    }
-
-[global]

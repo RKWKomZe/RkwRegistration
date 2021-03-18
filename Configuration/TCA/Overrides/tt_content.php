@@ -6,8 +6,56 @@ defined('TYPO3_MODE') || die('Access denied.');
 //=================================================================
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'RKW.RkwRegistration',
-    'Rkwregistration',
-    'RKW Registration'
+    'Register',
+    'RKW Registration: Registrierung'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'RKW.RkwRegistration',
+    'Welcome',
+    'RKW Registration: Willkommen'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'RKW.RkwRegistration',
+    'AuthenticateInternal',
+    'RKW Registration: Authentifizierung'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'RKW.RkwRegistration',
+    'AuthenticateExternal',
+    'RKW Registration: Authentifizierung (external)'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'RKW.RkwRegistration',
+    'Password',
+    'RKW Registration: Passwort'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'RKW.RkwRegistration',
+    'FrontendUserEdit',
+    'RKW Registration: FrontendUser (editieren)'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'RKW.RkwRegistration',
+    'FrontendUserDelete',
+    'RKW Registration: FrontendUser (löschen)'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'RKW.RkwRegistration',
+    'Service',
+    'RKW Registration: Service'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'RKW.RkwRegistration',
+    'ServiceOptIn',
+    'RKW Registration: Service (OptIn)'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(

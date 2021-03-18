@@ -10,18 +10,151 @@ call_user_func(
         //=================================================================
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
-            'Rkwregistration',
+            'Register',
             array(
-                'Registration' => 'index, welcome, welcomeMessage, xdlLoginShow, loginShow, loginShowExternal, loginTwitter, login, xdlLogin, xdlLogout, logout, logoutExternal, loginAnonymous, loginHintAnonymous, registerShow, register, optin, passwordForgot, passwordForgotShow, createTwitterUser, editUser, updateUser, deleteUserShow, deleteUser, editPassword, updatePassword',
+                'Registration' => 'new, create, optIn, index',
                 'Service' => 'list, show, create, delete, optIn',
             ),
             // non-cacheable actions
             array(
-                'Registration' => 'index, welcome, welcomeMessage, xdlLoginShow, loginShow, loginShowExternal, loginTwitter, login, xdlLogin, xdlLogout, logout, logoutExternal, loginAnonymous, loginHintAnonymous, registerShow, register, optin, passwordForgot, passwordForgotShow, createTwitterUser, editUser, updateUser, deleteUserShow, deleteUser, editPassword, updatePassword',
+                'Registration' => 'new, create, optIn, index',
                 'Service' => 'list, show, create, delete, optIn',
             )
         );
 
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
+            'Welcome',
+            array(
+                'Registration' => 'index',
+            ),
+            // non-cacheable actions
+            array(
+                'Registration' => 'index',
+            )
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
+            'AuthenticateInternal',
+            array(
+                'Authentication' => 'index, login, logout, logoutExternal, loginAnonymous, loginHintAnonymous',
+                'Registration' => 'new, create, optIn, index',
+                'Password' => 'new, create',
+            ),
+            // non-cacheable actions
+            array(
+                'Authentication' => 'index, login, logout, logoutExternal, loginAnonymous, loginHintAnonymous',
+                'Registration' => 'new, create, optIn, index',
+                'Password' => 'new, create',
+            )
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
+            'AuthenticateExternal',
+            array(
+                'Authentication' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous',
+            ),
+            // non-cacheable actions
+            array(
+                'Authentication' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous',
+            )
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
+            'LogoutInternal',
+            array(
+                'Authentication' => 'logout, index',
+            ),
+            // non-cacheable actions
+            array(
+                'Authentication' => 'logout, index',
+            )
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
+            'LogoutExternal',
+            array(
+                'Authentication' => 'logoutExternal, index',
+            ),
+            // non-cacheable actions
+            array(
+                'Authentication' => 'logoutExternal, index',
+            )
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
+            'Password',
+            array(
+                'Password' => 'edit, update, new, create',
+                'Authentication' => 'logout, index',
+            ),
+            // non-cacheable actions
+            array(
+                'Password' => 'edit, update, new, create',
+                'Authentication' => 'logout, index',
+            )
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
+            'FrontendUserEdit',
+            array(
+                'FrontendUser' => 'edit, update',
+                'Registration' => 'index',
+                'Authentication' => 'logout',
+            ),
+            // non-cacheable actions
+            array(
+                'FrontendUser' => 'edit, update',
+                'Registration' => 'index',
+                'Authentication' => 'logout',
+            )
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
+            'FrontendUserDelete',
+            array(
+                'FrontendUser' => 'show, deleteUser',
+                'Registration' => 'index',
+                'Authentication' => 'logout',
+            ),
+            // non-cacheable actions
+            array(
+                'FrontendUser' => 'show, deleteUser',
+                'Registration' => 'index',
+                'Authentication' => 'logout',
+            )
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
+            'Service',
+            array(
+                'Service' => 'list, show, create, delete, index',
+            ),
+            // non-cacheable actions
+            array(
+                'Service' => 'list, show, create, delete, index',
+            )
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
+            'ServiceOptIn',
+            array(
+                'Service' => 'optIn, index',
+            ),
+            // non-cacheable actions
+            array(
+                'Service' => 'optIn, index',
+            )
+        );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
@@ -129,6 +262,13 @@ call_user_func(
                 )
             ),
         );
+
+
+        //=================================================================
+        // register update wizard
+        //=================================================================
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\RKW\RkwRegistration\Updates\PluginUpdate::class] = \RKW\RkwRegistration\Updates\PluginUpdate::class;
+
 
 
     },

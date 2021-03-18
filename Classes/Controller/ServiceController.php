@@ -24,7 +24,7 @@ namespace RKW\RkwRegistration\Controller;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ServiceController extends ControllerAbstract
+class ServiceController extends AbstractController
 {
     /**
      * Signal name for use in ext_localconf.php
