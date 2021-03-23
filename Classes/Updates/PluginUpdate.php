@@ -50,8 +50,8 @@ class PluginUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpdate
     protected $flexFormPluginList = [
         'Register' => 'index="vDEF">Registration-&gt;registerShow;',
         'Welcome' => 'index="vDEF">Registration-&gt;welcome;',
-        'AuthenticateInternal' => 'index="vDEF">Registration-&gt;loginShow;',
-        'AuthenticateExternal' => 'index="vDEF">Registration-&gt;loginShowExternal;',
+        'AuthInternal' => 'index="vDEF">Registration-&gt;loginShow;',
+        'AuthExternal' => 'index="vDEF">Registration-&gt;loginShowExternal;',
         'Password' => 'index="vDEF">Registration-&gt;editPassword;',
         'FrontendUserEdit' => 'index="vDEF">Registration-&gt;editUser;',
         'FrontendUserDelete' => 'index="vDEF">Registration-&gt;deleteUserShow;',

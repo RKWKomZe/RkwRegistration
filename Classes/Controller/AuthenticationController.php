@@ -103,7 +103,7 @@ class AuthenticationController extends AbstractController
                     ->setUseCacheHash(false)
                     ->setArguments(
                         array(
-                            'tx_rkwregistration_rkwregistration' => array(
+                            'tx_rkwregistration_register' => array(
                                 'controller' => 'Registration',
                                 'action'     => 'new',
                             ),
@@ -183,13 +183,13 @@ class AuthenticationController extends AbstractController
             }
 
             $linkParams = array(
-                'tx_rkwregistration_rkwregistration' => array(
+                'tx_rkwregistration_authinternal' => array(
                     'xdlUrl' => $url,
                 ),
             );
 
             if ($referrer) {
-                $linkParams['tx_rkwregistration_rkwregistration']['referrer'] = $referrer;
+                $linkParams['tx_rkwregistration_authinternal']['referrer'] = $referrer;
             }
         }
 
@@ -392,7 +392,7 @@ class AuthenticationController extends AbstractController
         $url = $this->uriBuilder->reset()
             ->setUseCacheHash(false)
             ->setArguments(
-                array('tx_rkwregistration_rkwregistration' =>
+                array('tx_rkwregistration_register' =>
                           array(
                               'controller' => 'Registration',
                               'action'     => 'loginAnonymous',
@@ -475,6 +475,7 @@ class AuthenticationController extends AbstractController
 
             /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin */
             $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
+
             if ($url = $redirectLogin->getRedirectUrlLogin()) {
                 $this->redirectToUri($url);
             }
@@ -524,8 +525,7 @@ class AuthenticationController extends AbstractController
             }
         }
 
-        // @toDo: Fallback to AuthenticationController->indexAction or really RegistrationController->indexAction?
-        $this->redirect('index', 'Registration');
+        $this->redirect('index');
 
     }
 

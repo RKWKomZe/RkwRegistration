@@ -333,8 +333,8 @@ plugin.tx_rkwregistration {
 // set settings to every plugin
 plugin.tx_rkwregistration_welcome < plugin.tx_rkwregistration
 plugin.tx_rkwregistration_register < plugin.tx_rkwregistration
-plugin.tx_rkwregistration_authenticateinternal < plugin.tx_rkwregistration
-plugin.tx_rkwregistration_authenticateexternal < plugin.tx_rkwregistration
+plugin.tx_rkwregistration_authinternal < plugin.tx_rkwregistration
+plugin.tx_rkwregistration_authexternal < plugin.tx_rkwregistration
 plugin.tx_rkwregistration_logoutinternal < plugin.tx_rkwregistration
 plugin.tx_rkwregistration_logoutexternal < plugin.tx_rkwregistration
 plugin.tx_rkwregistration_password < plugin.tx_rkwregistration

@@ -18,13 +18,13 @@ defined('TYPO3_MODE') || die('Access denied.');
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'RKW.RkwRegistration',
-    'AuthenticateInternal',
+    'AuthInternal',
     'RKW Registration: Authentifizierung'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'RKW.RkwRegistration',
-    'AuthenticateExternal',
+    'AuthExternal',
     'RKW Registration: Authentifizierung (extern)'
 );
 
