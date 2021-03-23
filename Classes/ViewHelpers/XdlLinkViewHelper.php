@@ -56,7 +56,7 @@ class XdlLinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHel
         }
 
         $params = array(
-            'tx_rkwregistration_rkwregistration' => array(
+            'tx_rkwregistration_register' => array(
                 'referrer' => $referrer,
             ),
         );
@@ -69,7 +69,7 @@ class XdlLinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHel
                 ->setUseCacheHash(false)
                 ->build();
 
-            $params['tx_rkwregistration_rkwregistration']['xdlUrl'] = $xdlUrl;
+            $params['tx_rkwregistration_register']['xdlUrl'] = $xdlUrl;
         }
 
         $url = $uriBuilder->reset()

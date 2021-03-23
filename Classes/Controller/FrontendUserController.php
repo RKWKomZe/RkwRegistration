@@ -2,8 +2,10 @@
 
 namespace RKW\RkwRegistration\Controller;
 
+use Doctrine\Common\Util\Debug;
 use RKW\RkwRegistration\Tools\Password;
 use RKW\RkwRegistration\Tools\Authentication;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -38,6 +40,8 @@ class FrontendUserController extends AbstractController
      */
     public function editAction()
     {
+        //DebuggerUtility::var_dump($this->controllerContext->getFlashMessageQueue()->getIdentifier() ); exit;
+
 
         $registeredUser = null;
         if (!$registeredUser = $this->getFrontendUser()) {
@@ -98,10 +102,10 @@ class FrontendUserController extends AbstractController
         );
 
         if ($this->settings['users']['welcomePid']) {
-            $this->redirect('welcome', null, null, null, $this->settings['users']['welcomePid']);
+            $this->redirect('index', 'Registration', null, null, $this->settings['users']['welcomePid']);
         }
 
-        $this->redirect('editUser');
+        $this->redirect('edit');
     }
 
     /**
@@ -155,10 +159,10 @@ class FrontendUserController extends AbstractController
         );
 
         if ($this->settings['users']['loginPid']) {
-            $this->redirect('loginShow', null, null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
+            $this->redirect('index', 'Authentication', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
         }
 
-        $this->redirect('index');
+        $this->redirect('index', 'Authentication');
 
         return;
         //===

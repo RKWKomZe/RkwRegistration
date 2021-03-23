@@ -2,14 +2,34 @@
     data-namespace-typo3-fluid="true">
 
     <f:layout name="Default" />
+
+    This template displays a NEW form for the current domain object.
+
+    If you modify this template, do not forget to change the overwrite settings
+    in /Configuration/ExtensionBuilder/settings.yaml:
+      Resources:
+        Private:
+          Templates:
+            New.html: keep
+
+    Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
     <f:section name="main">
 
-        <h2><f:translate key="templates_registration_loginShow.headline" /></h2>
+        <div class="csc-element-n1">
+            <h2 class="h2"><f:translate key="templates_registration_welcome.headline" arguments="{0: frontendUser.firstName, 1: frontendUser.lastname}" /></h2>
 
-        <f:render partial="FlashMessages" arguments="{_all}" />
+            <f:render partial="FlashMessages" arguments="{_all}" />
 
-        <f:render partial="Authentication/Login" arguments="{_all}" />
-        <f:link.action action="passwordForgotShow" class="text-smaller"><f:translate key="templates_registration_loginShow.passwordForgot" /></f:link.action>
+            <f:if condition="{services}">
+                <p><f:translate key="templates_registration_welcome.messageServices"/></p>
+                <p>
+                    <f:link.action pageUid="{editUserPid}" action="editUser" class="button">
+                        <span><f:translate key="templates_registration_welcome.checkProfile"/></span>
+                    </f:link.action>
+                </p>
+            </f:if>
+        </div>
 
     </f:section>
 </html>

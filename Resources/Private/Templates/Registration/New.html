@@ -20,7 +20,7 @@
         <f:render partial="FlashMessages" arguments="{_all}" />
         <f:render partial="FormErrors" arguments="{for:newFrontendUser}"/>
 
-        <f:form action="register" name="newFrontendUser" object="{newFrontendUser}" class="form-fields">
+        <f:form action="create" name="newFrontendUser" object="{newFrontendUser}" class="form-fields">
             <div class="flex-container">
                 <div class="form flex flex-basis-6 full-width-medium space-between">
                     <f:render partial="Registration/RegisterFormFields" arguments="{_all}" />

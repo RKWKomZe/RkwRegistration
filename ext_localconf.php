@@ -12,12 +12,12 @@ call_user_func(
             'RKW.' . $extKey,
             'Register',
             array(
-                'Registration' => 'new, create, optIn, index',
+                'Registration' => 'new, create, optIn',
                 'Service' => 'list, show, create, delete, optIn',
             ),
             // non-cacheable actions
             array(
-                'Registration' => 'new, create, optIn, index',
+                'Registration' => 'new, create, optIn',
                 'Service' => 'list, show, create, delete, optIn',
             )
         );
@@ -27,10 +27,12 @@ call_user_func(
             'Welcome',
             array(
                 'Registration' => 'index',
+                //'FrontendUser' => 'edit, update',
             ),
             // non-cacheable actions
             array(
                 'Registration' => 'index',
+                //'FrontendUser' => 'edit, update',
             )
         );
 
@@ -39,14 +41,14 @@ call_user_func(
             'AuthenticateInternal',
             array(
                 'Authentication' => 'index, login, logout, logoutExternal, loginAnonymous, loginHintAnonymous',
-                'Registration' => 'new, create, optIn, index',
-                'Password' => 'new, create',
+                //'Registration' => 'new, create, optIn, index',
+                //'Password' => 'new, create',
             ),
             // non-cacheable actions
             array(
                 'Authentication' => 'index, login, logout, logoutExternal, loginAnonymous, loginHintAnonymous',
-                'Registration' => 'new, create, optIn, index',
-                'Password' => 'new, create',
+                //'Registration' => 'new, create, optIn, index',
+                //'Password' => 'new, create',
             )
         );
 
@@ -66,11 +68,11 @@ call_user_func(
             'RKW.' . $extKey,
             'LogoutInternal',
             array(
-                'Authentication' => 'logout, index',
+                'Authentication' => 'logout',
             ),
             // non-cacheable actions
             array(
-                'Authentication' => 'logout, index',
+                'Authentication' => 'logout',
             )
         );
 
@@ -78,11 +80,11 @@ call_user_func(
             'RKW.' . $extKey,
             'LogoutExternal',
             array(
-                'Authentication' => 'logoutExternal, index',
+                'Authentication' => 'logoutExternal',
             ),
             // non-cacheable actions
             array(
-                'Authentication' => 'logoutExternal, index',
+                'Authentication' => 'logoutExternal',
             )
         );
 
@@ -91,12 +93,12 @@ call_user_func(
             'Password',
             array(
                 'Password' => 'edit, update, new, create',
-                'Authentication' => 'logout, index',
+                //'Authentication' => 'logout, index',
             ),
             // non-cacheable actions
             array(
                 'Password' => 'edit, update, new, create',
-                'Authentication' => 'logout, index',
+                //'Authentication' => 'logout, index',
             )
         );
 
@@ -105,14 +107,14 @@ call_user_func(
             'FrontendUserEdit',
             array(
                 'FrontendUser' => 'edit, update',
-                'Registration' => 'index',
-                'Authentication' => 'logout',
+                //'Registration' => 'index',
+                //'Authentication' => 'logout',
             ),
             // non-cacheable actions
             array(
                 'FrontendUser' => 'edit, update',
-                'Registration' => 'index',
-                'Authentication' => 'logout',
+                //'Registration' => 'index',
+                //'Authentication' => 'logout',
             )
         );
 
@@ -120,15 +122,15 @@ call_user_func(
             'RKW.' . $extKey,
             'FrontendUserDelete',
             array(
-                'FrontendUser' => 'show, deleteUser',
-                'Registration' => 'index',
-                'Authentication' => 'logout',
+                'FrontendUser' => 'show, delete',
+                //'Registration' => 'index',
+                //'Authentication' => 'logout',
             ),
             // non-cacheable actions
             array(
-                'FrontendUser' => 'show, deleteUser',
-                'Registration' => 'index',
-                'Authentication' => 'logout',
+                'FrontendUser' => 'show, delete',
+                //'Registration' => 'index',
+                //'Authentication' => 'logout',
             )
         );
 

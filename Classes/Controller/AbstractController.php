@@ -15,6 +15,8 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+
 /**
  * Class AbstractController
  *
@@ -235,7 +237,6 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      */
     protected function hasUserBasicFieldsRedirect()
     {
-
         // check if user has a email-address!
         // if not redirect to edit form
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
@@ -257,7 +258,7 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
                     );
 
                     if ($this->settings['users']['editUserPid']) {
-                        $this->redirect('editUser', 'Registration', null, array('noRedirect' => 1), $this->settings['users']['editUserPid']);
+                        $this->redirect('edit', 'FrontendUser', null, array('noRedirect' => 1), $this->settings['users']['editUserPid']);
                     }
 
                     $this->redirect('index');
@@ -285,7 +286,7 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
         );
 
         if ($this->settings['users']['loginPid']) {
-            $this->redirect('loginShow', 'Registration', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
+            $this->redirect('index', 'Authentication', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
         }
 
         $this->redirect('index');

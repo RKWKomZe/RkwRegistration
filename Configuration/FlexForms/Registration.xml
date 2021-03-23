@@ -7,6 +7,7 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
+                    <!--
                     <switchableControllerActions>
                         <TCEforms>
                             <label>LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.action</label>
@@ -16,43 +17,43 @@
                                 <items>
                                     <numIndex index="0">
                                         <numIndex index="0">LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.action.I.login</numIndex>
-                                        <numIndex index="1">xxxRegistration->loginShow;Registration->login;Registration->passwordForgotShow;Registration->passwordForgot;Registration->loginTwitter;Registration->registerShow;Registration->register;Registration->optIn;Registration->welcome;Registration->index;</numIndex>
+                                        <numIndex index="1">Registration->loginShow;Registration->login;Registration->passwordForgotShow;Registration->passwordForgot;Registration->loginTwitter;Registration->registerShow;Registration->register;Registration->optIn;Registration->welcome;Registration->index;</numIndex>
                                     </numIndex>
                                     <numIndex index="1">
                                         <numIndex index="0">LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.action.I.loginExternal</numIndex>
-                                        <numIndex index="1">xxxRegistration->loginShowExternal;Registration->loginAnonymous;Registration->loginHintAnonymous;Registration->xdlLogin;Registration->xdlLogout;Registration->logoutExternal;Registration->index;</numIndex>
+                                        <numIndex index="1">Registration->loginShowExternal;Registration->loginAnonymous;Registration->loginHintAnonymous;Registration->xdlLogin;Registration->xdlLogout;Registration->logoutExternal;Registration->index;</numIndex>
                                     </numIndex>
                                     <numIndex index="2">
                                         <numIndex index="0">LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.action.I.loginTwitterApi</numIndex>
-                                        <numIndex index="1">---Registration->loginTwitter;Registration->loginShow;Registration->login;Registration->passwordForgotShow;Registration->passwordForgot;Registration->welcome;Registration->index;</numIndex>
+                                        <numIndex index="1">Registration->loginTwitter;Registration->loginShow;Registration->login;Registration->passwordForgotShow;Registration->passwordForgot;Registration->welcome;Registration->index;</numIndex>
                                     </numIndex>
                                     <numIndex index="3">
                                         <numIndex index="0">LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.action.I.register</numIndex>
-                                        <numIndex index="1">xxxRegistration->registerShow;Registration->register;Registration->optIn;Registration->welcome;Registration->index;</numIndex>
+                                        <numIndex index="1">Registration->registerShow;Registration->register;Registration->optIn;Registration->welcome;Registration->index;</numIndex>
                                     </numIndex>
                                     <numIndex index="4">
                                         <numIndex index="0">LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.action.I.welcome</numIndex>
-                                        <numIndex index="1">xxxRegistration->welcome;Registration->index;</numIndex>
+                                        <numIndex index="1">Registration->welcome;Registration->index;</numIndex>
                                     </numIndex>
                                     <numIndex index="5">
                                         <numIndex index="0">LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.action.I.editUser</numIndex>
-                                        <numIndex index="1">xxxRegistration->editUser;Registration->updateUser;Registration->welcome;Registration->logout;Registration->index;</numIndex>
+                                        <numIndex index="1">Registration->editUser;Registration->updateUser;Registration->welcome;Registration->logout;Registration->index;</numIndex>
                                     </numIndex>
                                     <numIndex index="6">
                                         <numIndex index="0">LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.action.I.deleteUser</numIndex>
-                                        <numIndex index="1">xxxRegistration->deleteUserShow;Registration->deleteUser;Registration->welcome;Registration->logout;Registration->index;</numIndex>
+                                        <numIndex index="1">Registration->deleteUserShow;Registration->deleteUser;Registration->welcome;Registration->logout;Registration->index;</numIndex>
                                     </numIndex>
                                     <numIndex index="7">
                                         <numIndex index="0">LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.action.I.editPassword</numIndex>
-                                        <numIndex index="1">xxxRegistration->editPassword;Registration->updatePassword;Registration->welcome;Registration->logout;Registration->index;</numIndex>
+                                        <numIndex index="1">Registration->editPassword;Registration->updatePassword;Registration->welcome;Registration->logout;Registration->index;</numIndex>
                                     </numIndex>
                                     <numIndex index="8">
                                         <numIndex index="0">LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.action.I.service</numIndex>
-                                        <numIndex index="1">xxxService->list;Service->show;Service->create;Service->delete;Service->index;</numIndex>
+                                        <numIndex index="1">Service->list;Service->show;Service->create;Service->delete;Service->index;</numIndex>
                                     </numIndex>
                                     <numIndex index="9">
                                         <numIndex index="0">LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.action.I.serviceAdmin</numIndex>
-                                        <numIndex index="1">xxxService->optIn;Service->index;</numIndex>
+                                        <numIndex index="1">Service->optIn;Service->index;</numIndex>
                                     </numIndex>
                                     <numIndex index="10">
                                         <numIndex index="0">LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.action.I.logout</numIndex>
@@ -60,12 +61,13 @@
                                     </numIndex>
                                     <numIndex index="11">
                                         <numIndex index="0">LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:flexform.registration.action.I.logoutExternal</numIndex>
-                                        <numIndex index="1">xxxxRegistration->logoutExternal;Registration->index;</numIndex>
+                                        <numIndex index="1">Registration->logoutExternal;Registration->index;</numIndex>
                                     </numIndex>
                                 </items>
                             </config>
                         </TCEforms>
                     </switchableControllerActions>
+                    -->
                     <settings.users.doXdl>
                         <TCEforms>
                             <exclude>1</exclude>

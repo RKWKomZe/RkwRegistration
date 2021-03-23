@@ -20,12 +20,12 @@
         <f:render partial="FlashMessages" arguments="{_all}" />
         <f:render partial="FormErrors" arguments="{for:frontendUser}" />
 
-        <f:form action="updatePassword" name="frontendUser" object="{frontendUser}" class="form-fields">
+        <f:form action="update" name="frontendUser" object="{frontendUser}" class="form-fields">
             <div class="flex-container">
                 <div class="form flex flex-basis-6 full-width-medium space-between">
                     <f:render partial="Password/PasswordFormFields" arguments="{_all}" />
                     <p>
-                        <f:link.action pageUid="{welcomePid}" action="welcome" class="button secondary">
+                        <f:link.action pageUid="{welcomePid}" action="index" controller="Registration" class="button secondary">
                             <span><f:translate key="templates_registration_editPassword.labelBack"/></span>
                         </f:link.action>
 

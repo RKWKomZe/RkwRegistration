@@ -20,12 +20,12 @@
         <f:render partial="FlashMessages" arguments="{_all}" />
         <f:render partial="FormErrors" arguments="{for:frontendUser}"/>
 
-        <f:form action="deleteUser" name="frontendUser" object="{frontendUser}" class="form-fields">
+        <f:form action="delete" name="frontendUser" object="{frontendUser}" class="form-fields">
 
             <p><f:translate key="templates_registration_deleteUserShow.reallyDelete" /></p>
 
             <p>
-                <f:link.action pageUid="{welcomePid}" action="welcome" class="button">
+                <f:link.action pageUid="{welcomePid}" action="index" controller="Registration" class="button">
                     <span><f:translate key="templates_registration_deleteUserShow.labelBack"/></span>
                 </f:link.action>
 

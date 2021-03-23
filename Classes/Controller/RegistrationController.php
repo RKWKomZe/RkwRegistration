@@ -144,7 +144,7 @@ class RegistrationController extends AbstractController
             );
 
             if ($this->settings['users']['loginPid']) {
-                $this->redirect('loginShow', null, null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
+                $this->redirect('index', 'Authentication', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
             }
 
 
@@ -169,7 +169,7 @@ class RegistrationController extends AbstractController
         }
 
 
-        $this->redirect('registerShow');
+        $this->redirect('new');
         //====
 
     }
@@ -191,10 +191,10 @@ class RegistrationController extends AbstractController
         if ($this->getFrontendUserId()) {
 
             if ($this->settings['users']['welcomePid']) {
-                $this->redirect('welcome', null, null, null, $this->settings['users']['welcomePid']);
+                $this->redirect('index', null, null, null, $this->settings['users']['welcomePid']);
             }
 
-            $this->redirect('welcome');
+            $this->redirect('index');
             //===
         }
 
@@ -246,7 +246,7 @@ class RegistrationController extends AbstractController
                 '',
                 \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
             );
-            $this->forward('registerShow', null, null, array('newFrontendUser' => $newFrontendUser));
+            $this->forward('new', null, null, array('newFrontendUser' => $newFrontendUser));
             //===
         }
 
@@ -258,7 +258,7 @@ class RegistrationController extends AbstractController
                 '',
                 \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
             );
-            $this->forward('registerShow', null, null, array('newFrontendUser' => $newFrontendUser));
+            $this->forward('new', null, null, array('newFrontendUser' => $newFrontendUser));
             //===
         }
 
@@ -272,7 +272,7 @@ class RegistrationController extends AbstractController
                 \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
             );
 
-            $this->forward('registerShow', null, null, array('newFrontendUser' => $newFrontendUser));
+            $this->forward('new', null, null, array('newFrontendUser' => $newFrontendUser));
             //===
         }
 
@@ -288,10 +288,10 @@ class RegistrationController extends AbstractController
         );
 
         if ($this->settings['users']['loginPid']) {
-            $this->redirect('loginShow', null, null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
+            $this->redirect('index', 'Authentication', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
         }
 
-        $this->redirect('registerShow');
+        $this->redirect('new');
     }
 
 

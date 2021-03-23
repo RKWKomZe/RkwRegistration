@@ -8,10 +8,10 @@
 <vh:frontend.translate key="templates_email_serviceOptInAdminRequest.text1" languageKey="{backendUser.lang}" extensionName="rkwRegistration" arguments="{0 : frontendUser.firstName, 1: frontendUser.lastName}"/>
 
 <vh:frontend.translate key="templates_email_serviceOptInAdminRequest.textOptIn" languageKey="{backendUser.lang}" extensionName="rkwRegistration" />
-<vh:frontend.link action="optIn" controller="Service" extensionName="rkwRegistration" pluginName="rkwRegistration" absolute="TRUE" noCacheHash="TRUE" pageUid="{pageUid}" additionalParams="{tx_rkwregistration_rkwregistration: {token_yes: tokenYes, service: serviceSha1}}"/>
+<vh:frontend.link action="optIn" controller="Service" extensionName="rkwRegistration" pluginName="register" absolute="TRUE" noCacheHash="TRUE" pageUid="{pageUid}" additionalParams="{tx_rkwregistration_register: {token_yes: tokenYes, service: serviceSha1}}"/>
 
 <vh:frontend.translate key="templates_email_serviceOptInAdminRequest.textOptOut" languageKey="{backendUser.lang}" extensionName="rkwRegistration" />
-<vh:frontend.link action="optIn" controller="Service" extensionName="rkwRegistration" pluginName="rkwRegistration" absolute="TRUE" noCacheHash="TRUE" pageUid="{pageUid}" additionalParams="{tx_rkwregistration_rkwregistration: {token_no: tokenNo, service: serviceSha1}}" />
+<vh:frontend.link action="optIn" controller="Service" extensionName="rkwRegistration" pluginName="register" absolute="TRUE" noCacheHash="TRUE" pageUid="{pageUid}" additionalParams="{tx_rkwregistration_register: {token_no: tokenNo, service: serviceSha1}}" />
 </f:section>
 
 <!-- HTML -->
@@ -25,10 +25,10 @@
 	</ul>
 	<p>
 		<vh:frontend.translate key="templates_email_serviceOptInAdminRequest.textOptIn" languageKey="{backendUser.lang}" extensionName="rkwRegistration"/><br>
-		<a href="<vh:frontend.link action='optIn' controller='Service' extensionName='rkwRegistration' pluginName='rkwRegistration' absolute='TRUE' noCacheHash='TRUE' pageUid='{pageUid}' additionalParams='{tx_rkwregistration_rkwregistration: {token_yes: tokenYes, service: serviceSha1}}' />"><vh:frontend.translate key="templates_email_serviceOptInAdminRequest.textOptInLinkLabel" languageKey="{backendUser.lang}" extensionName="rkwRegistration"/></a>
+		<a href="<vh:frontend.link action='optIn' controller='Service' extensionName='rkwRegistration' pluginName='rkwRegistration' absolute='TRUE' noCacheHash='TRUE' pageUid='{pageUid}' additionalParams='{tx_rkwregistration_register: {token_yes: tokenYes, service: serviceSha1}}' />"><vh:frontend.translate key="templates_email_serviceOptInAdminRequest.textOptInLinkLabel" languageKey="{backendUser.lang}" extensionName="rkwRegistration"/></a>
 	</p>
 	<p>
 		<vh:frontend.translate key="templates_email_serviceOptInAdminRequest.textOptOut" languageKey="{backendUser.lang}" extensionName="rkwRegistration" /><br>
-		<a href="<vh:frontend.link action='optIn' controller='Service' extensionName='rkwRegistration' pluginName='rkwRegistration' absolute='TRUE' noCacheHash='TRUE' pageUid='{pageUid}' additionalParams='{tx_rkwregistration_rkwregistration: {token_no: tokenNo, service: serviceSha1}}'  />"><vh:frontend.translate key="templates_email_serviceOptInAdminRequest.textOptOutLinkLabel" languageKey="{backendUser.lang}" extensionName="rkwRegistration"/></a>
+		<a href="<vh:frontend.link action='optIn' controller='Service' extensionName='rkwRegistration' pluginName='rkwRegistration' absolute='TRUE' noCacheHash='TRUE' pageUid='{pageUid}' additionalParams='{tx_rkwregistration_register: {token_no: tokenNo, service: serviceSha1}}'  />"><vh:frontend.translate key="templates_email_serviceOptInAdminRequest.textOptOutLinkLabel" languageKey="{backendUser.lang}" extensionName="rkwRegistration"/></a>
 	</p>
 </f:section>

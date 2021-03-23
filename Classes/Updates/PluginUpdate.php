@@ -40,14 +40,14 @@ class PluginUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpdate
     /**
      * @var string
      */
-    protected $title = 'Updater for rkw_registration from flexform defined plugins to individual plugins.';
+    protected $title = 'Updater for rkw_registration from flexform defined plugins to individual content element based plugins.';
 
     /**
      * get plugins through checking unique flexForm string parts
      *
      * @var array
      */
-    protected $flexFormPlugin = [
+    protected $flexFormPluginList = [
         'Register' => 'index="vDEF">Registration-&gt;registerShow;',
         'Welcome' => 'index="vDEF">Registration-&gt;welcome;',
         'AuthenticateInternal' => 'index="vDEF">Registration-&gt;loginShow;',
@@ -71,11 +71,9 @@ class PluginUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpdate
     public function checkForUpdate(&$description)
     {
 
-        DebuggerUtility::var_dump($this->getTtContentElements()); exit;
+        while ($record = $this->getTtContentElementsByListType()) {
 
-        while ($record = $this->getTtContentElements()) {
-
-            foreach ($this->flexFormPlugin as $flexFormSnippet) {
+            foreach ($this->flexFormPluginList as $flexFormSnippet) {
                 $pos = strpos($record['pi_flexform'], $flexFormSnippet);
                 if ($pos !== false) {
                     return true;
@@ -97,17 +95,57 @@ class PluginUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpdate
     public function performUpdate(array &$databaseQueries, &$customMessage)
     {
 
+        foreach ($this->flexFormPluginList as $newPluginName => $flexFormSnippet) {
+
+
+            /** @var  \TYPO3\CMS\Core\Database\Connection $connectionPages */
+
+            $connectionPages = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tt_content');
+            $updateQueryBuilder = $connectionPages->createQueryBuilder();
+            $updateQueryBuilder->update('tt_content')
+                ->set('list_type', 'rkwregistration_' . strtolower($newPluginName))
+                ->where(
+                    $updateQueryBuilder->expr()->like('pi_flexform',
+                        $updateQueryBuilder->createNamedParameter('%' . $flexFormSnippet . '%')
+                    )
+                );
+            $databaseQueries[] = $updateQueryBuilder->getSQL();
+            $updateQueryBuilder->execute();
+
+
+            // remove also switchableControllerAction entry from flexform
+            while ($record = $this->getTtContentElementsByFlexFormSnippet($flexFormSnippet) ) {
+
+                $newFlexformEntry = preg_replace('#<field index="switchableControllerActions">.*?</field>#si', '', trim($record['pi_flexform']));
+
+                $updateQueryBuilder = $connectionPages->createQueryBuilder();
+                $updateQueryBuilder->update('tt_content')
+                    ->set('pi_flexform', $newFlexformEntry)
+                    ->where(
+                        $updateQueryBuilder->expr()->like('pi_flexform',
+                            $updateQueryBuilder->createNamedParameter('%' . $flexFormSnippet . '%')
+                        )
+                    );
+                $databaseQueries[] = $updateQueryBuilder->getSQL();
+                $updateQueryBuilder->execute();
+
+            }
+
+
+        }
+
         return true;
     }
 
 
 
     /**
-     * Checks whether updates are required.
+     * get content elements by list_type
      *
+     * @param $param
      * @return array
      */
-    public function getTtContentElements()
+    protected function getTtContentElementsByListType($param = 'rkwregistration_rkwregistration')
     {
         /** @var  \TYPO3\CMS\Core\Database\Connection $connectionPages */
         $connectionPages = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tt_content');
@@ -119,7 +157,35 @@ class PluginUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpdate
             ->from('tt_content')
             ->where(
                 $queryBuilderPages->expr()->eq('list_type',
-                    $queryBuilderPages->createNamedParameter('rkwregistration_rkwregistration',  \PDO::PARAM_STR)
+                    $queryBuilderPages->createNamedParameter($param,  \PDO::PARAM_STR)
+                )
+            )
+            ->execute();
+
+        return $statement->fetch();
+    }
+
+
+
+    /**
+     * get content elements by pi_flexform snippet
+     *
+     * @param $param
+     * @return array
+     */
+    protected function getTtContentElementsByFlexFormSnippet($param)
+    {
+        /** @var  \TYPO3\CMS\Core\Database\Connection $connectionPages */
+        $connectionPages = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tt_content');
+
+        /** @var \TYPO3\CMS\Core\Database\Query\QueryBuilder $queryBuilderPages */
+        $queryBuilderPages = $connectionPages->createQueryBuilder();
+
+        $statement = $queryBuilderPages->select('uid', 'pid', 'list_type', 'pi_flexform')
+            ->from('tt_content')
+            ->where(
+                $queryBuilderPages->expr()->like('pi_flexform',
+                    $queryBuilderPages->createNamedParameter('%' . $param . '%')
                 )
             )
             ->execute();

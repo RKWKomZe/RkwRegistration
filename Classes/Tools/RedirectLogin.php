@@ -156,14 +156,14 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
 
                 // 1.1 set default params with action and controller
                 $params = array(
-                    'tx_rkwregistration_rkwregistration[controller]=Registration',
-                    'tx_rkwregistration_rkwregistration[action]=xdlLogin',
+                    'tx_rkwregistration_register[controller]=Registration',
+                    'tx_rkwregistration_register[action]=xdlLogin',
                 );
 
                 // 1.2 Generate token
                 /** @var \RKW\RkwRegistration\Tools\Authentication $authentication */
                 $authentication = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Authentication');
-                $params[] = 'tx_rkwregistration_rkwregistration[xdlToken]=' . $authentication->setCrossDomainLoginToken($baseUrl);
+                $params[] = 'tx_rkwregistration_register[xdlToken]=' . $authentication->setCrossDomainLoginToken($baseUrl);
 
 
                 // 1.3 Check if there is a referrer given. If so we take this as further redirect param.
@@ -172,7 +172,7 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
                     ($referrerUrl = $feAuth->getKey('ses', 'rkw_registration_redirect_referrer'))
                     && ($checkedRedirectUrl = $this->checkRedirectUrl($referrerUrl))
                 ) {
-                    $params[] = 'tx_rkwregistration_rkwregistration[xdlRedirect]=' . urlencode($checkedRedirectUrl);
+                    $params[] = 'tx_rkwregistration_register[xdlRedirect]=' . urlencode($checkedRedirectUrl);
 
 
                     // if no referrer is given, we take the welcome page
@@ -184,7 +184,7 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
 
                         /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
                         $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
-                        $params[] = 'tx_rkwregistration_rkwregistration[xdlRedirect]=' .
+                        $params[] = 'tx_rkwregistration_register[xdlRedirect]=' .
                             urlencode(
                                 $uriBuilder->reset()
                                     ->setTargetPageUid(intval($settings['users']['welcomePid']))
@@ -255,8 +255,8 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
 
                 // 1.1 set default params with action and controller
                 $params = array(
-                    'tx_rkwregistration_rkwregistration[controller]=Registration',
-                    'tx_rkwregistration_rkwregistration[action]=xdlLogout',
+                    'tx_rkwregistration_register[controller]=Registration',
+                    'tx_rkwregistration_register[action]=xdlLogout',
                 );
 
                 // 1.2 Generate back link
@@ -268,7 +268,7 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
 
                     /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
                     $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
-                    $params[] = 'tx_rkwregistration_rkwregistration[xdlRedirect]=' .
+                    $params[] = 'tx_rkwregistration_register[xdlRedirect]=' .
                         urlencode(
                             $uriBuilder->reset()
                                 ->setTargetPageUid(intval($settings['users']['loginPid']))
@@ -276,7 +276,7 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
                                 ->setUseCacheHash(false)
                                 ->setArguments(
                                     array(
-                                        'tx_rkwregistration_rkwregistration' => array(
+                                        'tx_rkwregistration_register' => array(
                                             'logoutMessage' => 1,
                                         ),
                                     )

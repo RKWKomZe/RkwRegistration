@@ -4,6 +4,7 @@ namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Tools\Password;
 use RKW\RkwRegistration\Tools\Authentication;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -71,131 +72,13 @@ class AuthenticationController extends AbstractController
             }
 
             if ($this->settings['users']['welcomePid']) {
-                $this->redirect('welcome', null, null, null, $this->settings['users']['welcomePid']);
+                $this->redirect('index', 'Registration', null, null, $this->settings['users']['welcomePid']);
             }
 
-            $this->redirect('welcome');
+            $this->redirect('index', 'Registration');
             //===
         }
 
-        // load facebook- object since this needs a special treatment
-        /** @var \RKW\RkwRegistration\SocialMedia\Facebook $facebook
-        $facebookLogin = null;
-        try {
-
-        if ($facebook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\SocialMedia\\Facebook')) {
-
-        $facebookLogin = $facebook->login();
-        }
-
-        } catch (\Exception $e) {
-        $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('Error using Facebook-API for Login. Message: %s', str_replace(array("\n", "\r"), '', $e->getMessage())));
-        }*/
-
-
-        //=============================
-        // if user is logged in
-        /*
-        if (
-            (is_object($facebookLogin))
-            && ($facebookLogin instanceof \Facebook\GraphNodes\GraphUser)
-        ) {
-
-            try {
-
-                /** @var \RKW\RkwRegistration\Tools\Authentication $authentication
-                $authentication = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Authentication');
-
-                // load data into model
-                /** @var \RKW\RkwRegistration\Domain\Model\FacebookUser $facebookUser
-                $facebookUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\FacebookUser');
-                $facebookUser->insertData($facebookLogin);
-
-                // check if user exists
-                if ($registeredUser = $this->facebookUserRepository->findOneByUsernameInactive(strtolower($facebookUser->getUsername()))) {
-
-                    // check if user is valid (not deactivated)
-                    if ($authentication->validateSocialMediaUser($registeredUser)) {
-
-                        // login user
-                        $authentication->loginUser($registeredUser);
-
-                        /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin
-                        $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
-                        if ($url = $redirectLogin->getRedirectUrlLogin()) {
-                            $this->redirectToUri($url);
-                        }
-
-                        // redirect
-                        if ($this->settings['users']['welcomePid']) {
-                            $this->redirect('welcome', null, null, null, $this->settings['users']['welcomePid']);
-                        }
-
-                        $this->redirect('welcome');
-                        //===
-
-                    } else {
-
-                        $this->addFlashMessage(
-                            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                                'registrationController.error.invalid_socialmedia_login', $this->extensionName
-                            ),
-                            '',
-                            \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
-                        );
-                    }
-
-                    // else register user!
-                } else {
-
-                    // register user
-                    /** @var \RKW\RkwRegistration\Tools\Registration $registration
-                    $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Registration');
-                    $registeredUser = $registration->register($facebookUser, true);
-
-                    // check if user is valid
-                    if ($authentication->validateSocialMediaUser($registeredUser)) {
-
-                        // login user
-                        $authentication->loginUser($registeredUser);
-
-                        /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin
-                        $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
-                        if ($url = $redirectLogin->getRedirectUrlLogin()) {
-                            $this->redirectToUri($url);
-                        }
-
-                        // redirect new user to login
-                        if ($this->settings['users']['welcomePid']) {
-                            $this->redirect('welcome', null, null, null, $this->settings['users']['welcomePid']);
-                        }
-
-                        $this->redirect('welcome');
-                        //===
-
-                    } else {
-
-                        $this->addFlashMessage(
-                            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                                'registrationController.error.invalid_socialmedia_login', $this->extensionName
-                            ),
-                            '',
-                            \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
-                        );
-                    }
-                }
-
-            } catch (\Facebook\Exceptions\FacebookSDKException $e) {
-
-                $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('Error using Facebook-API for Login. Message: %s', str_replace(array("\n", "\r"), '', $e->getMessage())));
-                $this->addFlashMessage(
-                    \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                        'registrationController.error.facebook_unexpected', $this->extensionName
-                    )
-                );
-            }
-        } else {
-        */
 
         /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin */
         $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
@@ -222,7 +105,7 @@ class AuthenticationController extends AbstractController
                         array(
                             'tx_rkwregistration_rkwregistration' => array(
                                 'controller' => 'Registration',
-                                'action'     => 'registerShow',
+                                'action'     => 'new',
                             ),
                         )
                     )
@@ -247,16 +130,6 @@ class AuthenticationController extends AbstractController
                 )
             );
         }
-
-        //=============================
-        // default
-        /*
-            $this->view->assignMultiple(
-                array(
-                    'facebookLogin' => $facebookLogin,
-                )
-            );
-        }*/
 
     }
 
@@ -488,7 +361,7 @@ class AuthenticationController extends AbstractController
 
         }
 
-        $this->redirect('loginShowExternal');
+        $this->redirect('loginExternal');
     }
 
     /**
@@ -512,7 +385,7 @@ class AuthenticationController extends AbstractController
                 \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
             );
 
-            $this->redirect('loginShowExternal');
+            $this->redirect('loginExternal');
         }
 
         // generate link for copy&paste
@@ -562,7 +435,6 @@ class AuthenticationController extends AbstractController
     public function loginAction($username, $password)
     {
 
-
         if (!$username) {
             $this->addFlashMessage(
                 \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
@@ -572,7 +444,7 @@ class AuthenticationController extends AbstractController
                 \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
             );
 
-            $this->redirect('loginShow');
+            $this->redirect('index');
             //===
         }
 
@@ -585,7 +457,7 @@ class AuthenticationController extends AbstractController
                 \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
             );
 
-            $this->redirect('loginShow');
+            $this->redirect('index');
             //===
         }
 
@@ -608,10 +480,10 @@ class AuthenticationController extends AbstractController
             }
 
             if ($this->settings['users']['welcomePid']) {
-                $this->redirect('welcome', null, null, null, $this->settings['users']['welcomePid']);
+                $this->redirect('index', 'Registration', null, null, $this->settings['users']['welcomePid']);
             }
 
-            $this->redirect('welcome');
+            $this->redirect('index', 'Registration');
             //===
         }
 
@@ -652,7 +524,8 @@ class AuthenticationController extends AbstractController
             }
         }
 
-        $this->redirect('loginShow');
+        // @toDo: Fallback to AuthenticationController->indexAction or really RegistrationController->indexAction?
+        $this->redirect('index', 'Registration');
 
     }
 
@@ -680,7 +553,7 @@ class AuthenticationController extends AbstractController
 
         // 3. redirect to login page including message
         if ($this->settings['users']['loginPid']) {
-            $this->redirect('loginShow', null, null, array('logoutMessage' => 1), $this->settings['users']['loginPid']);
+            $this->redirect('index', null, null, array('logoutMessage' => 1), $this->settings['users']['loginPid']);
         }
 
         $this->redirect('index');
@@ -708,11 +581,11 @@ class AuthenticationController extends AbstractController
 
                 // redirect to login page including message
                 if ($this->settings['users']['loginExternalPid']) {
-                    $this->redirect('loginShowExternal', null, null, array('logoutMessage' => 1), $this->settings['users']['loginExternalPid']);
+                    $this->redirect('loginExternal', null, null, array('logoutMessage' => 1), $this->settings['users']['loginExternalPid']);
                 }
 
                 if ($this->settings['users']['loginPid']) {
-                    $this->redirect('loginShow', null, null, array('logoutMessage' => 1), $this->settings['users']['loginPid']);
+                    $this->redirect('index', null, null, array('logoutMessage' => 1), $this->settings['users']['loginPid']);
                 }
 
 
@@ -785,7 +658,7 @@ class AuthenticationController extends AbstractController
         }
 
 
-        $this->redirect('loginShowExternal');
+        $this->redirect('loginExternal');
 
     }
 
@@ -850,10 +723,10 @@ class AuthenticationController extends AbstractController
                 \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
             );
 
-            $this->redirect('loginShowExternal');
+            $this->redirect('loginExternal');
         }
 
-        $this->redirect('loginShowExternal', null, null, array('logoutMessage' => 1));
+        $this->redirect('loginExternal', null, null, array('logoutMessage' => 1));
 
     }
 }

@@ -109,10 +109,10 @@ class PasswordController extends AbstractController
 
             // redirect
             if ($this->settings['users']['welcomePid']) {
-                $this->redirect('welcome', null, null, null, $this->settings['users']['welcomePid']);
+                $this->redirect('index', 'Registration', null, null, $this->settings['users']['welcomePid']);
             }
 
-            $this->redirect('welcome');
+            $this->redirect('index', 'Registration');
 
             return;
             //===
@@ -190,7 +190,7 @@ class PasswordController extends AbstractController
                 )
             );
 
-            $this->redirect('loginShow', null, null, array('noRedirect' => 1));
+            $this->redirect('index', 'Authentication', null, array('noRedirect' => 1));
 
             return;
             //===

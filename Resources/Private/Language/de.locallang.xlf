@@ -424,7 +424,7 @@
             </trans-unit>
             <trans-unit id="registrationController.error.user_not_found">
                 <source>User not found.</source>
-                <target><![CDATA[Das hat leider nicht geklappt! Wenn Sie sich  über Facebook oder Twitter angemeldet haben, dann nutzen Sie bitte die Buttons am Ende der Seite. Möglicherweise haben Sie sich aber auch mit einer anderen E-Mail-Adresse registriert. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen im Zweifelsfall gerne weiter!]]></target>
+                <target><![CDATA[Das hat leider nicht geklappt! Möglicherweise haben Sie sich mit einer anderen E-Mail-Adresse registriert. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen im Zweifelsfall gerne weiter!]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.login_blocked">
                 <source>Your login was blocked after %s attempts. Please contact support.</source>
