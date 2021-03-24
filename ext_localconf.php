@@ -90,6 +90,18 @@ call_user_func(
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
+            'GoBack',
+            array(
+                'Registration' => 'goBack'
+            ),
+            // non-cacheable actions
+            array(
+                'Registration' => 'goBack'
+            )
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
             'Password',
             array(
                 'Password' => 'edit, update, new, create',

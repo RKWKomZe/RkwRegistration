@@ -107,6 +107,19 @@ config.tx_extbase.persistence {
         RKW\RkwRegistration\Domain\Model\Title {
             newRecordStoragePid = {$plugin.tx_rkwregistration.settings.titles.storagePid}
         }
+
+        #===============================================
+
+        RKW\RkwRegistration\Domain\Model\SysDomain {
+            mapping {
+                tableName = sys_domain
+                columns {
+                    uid.mapOnProperty = uid
+                    pid.mapOnProperty = pid
+                    domainName.mapOnProperty = domainName
+                }
+            }
+        }
 	}
 }
 
@@ -158,7 +171,7 @@ plugin.tx_rkwregistration {
         activateTwitterLogin = {$plugin.tx_rkwregistration.settings.activateTwitterLogin}
 
         users {
-
+            myRkwSysDomain = {$plugin.tx_rkwregistration.settings.users.myRkwSysDomain}
 			loginPid = {$plugin.tx_rkwregistration.settings.users.loginPid}
             loginExternalPid = {$plugin.tx_rkwregistration.settings.users.loginExternalPid}
 			logoutPid = {$plugin.tx_rkwregistration.settings.users.logoutPid}
@@ -311,7 +324,7 @@ plugin.tx_rkwregistration {
             daysForOptIn = {$plugin.tx_rkwregistration.settings.services.daysForOptIn}
 		}
 
-
+        /*
 		apiData {
 
 			twitter {
@@ -327,6 +340,7 @@ plugin.tx_rkwregistration {
 			}
 
 		}
+		*/
 	}
 }
 

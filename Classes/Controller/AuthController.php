@@ -30,6 +30,14 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 class AuthController extends AbstractController
 {
     /**
+     * SysDomainRepository
+     *
+     * @var \RKW\RkwRegistration\Domain\Repository\SysDomainRepository
+     * @inject
+     */
+    protected $sysDomainRepository;
+
+    /**
      * action index
      * contains all login forms
      *
@@ -269,6 +277,7 @@ class AuthController extends AbstractController
                 'linkTargetLogin'  => $linkTargetLogin,
                 'linkTargetLogout' => $linkTargetLogout,
                 'frontendUser'     => $this->getFrontendUserAnonymous(),
+                //'myRkwSysDomain'   => $this->sysDomainRepository->findByUid(intval($this->settings['users']['myRkwSysDomain']))
             )
         );
     }
@@ -729,6 +738,27 @@ class AuthController extends AbstractController
         $this->redirect('loginExternal', null, null, array('logoutMessage' => 1));
 
     }
+
+
+    /**
+     * action goBack
+     * sends a user back to the domain he comes from
+     *
+     * @return void
+     */
+    public function goBackAction()
+    {
+        if ($GLOBALS['TSFE']->fe_user->getKey('ses', 'rkw_registration_redirect_xdl_url')) {
+            $this->redirectToUri($GLOBALS['TSFE']->fe_user->getKey('ses', 'rkw_registration_redirect_xdl_url'));
+        } else {
+            // set just some link, if there is no redirect url (e.g. if someone comes to mein.rkw.de directly)
+            if ($this->settings['users']['welcomePid']) {
+                $this->redirect('index', 'Registration', null, null, $this->settings['users']['welcomePid']);
+            }
+        }
+    }
+
+
 }
 
 

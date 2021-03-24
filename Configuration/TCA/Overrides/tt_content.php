@@ -30,6 +30,18 @@ defined('TYPO3_MODE') || die('Access denied.');
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'RKW.RkwRegistration',
+    'LogoutInternal',
+    'RKW Registration: Logout'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'RKW.RkwRegistration',
+    'LogoutExternal',
+    'RKW Registration: Logout (extern)'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'RKW.RkwRegistration',
     'Password',
     'RKW Registration: Passwort'
 );
@@ -68,6 +80,12 @@ defined('TYPO3_MODE') || die('Access denied.');
     'RKW.RkwRegistration',
     'RkwregistrationInfo',
     'RKW Registration Info'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'RKW.RkwRegistration',
+    'GoBack',
+    'RKW Registration: Zurück (Redirect-URL)'
 );
 
 //=================================================================

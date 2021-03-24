@@ -40,6 +40,8 @@ plugin.tx_rkwregistration {
         activateTwitterLogin = 0
 
         users {
+            # cat=plugin.tx_rkwregistration//a; type=string; label="Mein RKW" baseUrl (only necessary on different top-domain)
+            myRkwSysDomain =
 
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=Storage Pid
 			storagePid =
