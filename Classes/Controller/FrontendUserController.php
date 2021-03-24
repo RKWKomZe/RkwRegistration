@@ -2,11 +2,6 @@
 
 namespace RKW\RkwRegistration\Controller;
 
-use Doctrine\Common\Util\Debug;
-use RKW\RkwRegistration\Tools\Password;
-use RKW\RkwRegistration\Tools\Authentication;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -159,10 +154,10 @@ class FrontendUserController extends AbstractController
         );
 
         if ($this->settings['users']['loginPid']) {
-            $this->redirect('index', 'Authentication', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
+            $this->redirect('index', 'Auth', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
         }
 
-        $this->redirect('index', 'Authentication');
+        $this->redirect('index', 'Auth');
 
         return;
         //===

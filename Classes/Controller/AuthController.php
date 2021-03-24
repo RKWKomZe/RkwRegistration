@@ -20,14 +20,14 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 
 /**
- * Class AuthenticationController
+ * Class AuthController
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AuthenticationController extends AbstractController
+class AuthController extends AbstractController
 {
     /**
      * action index

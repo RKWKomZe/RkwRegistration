@@ -40,13 +40,13 @@ call_user_func(
             'RKW.' . $extKey,
             'AuthInternal',
             array(
-                'Authentication' => 'index, login, logout, logoutExternal, loginAnonymous, loginHintAnonymous',
+                'Auth' => 'index, login, logout, logoutExternal, loginAnonymous, loginHintAnonymous',
                 //'Registration' => 'new, create, optIn, index',
                 //'Password' => 'new, create',
             ),
             // non-cacheable actions
             array(
-                'Authentication' => 'index, login, logout, logoutExternal, loginAnonymous, loginHintAnonymous',
+                'Auth' => 'index, login, logout, logoutExternal, loginAnonymous, loginHintAnonymous',
                 //'Registration' => 'new, create, optIn, index',
                 //'Password' => 'new, create',
             )
@@ -56,11 +56,11 @@ call_user_func(
             'RKW.' . $extKey,
             'AuthExternal',
             array(
-                'Authentication' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous, xdlLogin, xdlLogout',
+                'Auth' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous, xdlLogin, xdlLogout',
             ),
             // non-cacheable actions
             array(
-                'Authentication' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous, xdlLogin, xdlLogout',
+                'Auth' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous, xdlLogin, xdlLogout',
             )
         );
 
@@ -68,11 +68,11 @@ call_user_func(
             'RKW.' . $extKey,
             'LogoutInternal',
             array(
-                'Authentication' => 'logout',
+                'Auth' => 'logout',
             ),
             // non-cacheable actions
             array(
-                'Authentication' => 'logout',
+                'Auth' => 'logout',
             )
         );
 
@@ -80,11 +80,11 @@ call_user_func(
             'RKW.' . $extKey,
             'LogoutExternal',
             array(
-                'Authentication' => 'logoutExternal',
+                'Auth' => 'logoutExternal',
             ),
             // non-cacheable actions
             array(
-                'Authentication' => 'logoutExternal',
+                'Auth' => 'logoutExternal',
             )
         );
 

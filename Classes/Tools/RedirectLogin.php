@@ -156,7 +156,7 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
 
                 // 1.1 set default params with action and controller
                 $params = array(
-                    'tx_rkwregistration_authexternal[controller]=Authentication',
+                    'tx_rkwregistration_authexternal[controller]=Auth',
                     'tx_rkwregistration_authexternal[action]=xdlLogin',
                 );
 
@@ -255,7 +255,7 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
 
                 // 1.1 set default params with action and controller
                 $params = array(
-                    'tx_rkwregistration_authexternal[controller]=Authentication',
+                    'tx_rkwregistration_authexternal[controller]=Auth',
                     'tx_rkwregistration_authexternal[action]=xdlLogout',
                 );
 

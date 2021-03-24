@@ -286,7 +286,7 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
         );
 
         if ($this->settings['users']['loginPid']) {
-            $this->redirect('index', 'Authentication', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
+            $this->redirect('index', 'Auth', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
         }
 
         $this->redirect('index');

@@ -3,7 +3,6 @@
 namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Tools\Password;
-use RKW\RkwRegistration\Tools\Authentication;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -190,7 +189,7 @@ class PasswordController extends AbstractController
                 )
             );
 
-            $this->redirect('index', 'Authentication', null, array('noRedirect' => 1));
+            $this->redirect('index', 'Auth', null, array('noRedirect' => 1));
 
             return;
             //===
