@@ -152,7 +152,6 @@ class AuthController extends AbstractController
      */
     public function loginExternalAction($logoutMessage = false)
     {
-
         // check if XDL is active
         $linkParams = array();
         $linkTargetLogin = '_blank';

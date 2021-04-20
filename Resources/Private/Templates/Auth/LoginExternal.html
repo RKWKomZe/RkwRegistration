@@ -27,7 +27,7 @@
 
                     <f:link.external
                         class="btn btn--primary"
-                        uri='<vh:link.customLink sysDomainUid="{settings.users.myRkwSysDomain}" pageUid="{settings.users.loginPid}" additionalParams="{linkParams}" />'
+                        uri='<vh:link.myRkwLink pageUid="{settings.users.loginPid}" additionalParams="{linkParams}" />'
                         target="{linkTargetLogin}"
                     >
                         <f:translate key="templates_registration_loginShowExternal.login2" />
@@ -62,7 +62,7 @@
 
                                 <f:link.external
                                     class="btn btn--secondary"
-                                    uri='<vh:link.customLink sysDomainUid="{settings.users.myRkwSysDomain}" pageUid="{settings.users.logoutPid}" additionalParams="{linkParams}" />'
+                                    uri='<vh:link.myRkwLink pageUid="{settings.users.logoutPid}" additionalParams="{linkParams}" />'
                                     target="{linkTargetLogout}"
                                 >
                                     <f:translate key="templates_registration_loginShowExternal.logout" />
@@ -102,7 +102,7 @@
 
                                 <f:link.external
                                     class="btn btn--primary"
-                                    uri='<vh:link.customLink sysDomainUid="{settings.users.myRkwSysDomain}" pageUid="{settings.users.loginPid}" additionalParams="{linkParams}" />'
+                                    uri='<vh:link.myRkwLink pageUid="{settings.users.loginPid}" additionalParams="{linkParams}" />'
                                     target="{linkTargetLogin}"
                                 >
                                     <f:translate key="templates_registration_loginShowExternal.login" />
@@ -143,6 +143,8 @@
                         <div class="alternatives">
                             <div class="alternatives__item">
                                 <h3 class="h5"><f:translate key="templates_registration_loginShowExternal.loginLabel" /></h3>
+
+                                <f:comment>
                                 <f:link.page
                                     class="btn btn--primary"
                                     pageUid="{settings.users.loginPid}"
@@ -150,8 +152,18 @@
                                     additionalParams="{linkParams}"
                                     target="{linkTargetLogin}"
                                 >
+
                                     <f:translate key="templates_registration_loginShowExternal.login" />
                                 </f:link.page>
+                                </f:comment>
+
+                                <f:link.external
+                                    class="btn btn--primary"
+                                    uri='<vh:link.myRkwLink pageUid="{settings.users.loginPid}" additionalParams="{linkParams}" />'
+                                    target="{linkTargetLogin}"
+                                >
+                                    <f:translate key="templates_registration_loginShowExternal.login" />
+                                </f:link.external>
                             </div>
 
                             <div class="alternatives__item alternatives__item--between">

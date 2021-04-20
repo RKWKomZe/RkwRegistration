@@ -225,3 +225,12 @@ CREATE TABLE tx_rkwregistration_domain_model_shippingaddress (
 	KEY parent (pid),
 
 );
+
+
+#
+# Table structure for table 'sys_domain'
+#
+CREATE TABLE sys_domain (
+    tx_rkwregistration_fallback tinyint(4) unsigned DEFAULT '0' NOT NULL,
+    tx_rkwregistration_related_sys_domain int(11) DEFAULT '0' NOT NULL,
+);

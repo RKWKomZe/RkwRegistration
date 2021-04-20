@@ -204,6 +204,9 @@ call_user_func(
         //=================================================================
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][$extKey] = 'RKW\\RkwRegistration\\Hooks\\DatahandlerHook';
 
+        if (TYPO3_MODE !== 'BE') {
+            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-output'][] = 'RKW\\RkwRegistration\\Hooks\\PseudoBaseUrlHook->hook_contentPostProc';
+        }
 
         //=================================================================
         // Register Signal-Slots

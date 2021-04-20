@@ -310,6 +310,19 @@
             </trans-unit>
 
 
+            <!-- tx_rkwregistration_domain_model_sysdomain -->
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain">
+                <source>RKW Registration: SysDomain</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_related_sys_domain">
+                <source>My RKW: Related sys domain</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_related_sys_domain.I.neutral">
+                <source>Please choose</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tabs.myRkw">
+                <source>My RKW</source>
+            </trans-unit>
 		</body>
 	</file>
 </xliff>

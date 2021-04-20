@@ -34,7 +34,7 @@ class BaseUrl
      * Get and check baseUrl (compare with sys_domain)
      * Background: For using the site "Mein RKW" with several domains we have to set the different domains dynamically
      * Objective of this is to have always one top domain for better cookie management
-     * (Example: Otherwise we would have non compatible "mein.rkw.de" on the one hand and www.karriereseiten-check.de on the other hand)
+     * (Example: Otherwise we would have non compatible "mein.rkw.de" on the one and www.karriereseiten-check.de on the other hand)
      *
      * @param array $data
      * @param array $conf
@@ -49,7 +49,7 @@ class BaseUrl
         $rootLine = $pagesRepository->getRootLine(intval($GLOBALS['TSFE']->id));
 
         // @toDo: Is array entry 1 always the Website root Pid?
-        // maybe we should / chould work here with is_siteroot-Var (not available yet)
+        // maybe we should / could work here with is_siteroot-Var (not available yet)
         $websiteRootPage = $rootLine[1];
 
         /** @var \RKW\RkwRegistration\Domain\Repository\SysDomainRepository $sysDomainRepository */
@@ -64,7 +64,7 @@ class BaseUrl
         }
 
         // else: Fallback
-        return $conf['userFunc.']['baseUrl.']['field'];
+        return $conf['userFunc.']['value'];
         //===
 
     }

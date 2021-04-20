@@ -407,6 +407,33 @@
                 <target>Nach anonymen Login auf diese Seite weiterleiten</target>
             </trans-unit>
 
+
+            <!-- tx_rkwregistration_domain_model_sysdomain -->
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain">
+                <source>RKW Registration: SysDomain</source>
+                <target>RKW Registration: SysDomain</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_related_sys_domain">
+                <source>Related sys domain</source>
+                <target>Logout- / Beziehung- / Elterndomain (Stellt eine Verbindung zu einer Hauptdomain her; Nur in Verbindung mit der RkwRegistration-Erweiterung)</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_related_sys_domain.I.neutral">
+                <source>Please choose</source>
+                <target>Bitte wählen</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_fallback">
+                <source>Fallback My RKW Domain</source>
+                <target>Fallback für "Mein RKW"-Domain (sollte einzigartig sein!)</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_fallback.I.enabled">
+                <source>Active</source>
+                <target>Aktiviert</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tabs.myRkw">
+                <source>My RKW</source>
+                <target>Mein RKW</target>
+            </trans-unit>
+
         </body>
 	</file>
 </xliff>

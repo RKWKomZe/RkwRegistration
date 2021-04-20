@@ -47,6 +47,20 @@ class SysDomain extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $domainName;
 
     /**
+     * fallback
+     *
+     * @var bool
+     */
+    protected $fallback;
+
+    /**
+     * txRkwregistrationRelatedSysDomain
+     *
+     * @var \RKW\RkwRegistration\Domain\Model\SysDomain
+     */
+    protected $txRkwregistrationRelatedSysDomain;
+
+    /**
      * @return int
      */
     public function getPid()
@@ -92,6 +106,38 @@ class SysDomain extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function setDomainName($domainName)
     {
         $this->domainName = $domainName;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFallback(): bool
+    {
+        return $this->fallback;
+    }
+
+    /**
+     * @param bool $fallback
+     */
+    public function setFallback(bool $fallback): void
+    {
+        $this->fallback = $fallback;
+    }
+
+    /**
+     * @return SysDomain
+     */
+    public function getTxRkwregistrationRelatedSysDomain(): SysDomain
+    {
+        return $this->txRkwregistrationRelatedSysDomain;
+    }
+
+    /**
+     * @param SysDomain $txRkwregistrationRelatedSysDomain
+     */
+    public function setTxRkwregistrationRelatedSysDomain(SysDomain $txRkwregistrationRelatedSysDomain): void
+    {
+        $this->txRkwregistrationRelatedSysDomain = $txRkwregistrationRelatedSysDomain;
     }
 
 }
