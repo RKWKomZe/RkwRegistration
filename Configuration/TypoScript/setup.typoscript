@@ -86,6 +86,27 @@ config.tx_extbase.persistence {
 			}
 		}
 
+        #===============================================
+
+        // Subclasses
+        RKW\RkwBasics\Domain\Model\Pages {
+            subclasses {
+                Tx_RkwRegistration_Pages = RKW\RkwRegistration\Domain\Model\Pages
+            }
+        }
+
+        // Classes
+        RKW\RkwRegistration\Domain\Model\Pages {
+            mapping {
+                tableName = pages
+                columns {
+                    doktype.mapOnProperty = dokType
+                }
+            }
+        }
+
+        #===============================================
+
         RKW\RkwRegistration\Domain\Model\Title {
             mapping {
                 columns {
@@ -171,7 +192,6 @@ plugin.tx_rkwregistration {
         activateTwitterLogin = {$plugin.tx_rkwregistration.settings.activateTwitterLogin}
 
         users {
-            myRkwSysDomain = {$plugin.tx_rkwregistration.settings.users.myRkwSysDomain}
 			loginPid = {$plugin.tx_rkwregistration.settings.users.loginPid}
             loginExternalPid = {$plugin.tx_rkwregistration.settings.users.loginExternalPid}
 			logoutPid = {$plugin.tx_rkwregistration.settings.users.logoutPid}

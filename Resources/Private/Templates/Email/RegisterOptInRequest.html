@@ -4,7 +4,8 @@
 
 <!-- PLAINTEXT -->
 <f:section name="Plaintext">
-<rkwMailer:recipientSalutation queueRecipient="{queueRecipient}" prependText="<rkwMailer:frontend.translate key='templates_email_registerOptInRequest.headline' languageKey='{queueRecipient.languageCode}' extensionName='rkwRegistration' />, " fallbackText="<rkwMailer:frontend.translate key='templates_email_registerOptInRequest.headline' languageKey='{queueRecipient.languageCode}' extensionName='rkwRegistration' />!" appendText="!"/>
+<rkwMailer:recipientSalutation queueRecipient="{queueRecipient}" prependText="<rkwMailer:frontend.translate key='templates_email_registerOptInRequest.headline' languageKey='{queueRecipient.languageCode}' extensionName='rkwRegistration' />, "
+    fallbackText="<rkwMailer:frontend.translate key='templates_email_registerOptInRequest.headline' languageKey='{queueRecipient.languageCode}' extensionName='rkwRegistration' />!" appendText="!"/>
 	
 <rkwMailer:frontend.translate key="templates_email_registerOptInRequest.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" />
 

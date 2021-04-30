@@ -416,7 +416,7 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
      * @param string $url
      * @return string | NULL
      */
-    protected function getDomain($url)
+    public function getDomain($url)
     {
 
         $match = array();

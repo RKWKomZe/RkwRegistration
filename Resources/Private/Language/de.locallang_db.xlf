@@ -415,15 +415,11 @@
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_related_sys_domain">
                 <source>Related sys domain</source>
-                <target>Logout- / Beziehung- / Elterndomain (Stellt eine Verbindung zu einer Hauptdomain her; Nur in Verbindung mit der RkwRegistration-Erweiterung)</target>
+                <target>Beziehungs- bzw. Elterndomain (Stellt eine Verbindung zu einer Hauptdomain her; Nur in Verbindung mit der RkwRegistration-Erweiterung)</target>
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_related_sys_domain.I.neutral">
                 <source>Please choose</source>
                 <target>Bitte wählen</target>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_fallback">
-                <source>Fallback My RKW Domain</source>
-                <target>Fallback für "Mein RKW"-Domain (sollte einzigartig sein!)</target>
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_fallback.I.enabled">
                 <source>Active</source>
@@ -432,6 +428,26 @@
             <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tabs.myRkw">
                 <source>My RKW</source>
                 <target>Mein RKW</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.palette.registeredUsers">
+                <source>Registered Users</source>
+                <target>Registrierte Nutzer</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.palette.anonymousUsers">
+                <source>Anonymous Users</source>
+                <target>Anonyme Nutzer (Gast)</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_page_login">
+                <source>Forward after login</source>
+                <target>Weiterleitung nach Login</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_page_logout">
+                <source>Forward after logout</source>
+                <target>Weiterleitung nach Logout</target>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_page_login_anonymous">
+                <source>Forward after login (can be overwritten via flexform)</source>
+                <target>Weiterleitung nach Login (Kann durch FlexForm überschrieben werden)</target>
             </trans-unit>
 
         </body>

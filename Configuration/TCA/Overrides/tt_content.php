@@ -19,13 +19,13 @@ defined('TYPO3_MODE') || die('Access denied.');
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'RKW.RkwRegistration',
     'AuthInternal',
-    'RKW Registration: Authentifizierung'
+    'RKW Registration: Login'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'RKW.RkwRegistration',
     'AuthExternal',
-    'RKW Registration: Authentifizierung (extern)'
+    'RKW Registration: Login (extern)'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -93,12 +93,12 @@ defined('TYPO3_MODE') || die('Access denied.');
 //=================================================================
 $extKey = 'rkw_registration';
 $extensionName = strtolower(\TYPO3\CMS\Core\Utility\GeneralUtility::underscoredToUpperCamelCase($extKey));
-$pluginName = strtolower('Rkwregistration');
+$pluginName = strtolower('AuthExternal');
 $pluginSignature = $extensionName.'_'.$pluginName;
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature] = 'layout,select_key,pages';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $pluginSignature,
-    'FILE:EXT:'.$extKey . '/Configuration/FlexForms/Registration.xml'
+    'FILE:EXT:'.$extKey . '/Configuration/FlexForms/Register.xml'
 );

@@ -323,6 +323,22 @@
             <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tabs.myRkw">
                 <source>My RKW</source>
             </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.palette.registeredUsers">
+                <source>Registered Users</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.palette.anonymousUsers">
+                <source>Anonymous Users</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_page_login">
+                <source>Forward after login</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_page_logout">
+                <source>Forward after logout</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_page_login_anonymous">
+                <source>Forward after login (can be overwritten via flexform)</source>
+            </trans-unit>
+
 		</body>
 	</file>
 </xliff>

@@ -89,7 +89,6 @@ class PseudoBaseUrl
                     return preg_replace($this->config['search'], $replacement, $content);
                 } else {
                     // 2.2 no base url found. Add it
-
                     $insertAfter = '<head>';
                     $position = strpos($content, $insertAfter) + strlen($insertAfter);
 

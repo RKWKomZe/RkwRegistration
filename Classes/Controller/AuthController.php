@@ -4,6 +4,7 @@ namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Tools\Password;
 use RKW\RkwRegistration\Tools\Authentication;
+use RKW\RkwRegistration\Tools\Redirect;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
@@ -152,55 +153,6 @@ class AuthController extends AbstractController
      */
     public function loginExternalAction($logoutMessage = false)
     {
-        // check if XDL is active
-        $linkParams = array();
-        $linkTargetLogin = '_blank';
-        $linkTargetLogout = '_blank';
-
-        if ($this->settings['users']['doXdl']) {
-
-            // build url from pid!
-            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-
-            /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
-            $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
-            $url = $uriBuilder->reset()
-                ->setTargetPageUid(intval($GLOBALS["TSFE"]->id))
-                ->setCreateAbsoluteUri(true)
-                ->setLinkAccessRestrictedPages(true)
-                ->setUseCacheHash(false)
-                ->build();
-
-            $referrer = '';
-            if ($this->settings['users']['redirectPidAfterXdlLogin']) {
-                $referrer = $uriBuilder->reset()
-                    ->setTargetPageUid(intval($this->settings['users']['redirectPidAfterXdlLogin']))
-                    ->setCreateAbsoluteUri(true)
-                    ->setLinkAccessRestrictedPages(true)
-                    ->setUseCacheHash(false)
-                    ->build();
-
-                $linkTargetLogin = '_self';
-            }
-
-
-            if ($this->settings['users']['redirectPidAfterXdlLogout']) {
-                $linkTargetLogout = '_self';
-            }
-
-            $linkParams = array(
-                'tx_rkwregistration_authinternal' => array(
-                    'xdlUrl' => $url,
-                ),
-            );
-
-            if ($referrer) {
-                $linkParams['tx_rkwregistration_authinternal']['referrer'] = $referrer;
-            }
-        }
-
-
         // redirect logged-in users to welcome pages
         if ($frontendUser = $this->getFrontendUserAnonymous()) {
 
@@ -248,6 +200,7 @@ class AuthController extends AbstractController
         }
 
         // show logout message
+        // @toDo: Wy show logout message here?
         if ($logoutMessage) {
             $this->addFlashMessage(
                 \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
@@ -272,9 +225,9 @@ class AuthController extends AbstractController
 
         $this->view->assignMultiple(
             array(
-                'linkParams'       => $linkParams,
-                'linkTargetLogin'  => $linkTargetLogin,
-                'linkTargetLogout' => $linkTargetLogout,
+              //  'linkParams'       => $linkParams,
+               // 'linkTargetLogin'  => $linkTargetLogin,
+               // 'linkTargetLogout' => $linkTargetLogout,
                 'frontendUser'     => $this->getFrontendUserAnonymous(),
                 //'myRkwSysDomain'   => $this->sysDomainRepository->findByUid(intval($this->settings['users']['myRkwSysDomain']))
             )
@@ -319,8 +272,16 @@ class AuthController extends AbstractController
                         /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
                         $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
 
+                        $sysDomain = $this->sysDomainRepository->findByDomainName(Redirect::getCurrentDomainName())->getFirst();
+                        if (
+                            $sysDomain instanceof \RKW\RkwRegistration\Domain\Model\SysDomain
+                            && $sysDomain->getTxRkwregistrationPageLoginAnonymous() instanceof \RKW\RkwRegistration\Domain\Model\Pages
+                        ) {
+                            $targetPageUid = $sysDomain->getTxRkwregistrationPageLoginAnonymous()->getUid();
+                        }
+
                         $redirectUrl = $uriBuilder->reset()
-                            ->setTargetPageUid(intval($this->settings['users']['anonymousRedirectPid']))
+                            ->setTargetPageUid(intval($this->settings['users']['anonymousRedirectPid'] ? $this->settings['users']['anonymousRedirectPid'] : $targetPageUid))
                             ->setCreateAbsoluteUri(true)
                             ->setLinkAccessRestrictedPages(true)
                             ->setUseCacheHash(false)
@@ -442,7 +403,6 @@ class AuthController extends AbstractController
      */
     public function loginAction($username, $password)
     {
-
         if (!$username) {
             $this->addFlashMessage(
                 \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
@@ -451,9 +411,7 @@ class AuthController extends AbstractController
                 '',
                 \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
             );
-
             $this->redirect('index');
-            //===
         }
 
         if (!$password) {
@@ -464,9 +422,7 @@ class AuthController extends AbstractController
                 '',
                 \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
             );
-
             $this->redirect('index');
-            //===
         }
 
 
@@ -481,11 +437,13 @@ class AuthController extends AbstractController
 
             $authenticate->loginUser($validateResult);
 
-            /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin */
-            $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
-
-            if ($url = $redirectLogin->getRedirectUrlLogin()) {
-                $this->redirectToUri($url);
+            // Get SysDomain entry
+            $sysDomain = $this->sysDomainRepository->findByDomainName(Redirect::getCurrentDomainName())->getFirst();
+            if (
+                $sysDomain instanceof \RKW\RkwRegistration\Domain\Model\SysDomain
+                && $sysDomain->getTxRkwregistrationPageLogin() instanceof \RKW\RkwRegistration\Domain\Model\Pages
+            ) {
+                $this->redirectToUri(Redirect::urlToPageUid($sysDomain->getTxRkwregistrationPageLogin()->getUid()));
             }
 
             if ($this->settings['users']['welcomePid']) {
@@ -534,7 +492,6 @@ class AuthController extends AbstractController
         }
 
         $this->redirect('index');
-
     }
 
 
@@ -548,24 +505,25 @@ class AuthController extends AbstractController
      */
     public function logoutAction()
     {
-
-        // 1. do logout here
+        // do logout here
         Authentication::logoutUser();
 
-        // 2. check for XDL-logout in cookie- then we log out on foreign page, too!
-        /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin */
-        $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
-        if ($url = $redirectLogin->getRedirectUrlLogout()) {
-            $this->redirectToUri($url);
+        // 1. Redirect according to SysDomain entry
+        $sysDomain = $this->sysDomainRepository->findByDomainName(Redirect::getCurrentDomainName())->getFirst();
+        if (
+            $sysDomain instanceof \RKW\RkwRegistration\Domain\Model\SysDomain
+            && $sysDomain->getTxRkwregistrationPageLogout() instanceof \RKW\RkwRegistration\Domain\Model\Pages
+        ) {
+            $this->redirectToUri(Redirect::urlToPageUid($sysDomain->getTxRkwregistrationPageLogout()->getUid()));
         }
 
-        // 3. redirect to login page including message
+        // 2. redirect to login page (including message)
         if ($this->settings['users']['loginPid']) {
             $this->redirect('index', null, null, array('logoutMessage' => 1), $this->settings['users']['loginPid']);
         }
 
+        // 3. Fallback
         $this->redirect('index');
-
     }
 
 

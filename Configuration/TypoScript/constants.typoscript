@@ -41,7 +41,7 @@ plugin.tx_rkwregistration {
 
         users {
             # cat=plugin.tx_rkwregistration//a; type=string; label="Mein RKW" baseUrl (only necessary on different top-domain)
-            myRkwSysDomain = 57
+            #myRkwSysDomain = 57
 
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=Storage Pid
 			storagePid =

@@ -64,6 +64,8 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Sets the redirect target (if valid)
      *
+     * @deprecated
+     *
      * @param \TYPO3\CMS\Extbase\Mvc\Request $request
      * @param string $xdlUrl
      * @param string $referrer
@@ -131,6 +133,8 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
 
     /**
      * Gets the redirect target for the login
+     *
+     * @deprecated
      *
      * @return string | NULL
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
@@ -233,6 +237,8 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Gets the redirect target for the
      *
+     * @deprecated
+     *
      * @return string | NULL
      */
     public function getRedirectUrlLogout()
@@ -313,6 +319,8 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Checks if given url is valid for redirect
      *
+     * @deprecated
+     *
      * @param string|integer $url
      * @return string
      * @see \TYPO3\CMS\Felogin\Controller\FrontendLoginController
@@ -377,6 +385,8 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Gets the XDL domain
      *
+     * @deprecated
+     *
      * @return string | NULL
      */
     public function getXdlDomain()
@@ -411,6 +421,8 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
 
     /**
      * Extracts the domain from the given url
+     *
+     * @deprecated
      *
      * @param string $url
      * @return string | NULL
@@ -472,6 +484,8 @@ class RedirectLogin implements \TYPO3\CMS\Core\SingletonInterface
 
     /**
      * Returns FrontendUserRepository
+     *
+     * @deprecated
      *
      * @return \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
      */

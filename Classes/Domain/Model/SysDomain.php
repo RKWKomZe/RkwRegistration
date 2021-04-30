@@ -47,18 +47,32 @@ class SysDomain extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $domainName;
 
     /**
-     * fallback
-     *
-     * @var bool
-     */
-    protected $fallback;
-
-    /**
      * txRkwregistrationRelatedSysDomain
      *
      * @var \RKW\RkwRegistration\Domain\Model\SysDomain
      */
     protected $txRkwregistrationRelatedSysDomain;
+
+    /**
+     * txRkwregistrationPageLogin
+     *
+     * @var \RKW\RkwRegistration\Domain\Model\Pages
+     */
+    protected $txRkwregistrationPageLogin;
+
+    /**
+     * txRkwregistrationPageLogout
+     *
+     * @var \RKW\RkwRegistration\Domain\Model\Pages
+     */
+    protected $txRkwregistrationPageLogout;
+
+    /**
+     * txRkwregistrationPageLoginAnonymous
+     *
+     * @var \RKW\RkwRegistration\Domain\Model\Pages
+     */
+    protected $txRkwregistrationPageLoginAnonymous;
 
     /**
      * @return int
@@ -109,22 +123,6 @@ class SysDomain extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return bool
-     */
-    public function isFallback(): bool
-    {
-        return $this->fallback;
-    }
-
-    /**
-     * @param bool $fallback
-     */
-    public function setFallback(bool $fallback): void
-    {
-        $this->fallback = $fallback;
-    }
-
-    /**
      * @return SysDomain
      */
     public function getTxRkwregistrationRelatedSysDomain(): SysDomain
@@ -138,6 +136,54 @@ class SysDomain extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function setTxRkwregistrationRelatedSysDomain(SysDomain $txRkwregistrationRelatedSysDomain): void
     {
         $this->txRkwregistrationRelatedSysDomain = $txRkwregistrationRelatedSysDomain;
+    }
+
+    /**
+     * @return Pages
+     */
+    public function getTxRkwregistrationPageLogin(): Pages
+    {
+        return $this->txRkwregistrationPageLogin;
+    }
+
+    /**
+     * @param Pages $txRkwregistrationPageLogin
+     */
+    public function setTxRkwregistrationPageLogin(Pages $txRkwregistrationPageLogin): void
+    {
+        $this->txRkwregistrationPageLogin = $txRkwregistrationPageLogin;
+    }
+
+    /**
+     * @return Pages
+     */
+    public function getTxRkwregistrationPageLogout(): Pages
+    {
+        return $this->txRkwregistrationPageLogout;
+    }
+
+    /**
+     * @param Pages $txRkwregistrationPageLogout
+     */
+    public function setTxRkwregistrationPageLogout(Pages $txRkwregistrationPageLogout): void
+    {
+        $this->txRkwregistrationPageLogout = $txRkwregistrationPageLogout;
+    }
+
+    /**
+     * @return Pages
+     */
+    public function getTxRkwregistrationPageLoginAnonymous(): Pages
+    {
+        return $this->txRkwregistrationPageLoginAnonymous;
+    }
+
+    /**
+     * @param Pages $txRkwregistrationPageLoginAnonymous
+     */
+    public function setTxRkwregistrationPageLoginAnonymous(Pages $txRkwregistrationPageLoginAnonymous): void
+    {
+        $this->txRkwregistrationPageLoginAnonymous = $txRkwregistrationPageLoginAnonymous;
     }
 
 }
