@@ -56,11 +56,11 @@ call_user_func(
             'RKW.' . $extKey,
             'AuthExternal',
             array(
-                'Auth' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous, xdlLogin, xdlLogout',
+                'Auth' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous',
             ),
             // non-cacheable actions
             array(
-                'Auth' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous, xdlLogin, xdlLogout',
+                'Auth' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous',
             )
         );
 
@@ -85,18 +85,6 @@ call_user_func(
             // non-cacheable actions
             array(
                 'Auth' => 'logoutExternal',
-            )
-        );
-
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'RKW.' . $extKey,
-            'GoBack',
-            array(
-                'Registration' => 'goBack'
-            ),
-            // non-cacheable actions
-            array(
-                'Registration' => 'goBack'
             )
         );
 

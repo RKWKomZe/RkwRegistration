@@ -56,10 +56,15 @@ class AuthController extends AbstractController
     public function indexAction($logoutMessage = false)
     {
 
+        // @toDo: Folgender Block zunächst auskommentiert. Hat diese nach der Umstellung noch einen Nutzen? Inhalt bzw. Nachricht
+        // des Blocks ist der bereits erfolgte Login in eine andere RKW-Instanz:
+        // -> Sie wurden via <i>%s</i> eingeloggt. Um den Login über eine andere Seite des RKW Netzwerks zu nutzen, loggen Sie sich bitte zunächst aus und rufen Sie anschließend den Login-Bereich über die gewünschte Seite des RKW Netzwerks erneut auf.
+
+
         // not for already logged in users!
+        /*
         if ($this->getFrontendUserId()) {
 
-            /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin */
             $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
             if (
                 ($xdlCookieDomain = $redirectLogin->getXdlDomain())
@@ -87,17 +92,14 @@ class AuthController extends AbstractController
             $this->redirect('index', 'Registration');
             //===
         }
+        */
 
 
-        /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin */
-        $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
-        $redirectLogin->setRedirectUrl($this->request);
-
+        // A Service: Set a register link for the user
         if (
             ($this->controllerContext->getFlashMessageQueue()->isEmpty())
             && (!$logoutMessage)
         ) {
-
             // set message including link
             $registerLink = '';
             if ($this->settings['users']['registrationPid']) {
@@ -131,6 +133,7 @@ class AuthController extends AbstractController
         }
 
 
+        // If user is coming back to index from logoutAction or logoutExternalAction: Show logout message
         if ($logoutMessage) {
 
             $this->addFlashMessage(
@@ -139,6 +142,9 @@ class AuthController extends AbstractController
                 )
             );
         }
+
+
+        // Else: Do nothing and show login form!
 
     }
 
@@ -199,17 +205,15 @@ class AuthController extends AbstractController
             }
         }
 
-        // show logout message
-        // @toDo: Wy show logout message here?
+        // If set: Show logout message
         if ($logoutMessage) {
             $this->addFlashMessage(
                 \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
                     'registrationController.message.logout_message', $this->extensionName
                 )
             );
-
-            // show welcome message for normal FE-Users
         } else {
+            // Else: show welcome message for normal FE-Users
             if ($frontendUser = $this->getFrontendUser()) {
 
                 $this->addFlashMessage(
@@ -334,7 +338,7 @@ class AuthController extends AbstractController
     }
 
     /**
-     * action loginRedirectAnonymous
+     * action loginHintAnonymous
      *
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
@@ -362,11 +366,11 @@ class AuthController extends AbstractController
             ->setUseCacheHash(false)
             ->setArguments(
                 array('tx_rkwregistration_register' =>
-                          array(
-                              'controller' => 'Registration',
-                              'action'     => 'loginAnonymous',
-                              'token'      => $this->getFrontendUserAnonymous()->getUsername(),
-                          ),
+                      array(
+                          'controller' => 'Registration',
+                          'action'     => 'loginAnonymous',
+                          'token'      => $this->getFrontendUserAnonymous()->getUsername(),
+                      ),
                 )
             )
             ->setCreateAbsoluteUri(true)
@@ -528,7 +532,8 @@ class AuthController extends AbstractController
 
 
     /**
-     * action logoutAnonymous
+     * action logoutExternal
+     * Hint: primarily for anonymous users
      *
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
@@ -563,158 +568,6 @@ class AuthController extends AbstractController
             }
         }
     }
-
-
-
-    /**
-     * action login for cross domain redirect
-     *
-     * @deprecated
-     *
-     * @param string $xdlToken
-     * @param string $xdlRedirect
-     * @return void
-     * @throws \RKW\RkwRegistration\Exception
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
-     * @throws \RKW\RkwRegistration\Exception
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     */
-    public function xdlLoginAction($xdlToken = '', $xdlRedirect = '')
-    {
-        // if cross domain login is set, we try to login here
-        $error = true;
-        if ($xdlToken) {
-
-            // 1. validate user by temporary token
-            /** @var \RKW\RkwRegistration\Tools\Authentication $authentication */
-            $authentication = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Authentication');
-            if ($frontendUser = $authentication->validateCrossDomainLoginToken($xdlToken)) {
-                $authentication->loginUser($frontendUser);
-                $error = false;
-
-                // 2. if there is a valid redirect, go for it!
-                if ($xdlRedirect) {
-
-                    /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin */
-                    $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
-                    if ($url = $redirectLogin->checkRedirectUrl($xdlRedirect)) {
-                        $version = \TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
-                        if ($version >=  8000000) {
-                            // Fix for TYPO3 8.7: Without setting this cookie the user would have to reload the browser manually
-                            setcookie('fe_typo_user', $GLOBALS['TSFE']->fe_user->id, null, "/");
-                        }
-                        $this->redirectToUri($url);
-                    } else {
-                        $error = true;
-                    }
-                }
-            }
-        }
-
-        if ($error) {
-            $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                    'registrationController.error.xdl_login_error', $this->extensionName
-                ),
-                '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
-            );
-        }
-
-
-        $this->redirect('loginExternal');
-
-    }
-
-
-    /**
-     * action logout
-     *
-     * @deprecated
-     *
-     * @param string $xdlRedirect
-     * @return void
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
-     */
-    public function xdlLogoutAction($xdlRedirect = '')
-    {
-
-        // 1. do logout here!
-        Authentication::logoutUser();
-
-        // 2. check for redirect page in plugin and override target page if set
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-
-        /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
-        $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
-        if ($this->settings['users']['redirectPidAfterXdlLogout']) {
-
-            // do not redirect to yourself!
-            if (intval($this->settings['users']['redirectPidAfterXdlLogout']) == intval($GLOBALS['TSFE']->id)) {
-                $xdlRedirect = 0;
-            } else {
-                $xdlRedirect = $uriBuilder->reset()
-                    ->setTargetPageUid(intval($this->settings['users']['redirectPidAfterXdlLogout']))
-                    ->setCreateAbsoluteUri(true)
-                    ->setLinkAccessRestrictedPages(true)
-                    ->setUseCacheHash(false)
-                    ->build();
-            }
-
-        }
-
-        // 3. do redirect after logout
-        $error = false;
-        if ($xdlRedirect) {
-
-            /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin */
-            $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
-            if ($url = $redirectLogin->checkRedirectUrl($xdlRedirect)) {
-                $this->redirectToUri($url);
-            } else {
-                $error = true;
-            }
-        }
-
-        if ($error) {
-            $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                    'registrationController.error.xdl_logout_error', $this->extensionName
-                ),
-                '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
-            );
-
-            $this->redirect('loginExternal');
-        }
-
-        $this->redirect('loginExternal', null, null, array('logoutMessage' => 1));
-
-    }
-
-
-    /**
-     * action goBack
-     * sends a user back to the domain he comes from
-     *
-     * @return void
-     */
-    public function goBackAction()
-    {
-        if ($GLOBALS['TSFE']->fe_user->getKey('ses', 'rkw_registration_redirect_xdl_url')) {
-            $this->redirectToUri($GLOBALS['TSFE']->fe_user->getKey('ses', 'rkw_registration_redirect_xdl_url'));
-        } else {
-            // set just some link, if there is no redirect url (e.g. if someone comes to mein.rkw.de directly)
-            if ($this->settings['users']['welcomePid']) {
-                $this->redirect('index', 'Registration', null, null, $this->settings['users']['welcomePid']);
-            }
-        }
-    }
-
 
 }
 

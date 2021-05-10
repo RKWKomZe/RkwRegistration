@@ -415,7 +415,7 @@
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_related_sys_domain">
                 <source>Related sys domain</source>
-                <target>Beziehungs- bzw. Elterndomain (Stellt eine Verbindung zu einer Hauptdomain her; Nur in Verbindung mit der RkwRegistration-Erweiterung)</target>
+                <target>Beziehungs- bzw. Elterndomain (Stellt eine Verbindung zu einer Hauptdomain her; Nur in Verbindung von Funktionen der RkwRegistration-Erweiterung)</target>
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_related_sys_domain.I.neutral">
                 <source>Please choose</source>
