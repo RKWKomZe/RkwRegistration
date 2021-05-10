@@ -541,7 +541,6 @@ class AuthController extends AbstractController
      */
     public function logoutExternalAction()
     {
-
         // redirect logged-in users to welcome pages
         if ($frontendUser = $this->getFrontendUserAnonymous()) {
 
@@ -558,7 +557,6 @@ class AuthController extends AbstractController
                 if ($this->settings['users']['loginPid']) {
                     $this->redirect('index', null, null, array('logoutMessage' => 1), $this->settings['users']['loginPid']);
                 }
-
 
                 $this->redirect('index');
 

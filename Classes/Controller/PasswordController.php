@@ -28,6 +28,13 @@ use RKW\RkwRegistration\Tools\Password;
 class PasswordController extends AbstractController
 {
     /**
+     * Signal name for use in ext_localconf.php
+     *
+     * @const string
+     */
+    const SIGNAL_AFTER_USER_PASSWORD_RESET = 'afterUserPasswordReset';
+
+    /**
      * action edit
      *
      * @return void

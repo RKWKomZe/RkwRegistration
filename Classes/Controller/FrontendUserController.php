@@ -76,7 +76,6 @@ class FrontendUserController extends AbstractController
      */
     public function updateAction(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser)
     {
-
         // for logged in users only!
         $this->hasUserValidLoginRedirect();
 

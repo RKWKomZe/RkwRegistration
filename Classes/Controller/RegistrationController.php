@@ -26,13 +26,6 @@ namespace RKW\RkwRegistration\Controller;
  */
 class RegistrationController extends AbstractController
 {
-    /**
-     * Signal name for use in ext_localconf.php
-     *
-     * @const string
-     */
-    const SIGNAL_AFTER_USER_PASSWORD_RESET = 'afterUserPasswordReset';
-
 
     /**
      * RegistrationRepository

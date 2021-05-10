@@ -41,12 +41,14 @@ call_user_func(
             'AuthInternal',
             array(
                 'Auth' => 'index, login, logout, logoutExternal, loginAnonymous, loginHintAnonymous',
+                'Password' => 'new, create',
                 //'Registration' => 'new, create, optIn, index',
                 //'Password' => 'new, create',
             ),
             // non-cacheable actions
             array(
                 'Auth' => 'index, login, logout, logoutExternal, loginAnonymous, loginHintAnonymous',
+                'Password' => 'new, create',
                 //'Registration' => 'new, create, optIn, index',
                 //'Password' => 'new, create',
             )
@@ -92,12 +94,12 @@ call_user_func(
             'RKW.' . $extKey,
             'Password',
             array(
-                'Password' => 'edit, update, new, create',
+                'Password' => 'edit, update',
                 //'Authentication' => 'logout, index',
             ),
             // non-cacheable actions
             array(
-                'Password' => 'edit, update, new, create',
+                'Password' => 'edit, update',
                 //'Authentication' => 'logout, index',
             )
         );
@@ -225,8 +227,8 @@ call_user_func(
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Controller\\RegistrationController',
-            \RKW\RkwRegistration\Controller\RegistrationController::SIGNAL_AFTER_USER_PASSWORD_RESET,
+            'RKW\\RkwRegistration\\Controller\\PasswordController',
+            \RKW\RkwRegistration\Controller\PasswordController::SIGNAL_AFTER_USER_PASSWORD_RESET,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handlePasswordResetEvent'
         );
