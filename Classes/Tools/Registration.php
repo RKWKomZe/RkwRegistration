@@ -2,8 +2,7 @@
 
 namespace RKW\RkwRegistration\Tools;
 
-use \RKW\RkwBasics\Helper\Common;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use \RKW\RkwBasics\Utility\GeneralUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -43,14 +42,6 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
      *
      * @const string
      */
-    const SIGNAL_AFTER_EXISTING_USER_REGISTER_GRANT = 'afterExistingUserRegisterGrant';
-
-
-    /**
-     * Signal name for use in ext_localconf.php
-     *
-     * @const string
-     */
     const SIGNAL_AFTER_USER_REGISTER_DENIAL = 'afterUserRegisterDenial';
 
 
@@ -60,14 +51,6 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
      * @const string
      */
     const SIGNAL_AFTER_CREATING_FINAL_USER = 'afterCreatingFinalUser';
-
-
-    /**
-     * Signal name for use in ext_localconf.php
-     *
-     * @const string
-     */
-    const SIGNAL_AFTER_CREATING_FINAL_USER_SOCIALMEDIA = 'afterCreatingFinalUserSocialMedia';
 
 
     /**
@@ -313,7 +296,7 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
             /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
             $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\FrontendUser');
             foreach ($userData as $key => $value) {
-                $setter = 'set' . ucfirst(Common::camelize($key));
+                $setter = 'set' . ucfirst(GeneralUtility::camelize($key));
                 if (method_exists($frontendUser, $setter)) {
                     $frontendUser->$setter($value);
                 }
@@ -350,7 +333,7 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
 
         if ($frontendUser->getTitle()) {
 
-            $frontendUser->setTxRkwregistrationTitle(\RKW\RkwRegistration\Utilities\TitleUtility::extractTxRegistrationTitle($frontendUser->getTitle(), $settings));
+            $frontendUser->setTxRkwregistrationTitle(\RKW\RkwRegistration\Utility\TitleUtility::extractTxRegistrationTitle($frontendUser->getTitle(), $settings));
             //  set old title field to ''
             $frontendUser->setTitle('');
         }
@@ -435,13 +418,6 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
             // generate and set password
             $plaintextPassword = Password::generatePassword($frontendUser);
 
-            // set registered-by
-            if ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\FacebookUser) {
-                $frontendUser->setTxRkwregistrationRegisteredBy(1);
-            } elseif ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\TwitterUser) {
-                $frontendUser->setTxRkwregistrationRegisteredBy(2);
-            }
-
             // set user groups
             $this->setUserGroupsOnRegister($frontendUser);
 
@@ -451,12 +427,9 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
 
             if ($enable) {
 
-                // Signal for e.g. E-Mails - but not for Socialmedia-Models
-                if ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\SocialMediaInterface) {
-                    $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_FINAL_USER_SOCIALMEDIA . ucfirst($category), array($frontendUser, $plaintextPassword));
-                } else {
-                    $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_FINAL_USER . ucfirst($category), array($frontendUser, $plaintextPassword));
-                }
+                // Signal for e.g. E-Mails
+                $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_FINAL_USER . ucfirst($category), array($frontendUser, $plaintextPassword));
+
                 $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully registered and enabled user "%s".', strtolower($frontendUser->getUsername())));
 
                 // add privacy opt-in for non-existing user
@@ -824,7 +797,7 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
     {
 
         if (!$this->settings) {
-            $this->settings = Common::getTyposcriptConfiguration('Rkwregistration');
+            $this->settings = GeneralUtility::getTyposcriptConfiguration('Rkwregistration');
         }
 
         if (!$this->settings) {

@@ -1,12 +1,11 @@
 <?php
 
-namespace RKW\RkwRegistration\Utilities;
+namespace RKW\RkwRegistration\Utility;
 
 use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
 use \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
-use \RKW\RkwBasics\Helper\Common;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use \RKW\RkwBasics\Utility\GeneralUtility;
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /*
@@ -556,7 +555,7 @@ class DataProtectionUtility
      */
     protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
     {
-        return Common::getTyposcriptConfiguration('rkwregistration', $which);
+        return GeneralUtility::getTyposcriptConfiguration('rkwregistration', $which);
     }
 
 

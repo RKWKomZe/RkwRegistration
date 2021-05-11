@@ -2,9 +2,8 @@
 
 namespace RKW\RkwRegistration\ViewHelpers;
 
-use \RKW\RkwBasics\Helper\Common;
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use \RKW\RkwBasics\Utility\GeneralUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -86,7 +85,7 @@ class PrivacyTextViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
      */
     public function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
     {
-        return Common::getTyposcriptConfiguration('Rkwregistration', $which);
+        return GeneralUtility::getTyposcriptConfiguration('Rkwregistration', $which);
     }
 
 

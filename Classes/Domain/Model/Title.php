@@ -302,7 +302,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the isChecked
      *
-     * @return booelan $isChecked
+     * @return bool $isChecked
      */
     public function getIsChecked()
     {

@@ -54,7 +54,7 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
     /**
      * frontendUserRepository
      *
-     * @var \RKW\RkwRegistration\Utilities\DataProtectionUtility
+     * @var \RKW\RkwRegistration\Utility\DataProtectionUtility
      * @inject
      */
     protected $dataProtectionUtility;

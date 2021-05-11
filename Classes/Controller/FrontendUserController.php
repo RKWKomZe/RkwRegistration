@@ -85,7 +85,7 @@ class FrontendUserController extends AbstractController
         $serviceClass->addUserToAllGrantedGroups($frontendUser);
 
         if ($frontendUser->getTxRkwregistrationTitle()) {
-            $frontendUser->setTxRkwregistrationTitle(\RKW\RkwRegistration\Utilities\TitleUtility::extractTxRegistrationTitle($frontendUser->getTxRkwregistrationTitle()->getName()));
+            $frontendUser->setTxRkwregistrationTitle(\RKW\RkwRegistration\Utility\TitleUtility::extractTxRegistrationTitle($frontendUser->getTxRkwregistrationTitle()->getName()));
         }
 
         $this->frontendUserRepository->update($frontendUser);

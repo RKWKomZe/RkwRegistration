@@ -576,7 +576,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     {
         if ($this->getTxRkwregistrationGender() < 99) {
 
-            return \RKW\RkwBasics\Helper\FrontendLocalization::translate(
+            return \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
                 'tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.' . $this->getTxRkwregistrationGender(),
                 'rkw_registration',
                 array(),

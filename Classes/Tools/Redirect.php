@@ -3,7 +3,6 @@
 namespace RKW\RkwRegistration\Tools;
 
 use \RKW\RkwBasics\Utility\GeneralUtility;
-use RKW\RkwBasics\Service\CookieService;
 
 /*
  * This file is part of the TYPO3 CMS project.

@@ -1,6 +1,6 @@
 <?php
 
-namespace RKW\RkwRegistration\Utilities;
+namespace RKW\RkwRegistration\Utility;
 
 /*
  * This file is part of the TYPO3 CMS project.

@@ -2,10 +2,8 @@
 
 namespace RKW\RkwRegistration\Tools;
 
-use \RKW\RkwBasics\Helper\Common;
+use \RKW\RkwBasics\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
-use RKW\RkwBasics\Service\CookieService;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -193,123 +191,6 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
         return false;
     }
 
-    /**
-     * Validates a social media user
-     *
-     * @param $frontendUser \RKW\RkwRegistration\Domain\Model\FrontendUser
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser| boolean
-     */
-    public function validateSocialMediaUser($frontendUser)
-    {
-
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $frontendUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\FrontendUserRepository');
-
-        // check if user exists
-        if ($databaseFrontendUser = $frontendUserRepository->findUser($frontendUser)) {
-
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully authenticated social media user with username "%s".', strtolower(trim($frontendUser->getUsername()))));
-
-            return $databaseFrontendUser;
-        }
-
-        $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Anonymous user with token "%s" not found.', strtolower(trim($frontendUser->getUsername()))));
-
-        return false;
-
-    }
-
-
-    /**
-     * Checks random token which allows a cross domain login
-     *
-     * @param string $token
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|boolean
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     */
-    public function validateCrossDomainLoginToken($token)
-    {
-
-        $settings = $this->getSettings();
-        $validTime = (intval($settings['crossDomainLoginValidTime']) ? intval($settings['crossDomainLoginValidTime']) : 60);
-
-        $result = false;
-        if ($domain = $_SERVER['SERVER_NAME']) {
-
-            $generatedToken = sha1($token . $domain);
-            /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-            if ($frontendUser = $this->getFrontendUserRepository()->findOneByTxRkwregistrationCrossDomainToken($generatedToken)) {
-
-                // check if token is still valid
-                if ((intval($frontendUser->getTxRkwregistrationCrossDomainTokenTstamp()) + $validTime) > time()) {
-                    $result = $frontendUser;
-                }
-
-                // delete token - we only use it one time
-                $frontendUser->setTxRkwregistrationCrossDomainToken('');
-                $frontendUser->setTxRkwregistrationCrossDomainTokenTstamp(0);
-                $this->getFrontendUserRepository()->update($frontendUser);
-                $this->getPersistenceManager()->persistAll();
-            }
-
-        }
-
-        if ($result) {
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully authenticated user via cross-domain token "%s".', $token));
-        } else {
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Authentication via cross-domain token "%s" failed.', $token));
-        }
-
-        return $result;
-    }
-
-
-    /**
-     * Generates a random token for a logged in user which allows a cross domain login
-     *
-     * @param string $url
-     * @return null|string
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     */
-    public function setCrossDomainLoginToken($url)
-    {
-
-        // generate random token
-        $characters = '23456789abcdefghjkmnopqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ';
-        $randomString = substr(str_shuffle($characters), 0, 30);
-
-        // check if there is a valid redirect domain and the user is logged in!
-        /**  @var $feAuth \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication */
-        if (
-            ($feAuth = $GLOBALS['TSFE']->fe_user)
-            && ($frontendUser = $this->getFrontendUserRepository()->findByIdentifier($feAuth->user['uid']))
-            && ($domain = $this->getDomain($url))
-        ) {
-
-            // add username and do sha1
-            $token = sha1($randomString . $frontendUser->getUsername());
-
-            // save token with domain as sha1, but return it without domain - this allows us to check the domain afterwards
-            $frontendUser->setTxRkwregistrationCrossDomainToken(sha1($token . $domain));
-            $frontendUser->setTxRkwregistrationCrossDomainTokenTstamp(time());
-            $this->getFrontendUserRepository()->update($frontendUser);
-            $this->getPersistenceManager()->persistAll();
-
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully generated cross domain login token for user with id %s.', $feAuth->user['uid']));
-
-            return $token;
-
-        }
-
-        $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Could not generat cross domain login token.'));
-
-        return null;
-
-    }
 
     /**
      * Sets a temporary session cookie with the user-id
@@ -348,9 +229,6 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
             $GLOBALS['TSFE']->initUserGroups(); // Initializes the front-end user groups based on all fe_groups records that the current fe_user is member of
             $GLOBALS['TSFE']->loginUser = true; //  Global flag indicating that a frontend user is logged in. Should already by set by \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::initUserGroups();
             $GLOBALS['TSFE']->storeSessionData(); // store session in database
-
-            // re-set data for redirect
-            CookieService::copyCookieDataToFeUserSession();
 
         } else {
             $GLOBALS['TSFE']->fe_user->createUserSession($userArray);
@@ -400,13 +278,6 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
         self::getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Logging out user with uid %s.', intval($GLOBALS['TSFE']->fe_user->user['uid'])));
         $GLOBALS['TSFE']->fe_user->removeSessionData();
         $GLOBALS['TSFE']->fe_user->logoff();
-
-        // same like in login action: We have to reset data we need for further (multi-)domain logouts
-        $version = VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
-        if ($version >=  8000000) {
-            // re-set url for further logouts
-            CookieService::copyCookieDataToFeUserSession();
-        }
     }
 
 
@@ -483,7 +354,7 @@ class Authentication implements \TYPO3\CMS\Core\SingletonInterface
     {
 
         if (!$this->settings) {
-            $this->settings = Common::getTyposcriptConfiguration('Rkwregistration');
+            $this->settings = GeneralUtility::getTyposcriptConfiguration('Rkwregistration');
         }
 
 

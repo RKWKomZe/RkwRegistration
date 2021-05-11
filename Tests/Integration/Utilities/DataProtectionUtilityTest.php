@@ -1,11 +1,11 @@
 <?php
-namespace RKW\RkwRegistration\Tests\Integration\Utilities;
+namespace RKW\RkwRegistration\Tests\Integration\Utility;
 
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
 use RKW\RkwRegistration\Domain\Model\Privacy;
-use RKW\RkwRegistration\Utilities\DataProtectionUtility;
+use RKW\RkwRegistration\Utility\DataProtectionUtility;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\BackendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository;
@@ -50,7 +50,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
     protected $coreExtensionsToLoad = [];
 
     /**
-     * @var \RKW\RkwRegistration\Utilities\DataProtectionUtility
+     * @var \RKW\RkwRegistration\Utility\DataProtectionUtility
      */
     private $subject = null;
 
@@ -105,7 +105,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
                 'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
-                'EXT:rkw_registration/Tests/Integration/Utilities/DataProtectionUtilityTest/Fixtures/Frontend/Configuration/Rootpage.typoscript',
+                'EXT:rkw_registration/Tests/Integration/Utility/DataProtectionUtilityTest/Fixtures/Frontend/Configuration/Rootpage.typoscript',
 
             ]
         );

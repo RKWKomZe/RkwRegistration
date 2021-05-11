@@ -2,7 +2,7 @@
 
 namespace RKW\RkwRegistration\Tools;
 
-use \RKW\RkwBasics\Helper\Common;
+use \RKW\RkwBasics\Utility\GeneralUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -411,7 +411,7 @@ class Service implements \TYPO3\CMS\Core\SingletonInterface
     {
 
         if (!$this->settings) {
-            $this->settings = Common::getTyposcriptConfiguration('Rkwregistration');
+            $this->settings = GeneralUtility::getTyposcriptConfiguration('Rkwregistration');
         }
 
         if (!$this->settings) {

@@ -2,7 +2,7 @@
 
 namespace RKW\RkwRegistration\Validation;
 
-use \RKW\RkwBasics\Helper\Common;
+use \RKW\RkwBasics\Utility\GeneralUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -39,7 +39,7 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
     public function isValid($passwordArray)
     {
 
-        $settings = Common::getTyposcriptConfiguration('Rkwregistration');
+        $settings = GeneralUtility::getTyposcriptConfiguration('Rkwregistration');
         $configuration = $settings['users']['passwordSettings'];
 
         $minLength = ($configuration['minLength'] ? $configuration['minLength'] : 8);
