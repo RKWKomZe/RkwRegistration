@@ -10,20 +10,9 @@
         <f:security.ifAuthenticated>
             <f:then>
 
-                <div class="alternatives">
+                <f:comment><!-- AUTHENTICATED AREA --></f:comment>
 
-                    <f:comment>
-                        <div class="alternatives__item">
-                            <f:link.page
-                                class="btn btn--primary"
-                                pageUid="{settings.users.loginPid}"
-                                noCacheHash="true"
-                                target="_blank"
-                            >
-                                <f:translate key="templates_registration_loginShowExternal.login2" />
-                            </f:link.page>
-                        </div>
-                    </f:comment>
+                <div class="alternatives">
 
                     <f:link.external
                         class="btn btn--primary"
@@ -49,17 +38,6 @@
                                 </f:link.action>
                             </f:then>
                             <f:else>
-                                <f:comment>
-                                    <f:link.page
-                                        class="btn btn--secondary"
-                                        pageUid="{settings.users.logoutPid}"
-                                        noCacheHash="true"
-                                        target="{linkTargetLogout}"
-                                    >
-                                        <f:translate key="templates_registration_loginShowExternal.logout" />
-                                    </f:link.page>
-                                </f:comment>
-
                                 <f:link.external
                                     class="btn btn--secondary"
                                     uri='<vh:link.myRkwLink pageUid="{settings.users.logoutPid}" />'
@@ -67,8 +45,6 @@
                                 >
                                     <f:translate key="templates_registration_loginShowExternal.logout" />
                                 </f:link.external>
-
-
 
                             </f:else>
                         </f:if>
@@ -78,44 +54,17 @@
             </f:then>
 
             <f:else>
+
+                <f:comment><!-- NOT AUTHENTICATED AREA --></f:comment>
+
                 <f:if condition="{settings.users.allowAnonymousLogin}">
                     <f:then>
 
                         <!-- with anonymous login -->
                         <div class="alternatives">
-
                             <div class="alternatives__item">
-
-                                <h3 class="h5"><f:translate key="templates_registration_loginShowExternal.loginLabel" /></h3>
-
-                                <f:comment>
-                                    <f:link.page
-                                        class="btn btn--primary"
-                                        pageUid="{settings.users.loginPid}"
-                                        noCacheHash="true"
-                                        target="{linkTargetLogin}"
-                                    >
-                                        <f:translate key="templates_registration_loginShowExternal.login" />
-                                    </f:link.page>
-                                </f:comment>
-
-                                <f:link.external
-                                    class="btn btn--primary"
-                                    uri='<vh:link.myRkwLink pageUid="{settings.users.loginPid}" />'
-                                    target="{linkTargetLogin}"
-                                >
-                                    <f:translate key="templates_registration_loginShowExternal.login" />
-                                </f:link.external>
-
-                                <h3 class="h5"><f:translate key="templates_registration_loginShowExternal.registerLabel" /></h3>
-                                <f:link.page
-                                    class="btn btn--primary"
-                                    pageUid="{settings.users.registrationPid}"
-                                    noCacheHash="true"
-                                    target="{linkTargetLogin}"
-                                >
-                                    <f:translate key="templates_registration_loginShowExternal.register" />
-                                </f:link.page>
+                                <f:render section="login" />
+                                <f:render section="register" />
                             </div>
 
                             <div class="alternatives__item alternatives__item--between">
@@ -140,27 +89,7 @@
                         <!-- without anonymous login -->
                         <div class="alternatives">
                             <div class="alternatives__item">
-                                <h3 class="h5"><f:translate key="templates_registration_loginShowExternal.loginLabel" /></h3>
-
-                                <f:comment>
-                                <f:link.page
-                                    class="btn btn--primary"
-                                    pageUid="{settings.users.loginPid}"
-                                    noCacheHash="true"
-                                    target="{linkTargetLogin}"
-                                >
-
-                                    <f:translate key="templates_registration_loginShowExternal.login" />
-                                </f:link.page>
-                                </f:comment>
-
-                                <f:link.external
-                                    class="btn btn--primary"
-                                    uri='<vh:link.myRkwLink pageUid="{settings.users.loginPid}" />'
-                                    target="{linkTargetLogin}"
-                                >
-                                    <f:translate key="templates_registration_loginShowExternal.login" />
-                                </f:link.external>
+                                <f:render section="login" />
                             </div>
 
                             <div class="alternatives__item alternatives__item--between">
@@ -168,26 +97,46 @@
                             </div>
 
                             <div class="alternatives__item">
-
-                                <h3 class="h5"><f:translate key="templates_registration_loginShowExternal.registerLabel" /></h3>
-                                <f:link.page
-                                    class="btn btn--primary"
-                                    pageUid="{settings.users.registrationPid}"
-                                    noCacheHash="true"
-                                    target="{linkTargetLogin}"
-                                >
-                                    <f:translate key="templates_registration_loginShowExternal.register" />
-                                </f:link.page>
+                                <f:render section="register" />
                             </div>
-
                         </div>
-
                     </f:else>
                 </f:if>
             </f:else>
         </f:security.ifAuthenticated>
 
 
+    </f:section>
+
+
+
+    <f:comment><!-- SECTION "register" --></f:comment>
+    <f:section name="register">
+        <h3 class="h5"><f:translate key="templates_registration_loginShowExternal.registerLabel" /></h3>
+
+        <f:link.external
+            class="btn btn--primary"
+            uri='<vh:link.myRkwLink pageUid="{settings.users.registrationPid}" />'
+            target="{linkTargetLogin}"
+            noCacheHash="true"
+        >
+            <f:translate key="templates_registration_loginShowExternal.register" />
+        </f:link.external>
+    </f:section>
+
+
+
+    <f:comment><!-- SECTION "login" --></f:comment>
+    <f:section name="login">
+        <h3 class="h5"><f:translate key="templates_registration_loginShowExternal.loginLabel" /></h3>
+
+        <f:link.external
+            class="btn btn--primary"
+            uri='<vh:link.myRkwLink pageUid="{settings.users.loginPid}" />'
+            target="{linkTargetLogin}"
+        >
+            <f:translate key="templates_registration_loginShowExternal.login" />
+        </f:link.external>
     </f:section>
 
 </html>

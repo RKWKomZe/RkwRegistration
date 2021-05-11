@@ -443,6 +443,7 @@ class AuthController extends AbstractController
 
             // Get SysDomain entry
             $sysDomain = $this->sysDomainRepository->findByDomainName(Redirect::getCurrentDomainName())->getFirst();
+
             if (
                 $sysDomain instanceof \RKW\RkwRegistration\Domain\Model\SysDomain
                 && $sysDomain->getTxRkwregistrationPageLogin() instanceof \RKW\RkwRegistration\Domain\Model\Pages

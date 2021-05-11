@@ -51,28 +51,28 @@ class SysDomain extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @var \RKW\RkwRegistration\Domain\Model\SysDomain
      */
-    protected $txRkwregistrationRelatedSysDomain;
+    protected $txRkwregistrationRelatedSysDomain = null;
 
     /**
      * txRkwregistrationPageLogin
      *
      * @var \RKW\RkwRegistration\Domain\Model\Pages
      */
-    protected $txRkwregistrationPageLogin;
+    protected $txRkwregistrationPageLogin = null;
 
     /**
      * txRkwregistrationPageLogout
      *
      * @var \RKW\RkwRegistration\Domain\Model\Pages
      */
-    protected $txRkwregistrationPageLogout;
+    protected $txRkwregistrationPageLogout = null;
 
     /**
      * txRkwregistrationPageLoginAnonymous
      *
      * @var \RKW\RkwRegistration\Domain\Model\Pages
      */
-    protected $txRkwregistrationPageLoginAnonymous;
+    protected $txRkwregistrationPageLoginAnonymous = null;
 
     /**
      * @return int
@@ -125,7 +125,7 @@ class SysDomain extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @return SysDomain
      */
-    public function getTxRkwregistrationRelatedSysDomain(): SysDomain
+    public function getTxRkwregistrationRelatedSysDomain()
     {
         return $this->txRkwregistrationRelatedSysDomain;
     }
@@ -141,7 +141,7 @@ class SysDomain extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @return Pages
      */
-    public function getTxRkwregistrationPageLogin(): Pages
+    public function getTxRkwregistrationPageLogin()
     {
         return $this->txRkwregistrationPageLogin;
     }
@@ -157,7 +157,7 @@ class SysDomain extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @return Pages
      */
-    public function getTxRkwregistrationPageLogout(): Pages
+    public function getTxRkwregistrationPageLogout()
     {
         return $this->txRkwregistrationPageLogout;
     }
@@ -173,7 +173,7 @@ class SysDomain extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @return Pages
      */
-    public function getTxRkwregistrationPageLoginAnonymous(): Pages
+    public function getTxRkwregistrationPageLoginAnonymous()
     {
         return $this->txRkwregistrationPageLoginAnonymous;
     }

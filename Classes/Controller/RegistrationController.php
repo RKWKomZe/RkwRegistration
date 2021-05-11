@@ -28,15 +28,6 @@ class RegistrationController extends AbstractController
 {
 
     /**
-     * RegistrationRepository
-     *
-     * @var \RKW\RkwRegistration\Domain\Repository\RegistrationRepository
-     * @inject
-     */
-    protected $registrationRepository;
-
-
-    /**
      * ServiceRepository
      *
      * @var \RKW\RkwRegistration\Domain\Repository\ServiceRepository
@@ -187,10 +178,6 @@ class RegistrationController extends AbstractController
             $this->redirect('index');
             //===
         }
-
-        /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin */
-        $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
-        $redirectLogin->setRedirectUrl($this->request);
 
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');

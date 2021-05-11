@@ -365,6 +365,7 @@ plugin.tx_rkwregistration {
 }
 
 // set settings to every plugin
+// !! Hint: Do not remove following plugin entries. Is used by GetAllFlashMessageIdentifierViewHelper !!
 plugin.tx_rkwregistration_welcome < plugin.tx_rkwregistration
 plugin.tx_rkwregistration_register < plugin.tx_rkwregistration
 plugin.tx_rkwregistration_authinternal < plugin.tx_rkwregistration
@@ -374,6 +375,7 @@ plugin.tx_rkwregistration_logoutexternal < plugin.tx_rkwregistration
 plugin.tx_rkwregistration_password < plugin.tx_rkwregistration
 plugin.tx_rkwregistration_frontenduseredit < plugin.tx_rkwregistration
 plugin.tx_rkwregistration_frontenduserdelete < plugin.tx_rkwregistration
+plugin.tx_rkwregistration_serviceoptin < plugin.tx_rkwregistration
 
 
 // for cronjob
