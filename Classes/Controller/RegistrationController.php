@@ -112,8 +112,8 @@ class RegistrationController extends AbstractController
         $tokenNo = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_no') ? $this->request->getArgument('token_no') : ''));
         $userSha1 = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('user'));
 
-        /** @var \RKW\RkwRegistration\Tools\Registration $register */
-        $register = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Registration');
+        /** @var \RKW\RkwRegistration\Service\RegistrationService $register */
+        $register = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
         $check = $register->checkTokens($tokenYes, $tokenNo, $userSha1, $this->request);
 
         if ($check == 1) {
@@ -254,8 +254,8 @@ class RegistrationController extends AbstractController
         }
 
         // register new user
-        /** @var \RKW\RkwRegistration\Tools\Registration $registration */
-        $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Registration');
+        /** @var \RKW\RkwRegistration\Service\RegistrationService $registration */
+        $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
         $registration->register($newFrontendUser, false, null, null, $this->request);
 
         $this->addFlashMessage(

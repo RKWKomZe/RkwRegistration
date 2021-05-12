@@ -81,7 +81,7 @@ class FrontendUserController extends AbstractController
 
         // all mandatory fields should be checked here.
         // therefore we can finally add the user to all relevant groups now
-        $serviceClass = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Service');
+        $serviceClass = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\GroupService');
         $serviceClass->addUserToAllGrantedGroups($frontendUser);
 
         if ($frontendUser->getTxRkwregistrationTitle()) {
@@ -142,8 +142,8 @@ class FrontendUserController extends AbstractController
             //===
         }
 
-        /** @var \RKW\RkwRegistration\Tools\Registration $registration */
-        $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Registration');
+        /** @var \RKW\RkwRegistration\Service\RegistrationService $registration */
+        $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
         $registration->delete($frontendUser);
 
         $this->addFlashMessage(

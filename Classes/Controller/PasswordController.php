@@ -2,7 +2,7 @@
 
 namespace RKW\RkwRegistration\Controller;
 
-use RKW\RkwRegistration\Tools\Password;
+use RKW\RkwRegistration\Utility\PasswordUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -95,8 +95,8 @@ class PasswordController extends AbstractController
         }
 
         // check if password is valid
-        /** @var \RKW\RkwRegistration\Tools\Authentication $authentication */
-        $authentication = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Authentication');
+        /** @var \RKW\RkwRegistration\Service\AuthService $authentication */
+        $authentication = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\AuthService');
         if (
             ($username = $frontendUser->getUsername())
             && ($registeredUser = $authentication->validateUser($username, $passwordOld))
@@ -104,7 +104,7 @@ class PasswordController extends AbstractController
         ) {
 
             // set password to the given one
-            Password::generatePassword($registeredUser, $passwordNew['first']);
+            PasswordUtility::generatePassword($registeredUser, $passwordNew['first']);
             $this->frontendUserRepository->update($registeredUser);
 
             $this->addFlashMessage(
@@ -184,7 +184,7 @@ class PasswordController extends AbstractController
         if ($registeredUser = $this->frontendUserRepository->findOneByUsername(strtolower($username))) {
 
             // reset password
-            $plaintextPassword = Password::generatePassword($registeredUser);
+            $plaintextPassword = PasswordUtility::generatePassword($registeredUser);
             $this->frontendUserRepository->update($registeredUser);
 
             // dispatcher for e.g. E-Mail

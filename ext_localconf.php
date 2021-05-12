@@ -95,12 +95,10 @@ call_user_func(
             'Password',
             array(
                 'Password' => 'edit, update',
-                //'Authentication' => 'logout, index',
             ),
             // non-cacheable actions
             array(
                 'Password' => 'edit, update',
-                //'Authentication' => 'logout, index',
             )
         );
 
@@ -109,14 +107,10 @@ call_user_func(
             'FrontendUserEdit',
             array(
                 'FrontendUser' => 'edit, update',
-                //'Registration' => 'index',
-                //'Authentication' => 'logout',
             ),
             // non-cacheable actions
             array(
                 'FrontendUser' => 'edit, update',
-                //'Registration' => 'index',
-                //'Authentication' => 'logout',
             )
         );
 
@@ -125,14 +119,10 @@ call_user_func(
             'FrontendUserDelete',
             array(
                 'FrontendUser' => 'show, delete',
-                //'Registration' => 'index',
-                //'Authentication' => 'logout',
             ),
             // non-cacheable actions
             array(
                 'FrontendUser' => 'show, delete',
-                //'Registration' => 'index',
-                //'Authentication' => 'logout',
             )
         );
 
@@ -206,22 +196,22 @@ call_user_func(
          */
         $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Tools\\Registration',
-            \RKW\RkwRegistration\Tools\Registration::SIGNAL_AFTER_CREATING_OPTIN_USER,
+            'RKW\\RkwRegistration\\Service\\RegistrationService',
+            \RKW\RkwRegistration\Service\RegistrationService::SIGNAL_AFTER_CREATING_OPTIN_USER,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleCreateUserEvent'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Tools\\Registration',
-            \RKW\RkwRegistration\Tools\Registration::SIGNAL_AFTER_CREATING_FINAL_USER,
+            'RKW\\RkwRegistration\\Service\\RegistrationService',
+            \RKW\RkwRegistration\Service\RegistrationService::SIGNAL_AFTER_CREATING_FINAL_USER,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleRegisterUserEvent'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Tools\\Registration',
-            \RKW\RkwRegistration\Tools\Registration::SIGNAL_AFTER_USER_REGISTER_GRANT,
+            'RKW\\RkwRegistration\\Service\\RegistrationService',
+            \RKW\RkwRegistration\Service\RegistrationService::SIGNAL_AFTER_USER_REGISTER_GRANT,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleRegisterUserEvent'
         );
@@ -241,15 +231,15 @@ call_user_func(
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Tools\\Service',
-            \RKW\RkwRegistration\Tools\Service::SIGNAL_AFTER_ADMIN_SERVICE_GRANT,
+            'RKW\\RkwRegistration\\Service\\GroupService',
+            \RKW\RkwRegistration\Service\GroupService::SIGNAL_AFTER_ADMIN_SERVICE_GRANT,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleAdminServiceGrantEvent'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Tools\\Service',
-            \RKW\RkwRegistration\Tools\Service::SIGNAL_AFTER_ADMIN_SERVICE_DENIAL,
+            'RKW\\RkwRegistration\\Service\\GroupService',
+            \RKW\RkwRegistration\Service\GroupService::SIGNAL_AFTER_ADMIN_SERVICE_DENIAL,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleAdminServiceDenialEvent'
         );

@@ -2,10 +2,8 @@
 
 namespace RKW\RkwRegistration\Controller;
 
-use RKW\RkwRegistration\Tools\Password;
-use RKW\RkwRegistration\Tools\Authentication;
-use RKW\RkwRegistration\Tools\Redirect;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use RKW\RkwRegistration\Service\AuthService as Authentication;
+use RKW\RkwRegistration\Utility\RedirectUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -254,8 +252,8 @@ class AuthController extends AbstractController
 
         if (!$this->getFrontendUser()) {
 
-            /** @var \RKW\RkwRegistration\Tools\Authentication $authentication */
-            $authentication = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Authentication');
+            /** @var \RKW\RkwRegistration\Service\AuthService $authentication */
+            $authentication = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\AuthService');
 
             // check for token
             if (
@@ -276,7 +274,7 @@ class AuthController extends AbstractController
                         /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
                         $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
 
-                        $sysDomain = $this->sysDomainRepository->findByDomainName(Redirect::getCurrentDomainName())->getFirst();
+                        $sysDomain = $this->sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
                         if (
                             $sysDomain instanceof \RKW\RkwRegistration\Domain\Model\SysDomain
                             && $sysDomain->getTxRkwregistrationPageLoginAnonymous() instanceof \RKW\RkwRegistration\Domain\Model\Pages
@@ -312,8 +310,8 @@ class AuthController extends AbstractController
 
             } else {
 
-                /** @var \RKW\RkwRegistration\Tools\Registration $registration */
-                $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Registration');
+                /** @var \RKW\RkwRegistration\Service\RegistrationService $registration */
+                $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
 
                 // register anonymous user and login
                 $anonymousUser = $registration->registerAnonymous();
@@ -431,8 +429,8 @@ class AuthController extends AbstractController
 
 
         // check if there is a user that matches and log him in
-        /** @var \RKW\RkwRegistration\Tools\Authentication $authenticate */
-        $authenticate = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Authentication');
+        /** @var \RKW\RkwRegistration\Service\AuthService $authenticate */
+        $authenticate = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\AuthService');
         $validateResult = null;
         if (
             ($validateResult = $authenticate->validateUser(strtolower($username), $password))
@@ -442,13 +440,13 @@ class AuthController extends AbstractController
             $authenticate->loginUser($validateResult);
 
             // Get SysDomain entry
-            $sysDomain = $this->sysDomainRepository->findByDomainName(Redirect::getCurrentDomainName())->getFirst();
+            $sysDomain = $this->sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
 
             if (
                 $sysDomain instanceof \RKW\RkwRegistration\Domain\Model\SysDomain
                 && $sysDomain->getTxRkwregistrationPageLogin() instanceof \RKW\RkwRegistration\Domain\Model\Pages
             ) {
-                $this->redirectToUri(Redirect::urlToPageUid($sysDomain->getTxRkwregistrationPageLogin()->getUid()));
+                $this->redirectToUri(RedirectUtility::urlToPageUid($sysDomain->getTxRkwregistrationPageLogin()->getUid()));
             }
 
             if ($this->settings['users']['welcomePid']) {
@@ -514,12 +512,12 @@ class AuthController extends AbstractController
         Authentication::logoutUser();
 
         // 1. Redirect according to SysDomain entry
-        $sysDomain = $this->sysDomainRepository->findByDomainName(Redirect::getCurrentDomainName())->getFirst();
+        $sysDomain = $this->sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
         if (
             $sysDomain instanceof \RKW\RkwRegistration\Domain\Model\SysDomain
             && $sysDomain->getTxRkwregistrationPageLogout() instanceof \RKW\RkwRegistration\Domain\Model\Pages
         ) {
-            $this->redirectToUri(Redirect::urlToPageUid($sysDomain->getTxRkwregistrationPageLogout()->getUid()));
+            $this->redirectToUri(RedirectUtility::urlToPageUid($sysDomain->getTxRkwregistrationPageLogout()->getUid()));
         }
 
         // 2. redirect to login page (including message)

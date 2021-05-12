@@ -18,55 +18,23 @@ namespace RKW\RkwRegistration\Tools;
 /**
  * Class Password
  *
+ * @deprecated This class is deprecated and will be removed soon. Use  RKW\RkwRegistration\Utility\Password instead.
+ *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Password implements \TYPO3\CMS\Core\SingletonInterface
+class Password extends \RKW\RkwRegistration\Utility\PasswordUtility
 {
 
     /**
-     *  Length of password
-     *
-     * @const integer
+     * FrontendLocalization constructor.
      */
-    const PASSWORD_LENGTH = 10;
-
-
-    /**
-     * Generates a salted password for the user
-     *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser
-     * @param string $plaintextPassword
-     * @return string
-     */
-    public static function generatePassword(\TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser, $plaintextPassword = null)
+    public function __construct()
     {
-
-        // generate password if not already set - we leave out letters that can be confused with numbers
-        if (!$plaintextPassword) {
-            $characters = '23456789abcdefghjkmnopqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ';
-            $plaintextPassword = substr(str_shuffle($characters), 0, self::PASSWORD_LENGTH);
-        }
-
-        $saltedPassword = $plaintextPassword;
-        if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('saltedpasswords')) {
-            if (\TYPO3\CMS\Saltedpasswords\Utility\SaltedPasswordsUtility::isUsageEnabled('FE')) {
-                $objSalt = \TYPO3\CMS\Saltedpasswords\Salt\SaltFactory::getSaltingInstance(null);
-                if (is_object($objSalt)) {
-                    $saltedPassword = $objSalt->getHashedPassword($plaintextPassword);
-                }
-            }
-        }
-
-        // set password
-        $frontendUser->setPassword($saltedPassword);
-
-        return $plaintextPassword;
-        //===
+        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
     }
-
 
 }

@@ -31,8 +31,6 @@ use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
  */
 class DataProtectionUtility
 {
-
-
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
      * @inject

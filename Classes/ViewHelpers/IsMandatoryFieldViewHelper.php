@@ -35,8 +35,8 @@ class IsMandatoryFieldViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abstra
     public function render($fieldName, $frontendUser = null)
     {
 
-        /** @var \RKW\RkwRegistration\Tools\Service $register */
-        $register = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Service');
+        /** @var \RKW\RkwRegistration\Service\GroupService $register */
+        $register = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\GroupService');
         $requiredFields = $register->getMandatoryFieldsOfUser($frontendUser);
 
         return in_array($fieldName, $requiredFields);

@@ -192,7 +192,7 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
         // if not redirect to edit form
         if ($this->getFrontendUser()) {
 
-            if (!\RKW\RkwRegistration\Tools\Registration::validEmail($this->getFrontendUser()->getEmail())) {
+            if (!\RKW\RkwRegistration\Service\RegistrationService::validEmail($this->getFrontendUser()->getEmail())) {
                 $this->addFlashMessage(
                     \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
                         'abstractController.message.enter_valid_email', 'rkw_registration'

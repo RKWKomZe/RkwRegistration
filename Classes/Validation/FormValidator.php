@@ -56,8 +56,8 @@ class FormValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVali
         $isValid = true;
 
         // get required fields of user
-        /** @var \RKW\RkwRegistration\Tools\Service $register */
-        $register = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Service');
+        /** @var \RKW\RkwRegistration\Service\GroupService $register */
+        $register = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\GroupService');
         $requiredFields = $register->getMandatoryFieldsOfUser($frontendUserForm);
 
         // user may not be able to use the email address of another person
@@ -86,7 +86,7 @@ class FormValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVali
         // check valid email
         if (in_array('email', $requiredFields)) {
 
-            if (!\RKW\RkwRegistration\Tools\Registration::validEmail($frontendUserForm->getEmail())) {
+            if (!\RKW\RkwRegistration\Service\RegistrationService::validEmail($frontendUserForm->getEmail())) {
 
                 $this->result->forProperty('email')->addError(
                     new \TYPO3\CMS\Extbase\Error\Error(
