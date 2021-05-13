@@ -4,6 +4,7 @@ namespace RKW\RkwRegistration\Service;
 
 use \RKW\RkwBasics\Utility\GeneralUtility;
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -56,15 +57,57 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             /** @var \RKW\RkwMailer\Service\MailService $mailService */
             $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
 
+
+            // create OptIn links now and not inside the fluid template, which will be used by the RkwMailer
+            // Reason: Only via this way we get suitable links to the current active dynamic domain
+
+            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager objectManager */
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+            /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
+            $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
+            $uriTokenYes = $uriBuilder->reset()
+                ->setTargetPageUid(intval($settingsDefault['users']['registrationPid']))
+                ->setCreateAbsoluteUri(true)
+                ->setUseCacheHash(false)
+                ->uriFor(
+                    'optIn',
+                    [
+                        'token_yes' => $registration->getTokenYes(),
+                        'user' => $registration->getUserSha1()
+                    ],
+                    'Registration',
+                    'RkwRegistration',
+                    'Register'
+                );
+
+            $uriTokenNo = $uriBuilder->reset()
+                ->setTargetPageUid(intval($settingsDefault['users']['registrationPid']))
+                ->setCreateAbsoluteUri(true)
+                ->setUseCacheHash(false)
+                ->uriFor(
+                    'optIn',
+                    [
+                        'token_no' => $registration->getTokenNo(),
+                        'user' => $registration->getUserSha1()
+                    ],
+                    'Registration',
+                    'RkwRegistration',
+                    'Register'
+                );
+
             // send new user an email with token
             $mailService->setTo($frontendUser, array(
                 'marker' => array(
-                    'tokenYes'        => $registration->getTokenYes(),
-                    'tokenNo'         => $registration->getTokenNo(),
-                    'userSha1'        => $registration->getUserSha1(),
+                    'linkTokenYes' => $uriTokenYes,
+                    'linkTokenNo' => $uriTokenNo,
                     'frontendUser'    => $frontendUser,
-                    'registrationPid' => intval($settingsDefault['users']['registrationPid']),
-                    'pageUid'         => intval($GLOBALS['TSFE']->id),
+
+                    // old
+                    #'tokenYes'        => $registration->getTokenYes(),
+                    #'tokenNo'         => $registration->getTokenNo(),
+                    #'userSha1'        => $registration->getUserSha1(),
+                    #'registrationPid' => intval($settingsDefault['users']['registrationPid']),
+                    #'pageUid'         => intval($GLOBALS['TSFE']->id),
                 ),
             ));
 
@@ -103,8 +146,6 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function handleRegisterUserEvent(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, $plaintextPassword, \RKW\RkwRegistration\Domain\Model\Registration $registration = null)
     {
-
-
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $settingsDefault = $this->getSettings();
@@ -113,13 +154,29 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             /** @var \RKW\RkwMailer\Service\MailService $mailService */
             $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
 
+            // create OptIn links now and not inside the fluid template, which will be used by the RkwMailer
+            // Reason: Only via this way we get suitable links to the current active dynamic domain
+
+            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager objectManager */
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+            /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
+            $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
+            $uriLogin = $uriBuilder->reset()
+                ->setTargetPageUid(intval($settingsDefault['users']['loginPid']))
+                ->setCreateAbsoluteUri(true)
+                ->setUseCacheHash(false)
+                ->build();
+
             // send new user an email with token
             $mailService->setTo($frontendUser, array(
                 'marker' => array(
-                    'plaintextPasswordForMail' => $plaintextPassword,
-                    'frontendUser'             => $frontendUser,
-                    'pageUid'                  => intval($GLOBALS['TSFE']->id),
-                    'loginPid'                 => intval($settingsDefault['users']['loginPid']),
+                    'plaintextPasswordForMail'  => $plaintextPassword,
+                    'frontendUser'              => $frontendUser,
+                    'pageUid'                   => intval($GLOBALS['TSFE']->id),
+                    'loginLink'                 => $uriLogin
+
+                    // old
+                    #'loginPid'                 => intval($settingsDefault['users']['loginPid']),
                 ),
             ));
 

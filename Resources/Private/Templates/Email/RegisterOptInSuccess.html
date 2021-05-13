@@ -14,7 +14,7 @@
 <rkwMailer:frontend.translate key="templates_email_registerOptInSuccess.text2" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" />
 
 <rkwMailer:frontend.translate key="templates_email_passwordReset.loginLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" />:
-<rkwMailer:frontend.link pageUid="{loginPid}" absolute="true" noCacheHash="true"/>
+{loginLink}
 </f:section>
 
 <!-- HTML -->
@@ -27,5 +27,5 @@
         <rkwMailer:frontend.translate key="templates_email_registerOptInSuccess.password" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/>: <strong>{plaintextPasswordForMail}</strong>
     </p>
 	<p><rkwMailer:frontend.translate key="templates_email_registerOptInSuccess.text2" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" /></p>
-    <p><a href="<rkwMailer:frontend.link pageUid='{loginPid}' absolute='true' noCacheHash='true'/>"><rkwMailer:frontend.translate key="templates_email_passwordReset.loginLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" /></a></p>
+    <p><a href="{loginLink}"><rkwMailer:frontend.translate key="templates_email_passwordReset.loginLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" /></a></p>
 </f:section>

@@ -52,7 +52,7 @@ class MyRkwLinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewH
         $currentBaseUrl = preg_replace('/^http(s)?:\/\/(www\.)?([^\/]+)\/?$/i', '$3', $GLOBALS['TSFE']->tmpl->setup['config.']['baseURL']);
 
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');;
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         /** @var \RKW\RkwRegistration\Domain\Repository\SysDomainRepository $sysDomainRepository */
         $sysDomainRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\SysDomainRepository');
 
