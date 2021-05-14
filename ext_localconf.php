@@ -267,6 +267,32 @@ call_user_func(
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\RKW\RkwRegistration\Updates\PluginUpdate::class] = \RKW\RkwRegistration\Updates\PluginUpdate::class;
 
 
+        //=================================================================
+        // AuthService
+        //=================================================================
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+            $extKey,
+            'auth',
+            RKW\RkwRegistration\Service\FrontendUserAuthService::class,
+            array(
+                'title' => 'Authentication Service for fe_users',
+                'description' => 'Authentication Service for fe_users',
+                //'subtype' => 'authUserFE,getGroupsFE,getUserFE,processLoginDataFE',
+                'subtype' => 'authUserFE, getUserFE',
+                'available' => true,
+                'priority' => 80,
+                'quality' => 80,
+                'os' => '',
+                'exec' => '',
+                'className' => RKW\RkwRegistration\Service\FrontendUserAuthService::class
+            )
+        );
+
+        # It is possible to force TYPO3 CMS to go through the authentication process for every request no matter any existing session.
+        # By setting the following local configuration either for the FE or the BE:
+    #    $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_alwaysFetchUser'] = true;
+    #    $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_alwaysAuthUser'] = true;
+
 
     },
     $_EXTKEY

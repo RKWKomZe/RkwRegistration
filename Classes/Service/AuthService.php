@@ -21,6 +21,8 @@ use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 /**
  * Class AuthService
  *
+ * @deprecated Will be removed soon. Use \RKW\RkwRegistration\Service\FrontendUserAuthService instead
+ *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
@@ -64,6 +66,8 @@ class AuthService implements \TYPO3\CMS\Core\SingletonInterface
 
     /**
      * Validates the given username/password combination against the saved user data
+     *
+     * @deprecated Will be removed soon.
      *
      * @param string $username
      * @param string $password
@@ -164,6 +168,8 @@ class AuthService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Checks the given token of an anonymous user
      *
+     * @deprecated Will be removed soon.
+     *
      * @param string $token
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser| boolean
      */
@@ -193,6 +199,9 @@ class AuthService implements \TYPO3\CMS\Core\SingletonInterface
 
 
     /**
+     *
+     * @deprecated Will be removed soon.
+     *
      * Sets a temporary session cookie with the user-id
      * IMPORTANT: After a redirect the user is logged in then
      * DANGER: This method authenticates the given user without checking for password!!!
@@ -245,6 +254,9 @@ class AuthService implements \TYPO3\CMS\Core\SingletonInterface
 
 
     /**
+     *
+     * @deprecated Will be removed soon.
+     *
      * Checks if user is logged in
      *
      * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser
@@ -271,6 +283,8 @@ class AuthService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Logout
      *
+     * @deprecated Will be removed soon.
+     *
      * @return void
      */
     public static function logoutUser()
@@ -283,6 +297,8 @@ class AuthService implements \TYPO3\CMS\Core\SingletonInterface
 
     /**
      * Extracts the domain from the given url
+     *
+     * @deprecated Will be removed soon.
      *
      * @param string $url
      * @return string | NULL
@@ -301,6 +317,8 @@ class AuthService implements \TYPO3\CMS\Core\SingletonInterface
 
     /**
      * Returns logger instance
+     *
+     * @deprecated Will be removed soon.
      *
      * @return \TYPO3\CMS\Core\Log\Logger
      */

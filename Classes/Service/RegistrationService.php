@@ -5,6 +5,7 @@ namespace RKW\RkwRegistration\Service;
 use \RKW\RkwRegistration\Service\AuthService as Authentication;
 use \RKW\RkwBasics\Utility\GeneralUtility;
 use \RKW\RkwRegistration\Utility\PasswordUtility;
+use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -556,7 +557,7 @@ class RegistrationService implements \TYPO3\CMS\Core\SingletonInterface
         // check if user is logged in - only the user himself can delete his account!
         if (Authentication::isUserLoggedIn($frontendUser)) {
 
-            Authentication::logoutUser();
+            FrontendUserSessionUtility::logout();
             $this->getFrontendUserRepository()->remove($frontendUser);
             $this->getPersistenceManager()->persistAll();
 

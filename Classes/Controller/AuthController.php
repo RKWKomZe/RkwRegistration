@@ -4,6 +4,8 @@ namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Service\AuthService as Authentication;
 use RKW\RkwRegistration\Utility\RedirectUtility;
+use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -28,6 +30,14 @@ use RKW\RkwRegistration\Utility\RedirectUtility;
  */
 class AuthController extends AbstractController
 {
+    /**
+     * FrontendUserRepository
+     *
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @inject
+     */
+    protected $frontendUserRepository;
+
     /**
      * SysDomainRepository
      *
@@ -263,7 +273,7 @@ class AuthController extends AbstractController
 
                 // find anonymous user by token and login
                 if ($anonymousUser = $authentication->validateAnonymousUser($token)) {
-                    $authentication::loginUser($anonymousUser);
+                    FrontendUserSessionUtility::login($anonymousUser);
 
                     // redirect user
                     if ($this->settings['users']['anonymousRedirectPid']) {
@@ -297,7 +307,7 @@ class AuthController extends AbstractController
 
                 } else {
 
-                    $authentication::logoutUser();
+                    FrontendUserSessionUtility::logout();
 
                     $this->addFlashMessage(
                         \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
@@ -315,7 +325,7 @@ class AuthController extends AbstractController
 
                 // register anonymous user and login
                 $anonymousUser = $registration->registerAnonymous();
-                $authentication::loginUser($anonymousUser);
+                FrontendUserSessionUtility::login($anonymousUser);
 
                 $this->redirect('loginHintAnonymous');
             }
@@ -427,17 +437,22 @@ class AuthController extends AbstractController
             $this->redirect('index');
         }
 
+        /** @var \RKW\RkwRegistration\Service\FrontendUserAuthService $authService */
+        $authService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\RKW\RkwRegistration\Service\FrontendUserAuthService::class);
+        $authService->setLoginData($username, $password);
+        $frontendUserArray = $authService->getUser();
+        // do it: check given user data
+        $authResult = $authService->authUser(is_array($frontendUserArray) ? $frontendUserArray : []);
 
-        // check if there is a user that matches and log him in
-        /** @var \RKW\RkwRegistration\Service\AuthService $authenticate */
-        $authenticate = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\AuthService');
-        $validateResult = null;
         if (
-            ($validateResult = $authenticate->validateUser(strtolower($username), $password))
-            && ($validateResult instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser)
+            $authResult === 200
+            && ($frontendUser = $this->frontendUserRepository->findOneByUsername(strtolower(trim($username))))
+            && ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser)
         ) {
 
-            $authenticate->loginUser($validateResult);
+            // ! SUCCESS !
+
+            FrontendUserSessionUtility::login($frontendUser);
 
             // Get SysDomain entry
             $sysDomain = $this->sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
@@ -457,8 +472,11 @@ class AuthController extends AbstractController
             //===
         }
 
+        // ! FAIL !
+        // Handle type of returned error message and send the user back where he is come from
+
         // user blocked
-        if ($validateResult == 2) {
+        if ($authService->getAuthStatusResult() == 2) {
 
             $this->addFlashMessage(
                 \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
@@ -471,7 +489,7 @@ class AuthController extends AbstractController
 
             // wrong login
         } else {
-            if ($validateResult == 1) {
+            if ($authService->getAuthStatusResult() == 1) {
 
                 $this->addFlashMessage(
                     \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
@@ -509,7 +527,7 @@ class AuthController extends AbstractController
     public function logoutAction()
     {
         // do logout here
-        Authentication::logoutUser();
+        FrontendUserSessionUtility::logout();
 
         // 1. Redirect according to SysDomain entry
         $sysDomain = $this->sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
@@ -546,7 +564,7 @@ class AuthController extends AbstractController
             // simply logout anonymous users and show hint
             if ($frontendUser->getTxRkwregistrationIsAnonymous()) {
 
-                Authentication::logoutUser();
+                FrontendUserSessionUtility::logout();
 
                 // redirect to login page including message
                 if ($this->settings['users']['loginExternalPid']) {
