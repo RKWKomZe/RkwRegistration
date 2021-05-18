@@ -3,6 +3,7 @@
 namespace RKW\RkwRegistration\Utility;
 
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -44,7 +45,6 @@ class FrontendUserSessionUtility
      */
     public static function login(\TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser)
     {
-
         if (!$frontendUser->getUid()) {
             throw new \RKW\RkwRegistration\Exception('No valid uid for user given.', 1435002338);
         }
@@ -85,6 +85,31 @@ class FrontendUserSessionUtility
 
 
     /**
+     * Logout
+     *
+     * @return void
+     */
+    public static function logout()
+    {
+        self::getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Logging out user with uid %s.', intval($GLOBALS['TSFE']->fe_user->user['uid'])));
+        $GLOBALS['TSFE']->fe_user->removeSessionData();
+        $GLOBALS['TSFE']->fe_user->logoff();
+    }
+
+
+    /**
+     * Returns logger instance
+     *
+     * @return \TYPO3\CMS\Core\Log\Logger
+     */
+    public static function getLogger()
+    {
+        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+    }
+
+
+
+    /**
      * Checks if user is logged in
      *
      * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser
@@ -108,27 +133,27 @@ class FrontendUserSessionUtility
     }
 
 
-    /**
-     * Logout
-     *
-     * @return void
-     */
-    public static function logout()
-    {
-        self::getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Logging out user with uid %s.', intval($GLOBALS['TSFE']->fe_user->user['uid'])));
-        $GLOBALS['TSFE']->fe_user->removeSessionData();
-        $GLOBALS['TSFE']->fe_user->logoff();
-    }
-
 
     /**
-     * Returns logger instance
+     * Id of logged User
      *
-     * @return \TYPO3\CMS\Core\Log\Logger
+     * @return integer|NULL
      */
-    public static function getLogger()
+    public static function getFrontendUserId()
     {
-        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+
+        // is $GLOBALS set?
+        if (
+            ($GLOBALS['TSFE'])
+            && ($GLOBALS['TSFE']->loginUser)
+            && ($GLOBALS['TSFE']->fe_user->user['uid'])
+        ) {
+            return intval($GLOBALS['TSFE']->fe_user->user['uid']);
+            //===
+        }
+
+        return null;
+        //===
     }
 
 }

@@ -59,9 +59,9 @@ $tempCols = [
         ]
     ],
 
-    'tx_rkwregistration_page_login_anonymous' => [
+    'tx_rkwregistration_page_login_guest' => [
         'exclude' => 1,
-        'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_page_login_anonymous',
+        'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_page_login_guest',
         'config' => [
             'type' => 'group',
             'internal_type' => 'db',
@@ -93,8 +93,8 @@ $tempCols = [
 // Feld einer neuen Palette hinzufügen
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
     'sys_domain',
-    'anonymousUsers',
-    'tx_rkwregistration_page_login_anonymous'
+    'guestUsers',
+    'tx_rkwregistration_page_login_guest'
 );
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
@@ -103,7 +103,7 @@ $tempCols = [
     --div--;LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_sysdomain.tabs.myRkw,
     tx_rkwregistration_related_sys_domain,
     --palette--;LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_sysdomain.palette.registeredUsers;registeredUsers,
-    --palette--;LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_sysdomain.palette.anonymousUsers;anonymousUsers,
+    --palette--;LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_sysdomain.palette.guestUsers;anonymousUsers,
     ',
     '',
     'after:sys_domain');

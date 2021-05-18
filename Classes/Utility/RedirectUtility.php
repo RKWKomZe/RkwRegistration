@@ -53,6 +53,7 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
     }
 
 
+
     /**
      * Checks if given url is valid for redirect
      *
@@ -117,6 +118,7 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
     }
 
 
+
     /**
      * Extracts the domain from the given url
      *
@@ -134,6 +136,8 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
         return null;
     }
 
+
+
     /**
      * Gives back current Domain
      *
@@ -143,6 +147,50 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
     {
         // @toDo: Does "->getDomainNameForPid" also work in our dynamic MyRkw-Domain setting?
         return $GLOBALS['TSFE']->getDomainNameForPid(intval($GLOBALS['TSFE']->page['uid']));
+    }
+
+
+    /**
+     * Gives back guest redirect url
+     *
+     * @return string|bool
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public static function getGuestRedirectUrl()
+    {
+        $settings = self::getSettings();
+
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+
+        $sysDomainRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\SysDomainRepository');
+        $sysDomain = $sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
+        $targetPageUid = 0;
+        if (
+            $sysDomain instanceof \RKW\RkwRegistration\Domain\Model\SysDomain
+            && $sysDomain->getTxRkwregistrationPageLoginGuest() instanceof \RKW\RkwRegistration\Domain\Model\Pages
+        ) {
+            $targetPageUid = $sysDomain->getTxRkwregistrationPageLoginGuest()->getUid();
+        }
+
+        if (
+            $targetPageUid
+            || $settings['users']['guestRedirectPid']
+        ) {
+            /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
+            $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
+            $redirectUrl = $uriBuilder->reset()
+                ->setTargetPageUid(intval($settings['users']['guestRedirectPid'] ? $settings['users']['guestRedirectPid'] : $targetPageUid))
+                ->setCreateAbsoluteUri(true)
+                ->setLinkAccessRestrictedPages(true)
+                ->setUseCacheHash(false)
+                ->build();
+
+            return $redirectUrl;
+        }
+
+        // if there is no redirect set
+        return false;
     }
 
 

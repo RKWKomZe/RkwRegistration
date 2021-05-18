@@ -136,6 +136,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     protected $txRkwregistrationFacebookId = '';
 
     /**
+     * @deprecated Will be removed soon. Use GuestUser Model instead
      * @var boolean
      */
     protected $txRkwregistrationIsAnonymous = false;
@@ -885,6 +886,8 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     /**
      * Returns the txRkwregistrationIsAnonymous
      *
+     * @deprecated Will be removed soon. Use GuestUser Model instead
+     *
      * @return boolean $txRkwregistrationIsAnonymous
      */
     public function getTxRkwregistrationIsAnonymous()
@@ -894,6 +897,8 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 
     /**
      * Sets the txRkwregistrationIsAnonymous
+     *
+     * @deprecated Will be removed soon. Use GuestUser Model instead
      *
      * @param boolean $txRkwregistrationIsAnonymous
      * @return void

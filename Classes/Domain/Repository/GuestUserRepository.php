@@ -1,6 +1,9 @@
 <?php
 
-namespace RKW\RkwRegistration\ViewHelpers;
+namespace RKW\RkwRegistration\Domain\Repository;
+
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,9 +18,7 @@ namespace RKW\RkwRegistration\ViewHelpers;
  */
 
 /**
- * IsUserAnonymousViewHelper
- *
- * @deprecated Will be removed soon. Use the InstanceOfViewHelper instead
+ * FrontendUserRepository
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
@@ -25,23 +26,7 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class IsUserAnonymousViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class GuestUserRepository extends FrontendUserRepository
 {
-    /**
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @return boolean
-     */
-    public function render($frontendUser)
-    {
-
-        if (!$frontendUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser) {
-            return false;
-            //===
-        }
-
-        return $frontendUser->getTxRkwregistrationIsAnonymous();
-        //===
-
-    }
 
 }

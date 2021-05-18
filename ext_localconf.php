@@ -40,14 +40,14 @@ call_user_func(
             'RKW.' . $extKey,
             'AuthInternal',
             array(
-                'Auth' => 'index, login, logout, logoutExternal, loginAnonymous, loginHintAnonymous',
+                'Auth' => 'index, login, logoutExternal, loginAnonymous, loginHintAnonymous',
                 'Password' => 'new, create',
                 //'Registration' => 'new, create, optIn, index',
                 //'Password' => 'new, create',
             ),
             // non-cacheable actions
             array(
-                'Auth' => 'index, login, logout, logoutExternal, loginAnonymous, loginHintAnonymous',
+                'Auth' => 'index, login, logoutExternal, loginAnonymous, loginHintAnonymous',
                 'Password' => 'new, create',
                 //'Registration' => 'new, create, optIn, index',
                 //'Password' => 'new, create',
@@ -59,10 +59,12 @@ call_user_func(
             'AuthExternal',
             array(
                 'Auth' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous',
+                'AuthGuest' => 'login, loginHint',
             ),
             // non-cacheable actions
             array(
                 'Auth' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous',
+                'AuthGuest' => 'login, loginHint',
             )
         );
 

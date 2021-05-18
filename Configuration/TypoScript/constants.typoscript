@@ -79,8 +79,8 @@ plugin.tx_rkwregistration {
 			# cat=plugin.tx_rkwregistration//a; type=string; label=Groups a user is added to when registering
 			groupsOnRegister =
 
-			# cat=plugin.tx_rkwregistration//a; type=string; label=Groups a user is added to when registering anonymous
-			groupsOnRegisterAnonymous =
+			# cat=plugin.tx_rkwregistration//a; type=string; label=Groups a user is added to when registering as guest
+			groupsOnRegisterGuest =
 
 			# cat=plugin.tx_rkwregistration//a; type=string; label=Language-key on registering (default:default)
 			languageKeyOnRegister =
@@ -94,8 +94,11 @@ plugin.tx_rkwregistration {
             # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered users (default = 0 = unlimited)
             lifetime =
 
-            # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered anonymous users (default = 7776000 = 90 days)
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=DEPRECATED! Lifetime of registered anonymous users (default = 7776000 = 90 days)
             lifetimeAnonymous = 7776000
+
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered guest users (default = 7776000 = 90 days)
+            lifetimeGuest = 7776000
 
             # cat=plugin.tx_rkwregistration//a; type=string; label=Login text
             loginText = Logged in

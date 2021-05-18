@@ -15,33 +15,27 @@ namespace RKW\RkwRegistration\ViewHelpers;
  */
 
 /**
- * IsUserAnonymousViewHelper
- *
- * @deprecated Will be removed soon. Use the InstanceOfViewHelper instead
+ * InstanceOfViewHelper
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
- * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class IsUserAnonymousViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class InstanceOfViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 {
     /**
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $entity
+     * @param string $type
      * @return boolean
      */
-    public function render($frontendUser)
+    public function render($entity, $type)
     {
-
-        if (!$frontendUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser) {
-            return false;
-            //===
+        if ($entity instanceof $type) {
+            return true;
         }
 
-        return $frontendUser->getTxRkwregistrationIsAnonymous();
-        //===
-
+        return false;
     }
 
 }

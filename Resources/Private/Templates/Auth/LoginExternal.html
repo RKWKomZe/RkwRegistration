@@ -28,7 +28,7 @@
 
                     <div class="alternatives__item">
 
-                        <f:if condition="<vh:isUserAnonymous frontendUser='{frontendUser}'/>">
+                        <f:if condition="<vh:instanceOf entity='{frontendUser}' type='\RKW\RkwRegistration\Domain\Model\GuestUser' />">
                             <f:then>
                                 <f:link.action
                                     class="btn btn--secondary"
@@ -57,7 +57,7 @@
 
                 <f:comment><!-- NOT AUTHENTICATED AREA --></f:comment>
 
-                <f:if condition="{settings.users.allowAnonymousLogin}">
+                <f:if condition="{settings.users.allowGuestLogin}">
                     <f:then>
 
                         <!-- with anonymous login -->
@@ -75,7 +75,8 @@
                                 <h3 class="h5"><f:translate key="templates_registration_loginShowExternal.anonymousLabel" /></h3>
                                 <f:link.action
                                     class="btn btn--secondary"
-                                    action="loginAnonymous"
+                                    action="login"
+                                    controller="AuthGuest"
                                 >
                                     <f:translate key="templates_registration_loginShowExternal.anonymous" />
                                 </f:link.action>

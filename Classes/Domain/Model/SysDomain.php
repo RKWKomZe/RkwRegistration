@@ -68,11 +68,11 @@ class SysDomain extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $txRkwregistrationPageLogout = null;
 
     /**
-     * txRkwregistrationPageLoginAnonymous
+     * txRkwregistrationPageLoginGuest
      *
      * @var \RKW\RkwRegistration\Domain\Model\Pages
      */
-    protected $txRkwregistrationPageLoginAnonymous = null;
+    protected $txRkwregistrationPageLoginGuest = null;
 
     /**
      * @return int
@@ -173,17 +173,17 @@ class SysDomain extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @return Pages
      */
-    public function getTxRkwregistrationPageLoginAnonymous()
+    public function getTxRkwregistrationPageLoginGuest()
     {
-        return $this->txRkwregistrationPageLoginAnonymous;
+        return $this->txRkwregistrationPageLoginGuest;
     }
 
     /**
-     * @param Pages $txRkwregistrationPageLoginAnonymous
+     * @param Pages $txRkwregistrationPageLoginGuest
      */
-    public function setTxRkwregistrationPageLoginAnonymous(Pages $txRkwregistrationPageLoginAnonymous): void
+    public function setTxRkwregistrationPageLoginGuest(Pages $txRkwregistrationPageLoginGuest): void
     {
-        $this->txRkwregistrationPageLoginAnonymous = $txRkwregistrationPageLoginAnonymous;
+        $this->txRkwregistrationPageLoginGuest = $txRkwregistrationPageLoginGuest;
     }
 
 }

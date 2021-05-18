@@ -63,47 +63,7 @@ class AuthController extends AbstractController
      */
     public function indexAction($logoutMessage = false)
     {
-
-        // @toDo: Folgender Block zunächst auskommentiert. Hat diese nach der Umstellung noch einen Nutzen? Inhalt bzw. Nachricht
-        // des Blocks ist der bereits erfolgte Login in eine andere RKW-Instanz:
-        // -> Sie wurden via <i>%s</i> eingeloggt. Um den Login über eine andere Seite des RKW Netzwerks zu nutzen, loggen Sie sich bitte zunächst aus und rufen Sie anschließend den Login-Bereich über die gewünschte Seite des RKW Netzwerks erneut auf.
-
-
-        // not for already logged in users!
-        /*
-        if ($this->getFrontendUserId()) {
-
-            $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
-            if (
-                ($xdlCookieDomain = $redirectLogin->getXdlDomain())
-                && ($this->request->hasArgument('xdlUrl'))
-                && ($xdlParamUrl = $this->request->getArgument('xdlUrl'))
-                && ($xdlCookieDomain != $redirectLogin->getDomain($xdlParamUrl))
-            ) {
-
-                // show link with token to anonymous user
-                $this->addFlashMessage(
-                    \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                        'registrationController.message.xdl_login_hint',
-                        $this->extensionName,
-                        array(
-                            $xdlCookieDomain,
-                        )
-                    )
-                );
-            }
-
-            if ($this->settings['users']['welcomePid']) {
-                $this->redirect('index', 'Registration', null, null, $this->settings['users']['welcomePid']);
-            }
-
-            $this->redirect('index', 'Registration');
-            //===
-        }
-        */
-
-
-        // A Service: Set a register link for the user
+        // A Service: Set a register link for the not logged in user
         if (
             ($this->controllerContext->getFlashMessageQueue()->isEmpty())
             && (!$logoutMessage)
@@ -164,54 +124,19 @@ class AuthController extends AbstractController
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function loginExternalAction($logoutMessage = false)
     {
-        // redirect logged-in users to welcome pages
-        if ($frontendUser = $this->getFrontendUserAnonymous()) {
-
-            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-
-            /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
-            $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
-
-            // anonymous users
-            if (
-                ($frontendUser->getTxRkwregistrationIsAnonymous())
-                && ($this->settings['users']['anonymousRedirectPid'])
-                && (intval($this->settings['users']['anonymousRedirectPid']) != intval($GLOBALS['TSFE']->id))
-
-            ) {
-
-                $redirectUrl = $uriBuilder->reset()
-                    ->setTargetPageUid(intval($this->settings['users']['anonymousRedirectPid']))
-                    ->setCreateAbsoluteUri(true)
-                    ->setLinkAccessRestrictedPages(true)
-                    ->setUseCacheHash(false)
-                    ->build();
-
-                $this->redirectToUri($redirectUrl);
-
-                // normal users
-            } else {
-                if (
-                    ($this->settings['users']['doXdl'])
-                    && ($this->settings['users']['redirectPidAfterXdlLogin'])
-                    && (intval($this->settings['users']['redirectPidAfterXdlLogin']) != intval($GLOBALS['TSFE']->id))
-                ) {
-
-                    $redirectUrl = $uriBuilder->reset()
-                        ->setTargetPageUid(intval($this->settings['users']['redirectPidAfterXdlLogin']))
-                        ->setCreateAbsoluteUri(true)
-                        ->setLinkAccessRestrictedPages(true)
-                        ->setUseCacheHash(false)
-                        ->build();
-
-                    $this->redirectToUri($redirectUrl);
-                }
-            }
+        // if user is a GUEST, make a redirect
+        /*
+        if (
+            $this->getFrontendUser() instanceof \RKW\RkwRegistration\Domain\Model\GuestUser
+            && RedirectUtility::getGuestRedirectUrl()
+        ) {
+            $this->redirectToUri(RedirectUtility::getGuestRedirectUrl());
         }
+        */
 
         // If set: Show logout message
         if ($logoutMessage) {
@@ -224,14 +149,22 @@ class AuthController extends AbstractController
             // Else: show welcome message for normal FE-Users
             if ($frontendUser = $this->getFrontendUser()) {
 
-                $this->addFlashMessage(
-                    \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                        'registrationController.message.xdl_login_welcome',
-                        $this->extensionName,
-                        array($frontendUser->getUsername())
-                    )
-                );
-
+                if ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\GuestUser) {
+                    $this->addFlashMessage(
+                        \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                            'authController.message.guest_login_welcome',
+                            $this->extensionName
+                        )
+                    );
+                } else {
+                    $this->addFlashMessage(
+                        \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                            'authController.message.login_welcome',
+                            $this->extensionName,
+                            array($frontendUser->getUsername())
+                        )
+                    );
+                }
             }
         }
 
@@ -240,7 +173,7 @@ class AuthController extends AbstractController
               //  'linkParams'       => $linkParams,
                // 'linkTargetLogin'  => $linkTargetLogin,
                // 'linkTargetLogout' => $linkTargetLogout,
-                'frontendUser'     => $this->getFrontendUserAnonymous(),
+                'frontendUser'     => $this->getFrontendUser(),
                 //'myRkwSysDomain'   => $this->sysDomainRepository->findByUid(intval($this->settings['users']['myRkwSysDomain']))
             )
         );
@@ -249,6 +182,8 @@ class AuthController extends AbstractController
 
     /**
      * action loginAnonymous
+     *
+     * @deprecated This function is deprecated and will be removed soon. Use AuthGuestController->loginAction instead.
      *
      * @return void
      * @throws \RKW\RkwRegistration\Exception
@@ -270,6 +205,8 @@ class AuthController extends AbstractController
                 ($this->request->hasArgument('token'))
                 && ($token = $this->request->getArgument('token'))
             ) {
+
+                // ! RE-LOGIN OF ANONYMOUS USER !
 
                 // find anonymous user by token and login
                 if ($anonymousUser = $authentication->validateAnonymousUser($token)) {
@@ -320,6 +257,8 @@ class AuthController extends AbstractController
 
             } else {
 
+                // ! CREATE NEW ANONYMOUS USER !
+
                 /** @var \RKW\RkwRegistration\Service\RegistrationService $registration */
                 $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
 
@@ -347,6 +286,8 @@ class AuthController extends AbstractController
 
     /**
      * action loginHintAnonymous
+     *
+     * @deprecated This function is deprecated and will be removed soon. Use AuthGuestController->loginHintAction instead.
      *
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException

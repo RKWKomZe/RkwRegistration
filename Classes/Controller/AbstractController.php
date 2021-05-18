@@ -15,6 +15,7 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
@@ -50,6 +51,15 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      * @inject
      */
     protected $frontendUserRepository;
+
+
+    /**
+     * GuestUserRepository
+     *
+     * @var \RKW\RkwRegistration\Domain\Repository\GuestUserRepository
+     * @inject
+     */
+    protected $guestUserRepository;
 
 
     /**
@@ -117,6 +127,8 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
     /**
      * Id of logged User
      *
+     * @deprecated Will be removed soon. Use FrontendUserSessionUtility::getFrontendUserId() instead
+     *
      * @return integer|NULL
      */
     protected function getFrontendUserId()
@@ -140,16 +152,23 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
     /**
      * Returns current logged in user object
      *
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|NULL
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|\RKW\RkwRegistration\Domain\Model\GuestUser|NULL
      */
     protected function getFrontendUser()
     {
 
         if (!$this->frontendUser) {
 
-            $frontendUser = $this->frontendUserRepository->findByUidNoAnonymous($this->getFrontendUserId());
-            if ($frontendUser instanceof \TYPO3\CMS\Extbase\Domain\Model\FrontendUser) {
-                $this->frontendUser = $frontendUser;
+            // Guest user?
+            $guestUser = $this->guestUserRepository->findByUid(FrontendUserSessionUtility::getFrontendUserId());
+            if ($guestUser instanceof \RKW\RkwRegistration\Domain\Model\GuestUser) {
+                $this->frontendUser = $guestUser;
+            } else {
+                // Or standard user?
+                $frontendUser = $this->frontendUserRepository->findByUid(FrontendUserSessionUtility::getFrontendUserId());
+                if ($frontendUser instanceof \TYPO3\CMS\Extbase\Domain\Model\FrontendUser) {
+                    $this->frontendUser = $frontendUser;
+                }
             }
         }
 
@@ -160,6 +179,8 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
     /**
      * Returns current logged in user object
      *
+     * @deprecated Will be removed soon. Use AbstractController::getFrontendUser() instead and check with instanceof \RKW\RkwRegistration\Domain\Model\GuestUser
+     *
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|NULL
      */
     protected function getFrontendUserAnonymous()
@@ -167,7 +188,7 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
 
         if (!$this->frontendUser) {
 
-            $frontendUser = $this->frontendUserRepository->findByUid($this->getFrontendUserId());
+            $frontendUser = $this->frontendUserRepository->findByUid(FrontendUserSessionUtility::getFrontendUserId());
             if ($frontendUser instanceof \TYPO3\CMS\Extbase\Domain\Model\FrontendUser) {
                 $this->frontendUser = $frontendUser;
             }

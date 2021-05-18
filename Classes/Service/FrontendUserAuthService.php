@@ -32,11 +32,6 @@ use \TYPO3\CMS\Core\Database\Connection;
 class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationService
 {
     /**
-     * 200 - authenticated and no more checking needed
-     */
-    const STATUS_AUTHENTICATION_SUCCESS_BREAK = 200;
-
-    /**
      * 0 - this service was the right one to authenticate the user but it failed
      */
     const STATUS_AUTHENTICATION_FAILURE_BREAK = 0;
@@ -45,6 +40,19 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
      * 100 - just go on. User is not authenticated but there's still no reason to stop
      */
     const STATUS_AUTHENTICATION_FAILURE_CONTINUE = 100;
+
+    /**
+     * 200 - authenticated and no more checking needed
+     */
+    const STATUS_AUTHENTICATION_SUCCESS_BREAK = 200;
+
+    /**
+     * Length of token for guest users
+     *
+     * @const integer
+     * @see \RKW\RkwRegistration\Service\RegistrationService::GUEST_TOKEN_LENGTH
+     */
+    const GUEST_TOKEN_LENGTH = 20;
 
     /**
      * FrontendUserRepository
@@ -202,6 +210,49 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
         $this->login['status'] = $status;
         $this->login['uname'] = $uname;
         $this->login['uident'] = $uident;
+    }
+
+
+
+    /**
+     * Checks the given token of an guest user
+     *
+     * @param string $token
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser| boolean
+     */
+    public function authGuest($token)
+    {
+
+        /** @var \RKW\RkwRegistration\Domain\Repository\GuestUserRepository $frontendUserRepository */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $guestUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\GuestUserRepository');
+
+        // check if given token exists and has the expected length!
+
+        if (
+            (strlen($token) == self::GUEST_TOKEN_LENGTH)
+            && ($guestUser = $guestUserRepository->findByUsername($token)->getFirst())
+        ) {
+            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully authenticated guest user with token "%s".', trim($token)));
+
+            // @toDo: A thought: Maybe give here also back the STATUS_AUTHENTICATION_SUCCESS_BREAK value
+            // Impact: A further repository call inside the called action to get the associated user
+            return $guestUser;
+        } else {
+
+            // Fallback: THIS AREA WILL BE REMOVED SOON!
+            // with @deprecated function $frontendUserRepository->findOneByToken($token). Is just a fallback vor already registered anonymous user
+            if (
+                (strlen($token) == self::GUEST_TOKEN_LENGTH)
+                && ($frontendUser = $frontendUserRepository->findOneByToken($token))
+            ) {
+                return $frontendUser;
+            }
+        }
+
+        $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Guest user with token "%s" not found.', trim($token)));
+
+        return false;
     }
 
 

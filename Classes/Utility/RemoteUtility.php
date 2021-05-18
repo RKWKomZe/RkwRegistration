@@ -1,6 +1,7 @@
 <?php
 
-namespace RKW\RkwRegistration\ViewHelpers;
+namespace RKW\RkwRegistration\Utility;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,33 +16,33 @@ namespace RKW\RkwRegistration\ViewHelpers;
  */
 
 /**
- * IsUserAnonymousViewHelper
- *
- * @deprecated Will be removed soon. Use the InstanceOfViewHelper instead
+ * Class RemoteUtility
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
- * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class IsUserAnonymousViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class RemoteUtility
 {
-    /**
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @return boolean
-     */
-    public function render($frontendUser)
-    {
 
-        if (!$frontendUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser) {
-            return false;
-            //===
+    /**
+     * Returns the users ip
+     *
+     * @return string
+     */
+    public static function getIp()
+    {
+        // set users server ip-address
+        $remoteAddr = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+        if ($_SERVER['HTTP_X_FORWARDED_FOR']) {
+            $ips = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            if ($ips[0]) {
+                $remoteAddr = filter_var($ips[0], FILTER_VALIDATE_IP);
+            }
         }
 
-        return $frontendUser->getTxRkwregistrationIsAnonymous();
-        //===
-
+        return $remoteAddr;
     }
 
 }

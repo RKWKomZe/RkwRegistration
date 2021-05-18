@@ -6,6 +6,8 @@ use \RKW\RkwRegistration\Service\AuthService as Authentication;
 use \RKW\RkwBasics\Utility\GeneralUtility;
 use \RKW\RkwRegistration\Utility\PasswordUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use \RKW\RkwRegistration\Utility\RemoteUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -85,12 +87,12 @@ class RegistrationService implements \TYPO3\CMS\Core\SingletonInterface
 
 
     /**
-     *  Length of token for anonymous users
+     *  Length of token for guest users
      *
      * @const integer
-     * @see \RKW\RkwRegistration\Service\AuthService::ANONYMOUS_TOKEN_LENGTH
+     * @see \RKW\RkwRegistration\Service\AuthService::GUEST_TOKEN_LENGTH
      */
-    const ANONYMOUS_TOKEN_LENGTH = 20;
+    const GUEST_TOKEN_LENGTH = 20;
 
     /**
      * RegistrationRepository
@@ -471,74 +473,62 @@ class RegistrationService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Creates a new anonymous FE-user
      *
+     * @deprecated This function is deprecated and will be removed soon. Use registerGuest() instead.
+     *
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function registerAnonymous()
     {
+        return $this->registerGuest();
+    }
 
+
+    /**
+     * Creates a new guest FE-user
+     *
+     * @param int $lifetime Individual lifetime of the guest user. For default value see settings.users.lifetimeGuest
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function registerGuest($lifetime = 0)
+    {
         /** @var \RKW\RkwWepstra\Domain\Repository\FrontendUserRepository $frontendUserRepository */
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $frontendUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\FrontendUserRepository');
+        $guestUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\GuestUserRepository');
 
         // get settings
         $settings = $this->getSettings();
 
-        // create a token for anonymous login and check if this token already exists
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
-        do {
-            $token = substr(str_shuffle($characters), 0, self::ANONYMOUS_TOKEN_LENGTH);
-        } while (count($frontendUserRepository->findByUsername($token)));
-
         // now that we know that the token is non-existent we create a new user from it!
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $anonymousUser */
-        $anonymousUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\FrontendUser');
+        /** @var \RKW\RkwRegistration\Domain\Model\GuestUser $guestUser */
+        $guestUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\GuestUser');
 
         // for session identification set username (token == username)
-        $anonymousUser->setUsername($token);
-        $anonymousUser->setDisable(0);
-        $anonymousUser->setTxRkwregistrationIsAnonymous(true);
-
-        // set pid and crdate
-        $anonymousUser->setPid(intval($settings['users']['storagePid']));
-        $anonymousUser->setCrdate(time());
-
-        // set lifetime
-        if (intval($settings['users']['lifetimeAnonymous'])) {
-            $anonymousUser->setEndtime(time() + intval($settings['users']['lifetimeAnonymous']));
-        }
-
-        // set languageKey
-        if ($settings['users']['languageKeyOnRegister']) {
-            $anonymousUser->setTxRkwregistrationLanguageKey($settings['users']['languageKeyOnRegister']);
-        }
-
-        // set users server ip-address
-        $remoteAddr = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
-        if ($_SERVER['HTTP_X_FORWARDED_FOR']) {
-            $ips = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-            if ($ips[0]) {
-                $remoteAddr = filter_var($ips[0], FILTER_VALIDATE_IP);
-            }
-        }
-        $anonymousUser->setTxRkwregistrationRegisterRemoteIp($remoteAddr);
+        $guestUser->setUsername($this->createGuestToken());
+        $guestUser->setDisable(0);
+        $guestUser->setPid(intval($settings['users']['storagePid']));
+        $guestUser->setCrdate(time());
+        $guestUser->setTxRkwregistrationRegisterRemoteIp(RemoteUtility::getIp());
+        $guestUser->setEndtime($this->getGuestLifetime());
+        $guestUser->setTxRkwregistrationLanguageKey($settings['users']['languageKeyOnRegister'] ? $settings['users']['languageKeyOnRegister'] : '');
 
         // set password
-        PasswordUtility::generatePassword($anonymousUser);
+        PasswordUtility::generatePassword($guestUser);
 
         // set groups - this is needed - otherwise the user won't be able to login at all!
-        $this->setUserGroupsOnRegister($anonymousUser);
+        $this->setUserGroupsOnRegister($guestUser);
 
         // add to repository
-        $frontendUserRepository->add($anonymousUser);
+        $guestUserRepository->add($guestUser);
 
         /** @var \TYPO3\CMS\Extbase\\Persistence\Generic\PersistenceManager $persistenceManager */
         $persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
         $persistenceManager->persistAll();
 
-        return $anonymousUser;
-        //===
+        return $guestUser;
     }
 
 
@@ -587,25 +577,29 @@ class RegistrationService implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function setUserGroupsOnRegister(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, $userGroups = '')
     {
-
         if (!$userGroups) {
             $settings = $this->getSettings();
-            $userGroups = $settings['users']['groupsOnRegister'];
 
-            if ($frontendUser->getTxRkwregistrationIsAnonymous()) {
-                $userGroups = $settings['users']['groupsOnRegisterAnonymous'];
+            if ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\GuestUser) {
+                $userGroups = $settings['users']['groupsOnRegisterGuest'];
+
+                if (!$settings['users']['groupsOnRegisterGuest']) {
+                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('Login for guest user "%s" failed. Reason: No groupsOnRegisterGuest is defined in TypoScript.', strtolower($frontendUser->getUsername())));
+                }
+            } else {
+                $userGroups = $settings['users']['groupsOnRegister'];
             }
         }
 
         $userGroupIds = GeneralUtility::trimExplode(',', $userGroups);
         foreach ($userGroupIds as $groupId) {
 
+            /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
             $frontendUserGroup = $this->getFrontendUserGroupRepository()->findByUid($groupId);
             if ($frontendUserGroup) {
                 $frontendUser->addUsergroup($frontendUserGroup);
             }
         }
-
     }
 
 
@@ -700,6 +694,51 @@ class RegistrationService implements \TYPO3\CMS\Core\SingletonInterface
         return false;
         //===
     }
+
+
+    /**
+     * creates a valid token for a guest user
+     *
+     * @return string
+     */
+    protected function createGuestToken()
+    {
+        /** @var \RKW\RkwWepstra\Domain\Repository\FrontendUserRepository $guestUserRepository */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $guestUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\GuestUserRepository');
+
+        // create a token for anonymous login and check if this token already exists
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+        do {
+            $token = substr(str_shuffle($characters), 0, self::GUEST_TOKEN_LENGTH);
+        } while (count($guestUserRepository->findByUsername($token)));
+
+        return $token;
+    }
+
+
+    /**
+     * returns the lifetime of the guest user
+     *
+     * @return string
+     */
+    protected function getGuestLifetime($lifetime = 0)
+    {
+        // get settings
+        $settings = $this->getSettings();
+
+        // set lifetime
+        if (
+            intval($settings['users']['lifetimeGuest'])
+            || intval($lifetime)
+        ) {
+            return time() + ($lifetime ? $lifetime : intval($settings['users']['lifetimeGuest']));
+        }
+
+        // default would return 0 - means: there is no endtime
+        return $lifetime;
+    }
+
 
 
     /**

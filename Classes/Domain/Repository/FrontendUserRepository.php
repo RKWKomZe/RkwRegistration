@@ -158,6 +158,8 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Finds anonymous users
      *
+     * @deprecated Will be removed soon. Simply use magic function $guestUserRepository->findByUsername($token) instead
+     *
      * @param string $username
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser
      */

@@ -462,7 +462,7 @@
                 <source>Anonymous login was not possible. If you are already logged in, please log out before using an anonymous login token. </source>
                 <target>Der anonyme Login war nicht möglich. Wenn Sie bereits eingeloggt sind, loggen Sie sich bitte aus, bevor Sie einen Login-Link verwenden.</target>
             </trans-unit>
-            <trans-unit id="registrationController.message.anonymous_link">
+            <trans-unit id="registrationController.message.guest_link">
                 <source><![CDATA[Copy and save the following link. It is valid for %s days.<br><br> %s]]></source>
                 <target><![CDATA[Kopieren Sie den nachstehenden Link und heben Sie ihn gut auf. Nur mit diesem Link können Sie sich zu einem späteren Zeitpunkt erneut einloggen. Der Link ist %s Tage gültig.<br><br> %s]]></target>
             </trans-unit>
@@ -470,12 +470,17 @@
                 <source><![CDATA[You have been logged in via <i>%s</i>. To login into another page of our network, please logout first.]]></source>
                 <target><![CDATA[Sie wurden via <i>%s</i> eingeloggt. Um den Login über eine andere Seite des RKW Netzwerks zu nutzen, loggen Sie sich bitte zunächst aus und rufen Sie anschließend den Login-Bereich über die gewünschte Seite des RKW Netzwerks erneut auf.]]></target>
             </trans-unit>
-            <trans-unit id="registrationController.message.xdl_login_welcome">
+
+
+            <!-- Auth Controller -->
+            <trans-unit id="authController.message.login_welcome">
                 <source>Welcome! You are logged in with your e-mail-address "%s".</source>
                 <target>Herzlich willkommen! Sie sind mit Ihrer E-Mailadresse "%s" angemeldet.</target>
             </trans-unit>
-
-
+            <trans-unit id="authController.message.guest_login_welcome">
+                <source>Welcome! You are logged in as guest.</source>
+                <target>Herzlich willkommen! Sie sind als Gast angemeldet.</target>
+            </trans-unit>
 
             <!-- Service Controller -->
             <trans-unit id="serviceController.message.apply_admin_request">

@@ -366,14 +366,20 @@
             <trans-unit id="registrationController.error.anonymous_login_impossible">
                 <source>Anonymous login was not possible. If you are already logged in, please log out before using an anonymous login token. </source>
             </trans-unit>
-            <trans-unit id="registrationController.message.anonymous_link">
+            <trans-unit id="registrationController.message.guest_link">
                 <source><![CDATA[Copy and save the following link. It is valid for %s days.<br><br> %s]]></source>
             </trans-unit>
             <trans-unit id="registrationController.message.xdl_login_hint">
                 <source><![CDATA[You have been logged in via <i>%s</i>. To login into another page of our network, please logout first.]]></source>
             </trans-unit>
-            <trans-unit id="registrationController.message.xdl_login_welcome">
+
+
+            <!-- Auth Controller -->
+            <trans-unit id="authController.message.login_welcome">
                 <source>Welcome! You are logged in with your e-mail-address "%s".</source>
+            </trans-unit>
+            <trans-unit id="authController.message.guest_login_welcome">
+                <source>Welcome! You are logged in as guest.</source>
             </trans-unit>
 
 
