@@ -15,6 +15,9 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+
 /**
  * Class FrontendUserController
  *
@@ -37,7 +40,6 @@ class FrontendUserController extends AbstractController
     {
         //DebuggerUtility::var_dump($this->controllerContext->getFlashMessageQueue()->getIdentifier() ); exit;
 
-
         $registeredUser = null;
         if (!$registeredUser = $this->getFrontendUser()) {
 
@@ -48,7 +50,7 @@ class FrontendUserController extends AbstractController
         }
 
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
         $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
 
@@ -81,7 +83,7 @@ class FrontendUserController extends AbstractController
 
         // all mandatory fields should be checked here.
         // therefore we can finally add the user to all relevant groups now
-        $serviceClass = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\GroupService');
+        $serviceClass = GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\GroupService');
         $serviceClass->addUserToAllGrantedGroups($frontendUser);
 
         if ($frontendUser->getTxRkwregistrationTitle()) {
@@ -90,7 +92,7 @@ class FrontendUserController extends AbstractController
 
         $this->frontendUserRepository->update($frontendUser);
         $this->addFlashMessage(
-            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+            LocalizationUtility::translate(
                 'registrationController.message.update_successfull', $this->extensionName
             )
         );
@@ -109,7 +111,6 @@ class FrontendUserController extends AbstractController
      */
     public function showAction()
     {
-
         // for logged in users only!
         $this->hasUserValidLoginRedirect();
 
@@ -143,11 +144,11 @@ class FrontendUserController extends AbstractController
         }
 
         /** @var \RKW\RkwRegistration\Service\RegistrationService $registration */
-        $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
+        $registration = GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
         $registration->delete($frontendUser);
 
         $this->addFlashMessage(
-            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+            LocalizationUtility::translate(
                 'registrationController.message.delete_successfull', $this->extensionName
             )
         );

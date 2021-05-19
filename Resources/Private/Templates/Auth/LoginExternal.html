@@ -28,26 +28,14 @@
 
                     <div class="alternatives__item">
 
-                        <f:if condition="<vh:instanceOf entity='{frontendUser}' type='\RKW\RkwRegistration\Domain\Model\GuestUser' />">
-                            <f:then>
-                                <f:link.action
-                                    class="btn btn--secondary"
-                                    action="logoutExternal"
-                                >
-                                    <f:translate key="templates_registration_loginShowExternal.logout" />
-                                </f:link.action>
-                            </f:then>
-                            <f:else>
-                                <f:link.external
-                                    class="btn btn--secondary"
-                                    uri='<vh:link.myRkwLink pageUid="{settings.users.logoutPid}" />'
-                                    target="{linkTargetLogout}"
-                                >
-                                    <f:translate key="templates_registration_loginShowExternal.logout" />
-                                </f:link.external>
+                            <f:link.external
+                                class="btn btn--secondary"
+                                uri='<vh:link.myRkwLink pageUid="{settings.users.logoutPid}" />'
+                                target="{linkTargetLogout}"
+                            >
+                                <f:translate key="templates_registration_loginShowExternal.logout" />
+                            </f:link.external>
 
-                            </f:else>
-                        </f:if>
                     </div>
                 </div>
 

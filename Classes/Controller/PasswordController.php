@@ -2,7 +2,11 @@
 
 namespace RKW\RkwRegistration\Controller;
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Utility\PasswordUtility;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -41,7 +45,6 @@ class PasswordController extends AbstractController
      */
     public function editAction()
     {
-
         // for logged in users only!
         $this->hasUserValidLoginRedirect();
 
@@ -68,8 +71,6 @@ class PasswordController extends AbstractController
      */
     public function updateAction($passwordOld, $passwordNew)
     {
-
-
         // check if user is logged in
         $frontendUser = null;
         if (!$frontendUser = $this->getFrontendUser()) {
@@ -81,11 +82,11 @@ class PasswordController extends AbstractController
 
         if (!$passwordOld) {
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.error.password_empty', $this->extensionName
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
 
             $this->redirect('editPassword');
@@ -95,20 +96,19 @@ class PasswordController extends AbstractController
         }
 
         // check if password is valid
-        /** @var \RKW\RkwRegistration\Service\AuthService $authentication */
-        $authentication = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\AuthService');
+        /** @var \RKW\RkwRegistration\Service\FrontendUserAuthService $authentication */
+        $authentication = GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\FrontendUserAuthService');
         if (
             ($username = $frontendUser->getUsername())
             && ($registeredUser = $authentication->validateUser($username, $passwordOld))
-            && ($registeredUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser)
+            && ($registeredUser instanceof FrontendUser)
         ) {
-
             // set password to the given one
             PasswordUtility::generatePassword($registeredUser, $passwordNew['first']);
             $this->frontendUserRepository->update($registeredUser);
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.message.update_password', $this->extensionName
                 )
             );
@@ -126,11 +126,11 @@ class PasswordController extends AbstractController
         }
 
         $this->addFlashMessage(
-            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+            LocalizationUtility::translate(
                 'registrationController.error.password_not_updated', $this->extensionName
             ),
             '',
-            \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+            AbstractMessage::ERROR
         );
 
         $this->redirect('editPassword');
@@ -145,7 +145,6 @@ class PasswordController extends AbstractController
      */
     public function newAction()
     {
-
         // nothing to do here
     }
 
@@ -167,11 +166,11 @@ class PasswordController extends AbstractController
 
         if (!$username) {
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.error.login_no_username', $this->extensionName
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
 
             $this->redirect('passwordForgotShow');
@@ -191,7 +190,7 @@ class PasswordController extends AbstractController
             $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_PASSWORD_RESET, array($registeredUser, $plaintextPassword));
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.message.new_password', $this->extensionName
                 )
             );
@@ -203,11 +202,11 @@ class PasswordController extends AbstractController
         }
 
         $this->addFlashMessage(
-            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+            LocalizationUtility::translate(
                 'registrationController.error.invalid_username', $this->extensionName
             ),
             '',
-            \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+            AbstractMessage::ERROR
         );
 
         $this->redirect('passwordForgotShow');

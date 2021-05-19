@@ -5,7 +5,9 @@ namespace RKW\RkwRegistration\Controller;
 use RKW\RkwRegistration\Service\AuthService as Authentication;
 use RKW\RkwRegistration\Utility\RedirectUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -31,14 +33,6 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 class AuthController extends AbstractController
 {
     /**
-     * FrontendUserRepository
-     *
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
-     * @inject
-     */
-    protected $frontendUserRepository;
-
-    /**
      * SysDomainRepository
      *
      * @var \RKW\RkwRegistration\Domain\Repository\SysDomainRepository
@@ -50,7 +44,6 @@ class AuthController extends AbstractController
      * action index
      * contains all login forms
      *
-     * @param boolean $logoutMessage
      * @return void
      * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
@@ -61,19 +54,17 @@ class AuthController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      */
-    public function indexAction($logoutMessage = false)
+    public function indexAction()
     {
         // A Service: Set a register link for the not logged in user
-        if (
-            ($this->controllerContext->getFlashMessageQueue()->isEmpty())
-            && (!$logoutMessage)
-        ) {
+        if ($this->controllerContext->getFlashMessageQueue()->isEmpty()) {
+
             // set message including link
             $registerLink = '';
             if ($this->settings['users']['registrationPid']) {
 
                 /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-                $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+                $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 
                 /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
                 $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
@@ -92,21 +83,10 @@ class AuthController extends AbstractController
             }
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.message.login_message',
                     $this->extensionName,
                     array($registerLink)
-                )
-            );
-        }
-
-
-        // If user is coming back to index from logoutAction or logoutExternalAction: Show logout message
-        if ($logoutMessage) {
-
-            $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                    'registrationController.message.logout_message', $this->extensionName
                 )
             );
         }
@@ -120,15 +100,16 @@ class AuthController extends AbstractController
     /**
      * action loginExternal
      *
-     * @param boolean $logoutMessage
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function loginExternalAction($logoutMessage = false)
+    public function loginExternalAction()
     {
+
         // if user is a GUEST, make a redirect
+        // @toDo: WHY?
         /*
         if (
             $this->getFrontendUser() instanceof \RKW\RkwRegistration\Domain\Model\GuestUser
@@ -138,35 +119,28 @@ class AuthController extends AbstractController
         }
         */
 
-        // If set: Show logout message
-        if ($logoutMessage) {
-            $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                    'registrationController.message.logout_message', $this->extensionName
-                )
-            );
-        } else {
-            // Else: show welcome message for normal FE-Users
-            if ($frontendUser = $this->getFrontendUser()) {
 
-                if ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\GuestUser) {
-                    $this->addFlashMessage(
-                        \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                            'authController.message.guest_login_welcome',
-                            $this->extensionName
-                        )
-                    );
-                } else {
-                    $this->addFlashMessage(
-                        \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                            'authController.message.login_welcome',
-                            $this->extensionName,
-                            array($frontendUser->getUsername())
-                        )
-                    );
-                }
+        // Show welcome message for normal and logged in FrontendUsers
+        if ($frontendUser = $this->getFrontendUser()) {
+
+            if ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\GuestUser) {
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'authController.message.guest_login_welcome',
+                        $this->extensionName
+                    )
+                );
+            } else {
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'authController.message.login_welcome',
+                        $this->extensionName,
+                        array($frontendUser->getUsername())
+                    )
+                );
             }
         }
+
 
         $this->view->assignMultiple(
             array(
@@ -195,10 +169,12 @@ class AuthController extends AbstractController
     public function loginAnonymousAction()
     {
 
+        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
         if (!$this->getFrontendUser()) {
 
             /** @var \RKW\RkwRegistration\Service\AuthService $authentication */
-            $authentication = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\AuthService');
+            $authentication = GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\AuthService');
 
             // check for token
             if (
@@ -216,7 +192,7 @@ class AuthController extends AbstractController
                     if ($this->settings['users']['anonymousRedirectPid']) {
 
                         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-                        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+                        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 
                         /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
                         $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
@@ -247,7 +223,7 @@ class AuthController extends AbstractController
                     FrontendUserSessionUtility::logout();
 
                     $this->addFlashMessage(
-                        \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                        LocalizationUtility::translate(
                             'registrationController.error.invalid_anonymous_token', $this->extensionName
                         ),
                         '',
@@ -260,7 +236,7 @@ class AuthController extends AbstractController
                 // ! CREATE NEW ANONYMOUS USER !
 
                 /** @var \RKW\RkwRegistration\Service\RegistrationService $registration */
-                $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
+                $registration = GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
 
                 // register anonymous user and login
                 $anonymousUser = $registration->registerAnonymous();
@@ -272,7 +248,7 @@ class AuthController extends AbstractController
         } else {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.error.anonymous_login_impossible', $this->extensionName
                 ),
                 '',
@@ -293,14 +269,15 @@ class AuthController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-
     public function loginHintAnonymousAction()
     {
+
+        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 
         if (!$this->getFrontendUserAnonymous()) {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.error.anonymous_login_impossible', $this->extensionName
                 ),
                 '',
@@ -327,7 +304,7 @@ class AuthController extends AbstractController
 
         // show link with token to anonymous user
         $this->addFlashMessage(
-            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+            LocalizationUtility::translate(
                 'registrationController.message.anonymous_link',
                 $this->extensionName,
                 array(
@@ -358,7 +335,7 @@ class AuthController extends AbstractController
     {
         if (!$username) {
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.error.login_no_username', $this->extensionName
                 ),
                 '',
@@ -369,7 +346,7 @@ class AuthController extends AbstractController
 
         if (!$password) {
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.error.login_no_password', $this->extensionName
                 ),
                 '',
@@ -379,7 +356,7 @@ class AuthController extends AbstractController
         }
 
         /** @var \RKW\RkwRegistration\Service\FrontendUserAuthService $authService */
-        $authService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\RKW\RkwRegistration\Service\FrontendUserAuthService::class);
+        $authService = GeneralUtility::makeInstance(\RKW\RkwRegistration\Service\FrontendUserAuthService::class);
         $authService->setLoginData($username, $password);
         $frontendUserArray = $authService->getUser();
         // do it: check given user data
@@ -391,7 +368,7 @@ class AuthController extends AbstractController
             && ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser)
         ) {
 
-            // ! SUCCESS !
+            // ! LOGIN SUCCESS !
 
             FrontendUserSessionUtility::login($frontendUser);
 
@@ -413,14 +390,14 @@ class AuthController extends AbstractController
             //===
         }
 
-        // ! FAIL !
+        // ! LOGIN FAILED !
         // Handle type of returned error message and send the user back where he is come from
 
         // user blocked
         if ($authService->getAuthStatusResult() == 2) {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.error.login_blocked', $this->extensionName,
                     array(($this->settings['users']['maxLoginErrors'] ? intval($this->settings['users']['maxLoginErrors']) : 10))
                 ),
@@ -433,7 +410,7 @@ class AuthController extends AbstractController
             if ($authService->getAuthStatusResult() == 1) {
 
                 $this->addFlashMessage(
-                    \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                    LocalizationUtility::translate(
                         'registrationController.error.wrong_login', $this->extensionName
                     ),
                     '',
@@ -444,7 +421,7 @@ class AuthController extends AbstractController
             } else {
 
                 $this->addFlashMessage(
-                    \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                    LocalizationUtility::translate(
                         'registrationController.error.user_not_found', $this->extensionName
                     ),
                     '',
@@ -470,6 +447,27 @@ class AuthController extends AbstractController
         // do logout here
         FrontendUserSessionUtility::logout();
 
+        // Important: This redirect is a workaround for setting the "logoutMessage" via flashMessenger
+        // Reason: Deleting the whole FeUser Session and setting a FlashMessage in one action does not work!
+        $this->redirect('logoutRedirect');
+    }
+
+
+    /**
+     * action logoutRedirect
+     *
+     * @return void
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     */
+    public function logoutRedirectAction()
+    {
+        $this->addFlashMessage(
+            LocalizationUtility::translate(
+                'registrationController.message.logout_message', $this->extensionName
+            )
+        );
+
         // 1. Redirect according to SysDomain entry
         $sysDomain = $this->sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
         if (
@@ -493,12 +491,18 @@ class AuthController extends AbstractController
      * action logoutExternal
      * Hint: primarily for anonymous users
      *
+     * @deprecated Does we really need this?!?!?!?!? Either FrontendUser and GuestUser are both FeUser. So the logoutAction should work for both
+     *
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
     public function logoutExternalAction()
     {
+
+        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
+        //var_dump("LogoutExternal here. This function is deprecated. Please use the 'logoutAction' instead"); exit;
         // redirect logged-in users to welcome pages
         if ($frontendUser = $this->getFrontendUserAnonymous()) {
 

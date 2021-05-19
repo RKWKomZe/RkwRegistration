@@ -114,7 +114,6 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
                 $requiredFields = explode(',', str_replace(' ', '', $groupMandatoryFields));
             }
 
-
             // 2. else try to get all relevant data from database and TypoScript
         } else {
 

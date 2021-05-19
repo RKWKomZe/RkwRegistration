@@ -356,7 +356,7 @@
             </trans-unit>
             <trans-unit id="registrationController.message.logout_message">
                 <source>You have been successfully logged out.</source>
-                <target>Sie wurden erfolgreich abgemeldet.</target>
+                <target>Das hat geklappt! Sie wurden erfolgreich abgemeldet.</target>
             </trans-unit>
             <trans-unit id="registrationController.message.login_message">
                 <source><![CDATA[Please login here or <a href="%s">register</a> for free.]]></source>

@@ -15,6 +15,12 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+
 /**
  * Class RegistrationController
  *
@@ -26,7 +32,6 @@ namespace RKW\RkwRegistration\Controller;
  */
 class RegistrationController extends AbstractController
 {
-
     /**
      * ServiceRepository
      *
@@ -35,7 +40,6 @@ class RegistrationController extends AbstractController
      */
     protected $serviceRepository;
 
-
     /**
      * Persistence Manager
      *
@@ -43,7 +47,6 @@ class RegistrationController extends AbstractController
      * @inject
      */
     protected $persistenceManager;
-
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
@@ -88,11 +91,6 @@ class RegistrationController extends AbstractController
 
 
 
-
-
-
-
-
     /**
      * Takes optin parameters and checks them
      *
@@ -107,19 +105,18 @@ class RegistrationController extends AbstractController
      */
     public function optInAction()
     {
-
         $tokenYes = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_yes') ? $this->request->getArgument('token_yes') : ''));
         $tokenNo = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_no') ? $this->request->getArgument('token_no') : ''));
         $userSha1 = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('user'));
 
         /** @var \RKW\RkwRegistration\Service\RegistrationService $register */
-        $register = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
+        $register = GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
         $check = $register->checkTokens($tokenYes, $tokenNo, $userSha1, $this->request);
 
         if ($check == 1) {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.message.registration_successfull', $this->extensionName
                 )
             );
@@ -128,31 +125,26 @@ class RegistrationController extends AbstractController
                 $this->redirect('index', 'Auth', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
             }
 
-
         } elseif ($check == 2) {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.message.registration_canceled', $this->extensionName
                 )
             );
 
-
         } else {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.error.registration_error', $this->extensionName
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
         }
 
-
         $this->redirect('new');
-        //====
-
     }
 
 
@@ -160,16 +152,16 @@ class RegistrationController extends AbstractController
      * action register
      * RKW own register action
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $newFrontendUser
+     * @param FrontendUser $newFrontendUser
      * @ignorevalidation $newFrontendUser
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-    public function newAction(\RKW\RkwRegistration\Domain\Model\FrontendUser $newFrontendUser = null)
+    public function newAction(FrontendUser $newFrontendUser = null)
     {
         // not for already logged in users!
-        if ($this->getFrontendUserId()) {
+        if (FrontendUserSessionUtility::getFrontendUserId()) {
 
             if ($this->settings['users']['welcomePid']) {
                 $this->redirect('index', null, null, null, $this->settings['users']['welcomePid']);
@@ -180,7 +172,7 @@ class RegistrationController extends AbstractController
         }
 
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
         $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
 
@@ -200,7 +192,7 @@ class RegistrationController extends AbstractController
      * action create
      * created a rkw user
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $newFrontendUser
+     * @param FrontendUser $newFrontendUser
      * @param integer                                        $terms
      * @param integer                                        $privacy
      * @validate $newFrontendUser \RKW\RkwRegistration\Validation\FormValidator
@@ -213,15 +205,15 @@ class RegistrationController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      */
-    public function createAction(\RKW\RkwRegistration\Domain\Model\FrontendUser $newFrontendUser, $terms, $privacy)
+    public function createAction(FrontendUser $newFrontendUser, $terms, $privacy)
     {
         if (!$terms) {
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.error.accept_terms', $this->extensionName
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
             $this->forward('new', null, null, array('newFrontendUser' => $newFrontendUser));
             //===
@@ -229,11 +221,11 @@ class RegistrationController extends AbstractController
 
         if (!$privacy) {
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.error.accept_privacy', $this->extensionName
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
             $this->forward('new', null, null, array('newFrontendUser' => $newFrontendUser));
             //===
@@ -242,11 +234,11 @@ class RegistrationController extends AbstractController
         if ($this->frontendUserRepository->findOneByUsernameInactive($newFrontendUser->getEmail())) {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.error.username_exists', $this->extensionName
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
 
             $this->forward('new', null, null, array('newFrontendUser' => $newFrontendUser));
@@ -255,11 +247,11 @@ class RegistrationController extends AbstractController
 
         // register new user
         /** @var \RKW\RkwRegistration\Service\RegistrationService $registration */
-        $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
+        $registration = GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
         $registration->register($newFrontendUser, false, null, null, $this->request);
 
         $this->addFlashMessage(
-            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+            LocalizationUtility::translate(
                 'registrationController.message.registration_watch_for_email', $this->extensionName
             )
         );

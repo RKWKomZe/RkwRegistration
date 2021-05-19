@@ -31,15 +31,6 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 class AuthGuestController extends AbstractController
 {
     /**
-     * FrontendUserRepository
-     *
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
-     * @inject
-     */
-    protected $frontendUserRepository;
-
-
-    /**
      * action login
      * if the current user is not logged in, create one. Unless a token is given, than re-login guest
      *

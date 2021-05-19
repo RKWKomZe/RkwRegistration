@@ -3,10 +3,15 @@
 namespace RKW\RkwRegistration\Service;
 
 use \RKW\RkwBasics\Utility\GeneralUtility;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use \TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use \TYPO3\CMS\Core\Database\ConnectionPool;
 use \TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Saltedpasswords\Salt\SaltFactory;
+use TYPO3\CMS\Saltedpasswords\Utility\SaltedPasswordsUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -183,7 +188,7 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
 
                 $frontendUser = $this->validateUser($this->login['uname'], $this->login['uident']);
 
-                if ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser) {
+                if ($frontendUser instanceof FrontendUser) {
                     return static::STATUS_AUTHENTICATION_SUCCESS_BREAK;
                 } else {
                     return static::STATUS_AUTHENTICATION_FAILURE_BREAK;
@@ -218,7 +223,7 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
      * Checks the given token of an guest user
      *
      * @param string $token
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser| boolean
+     * @return FrontendUser| boolean
      */
     public function authGuest($token)
     {
@@ -228,12 +233,11 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
         $guestUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\GuestUserRepository');
 
         // check if given token exists and has the expected length!
-
         if (
             (strlen($token) == self::GUEST_TOKEN_LENGTH)
             && ($guestUser = $guestUserRepository->findByUsername($token)->getFirst())
         ) {
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully authenticated guest user with token "%s".', trim($token)));
+            $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully authenticated guest user with token "%s".', trim($token)));
 
             // @toDo: A thought: Maybe give here also back the STATUS_AUTHENTICATION_SUCCESS_BREAK value
             // Impact: A further repository call inside the called action to get the associated user
@@ -250,7 +254,7 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
             }
         }
 
-        $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Guest user with token "%s" not found.', trim($token)));
+        $this->getLogger()->log(LogLevel::WARNING, sprintf('Guest user with token "%s" not found.', trim($token)));
 
         return false;
     }
@@ -262,26 +266,26 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
      *
      * @param string $username
      * @param string $password
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser | integer
+     * @return FrontendUser | integer
      * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    protected function validateUser($username, $password)
+    public function validateUser($username, $password)
     {
 
         $settings = $this->getSettings();
         $this->authStatusResult = 1;
 
         if (!$username) {
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('No valid username given.'));
+            $this->getLogger()->log(LogLevel::ERROR, sprintf('No valid username given.'));
             throw new \RKW\RkwRegistration\Exception('No valid username given.', 1435035135);
             //===
         }
 
         if (!$password) {
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('No valid password given.'));
+            $this->getLogger()->log(LogLevel::ERROR, sprintf('No valid password given.'));
             throw new \RKW\RkwRegistration\Exception('No valid password given.', 1435035166);
             //===
         }
@@ -289,17 +293,17 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
 
         if (
             ($user = $this->getFrontendUserRepository()->findOneByUsername(strtolower(trim($username))))
-            && ($user instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser)
+            && ($user instanceof FrontendUser)
             && ($user->getPassword())
         ) {
 
             // check for salted passwords
             if (
-                (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('saltedpasswords'))
-                && (\TYPO3\CMS\Saltedpasswords\Utility\SaltedPasswordsUtility::isUsageEnabled('FE'))
+                (ExtensionManagementUtility::isLoaded('saltedpasswords'))
+                && (SaltedPasswordsUtility::isUsageEnabled('FE'))
             ) {
 
-                $objSalt = \TYPO3\CMS\Saltedpasswords\Salt\SaltFactory::getSaltingInstance($user->getPassword());
+                $objSalt = SaltFactory::getSaltingInstance($user->getPassword());
                 if (is_object($objSalt)) {
 
                     if ($objSalt->checkPassword($password, $user->getPassword())) {
@@ -307,7 +311,7 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
                         $user->setTxRkwregistrationLoginErrorCount(0);
                         $this->getFrontendUserRepository()->update($user);
 
-                        $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully authentificated user "%s" using a salted password.', strtolower(trim($username))));
+                        $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully authentificated user "%s" using a salted password.', strtolower(trim($username))));
 
                         return $user;
                         //===
@@ -322,7 +326,7 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
                     $user->setTxRkwregistrationLoginErrorCount(0);
                     $this->getFrontendUserRepository()->update($user);
 
-                    $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully authenticated user "%s" using a plaintext password.', strtolower(trim($username))));
+                    $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully authenticated user "%s" using a plaintext password.', strtolower(trim($username))));
 
                     return $user;
                     //===
@@ -342,16 +346,16 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
             if ($user->getTxRkwregistrationLoginErrorCount() >= $maxLoginErrors) {
                 $user->setDisable(1);
                 $this->authStatusResult = 2;
-                $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Disabled user "%s", because of too many authentication failures.', strtolower(trim($username))));
+                $this->getLogger()->log(LogLevel::WARNING, sprintf('Disabled user "%s", because of too many authentication failures.', strtolower(trim($username))));
             }
 
             $this->getFrontendUserRepository()->update($user);
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Authentication failed for user "%s".', strtolower(trim($username))));
+            $this->getLogger()->log(LogLevel::WARNING, sprintf('Authentication failed for user "%s".', strtolower(trim($username))));
 
             return $this->authStatusResult;
         }
 
-        $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('User "%s" not found.', strtolower(trim($username))));
+        $this->getLogger()->log(LogLevel::WARNING, sprintf('User "%s" not found.', strtolower(trim($username))));
         $this->authStatusResult = 0;
         return $this->authStatusResult;
     }

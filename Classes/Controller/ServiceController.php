@@ -15,7 +15,10 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * ServiceController
@@ -135,10 +138,10 @@ class ServiceController extends AbstractController
     /**
      * action show
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup
+     * @param FrontendUserGroup $frontendUserGroup
      * @return void
      */
-    public function showAction(\RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup)
+    public function showAction(FrontendUserGroup $frontendUserGroup)
     {
 
         // for logged in users only!
@@ -159,7 +162,7 @@ class ServiceController extends AbstractController
      * for the users is directly released and the user as userGroup added
      * Otherwise he has wait for admin grant
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup
+     * @param FrontendUserGroup $frontendUserGroup
      * @return void
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
@@ -168,7 +171,7 @@ class ServiceController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      */
-    public function createAction(\RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup)
+    public function createAction(FrontendUserGroup $frontendUserGroup)
     {
 
         // for logged in users only!
@@ -207,7 +210,7 @@ class ServiceController extends AbstractController
                 }
 
                 $this->addFlashMessage(
-                    \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                    LocalizationUtility::translate(
                         'serviceController.message.apply_admin_request', 'rkw_registration'
                     )
                 );
@@ -224,7 +227,7 @@ class ServiceController extends AbstractController
         $this->frontendUserRepository->update($frontendUser);
 
         $this->addFlashMessage(
-            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+            LocalizationUtility::translate(
                 'serviceController.message.apply_successfull', 'rkw_registration'
             )
         );
@@ -253,7 +256,7 @@ class ServiceController extends AbstractController
         if ($check == 1) {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'serviceController.message.service_optin_successfull', 'rkw_registration'
                 )
             );
@@ -261,7 +264,7 @@ class ServiceController extends AbstractController
         } elseif ($check == 2) {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'serviceController.message.service_optin_canceled', 'rkw_registration'
                 )
             );
@@ -270,11 +273,11 @@ class ServiceController extends AbstractController
         } else {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'serviceController.error.service_optin_error', 'rkw_registration'
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
         }
 
@@ -284,7 +287,7 @@ class ServiceController extends AbstractController
     /**
      * action delete
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup
+     * @param FrontendUserGroup $frontendUserGroup
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
@@ -293,7 +296,7 @@ class ServiceController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      */
-    public function deleteAction(\RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup)
+    public function deleteAction(FrontendUserGroup $frontendUserGroup)
     {
 
         // for logged in users only!
@@ -308,7 +311,7 @@ class ServiceController extends AbstractController
 
 
         $this->addFlashMessage(
-            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+            LocalizationUtility::translate(
                 'serviceController.message.service_delete', 'rkw_registration'
             )
         );

@@ -33,6 +33,9 @@ class GetAllFlashMessageIdentifierViewHelper extends \TYPO3\CMS\Fluid\Core\ViewH
 
 
     /**
+     * Maybe also an option: https://stackoverflow.com/questions/40194151/how-do-i-show-flash-messages-from-a-different-extension-plugin
+     *
+     *
      * Returns flashMessage identifier for every plugin with scheme extbase.flashmessages.tx_rkwregistration_XXX
      *
      * Explanation: FlashMessages are working always for one closed plugin. If we're hopping between several plugins, the flash
@@ -53,7 +56,6 @@ class GetAllFlashMessageIdentifierViewHelper extends \TYPO3\CMS\Fluid\Core\ViewH
         }
 
         return $pluginList;
-        //===
     }
 
 
@@ -67,7 +69,6 @@ class GetAllFlashMessageIdentifierViewHelper extends \TYPO3\CMS\Fluid\Core\ViewH
     protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT)
     {
         return GeneralUtility::getTyposcriptConfiguration('Rkwregistration', $which);
-        //===
     }
 
 

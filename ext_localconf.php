@@ -72,11 +72,11 @@ call_user_func(
             'RKW.' . $extKey,
             'LogoutInternal',
             array(
-                'Auth' => 'logout',
+                'Auth' => 'logout, logoutRedirect',
             ),
             // non-cacheable actions
             array(
-                'Auth' => 'logout',
+                'Auth' => 'logout, logoutRedirect',
             )
         );
 
