@@ -98,18 +98,6 @@ class FrontendUserSessionUtility
 
 
     /**
-     * Returns logger instance
-     *
-     * @return \TYPO3\CMS\Core\Log\Logger
-     */
-    public static function getLogger()
-    {
-        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-    }
-
-
-
-    /**
      * Checks if user is logged in
      *
      * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser
@@ -154,6 +142,18 @@ class FrontendUserSessionUtility
 
         return null;
         //===
+    }
+
+
+
+    /**
+     * Returns logger instance
+     *
+     * @return \TYPO3\CMS\Core\Log\Logger
+     */
+    public static function getLogger()
+    {
+        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
     }
 
 }
