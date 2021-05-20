@@ -90,6 +90,13 @@ class RegistrationService implements \TYPO3\CMS\Core\SingletonInterface
      */
     const SIGNAL_AFTER_DELETING_USER = 'afterDeletingUser';
 
+    /**
+     * Signal name for use in ext_localconf.php
+     *
+     * @const string
+     */
+    const SIGNAL_AFTER_REGISTER_GUEST = 'afterRegisterGuest';
+
 
     /**
      *  Length of token for guest users
@@ -494,11 +501,12 @@ class RegistrationService implements \TYPO3\CMS\Core\SingletonInterface
      * Creates a new guest FE-user
      *
      * @param int $lifetime Individual lifetime of the guest user. For default value see settings.users.lifetimeGuest
+     * @param string $category
      * @return FrontendUser
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function registerGuest($lifetime = 0)
+    public function registerGuest($lifetime = 0, $category = '')
     {
         /** @var \RKW\RkwWepstra\Domain\Repository\FrontendUserRepository $frontendUserRepository */
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
@@ -532,6 +540,8 @@ class RegistrationService implements \TYPO3\CMS\Core\SingletonInterface
         /** @var \TYPO3\CMS\Extbase\\Persistence\Generic\PersistenceManager $persistenceManager */
         $persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
         $persistenceManager->persistAll();
+
+        $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_REGISTER_GUEST . ucfirst($category), array($guestUser));
 
         return $guestUser;
     }
