@@ -60,7 +60,7 @@ class FrontendUserSessionUtility
         $GLOBALS['TSFE']->fe_user->dontSetCookie = false;
 
         $version = VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
-        if ($version >=  8000000) {
+        if ($version >= 8000000) {
 
             $GLOBALS['TSFE']->fe_user->start(); // set cookie and initiate login
             $GLOBALS['TSFE']->fe_user->createUserSession($userArray);  // create user session in database

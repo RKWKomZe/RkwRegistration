@@ -6,19 +6,11 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
 use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Domain\Model\Privacy;
-use RKW\RkwRegistration\Utility\DataProtectionUtility;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-use RKW\RkwRegistration\Domain\Repository\BackendUserRepository;
-use RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository;
-use RKW\RkwRegistration\Domain\Repository\PrivacyRepository;
-use RKW\RkwRegistration\Domain\Repository\EncryptedDataRepository;
 
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
-use RKW\RkwRegistration\ViewHelpers\GetAllFlashMessageIdentifierViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -79,9 +71,7 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
 
-        /** @var FrontendSimulatorUtility $frontendSimulator */
-        $frontendSimulator = GeneralUtility::makeInstance(FrontendSimulatorUtility::class);
-        $frontendSimulator->simulateFrontendEnvironment();
+        FrontendSimulatorUtility::simulateFrontendEnvironment();
     }
 
 
@@ -182,6 +172,36 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
         static::assertNotInternalType('integer', $GLOBALS['TSFE']->fe_user->user['uid']);
     }
 
+
+    /**
+     * @test
+     */
+    public function logoutDestroyFrontendUserSessionWithoutGivenFrontendUser ()
+    {
+
+        // @toDo: Is this a functional test?
+
+        /**
+         * Scenario:
+         *
+         * Given is no active sesseion
+         * When the logout function is triggered
+         * Then nothing is happen
+         */
+
+        /** @var FrontendUserSessionUtility $utility */
+        $utility = GeneralUtility::makeInstance(FrontendUserSessionUtility::class);
+
+        static::assertNull($GLOBALS['TSFE']->fe_user->user);
+        static::assertNotInternalType('array', $GLOBALS['TSFE']->fe_user->user);
+        static::assertNotInternalType('int', $GLOBALS['TSFE']->fe_user->user['uid']);
+
+        $utility->logout();
+
+        static::assertNull($GLOBALS['TSFE']->fe_user->user);
+        static::assertNotInternalType('array', $GLOBALS['TSFE']->fe_user->user);
+        static::assertNotInternalType('int', $GLOBALS['TSFE']->fe_user->user['uid']);
+    }
 
 
     /**

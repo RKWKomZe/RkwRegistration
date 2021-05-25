@@ -104,7 +104,8 @@ class PasswordController extends AbstractController
             && ($registeredUser instanceof FrontendUser)
         ) {
             // set password to the given one
-            PasswordUtility::generatePassword($registeredUser, $passwordNew['first']);
+            $frontendUser->setPassword(PasswordUtility::saltPassword($passwordNew['first']));
+
             $this->frontendUserRepository->update($registeredUser);
 
             $this->addFlashMessage(
@@ -183,7 +184,9 @@ class PasswordController extends AbstractController
         if ($registeredUser = $this->frontendUserRepository->findOneByUsername(strtolower($username))) {
 
             // reset password
-            $plaintextPassword = PasswordUtility::generatePassword($registeredUser);
+        //    $plaintextPassword = PasswordUtility::generate($registeredUser);
+            $plaintextPassword = PasswordUtility::generatePassword();
+            $registeredUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
             $this->frontendUserRepository->update($registeredUser);
 
             // dispatcher for e.g. E-Mail

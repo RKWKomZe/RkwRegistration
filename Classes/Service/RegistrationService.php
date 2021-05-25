@@ -212,7 +212,8 @@ class RegistrationService implements \TYPO3\CMS\Core\SingletonInterface
                 if ($frontendUser->getDisable()) {
 
                     // generate new password and update user
-                    $plaintextPassword = PasswordUtility::generatePassword($frontendUser);
+                    $plaintextPassword = PasswordUtility::generatePassword();
+                    $frontendUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
                     $frontendUser->setDisable(0);
 
                     // set normal lifetime
@@ -437,7 +438,8 @@ class RegistrationService implements \TYPO3\CMS\Core\SingletonInterface
             $frontendUser->setTxRkwregistrationRegisterRemoteIp($remoteAddr);
 
             // generate and set password
-            $plaintextPassword = PasswordUtility::generatePassword($frontendUser);
+            $plaintextPassword = PasswordUtility::generatePassword();
+            $frontendUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
 
             // set user groups
             $this->setUserGroupsOnRegister($frontendUser);
@@ -529,7 +531,7 @@ class RegistrationService implements \TYPO3\CMS\Core\SingletonInterface
         $guestUser->setTxRkwregistrationLanguageKey($settings['users']['languageKeyOnRegister'] ? $settings['users']['languageKeyOnRegister'] : '');
 
         // set password
-        PasswordUtility::generatePassword($guestUser);
+        $guestUser->setPassword(PasswordUtility::saltPassword(PasswordUtility::generatePassword()));
 
         // set groups - this is needed - otherwise the user won't be able to login at all!
         $this->setUserGroupsOnRegister($guestUser);
