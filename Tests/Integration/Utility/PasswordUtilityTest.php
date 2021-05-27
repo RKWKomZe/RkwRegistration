@@ -181,10 +181,15 @@ class PasswordUtilityTest extends FunctionalTestCase
         /** @var PasswordUtility $utility */
         $utility = GeneralUtility::makeInstance(PasswordUtility::class);
 
-        $result = $utility->generatePassword($individualLength);
+        do {
+            $result = $utility->generatePassword($individualLength);
 
-        static::assertInternalType('string', $result);
-        static::assertTrue(strlen($result) == PasswordUtility::PASSWORD_MIN_LENGTH);
+            static::assertInternalType('string', $result);
+            static::assertTrue(strlen($result) == PasswordUtility::PASSWORD_MIN_LENGTH);
+
+            $individualLength++;
+        } while ($individualLength <= PasswordUtility::PASSWORD_MIN_LENGTH);
+
     }
 
 

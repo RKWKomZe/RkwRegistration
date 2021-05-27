@@ -61,7 +61,9 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             // create OptIn links now and not inside the fluid template, which will be used by the RkwMailer
             // Reason: Only via this way we get suitable links to the current active dynamic domain
 
-            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager objectManager */
+            /** @var \TYPO3\CMS\Extbase\Object\
+             * ObjectManager objectManager
+             */
             $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
             /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
             $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
