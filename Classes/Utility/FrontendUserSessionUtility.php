@@ -2,6 +2,8 @@
 
 namespace RKW\RkwRegistration\Utility;
 
+use RKW\RkwBasics\Utility\GeneralUtility;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
@@ -142,6 +144,32 @@ class FrontendUserSessionUtility
 
         return null;
         //===
+    }
+
+
+    /**
+     * converts an feUser array to an object
+     *
+     * @toDo: This function could be also a static part of a FrontendUserUtility
+     *
+     * validUsername
+     * array $userData
+     * @return FrontendUser
+     */
+    public function convertFrontendUserArrayToObject($userData)
+    {
+        $frontendUser = $userData;
+        if (is_array($userData)) {
+            /** @var FrontendUser $frontendUser */
+            $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\FrontendUser');
+            foreach ($userData as $key => $value) {
+                $setter = 'set' . ucfirst(GeneralUtility::camelize($key));
+                if (method_exists($frontendUser, $setter)) {
+                    $frontendUser->$setter($value);
+                }
+            }
+        }
+        return $frontendUser;
     }
 
 

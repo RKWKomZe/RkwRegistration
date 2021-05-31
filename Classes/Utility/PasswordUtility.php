@@ -100,6 +100,7 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
         $length = $length < self::PASSWORD_MAX_LENGTH ? $length : self::PASSWORD_MAX_LENGTH;
 
         $letters = '0123456789abcdefghjkmnopqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ';
+        // @toDo: Zeichen teilweise doppelt
         $symbols = ',;:!?.$/*-+&@_+;./*&?$-!,';
 
         if (!$addNonAlphanumeric) {

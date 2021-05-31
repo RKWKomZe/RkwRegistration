@@ -95,7 +95,7 @@ class PasswordUtilityTest extends FunctionalTestCase
          * Scenario:
          *
          * Given is a custom password length
-         * When there is created an unique random generated password with custom length
+         * When a password is generated
          * Then a the password with allowed custom length is returned
          */
 
@@ -121,7 +121,7 @@ class PasswordUtilityTest extends FunctionalTestCase
          * Scenario:
          *
          * Given if not specific password length
-         * When there is created an unique random generated password with default length
+         * When a password is generated
          * Then a the password with default length is returned
          */
 
@@ -146,7 +146,7 @@ class PasswordUtilityTest extends FunctionalTestCase
          * Scenario:
          *
          * Given is a not possible custom password length
-         * When there is created an unique random generated password with internal calculated maximum length
+         * When a password is generated
          * Then a the password with maximum length is returned
          */
 
@@ -172,9 +172,11 @@ class PasswordUtilityTest extends FunctionalTestCase
          * Scenario:
          *
          * Given is a custom password length between 0 and the minimum length
-         * When there is created an unique random generated password with min length
+         * When a password is generated
          * Then a the password with minimum length is returned
          */
+
+        // @toDo: Not necessary to check all values via loop
 
         $individualLength = 0;
 

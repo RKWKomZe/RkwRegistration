@@ -2,18 +2,7 @@
 
 namespace RKW\RkwRegistration\Service;
 
-use phpDocumentor\Reflection\Types\This;
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Domain\Model\GuestUser;
-use RKW\RkwRegistration\Exception;
-use \RKW\RkwRegistration\Service\AuthService as Authentication;
 use \RKW\RkwBasics\Utility\GeneralUtility;
-use \RKW\RkwRegistration\Utility\PasswordUtility;
-use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
-use \RKW\RkwRegistration\Utility\RemoteUtility;
-use RKW\RkwRegistration\Utility\TitleUtility;
-use TYPO3\CMS\Core\Log\LogLevel;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -64,20 +53,6 @@ abstract class AbstractService
     protected $frontendUserGroupRepository;
 
     /**
-     * FrontendUserRegisterService
-     *
-     * @var \RKW\RkwRegistration\Service\FrontendUserRegisterService
-     */
-    protected $frontendUserRegisterService;
-
-    /**
-     * FrontendUserGroupService
-     *
-     * @var \RKW\RkwRegistration\Service\FrontendUserGroupService
-     */
-    protected $frontendUserGroupService;
-
-    /**
      * Persistence Manager
      *
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
@@ -89,7 +64,7 @@ abstract class AbstractService
      *
      * @var \TYPO3\CMS\Extbase\Object\ObjectManager
      */
-    protected $objectManager;
+    #protected $objectManager;
 
     /**
      * Signal-Slot Dispatcher
@@ -112,7 +87,7 @@ abstract class AbstractService
      */
     public function initializeObject()
     {
-        // system (it's important to get the object manager first!)
+        // system
         //$this->getObjectManager();
         $this->getPersistenceManager();
         $this->getSignalSlotDispatcher();
@@ -173,13 +148,14 @@ abstract class AbstractService
      *
      * @return \TYPO3\CMS\Extbase\Object\ObjectManager
      */
+    /*
     protected function getObjectManager()
     {
         if (!$this->objectManager) {
             $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         }
         return $this->objectManager;
-    }
+    }*/
 
     /**
      * Returns PersistenceManager
@@ -225,36 +201,6 @@ abstract class AbstractService
             return array();
         }
         return $this->settings;
-    }
-
-    /**
-     * Returns FrontendUserRegisterService
-     * Hint: Do not initialize services inside the initializeObject() function to prevent a continuous loop
-     *
-     * @return \RKW\RkwRegistration\Service\FrontendUserRegisterService
-     */
-    protected function getFrontendUserRegisterService()
-    {
-        if (!$this->frontendUserRegisterService) {
-            $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            $this->frontendUserRegisterService = $objectManager->get('RKW\\RkwRegistration\\Service\\FrontendUserRegisterService');
-        }
-        return $this->frontendUserRegisterService;
-    }
-
-    /**
-     * Returns FrontendUserGroupService
-     * Hint: Do not initialize services inside the initializeObject() function to prevent a continuous loop
-     *
-     * @return \RKW\RkwRegistration\Service\FrontendUserGroupService
-     */
-    protected function getFrontendUserGroupService()
-    {
-        if (!$this->frontendUserGroupService) {
-            $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            $this->frontendUserGroupService = $objectManager->get('RKW\\RkwRegistration\\Service\\FrontendUserGroupService');
-        }
-        return $this->frontendUserGroupService;
     }
 
 }

@@ -114,8 +114,6 @@ class RegistrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         return $registration;
         //====
-
-
     }
 
 }

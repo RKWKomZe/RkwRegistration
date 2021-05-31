@@ -4,8 +4,11 @@ namespace RKW\RkwRegistration\Service;
 
 use \RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
+use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use \RKW\RkwRegistration\Utility\PasswordUtility;
+use RKW\RkwRegistration\Utility\RemoteUtility;
 use TYPO3\CMS\Core\Log\LogLevel;
 
 /*
@@ -32,73 +35,69 @@ use TYPO3\CMS\Core\Log\LogLevel;
 class FrontendUserRegisterService extends AbstractService
 {
     /**
+     * FrontendUser
+     *
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
+     */
+    protected $frontendUser;
+
+    /**
      * @var \TYPO3\CMS\Core\Log\Logger
      */
     protected $logger;
 
+
     /**
-     * sets some basic data to a new frontendUser
-     *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser A not persistent frontendUser
-     * @param integer $enable if the user should be enabled or not
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser A persistent frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function createNewFrontendUser($frontendUser = null, $enable = 0)
+    public function __construct(FrontendUser $frontendUser)
     {
-        // set pid and crdate
-        $frontendUser->setPid(intval($this->settings['users']['storagePid']));
-        $frontendUser->setCrdate(time());
+        $this->frontendUser = $frontendUser;
 
-        // enable or disable
-        if ($enable) {
-            $frontendUser->setDisable(0);
+        if ($frontendUser->_isNew()) {
+            $this->setBasicData();
+        }
+    }
 
-            // set normal lifetime
-            if (intval($this->settings['users']['lifetime'])) {
-                $frontendUser->setEndtime(time() + intval($this->settings['users']['lifetime']));
-            }
+    /**
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     */
+    public function getFrontendUser()
+    {
+        return $this->frontendUser;
+    }
 
-        } else {
-            $frontendUser->setDisable(1);
+    /**
+     * sets some basic data to a frontendUser (if not already set)
+     *
+     * @return void
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function setBasicData()
+    {
+        if (!$this->frontendUser->getPid()) {
+            $this->frontendUser->setPid(intval($this->settings['users']['storagePid']));
+        }
 
-            // set opt-in lifetime
-            if (intval($this->settings['users']['daysForOptIn'])) {
-                $frontendUser->setEndtime(time() + (intval($this->settings['users']['daysForOptIn']) * 24 * 60 * 60));
-            }
+        if (!$this->frontendUser->getCrdate()) {
+            $this->frontendUser->setCrdate(time());
         }
 
         // set languageKey
-        if ($this->settings['users']['languageKeyOnRegister']) {
-            $frontendUser->setTxRkwregistrationLanguageKey($this->settings['users']['languageKeyOnRegister']);
+        if (!$this->frontendUser->getTxRkwregistrationLanguageKey()
+            && $this->settings['users']['languageKeyOnRegister']
+        ) {
+            $this->frontendUser->setTxRkwregistrationLanguageKey($this->settings['users']['languageKeyOnRegister']);
         }
 
-        // set users server ip-address
-        $remoteAddr = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
-        if ($_SERVER['HTTP_X_FORWARDED_FOR']) {
-            $ips = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-            if ($ips[0]) {
-                $remoteAddr = filter_var($ips[0], FILTER_VALIDATE_IP);
-            }
-        }
-        $frontendUser->setTxRkwregistrationRegisterRemoteIp($remoteAddr);
-
-        // generate and set password
-        $plaintextPassword = PasswordUtility::generatePassword();
-        $frontendUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
+        $this->frontendUser->setTxRkwregistrationRegisterRemoteIp(RemoteUtility::getIp());
 
         // set user groups
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var \RKW\RkwRegistration\Service\FrontendUserGroupService $frontendUserGroupService */
-        $frontendUserGroupService = $objectManager->get('RKW\\RkwRegistration\\Service\\FrontendUserGroupService');
+        if (!$this->frontendUser->getUsergroup()->count()) {
+            $this->setUserGroupsOnRegister($this->frontendUser);
+        }
 
-        $frontendUserGroupService->setUserGroupsOnRegister($frontendUser);
-
-        // add user and persist!
-        $this->getFrontendUserRepository()->add($frontendUser);
-        $this->getPersistenceManager()->persistAll();
-
-        return $frontendUser;
     }
 
 
@@ -106,33 +105,31 @@ class FrontendUserRegisterService extends AbstractService
     /**
      * enables a newly created frontendUser (if not enabled yet)
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @return string returns the new created password OR an empty string if user is already enabled
+     * @param bool $enable if the user should be enabled or not
+     * @return void
      */
-    public function enableNewFrontendUser($frontendUser)
+    public function setClearanceAndLifetime($enable = false)
     {
-        if (!$frontendUser->getDisable()) {
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Cannot enable active user.', $frontendUser->getUid()));
-            return '';
+        if (!$this->frontendUser->getDisable()) {
+            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Cannot enable active user.', $this->frontendUser->getUid()));
         }
 
-        $settings = $this->getSettings();
+        // enable or disable
+        if ($enable) {
+            $this->frontendUser->setDisable(0);
 
-        // generate new password and update user
-        $plaintextPassword = PasswordUtility::generatePassword();
-        $frontendUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
-        $frontendUser->setDisable(0);
+            // set normal lifetime
+            if (intval($this->settings['users']['lifetime'])) {
+                $this->frontendUser->setEndtime(time() + intval($this->settings['users']['lifetime']));
+            }
+        } else {
+            $this->frontendUser->setDisable(1);
 
-        // set normal lifetime
-        $frontendUser->setEndtime(0);
-        if (intval($settings['users']['lifetime'])) {
-            $frontendUser->setEndtime(time() + intval($settings['users']['lifetime']));
+            // set opt-in lifetime
+            if (intval($this->settings['users']['daysForOptIn'])) {
+                $this->frontendUser->setEndtime(time() + (intval($this->settings['users']['daysForOptIn']) * 24 * 60 * 60));
+            }
         }
-
-        $this->getFrontendUserRepository()->update($frontendUser);
-        $this->getPersistenceManager()->persistAll();
-
-        return $plaintextPassword;
     }
 
 
@@ -140,32 +137,25 @@ class FrontendUserRegisterService extends AbstractService
     /**
      * Removes existing account of FE-user
      *
-     * @param FrontendUser $frontendUser
      * @param string $category
      * @return boolean
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      */
-    public function delete(FrontendUser $frontendUser, $category = null)
+    public function delete($category = null)
     {
         // check if user is logged in - only the user himself can delete his account!
-        if (FrontendUserSessionUtility::isUserLoggedIn($frontendUser)) {
+        if (FrontendUserSessionUtility::isUserLoggedIn($this->frontendUser)) {
 
             FrontendUserSessionUtility::logout();
-            $this->getFrontendUserRepository()->remove($frontendUser);
+            $this->getFrontendUserRepository()->remove($this->frontendUser);
             $this->getPersistenceManager()->persistAll();
 
-            // Signal for e.g. E-Mails or other extensions
-            $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_DELETING_USER . ucfirst($category), array($frontendUser));
-
-            $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully logged out and deleted user "%s".', strtolower($frontendUser->getUsername())));
-
             return true;
-            //===
         }
 
-        $this->getLogger()->log(LogLevel::WARNING, sprintf('Could not delete user "%s". User is not logged in.', strtolower($frontendUser->getUsername())));
+        $this->getLogger()->log(LogLevel::WARNING, sprintf('Could not delete user "%s". User is not logged in.', strtolower($this->frontendUser->getUsername())));
 
         return false;
         //===
@@ -175,6 +165,8 @@ class FrontendUserRegisterService extends AbstractService
 
     /**
      * Checks if FE-User has valid email
+     *
+     * @toDo: This function could be also a static part of a FrontendUserUtility
      *
      * @param string | \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $email
      * @return boolean
@@ -208,37 +200,31 @@ class FrontendUserRegisterService extends AbstractService
      * Checks if FE-User has valid email
      *
      * @param string | \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $email
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser
      * @return boolean
      */
-    public function validEmailUnique($email, $frontendUser)
+    public function validEmailUnique($email)
     {
         if ($email instanceof \TYPO3\CMS\Extbase\Domain\Model\FrontendUser) {
             $email = $email->getEmail();
         }
 
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\FrontendUserRepository');
-        $dbFrontendUser = $frontendUserRepository->findOneByEmailOrUsernameInactive(strtolower($email));
+        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $this->frontendUserRepository */
+        $this->frontendUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\FrontendUserRepository');
+        $dbFrontendUser = $this->frontendUserRepository->findOneByEmailOrUsernameInactive(strtolower($email));
 
         if (
             (\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail(strtolower($email)))
             && (strpos(strtolower($email), '@facebook.com') === false)
             && (strpos(strtolower($email), '@twitter.com') === false)
             && (
-                (!$dbFrontendUser)
-                || (
-                    ($dbFrontendUser)
-                    && ($dbFrontendUser->getUsername() == $frontendUser->getUsername()))
+                !$dbFrontendUser
+                || $dbFrontendUser->getUsername() == $this->frontendUser->getUsername()
             )
         ) {
             return true;
-            //===
         }
-
         return false;
-        //===
     }
 
 
@@ -246,48 +232,67 @@ class FrontendUserRegisterService extends AbstractService
     /**
      * Checks if FE-User has a a valid username
      *
-     * @param string | \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $email
+     * @toDo: This function could be also a static part of a FrontendUserUtility
+     *
      * @return boolean
      */
-    public function validUsername($email)
+    public function validUsername()
     {
-
-        if ($email instanceof \TYPO3\CMS\Extbase\Domain\Model\FrontendUser) {
-            $email = $email->getEmail();
-        }
-
-        if (\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail(strtolower($email))) {
+        if (\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail(strtolower($this->frontendUser->getEmail()))) {
             return true;
         }
-
         return false;
     }
 
 
 
     /**
-     * converts an feUser array to an object
+     * setUsersGroupsOnRegister
      *
-     * validUsername
-     * array $userData
-     * @return FrontendUser
+     * @param string $userGroups
+     * @return void
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function convertFrontendUserArrayToObject($userData)
+    public function setUserGroupsOnRegister($userGroups = '')
     {
-        $frontendUser = $userData;
-        if (is_array($userData)) {
-            /** @var FrontendUser $frontendUser */
-            $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\FrontendUser');
-            foreach ($userData as $key => $value) {
-                $setter = 'set' . ucfirst(GeneralUtility::camelize($key));
-                if (method_exists($frontendUser, $setter)) {
-                    $frontendUser->$setter($value);
+        if (!$userGroups) {
+            $settings = $this->getSettings();
+
+            if ($this->frontendUser instanceof GuestUser) {
+                $userGroups = $settings['users']['groupsOnRegisterGuest'];
+
+                if (!$settings['users']['groupsOnRegisterGuest']) {
+                    $this->getLogger()->log(LogLevel::ERROR, sprintf('Login for guest user "%s" failed. Reason: No groupsOnRegisterGuest is defined in TypoScript.', strtolower($this->frontendUser->getUsername())));
                 }
+            } else {
+                $userGroups = $settings['users']['groupsOnRegister'];
             }
         }
-        return $frontendUser;
+
+        $userGroupIds = GeneralUtility::trimExplode(',', $userGroups);
+        foreach ($userGroupIds as $groupId) {
+            /** @var FrontendUserGroup $frontendUserGroup */
+            $frontendUserGroup = $this->getFrontendUserGroupRepository()->findByUid($groupId);
+            if ($frontendUserGroup instanceof FrontendUserGroup) {
+                $this->frontendUser->addUsergroup($frontendUserGroup);
+            }
+        }
     }
 
+
+    /**
+     * creates and set a new password
+     * (a Service function which is calling the PasswordUtility)
+     *
+     * @return string The new created plaintext password
+     */
+    public function setNewPassword()
+    {
+        $plaintextPassword = PasswordUtility::generatePassword();
+        $this->frontendUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
+
+        return $plaintextPassword;
+    }
 
 
     /**

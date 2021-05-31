@@ -10,6 +10,7 @@ use \RKW\RkwRegistration\Utility\PasswordUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use \RKW\RkwRegistration\Utility\RemoteUtility;
 use RKW\RkwRegistration\Utility\TitleUtility;
+use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
@@ -188,7 +189,15 @@ class RegistrationService extends AbstractService
             if ($frontendUser = $this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser())) {
 
                 if ($frontendUser->getDisable()) {
-                    $plaintextPassword = $this->getFrontendUserRegisterService()->enableNewFrontendUser($frontendUser);
+
+                    // generate new password and update user
+                    $plaintextPassword = PasswordUtility::generatePassword();
+                    $frontendUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
+
+                    $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+                    /** @var \RKW\RkwRegistration\Service\FrontendUserRegisterService $frontendUserRegisterService */
+                    $frontendUserRegisterService = $objectManager->get('RKW\\RkwRegistration\\Service\\FrontendUserRegisterService', $frontendUser);
+                    $frontendUserRegisterService->setClearanceAndLifetime(true);
 
                     // Signal for E-Mails
                     $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_GRANT, array($frontendUser, $plaintextPassword, $register));
@@ -380,16 +389,16 @@ class RegistrationService extends AbstractService
     public function register($userData, $enable = false, $additionalData = null, $category = null, \TYPO3\CMS\Extbase\Mvc\Request $request = null)
     {
         // if we get an array we just migrate the data to our object!
-        $frontendUser = $this->frontendUserRegisterService->convertFrontendUserArrayToObject($userData);
+        $frontendUser = FrontendUserUtility::convertArrayToObject($userData);
 
         if (!$frontendUser instanceof FrontendUser) {
             $this->getLogger()->log(LogLevel::ERROR, sprintf('No valid object for registration given.'));
             throw new Exception('No valid object given.', 1434997734);
-            //===
         }
 
-        // get settings
-        $settings = $this->getSettings();
+        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        /** @var \RKW\RkwRegistration\Service\FrontendUserRegisterService $frontendUserRegisterService */
+        $frontendUserRegisterService = $objectManager->get('RKW\\RkwRegistration\\Service\\FrontendUserRegisterService', $frontendUser);
 
         // set email as fallback
         if (!$frontendUser->getUsername()) {
@@ -397,13 +406,9 @@ class RegistrationService extends AbstractService
         }
 
         // check username (aka email)
-        if (
-            (!$frontendUser->getUsername())
-            || (!$this->frontendUserRegisterService->validUsername($frontendUser->getUsername()))
-        ) {
+        if (!$frontendUserRegisterService->validUsername()) {
             $this->getLogger()->log(LogLevel::ERROR, sprintf('"%s" is not a valid username.', strtolower($frontendUser->getUsername())));
             throw new Exception('No valid username given.', 1407312133);
-            //===
         }
 
         // lowercase username and email!
@@ -411,8 +416,7 @@ class RegistrationService extends AbstractService
         $frontendUser->setUsername(strtolower($frontendUser->getUsername()));
 
         if ($frontendUser->getTitle()) {
-
-            $frontendUser->setTxRkwregistrationTitle(TitleUtility::extractTxRegistrationTitle($frontendUser->getTitle(), $settings));
+            $frontendUser->setTxRkwregistrationTitle(TitleUtility::extractTxRegistrationTitle($frontendUser->getTitle(), $this->settings));
             //  set old title field to ''
             $frontendUser->setTitle('');
         }
@@ -425,8 +429,7 @@ class RegistrationService extends AbstractService
             // add opt in - but only if additional data is set!
             if ($additionalData) {
 
-                $settings = $this->getSettings();
-                $registration = $this->registrationRepository->newOptIn($frontendUserDatabase, $additionalData, $category, $settings['users']['daysForOptIn']);
+                $registration = $this->registrationRepository->newOptIn($frontendUserDatabase, $additionalData, $category, $this->settings['users']['daysForOptIn']);
 
                 // add privacy for existing user
                 if ($request) {
@@ -436,7 +439,7 @@ class RegistrationService extends AbstractService
 
                 if (
                     ($frontendUser->getEmail() != strtolower($frontendUserDatabase->getEmail()))
-                    && (!$this->frontendUserRegisterService->validEmailUnique($frontendUser->getEmail(), $frontendUserDatabase))
+                    && (!$frontendUserRegisterService->validEmailUnique($frontendUserDatabase))
                 ) {
 
                     $this->getLogger()->log(LogLevel::ERROR, sprintf('E-mail "%s" is already used by another user.', strtolower($frontendUser->getEmail())));
@@ -452,63 +455,26 @@ class RegistrationService extends AbstractService
                 $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_OPTIN_EXISTING_USER . ucfirst($category), array($frontendUserDatabase, $registration));
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-In for existing user "%s" (id=%s, category=%s) successfully generated.', strtolower($frontendUserDatabase->getUsername()), $frontendUserDatabase->getUid(), $category));
             }
-
+            // hint: This is more important than it looks. This returns a real existing FrontendUser. If you would remove
+            // this line a new created FrontendUser-Instance from above would returned at the end of this function
+            // (which is disabled by default! @see convertArrayToObject)
+            $frontendUser = $frontendUserDatabase;
 
             // if user does not exist yet, we need some more data to be set!
         } else {
 
-            // set pid and crdate
-            $frontendUser->setPid(intval($settings['users']['storagePid']));
-            $frontendUser->setCrdate(time());
-
-            // enable or disable
-            if ($enable) {
-                $frontendUser->setDisable(0);
-
-                // set normal lifetime
-                if (intval($settings['users']['lifetime'])) {
-                    $frontendUser->setEndtime(time() + intval($settings['users']['lifetime']));
-                }
-
-            } else {
-                $frontendUser->setDisable(1);
-
-                // set opt-in lifetime
-                if (intval($settings['users']['daysForOptIn'])) {
-                    $frontendUser->setEndtime(time() + (intval($settings['users']['daysForOptIn']) * 24 * 60 * 60));
-                }
-            }
-
-            // set languageKey
-            if ($settings['users']['languageKeyOnRegister']) {
-                $frontendUser->setTxRkwregistrationLanguageKey($settings['users']['languageKeyOnRegister']);
-            }
-
-            // set users server ip-address
-            $remoteAddr = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
-            if ($_SERVER['HTTP_X_FORWARDED_FOR']) {
-                $ips = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-                if ($ips[0]) {
-                    $remoteAddr = filter_var($ips[0], FILTER_VALIDATE_IP);
-                }
-            }
-            $frontendUser->setTxRkwregistrationRegisterRemoteIp($remoteAddr);
-
-            // generate and set password
-            $plaintextPassword = PasswordUtility::generatePassword();
-            $frontendUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
-
-            // set user groups
-            $this->frontendUserGroupService->setUserGroupsOnRegister($frontendUser);
+            $frontendUserRegisterService->setBasicData();
+            $frontendUserRegisterService->setClearanceAndLifetime($enable);
+            $plaintextPassword = $frontendUserRegisterService->setNewPassword();
 
             // add user and persist!
-            $this->frontendUserRepository->add($frontendUser);
-            $this->persistenceManager->persistAll();
+            $this->getFrontendUserRepository()->add($frontendUser);
+            $this->getPersistenceManager()->persistAll();
 
             if ($enable) {
 
                 // Signal for e.g. E-Mails
-                $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_FINAL_USER . ucfirst($category), array($frontendUser, $plaintextPassword));
+                $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_FINAL_USER . ucfirst($category), array($frontendUser, $plaintextPassword, null));
 
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully registered and enabled user "%s".', strtolower($frontendUser->getUsername())));
 
@@ -521,8 +487,7 @@ class RegistrationService extends AbstractService
             } else {
 
                 // add registration
-                $settings = $this->getSettings();
-                $registration = $this->registrationRepository->newOptIn($frontendUser, $additionalData, $category, $settings['users']['daysForOptIn']);
+                $registration = $this->registrationRepository->newOptIn($frontendUser, $additionalData, $category, $this->settings['users']['daysForOptIn']);
 
                 // add privacy opt-in for non-existing user
                 if ($request) {
@@ -537,7 +502,6 @@ class RegistrationService extends AbstractService
         }
 
         return $frontendUser;
-        //===
     }
 
 
@@ -646,7 +610,7 @@ class RegistrationService extends AbstractService
     /**
      * setUsersGroupsOnRegister
      *
-     * @deprecated Use Server/FrontendUserGroupService->setUserGroupsOnRegister instead
+     * @deprecated Use Server/FrontendUserRegisterService->setUserGroupsOnRegister instead
      *
      * @param FrontendUser $frontendUser
      * @param string $userGroups

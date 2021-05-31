@@ -110,6 +110,8 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Finds users which have the given username OR email-address
      * This is relevant for checking during registration or profile editing
      *
+     * @toDo by MF: This function is (IMO) not fully accurate. It's returns also all active user.
+     *
      * @param string $input
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser
      */

@@ -130,6 +130,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
 
     }
 
+
+
     /**
      * Handles register user event
      *
