@@ -3,6 +3,7 @@ namespace RKW\RkwRegistration\Tests\Integration\Utility;
 
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use RKW\RkwRegistration\Domain\Model\Title;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use \RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -564,17 +565,20 @@ class RegistrationServiceTest extends FunctionalTestCase
     }
 
 
+
     /**
      * @test
      */
-    public function registerAdditionalDataWithRegisteredFrontendUserReturnsFrontendUser ()
+    public function registerAdditionalDataArrayWithRegisteredFrontendUserReturnsFrontendUser ()
     {
         /**
          * Scenario:
          *
-         * Given is an existing e-mail address of an DISABLED frontendUser
-         * When a user with this email is registered with ENABLED flag
-         * Then the already existing user is returned as enabled user
+         * Given is an email address of an existing frontendUser
+         * Given is an array as additionalData
+         * When a user with additionalData is registered
+         * Then the already existing user is returned
+         * Then a registration dataset is created with given data array
          */
 
         $this->importDataSet(__DIR__ . '/RegistrationServiceTest/Fixtures/Database/Check20.xml');
@@ -588,15 +592,110 @@ class RegistrationServiceTest extends FunctionalTestCase
             'what' => 'ever'
         ];
 
+        $categoryName = 'testCategory';
+
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
-        $result = $this->registrationService->register(['email' => $existingFrontendUser->getEmail()], true, $additionalData);
+        $result = $this->registrationService->register(['email' => $existingFrontendUser->getEmail()], true, $additionalData, $categoryName);
 
         static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
-        // now enabled
-        static::assertEquals(0, $result->getDisable());
 
-        // still the same UID
-        static::assertEquals($existingFrontendUser->getUid(), $result->getUid());
+        /** @var \RKW\RkwRegistration\Domain\Model\Registration $newRegistration */
+        $newRegistration = $this->registrationRepository->findByCategory($categoryName)->getFirst();
+        // compare given and saved additionalData array
+        $diff = array_diff($additionalData, $newRegistration->getData());
+        static::assertCount(0, $diff);
+
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function registerAdditionalDataArrayWithNotRegisteredFrontendUserReturnsDisabledFrontendUser ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is an email address of a NOT existing frontendUser
+         * Given is an array as additionalData
+         * When a user with additionalData is registered
+         * Then the new created user is returned
+         * Then a registration dataset is created with given data array
+         */
+
+        $userData = [
+            'email' => 'doesNotExists@email.de'
+        ];
+
+        $additionalData = [
+            'some' => 'thing',
+            'any' => 'thing',
+            'what' => 'ever'
+        ];
+
+        $categoryName = 'testCategory';
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
+        $result = $this->registrationService->register($userData, false, $additionalData, $categoryName);
+        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
+        static::assertEquals(1, $result->getDisable());
+        // now persisted (user got a uid)
+        static::assertNotNull($result->getUid());
+
+        /** @var \RKW\RkwRegistration\Domain\Model\Registration $newRegistration */
+        $newRegistration = $this->registrationRepository->findByCategory($categoryName)->getFirst();
+        // compare given and saved additionalData array
+        $diff = array_diff($additionalData, $newRegistration->getData());
+        static::assertCount(0, $diff);
+    }
+
+
+
+
+    /**
+     * @test
+     */
+    public function registerAdditionalDataObjectWithRegisteredFrontendUserReturnsFrontendUser ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is an email address of an existing frontendUser
+         * Given is an object as additionalData
+         * When a user with additionalData is registered
+         * Then the already existing user is returned
+         * Then a registration dataset is created with given data object
+         */
+
+        $this->importDataSet(__DIR__ . '/RegistrationServiceTest/Fixtures/Database/Check20.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $existingFrontendUser */
+        $existingFrontendUser = $this->frontendUserRepository->findByUid(1);
+
+        $titleName = 'SomeTitleName';
+        /** @var \RKW\RkwRegistration\Domain\Model\Title $titleObject */
+        $titleObject = GeneralUtility::makeInstance(Title::class);
+        $titleObject->setName($titleName);
+
+        $additionalData = $titleObject;
+
+        $categoryName = 'testCategory';
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
+        $result = $this->registrationService->register(['email' => $existingFrontendUser->getEmail()], true, $additionalData, $categoryName);
+
+        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\Registration $newRegistration */
+        $newRegistration = $this->registrationRepository->findByCategory($categoryName)->getFirst();
+        // compare given and saved additionalData array
+        /** @var \RKW\RkwRegistration\Domain\Model\Title $savedAdditionalData */
+        $savedAdditionalData = $newRegistration->getData();
+        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\Title', $savedAdditionalData);
+        static::assertEquals($titleName, $savedAdditionalData->getName());
+        // is NOT persistent yet as object itself
+        static::assertNull($savedAdditionalData->getUid());
     }
 
 

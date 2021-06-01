@@ -372,11 +372,11 @@ class RegistrationService extends AbstractService
     /**
      * Registers new FE-User - or sends another opt-in to existing user
      *
-     * @param FrontendUser|array $userData
-     * @param boolean $enable
-     * @param mixed $additionalData
-     * @param string $category
-     * @param \TYPO3\CMS\Extbase\Mvc\Request $request
+     * @param FrontendUser|array $userData A FrontendUser object or an array with equivalent key names to frontendUser properties. E.g. "mail" oder "username"
+     * @param boolean $enable If a new user should be enabled or not
+     * @param mixed $additionalData Could be an array or a whole object. Everything you need in relation of a registration of something
+     * @param string $category To identify a specific context. Normally used to identify an external extension which is using this function
+     * @param \TYPO3\CMS\Extbase\Mvc\Request $request For privacy purpose to identify the given context
      * @return FrontendUser
      * @throws Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
@@ -444,7 +444,6 @@ class RegistrationService extends AbstractService
 
                     $this->getLogger()->log(LogLevel::ERROR, sprintf('E-mail "%s" is already used by another user.', strtolower($frontendUser->getEmail())));
                     throw new Exception('Given e-mail already used by another user.', 1480500618);
-                    //===
                 }
 
                 // E-mail may differ - this may be the reason for using an opt-in!
@@ -472,12 +471,9 @@ class RegistrationService extends AbstractService
             $this->getPersistenceManager()->persistAll();
 
             if ($enable) {
-
                 // Signal for e.g. E-Mails
                 $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_FINAL_USER . ucfirst($category), array($frontendUser, $plaintextPassword, null));
-
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully registered and enabled user "%s".', strtolower($frontendUser->getUsername())));
-
                 // add privacy opt-in for non-existing user
                 if ($request) {
                     PrivacyService::addPrivacyData($request, $frontendUser, $additionalData, ($category ? 'new user without opt-in for ' . $category : 'new user without opt-in'));
@@ -485,16 +481,13 @@ class RegistrationService extends AbstractService
                 $this->persistenceManager->persistAll();
 
             } else {
-
                 // add registration
                 $registration = $this->registrationRepository->newOptIn($frontendUser, $additionalData, $category, $this->settings['users']['daysForOptIn']);
-
                 // add privacy opt-in for non-existing user
                 if ($request) {
                     PrivacyService::addPrivacyDataForOptIn($request, $frontendUser, $registration, ($category ? 'new opt-in for non-existing user for ' . $category : 'new opt-in for non-existing user'));
                 }
                 $this->persistenceManager->persistAll();
-
                 // Signal for e.g. E-Mails
                 $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_OPTIN_USER . ucfirst($category), array($frontendUser, $registration));
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully registered user "%s". Awaiting opt-in.', strtolower($frontendUser->getUsername())));
