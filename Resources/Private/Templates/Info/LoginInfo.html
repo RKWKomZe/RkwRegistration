@@ -7,9 +7,8 @@
     <f:section name="main">
 
         <template class="ajax" id="tx-rkwregistration-login-info-ajax"></template>
+        <f:comment><!-- only do an ajax-call if fe-cookie is set. This is to reduce requests to the server--></f:comment>
         <script type="text/javascript">
-
-            // only do an ajax-call if fe-cookie is set. This is to reduce requests to the server
             var txRkwRegistrationAjaxUrl = "{f:uri.action(action:'loginInfo', absolute:'1', additionalParams:'{rkw_ajax : \'{key: ajaxHelper.key, cid: ajaxHelper.contentUid, idl: \\\'1\\\'}\'}') -> f:format.raw()}";
             if (document.cookie.split(';').some((item) => item.trim().startsWith('fe_typo_user='))) {
                 document.getElementById('tx-rkwregistration-login-info-ajax').setAttribute('data-ajax-url', txRkwRegistrationAjaxUrl);
