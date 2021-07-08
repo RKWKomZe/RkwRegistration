@@ -4,17 +4,6 @@
 
     <f:layout name="Default" />
 
-    This template displays a NEW form for the current domain object.
-
-    If you modify this template, do not forget to change the overwrite settings
-    in /Configuration/ExtensionBuilder/settings.yaml:
-      Resources:
-        Private:
-          Templates:
-            New.html: keep
-
-    Otherwise your changes will be overwritten the next time you save the extension in the extension builder
-
     <f:section name="main">
 
         <f:render partial="FlashMessages" arguments="{_all}" />
@@ -49,7 +38,7 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="btn btn--primary btn--small">
+                    <button type="submit" class="btn btn--primary full-width-narrow">
                         <span><f:translate key="templates_registration_registerShow.labelRegister" /></span>
                     </button>
                 </div>
