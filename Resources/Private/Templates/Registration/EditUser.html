@@ -3,17 +3,6 @@
 
     <f:layout name="Default" />
 
-    This template displays a EDIT form for the current domain object.
-
-    If you modify this template, do not forget to change the overwrite settings
-    in /Configuration/ExtensionBuilder/settings.yaml:
-      Resources:
-        Private:
-          Templates:
-            Edit.html: keep
-
-    Otherwise your changes will be overwritten the next time you save the extension in the extension builder
-
     <f:section name="main">
 
         <h2><f:translate key="templates_registration_editUser.headline" /></h2>
@@ -21,24 +10,29 @@
         <f:render partial="FlashMessages" arguments="{_all}" />
         <f:render partial="FormErrors" arguments="{for:frontendUser}"/>
 
-        <f:form action="updateUser" name="frontendUser" object="{frontendUser}" class="form-fields">
+        <f:form
+            action="updateUser"
+            name="frontendUser"
+            object="{frontendUser}"
+        >
             <div class="flex-container">
-                <div class="form flex flex-basis-8 full-width-medium space-between">
+                <div class="flex flex-basis-8 full-width-medium space-between">
+
                     <f:render partial="Registration/FormFields" arguments="{_all}" />
-                    <p>
-                        <f:link.action pageUid="{welcomePid}" action="welcome" class="btn btn--secondary btn--small">
-                            <span><f:translate key="templates_registration_editUser.labelBack"/></span>
+
+                    <div class="btn-list btn-list--footer">
+                        <f:link.action pageUid="{welcomePid}" action="welcome" class="btn btn--secondary">
+                            <f:translate key="templates_registration_editUser.labelBack"/>
                         </f:link.action>
 
-                        <button type="submit" class="btn btn--primary btn--small">
-                            <span><f:translate key="templates_registration_editUser.labelSave" /></span>
+                        <button type="submit" class="btn btn--primary">
+                            <f:translate key="templates_registration_editUser.labelSave" />
                         </button>
-                    </p>
+                    </div>
                 </div>
             </div>
 
         </f:form>
-
 
     </f:section>
 
