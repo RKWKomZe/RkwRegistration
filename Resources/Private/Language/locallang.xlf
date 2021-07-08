@@ -492,7 +492,6 @@
             </trans-unit>
 
 
-
             <!-- Templates/Registration/EditUser.html -->
             <trans-unit id="templates_registration_editUser.headline">
                 <source>Edit Profile</source>
@@ -546,10 +545,12 @@
             <trans-unit id="templates_registration_loginShow.headline">
                 <source>Login</source>
             </trans-unit>
-            <trans-unit id="templates_registration_loginShow.passwordForgot">
-                <source>Forgotten password?</source>
+            <trans-unit id="templates_registration_loginShow.labelLogin">
+                <source>Login</source>
             </trans-unit>
-
+            <trans-unit id="templates_registration_loginShow.passwordForgot">
+                <source>Forgotten password</source>
+            </trans-unit>
 
 
             <!-- Templates/Registration/LoginAnonymous.html -->
@@ -561,6 +562,12 @@
             <!-- Templates/Registration/PasswordForgotShow.html -->
             <trans-unit id="templates_registration_passwordForgotShow.headline">
                 <source>Password forgot</source>
+            </trans-unit>
+            <trans-unit id="templates_registration_passwordForgotShow.labelSend">
+                <source>Send password</source>
+            </trans-unit>
+            <trans-unit id="templates_registration_passwordForgotShow.labelBack">
+                <source>Back</source>
             </trans-unit>
 
 
@@ -574,7 +581,6 @@
             <trans-unit id="templates_registration_registerShow.terms">
                 <source>I accept the terms and conditions.</source>
             </trans-unit>
-
 
 
             <!-- Templates/Registration/Welcome.html -->
@@ -771,22 +777,6 @@
             </trans-unit>
             <trans-unit id="rkwMailService.adminServiceDenialEvent.subject">
                 <source>Service activation denied</source>
-            </trans-unit>
-
-
-
-            <!-- Partials/Registration/Login.html -->
-            <trans-unit id="partials_registration_login.labelLogin">
-                <source>Login</source>
-            </trans-unit>
-
-
-            <!-- Partials/Registration/PasswordForgot.html -->
-            <trans-unit id="partials_registration_passwordForgot.labelSend">
-                <source>Send password</source>
-            </trans-unit>
-            <trans-unit id="partials_registration_passwordForgot.labelBack">
-                <source>Back</source>
             </trans-unit>
 
 

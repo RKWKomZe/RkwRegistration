@@ -2,7 +2,7 @@
     xmlns:rkwRegistration="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
     data-namespace-typo3-fluid="true">
 
-    <div class="form__field width100">
+    <div class="form__field width50 break-after">
         <label class="form-label" for="gender">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender" />
             <f:render partial="LabelSuffix" arguments="{field: 'gender', frontendUser: frontendUser}" />
@@ -20,7 +20,7 @@
     </f:if>
 
     <div class="form__field width100">
-        <label class="form-label" for="firstName">
+        <label for="firstName">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.first_name" />
             <f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='firstName' /> == 0">
                 <span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
@@ -34,7 +34,7 @@
     </div>
 
     <div class="form__field width100">
-        <label class="form-label" for="lastName">
+        <label for="lastName">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.last_name" />
             <f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='lastName' /> == 0">
                 <span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
@@ -48,7 +48,7 @@
     </div>
 
     <div class="form__field width100">
-        <label class="form-label" for="email">
+        <label for="email">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.email" />
             <f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='email' /> == 0">
                 <span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>

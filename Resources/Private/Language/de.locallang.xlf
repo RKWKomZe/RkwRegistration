@@ -101,18 +101,18 @@
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_url">
                 <source>Twitter URL</source>
-                <target>Link zu Twitter- Profil</target>
+                <target>Twitter- Profil</target>
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_id">
                 <source>Facebook Id</source>
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_url">
                 <source>Facebook URL</source>
-                <target>Link zu Facebook- Profil</target>
+                <target>Facebook- Profil</target>
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_xing_url">
                 <source>XING URL</source>
-                <target>Link zu XING- Profil</target>
+                <target>XING- Profil</target>
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_register_remote_ip">
                 <source>Register Remote Ip</source>
@@ -645,9 +645,13 @@
                 <source>Login</source>
                 <target>Anmeldung</target>
             </trans-unit>
+            <trans-unit id="templates_registration_loginShow.labelLogin">
+                <source>Login</source>
+                <target>Jetzt einloggen</target>
+            </trans-unit>
             <trans-unit id="templates_registration_loginShow.passwordForgot">
-                <source>Forgotten password?</source>
-                <target>Passwort vergessen?</target>
+                <source>Forgotten password</source>
+                <target>Passwort vergessen</target>
             </trans-unit>
 
 
@@ -701,6 +705,14 @@
             <trans-unit id="templates_registration_passwordForgotShow.headline">
                 <source>Password forgot</source>
                 <target>Passwort anfordern</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_passwordForgotShow.labelSend">
+                <source>Send password</source>
+                <target>Neues Passwort senden</target>
+            </trans-unit>
+            <trans-unit id="templates_registration_passwordForgotShow.labelBack">
+                <source>Back</source>
+                <target>Zurück</target>
             </trans-unit>
 
 
@@ -971,25 +983,6 @@
                 <source>Service activation denied</source>
                 <target>Freischaltung für RKW Service abgelehnt</target>
             </trans-unit>
-
-
-            <!-- Partials/Registration/Login.html -->
-            <trans-unit id="partials_registration_login.labelLogin">
-                <source>Login</source>
-                <target>Jetzt einloggen</target>
-            </trans-unit>
-
-
-            <!-- Partials/Registration/PasswordForgot.html -->
-            <trans-unit id="partials_registration_passwordForgot.labelSend">
-                <source>Send password</source>
-                <target>Neues Passwort senden</target>
-            </trans-unit>
-            <trans-unit id="partials_registration_passwordForgot.labelBack">
-                <source>Back</source>
-                <target>Zurück</target>
-            </trans-unit>
-
 
 
             <!-- Partials/Registration/SocialMedia/Facebook.html -->

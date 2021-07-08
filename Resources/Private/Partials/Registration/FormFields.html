@@ -3,13 +3,13 @@
     data-namespace-typo3-fluid="true">
 
     <div class="form__field width50 break-after">
-        <label class="form-label" for="gender">
+        <label for="gender">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender" />
             <f:render partial="LabelSuffix" arguments="{field: 'gender', frontendUser: frontendUser}" />
         </label>
         <f:form.select
             id="gender"
-            class="select-field select-field--longer"
+            class="select-field"
             property="txRkwregistrationGender"
             options="{99: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.99\")}', 0: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.0\")}', 1: '{f:translate(key:\"tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.1\")}'}" optionValueField="uid" optionLabelField="name"
         />
@@ -20,7 +20,7 @@
     </f:if>
 
     <div class="form__field width50">
-        <label class="form-label" for="firstname">
+        <label for="firstname">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.first_name" />
             <f:render partial="LabelSuffix" arguments="{field: 'firstName', frontendUser: frontendUser}" />
         </label>
@@ -33,7 +33,7 @@
     </div>
 
     <div class="form__field width50">
-        <label class="form-label" for="lastname">
+        <label for="lastname">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.last_name" />
             <f:render partial="LabelSuffix" arguments="{field: 'lastName', frontendUser: frontendUser}" />
         </label>
@@ -46,7 +46,7 @@
     </div>
 
     <div class="form__field width50">
-        <label class="form-label" for="email">
+        <label for="email">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.email" />
             <f:render partial="LabelSuffix" arguments="{field: 'email', frontendUser: frontendUser}" />
         </label>
@@ -60,7 +60,7 @@
     </div>
 
     <div class="form__field width50">
-        <label class="form-label" for="company">
+        <label for="company">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.company" />
             <f:render partial="LabelSuffix" arguments="{field: 'company', frontendUser: frontendUser}" />
         </label>
@@ -72,7 +72,7 @@
     </div>
 
     <div class="form__field width50">
-        <label class="form-label" for="address">
+        <label for="address">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.address" />
             <f:render partial="LabelSuffix" arguments="{field: 'address', frontendUser: frontendUser}" />
         </label>
@@ -85,7 +85,7 @@
     </div>
 
     <div class="form__field width50">
-        <label class="form-label" for="zip">
+        <label for="zip">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.zip" />
             <f:render partial="LabelSuffix" arguments="{field: 'zip', frontendUser: frontendUser}" />
         </label>
@@ -98,7 +98,7 @@
     </div>
 
     <div class="form__field width50">
-        <label class="form-label" for="city">
+        <label for="city">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.city" />
             <f:render partial="LabelSuffix" arguments="{field: 'city', frontendUser: frontendUser}" />
         </label>
@@ -112,7 +112,7 @@
 
     <!--
     <div class="form__field width50">
-        <label class="form-label" for="telephone">
+        <label for="telephone">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.telephone" />
             <f:render partial="LabelSuffix" arguments="{field: 'telephone', frontendUser: frontendUser}" />
         </label>
@@ -120,7 +120,7 @@
     </div>
 
     <div class="form__field width50">
-        <label class="form-label" for="fax">
+        <label for="fax">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.fax" />
             <f:render partial="LabelSuffix" arguments="{field: 'fax', frontendUser: frontendUser}" />
         </label>
@@ -128,7 +128,7 @@
     </div>
 
     <div class="form__field width50">
-        <label class="form-label" for="mobile">
+        <label for="mobile">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_mobile" />
             <f:render partial="LabelSuffix" arguments="{field: 'mobile', frontendUser: frontendUser}" />
         </label>
@@ -136,7 +136,7 @@
     </div>
     -->
     <div class="form__field width50">
-        <label class="form-label" for="www">
+        <label for="www">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.www" />
             <f:render partial="LabelSuffix" arguments="{field: 'www', frontendUser: frontendUser}" />
         </label>
@@ -145,12 +145,12 @@
             property="www"
             value="{frontendUser.www}"
             name="frontendUser.www"
-            type="url"
+            type="text"
         />
     </div>
 
     <div class="form__field width50">
-        <label class="form-label" for="facebook">
+        <label for="facebook">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_url" />
             <f:render partial="LabelSuffix" arguments="{field: 'txRkwregistrationFacebookUrl', frontendUser: frontendUser}" />
         </label>
@@ -158,12 +158,12 @@
             id="facebook"
             property="txRkwregistrationFacebookUrl"
             value="{frontendUser.txRkwregistrationFacebookUrl}"
-            type="url"
+            type="text"
         />
     </div>
 
     <div class="form__field width50">
-        <label class="form-label" for="twitter">
+        <label for="twitter">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_url" />
             <f:render partial="LabelSuffix" arguments="{field: 'txRkwregistrationTwitterUrl', frontendUser: frontendUser}" />
         </label>
@@ -171,7 +171,7 @@
             id="twitter"
             property="txRkwregistrationTwitterUrl"
             value="{frontendUser.txRkwregistrationTwitterUrl}"
-            type="url"
+            type="text"
         />
     </div>
 

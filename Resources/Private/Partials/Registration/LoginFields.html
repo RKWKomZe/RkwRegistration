@@ -1,0 +1,27 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true">
+
+
+    <div class="form__field width100">
+        <label for="username">
+            <f:translate key="tx_rkwregistration_domain_model_frontenduser.username" />
+        </label>
+        <f:form.textfield
+            id="username"
+            name="username"
+            value="{username}"
+            type="email"
+            additionalAttributes="{autocomplete:'email'}"/>
+    </div>
+
+    <div class="form__field width100">
+        <label for="password" >
+            <f:translate key="tx_rkwregistration_domain_model_frontenduser.password" />
+        </label>
+        <f:form.password
+            id="password"
+            name="password" />
+    </div>
+
+
+</html>
