@@ -4,8 +4,6 @@ namespace RKW\RkwRegistration\Utility;
 
 use RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -45,7 +43,7 @@ class FrontendUserUtility
         $frontendUser = $userData;
         if (is_array($userData)) {
             /** @var FrontendUser $frontendUser */
-            $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\FrontendUser');
+            $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\FrontendUser::class);
             foreach ($userData as $key => $value) {
                 $setter = 'set' . ucfirst(GeneralUtility::camelize($key));
                 if (method_exists($frontendUser, $setter)) {

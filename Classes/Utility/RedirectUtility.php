@@ -47,7 +47,7 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
             ->setCreateAbsoluteUri($createAbsoluteUri)
             ->setLinkAccessRestrictedPages($linkAccessRestrictedPages)
             ->setUseCacheHash($useCacheHash)
-            ->build();
+            ->buildFrontendUri();
 
         return self::checkRedirectUrl($redirectUrl);
     }
@@ -184,9 +184,9 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
                 ->setCreateAbsoluteUri(true)
                 ->setLinkAccessRestrictedPages(true)
                 ->setUseCacheHash(false)
-                ->build();
+                ->buildFrontendUri();
 
-            return $redirectUrl;
+            return self::checkRedirectUrl($redirectUrl);
         }
 
         // if there is no redirect set

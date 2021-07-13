@@ -59,7 +59,7 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Generates a salted password for the user
      *
-     * @deprecated This function will be removed soon. Use generatePassword ans saltPassword instead
+     * @deprecated This function will be removed soon. Use generatePassword and saltPassword instead
      *
      * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser
      * @param string $plaintextPassword
@@ -100,8 +100,7 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
         $length = $length < self::PASSWORD_MAX_LENGTH ? $length : self::PASSWORD_MAX_LENGTH;
 
         $letters = '0123456789abcdefghjkmnopqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ';
-        // @toDo: Zeichen teilweise doppelt
-        $symbols = ',;:!?.$/*-+&@_+;./*&?$-!,';
+        $symbols = ',.;:-_<>|+*~!"§$%&/()=?[]{}';
 
         if (!$addNonAlphanumeric) {
             return substr(str_shuffle($letters), 0, $length);

@@ -1,0 +1,23 @@
+plugin.tx_rkwregistration  {
+    persistence {
+        // cat=plugin.tx_rkwshop_rkwshop//a; type=string; label=Default storage PID
+        storagePid = 1
+    }
+
+    settings {
+    }
+}
+
+// for cronjob
+module.tx_rkwregistration < plugin.tx_rkwregistration
+
+# Default PAGE object:
+page = PAGE
+# Define output for typeNum=0, the default type.
+page.typeNum = 0
+page.10 = TEXT
+page.10.value = HELLO WORLD!
+
+config {
+    tx_realurl_enable = 1
+}

@@ -34,6 +34,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
  */
 class PasswordUtilityTest extends FunctionalTestCase
 {
+
     /**
      * @var string[]
      */
@@ -76,11 +77,6 @@ class PasswordUtilityTest extends FunctionalTestCase
                 'EXT:rkw_registration/Tests/Integration/Utility/PasswordUtilityTest/Fixtures/Frontend/Configuration/Rootpage.typoscript',
             ]
         );
-
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
-
 
     }
 
@@ -192,6 +188,52 @@ class PasswordUtilityTest extends FunctionalTestCase
             $individualLength++;
         } while ($individualLength <= PasswordUtility::PASSWORD_MIN_LENGTH);
 
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function generatePasswordReturnsSolelyAlphanumericSigns ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is nothing special
+         * When a password is generated
+         * Then a the password with default settings has only alphanumeric signs
+         */
+
+        /** @var PasswordUtility $utility */
+        $utility = GeneralUtility::makeInstance(PasswordUtility::class);
+
+        $result = $utility->generatePassword();
+
+        static::assertTrue(ctype_alnum($result));
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function generatePasswordReturnsAlsoNonAlphanumericSigns ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is nothing special
+         * When a password is generated
+         * Then a the password with default settings has only alphanumeric signs
+         */
+
+        /** @var PasswordUtility $utility */
+        $utility = GeneralUtility::makeInstance(PasswordUtility::class);
+
+        $result = $utility->generatePassword(PasswordUtility::PASSWORD_DEFAULT_LENGTH, true);
+
+        static::assertFalse(ctype_alnum($result));
     }
 
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <pages>
+        <uid>1</uid>
+        <pid>0</pid>
+        <title>Rootpage</title>
+        <tx_rkwbasics_teaser_text />
+        <tx_rkwbasics_information />
+        <doktype>1</doktype>
+        <perms_everybody>15</perms_everybody>
+    </pages>
+
+    <sys_domain>
+        <uid>3</uid>
+        <pid>1</pid>
+        <domainName>rkw-kompetenzzentrum.rkw.local</domainName>
+        <redirectHttpStatusCode>301</redirectHttpStatusCode>
+        <tx_rkwregistration_page_login_guest>50</tx_rkwregistration_page_login_guest>
+    </sys_domain>
+</dataset>
