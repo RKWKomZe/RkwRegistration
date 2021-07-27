@@ -195,7 +195,7 @@ class RegistrationService extends AbstractService
                     $frontendUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
 
                     $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-                    /** @var \RKW\RkwRegistration\Service\FrontendUserRegisterService $frontendUserRegisterService */
+                    /** @var FrontendUserRegisterService $frontendUserRegisterService */
                     $frontendUserRegisterService = $objectManager->get('RKW\\RkwRegistration\\Service\\FrontendUserRegisterService', $frontendUser);
                     $frontendUserRegisterService->setClearanceAndLifetime(true);
 
@@ -397,8 +397,8 @@ class RegistrationService extends AbstractService
         }
 
         $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var \RKW\RkwRegistration\Service\FrontendUserRegisterService $frontendUserRegisterService */
-        $frontendUserRegisterService = $objectManager->get('RKW\\RkwRegistration\\Service\\FrontendUserRegisterService', $frontendUser);
+        /** @var FrontendUserRegisterService $frontendUserRegisterService */
+        $frontendUserRegisterService = $objectManager->get(FrontendUserRegisterService::class, $frontendUser);
 
         // set email as fallback
         if (!$frontendUser->getUsername()) {
@@ -406,7 +406,7 @@ class RegistrationService extends AbstractService
         }
 
         // check username (aka email)
-        if (!$frontendUserRegisterService->validUsername()) {
+        if (!$frontendUserRegisterService->validateEmail()) {
             $this->getLogger()->log(LogLevel::ERROR, sprintf('"%s" is not a valid username.', strtolower($frontendUser->getUsername())));
             throw new Exception('No valid username given.', 1407312133);
         }
@@ -439,7 +439,7 @@ class RegistrationService extends AbstractService
 
                 if (
                     ($frontendUser->getEmail() != strtolower($frontendUserDatabase->getEmail()))
-                    && (!$frontendUserRegisterService->validEmailUnique($frontendUserDatabase))
+                    && (!$frontendUserRegisterService->uniqueEmail($frontendUserDatabase))
                 ) {
 
                     $this->getLogger()->log(LogLevel::ERROR, sprintf('E-mail "%s" is already used by another user.', strtolower($frontendUser->getEmail())));
@@ -764,8 +764,6 @@ class RegistrationService extends AbstractService
         $this->getLogger()->log(LogLevel::WARNING, sprintf('Something unexpected went wrong while checking an registration.'));
         return 0;
     }
-
-
 
 
 

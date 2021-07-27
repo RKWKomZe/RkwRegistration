@@ -1,5 +1,5 @@
 <?php
-namespace RKW\RkwRegistration\Tests\Integration\Utility;
+namespace RKW\RkwRegistration\Tests\Functional\Utility;
 
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
@@ -81,17 +81,17 @@ class RegistrationServiceTest extends FunctionalTestCase
                 'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
-                'EXT:rkw_registration/Tests/Integration/Utility/RegistrationServiceTest/Fixtures/Frontend/Configuration/Rootpage.typoscript',
+                'EXT:rkw_registration/Tests/Functional/Service/RegistrationServiceTest/Fixtures/Frontend/Configuration/Rootpage.typoscript',
             ]
         );
 
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         // Repository
-        $this->frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
-        $this->registrationRepository = $this->objectManager->get(RegistrationRepository::class);
+        $this->frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
+        $this->registrationRepository = $objectManager->get(RegistrationRepository::class);
         // Service
-        $this->registrationService = $this->objectManager->get(RegistrationService::class);
+        $this->registrationService = $objectManager->get(RegistrationService::class);
 
         $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromAddress'] = 'mail@default.rkw';
         $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromName'] = 'RKW Default';

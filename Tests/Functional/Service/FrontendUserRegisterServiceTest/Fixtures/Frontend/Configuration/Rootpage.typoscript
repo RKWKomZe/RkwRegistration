@@ -5,9 +5,17 @@ plugin.tx_rkwregistration  {
     }
 
     settings {
-
+        users {
+            languageKeyOnRegister = de
+            daysForOptIn = 7
+            lifetime = 0
+            groupsOnRegister = 55, 56
+            groupsOnRegisterGuest = 56
+        }
     }
 }
 
 // for cronjob
 module.tx_rkwregistration < plugin.tx_rkwregistration
+
+

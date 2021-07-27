@@ -34,7 +34,6 @@ class FrontendUserUtility
      * converts an feUser array to an object
      * Hint: By default a new created FrontendUser is DISABLED = 1 !
      *
-     * validUsername
      * array $userData
      * @return FrontendUser
      */

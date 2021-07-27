@@ -3,6 +3,7 @@
 namespace RKW\RkwRegistration\Service;
 
 use \RKW\RkwBasics\Utility\GeneralUtility;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -95,14 +96,13 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
      * function getMandatoryFieldsOfUser
      * gives the required fields back that needs to fill out a user in the light of its service affiliation
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param FrontendUser $frontendUser
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function getMandatoryFieldsOfUser(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser = null, \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup = null)
+    public function getMandatoryFieldsOfUser(FrontendUser $frontendUser = null, \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup = null)
     {
-
         // get mandatory fields from TypoScript
         $settings = $this->getSettings();
         $requiredFields = array();
@@ -124,7 +124,7 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
             }
 
 
-            if ($frontendUser) {
+            if ($frontendUser instanceof FrontendUser) {
 
                 //=======================================
                 // get mandatory fields by fe_groups the user is registered for
@@ -162,9 +162,8 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
         }
 
         return $requiredFields;
-        //===
-
     }
+
 
 
     /**
@@ -182,14 +181,11 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function checkTokens($tokenYes, $tokenNo, $userSha1)
     {
-
-
         // load service by SHA-token
         $service = $this->getServiceRepository()->findOneByServiceSha1($userSha1);
         if (!$service instanceof \RKW\RkwRegistration\Domain\Model\Service) {
             return 0;
         }
-        //====
 
         // is token already invalid?
         if (
@@ -200,7 +196,6 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
             $this->getServiceRepository()->remove($service);
 
             return 0;
-            //====
         }
 
         // load fe-user
@@ -271,10 +266,7 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
         $this->getServiceRepository()->remove($service);
         $this->getPersistanceManager()->persistAll();
 
-
         return 0;
-        //====
-
     }
 
 
@@ -282,14 +274,13 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
      * Adds user to all granted groups
      * IMPORTANT: No more checks are done here! This method should be called only when all mandatory fields are set!
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param FrontendUser $frontendUser
      * @return boolean
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
-    public function addUserToAllGrantedGroups(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser)
+    public function addUserToAllGrantedGroups(FrontendUser $frontendUser)
     {
-
         // find all services which have been granted by admin
         $cnt = 0;
         if ($services = $this->getServiceRepository()->findEnabledByAdminByUser($frontendUser)) {
@@ -323,8 +314,6 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
         }
 
         return (boolean)$cnt;
-        //===
-
     }
 
 
@@ -335,14 +324,12 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
      */
     protected function getServiceRepository()
     {
-
         if (!$this->serviceRepository) {
             $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
             $this->serviceRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\ServiceRepository');
         }
 
         return $this->serviceRepository;
-        //===
     }
 
 
@@ -353,14 +340,12 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
      */
     protected function getFrontendUserRepository()
     {
-
         if (!$this->frontendUserRepository) {
             $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
             $this->frontendUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\FrontendUserRepository');
         }
 
         return $this->frontendUserRepository;
-        //===
     }
 
 
@@ -371,14 +356,12 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
      */
     protected function getPersistanceManager()
     {
-
         if (!$this->persistenceManager) {
             $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
             $this->persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
         }
 
         return $this->persistenceManager;
-        //===
     }
 
 
@@ -389,14 +372,12 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
      */
     protected function getSignalSlotDispatcher()
     {
-
         if (!$this->signalSlotDispatcher) {
             $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
             $this->signalSlotDispatcher = $objectManager->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
         }
 
         return $this->signalSlotDispatcher;
-        //===
     }
 
 
@@ -408,7 +389,6 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
      */
     protected function getSettings()
     {
-
         if (!$this->settings) {
             $this->settings = GeneralUtility::getTyposcriptConfiguration('Rkwregistration');
         }
@@ -417,10 +397,7 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
             return array();
         }
 
-        //===
-
         return $this->settings;
-        //===
     }
 
 

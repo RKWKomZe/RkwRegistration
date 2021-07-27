@@ -152,7 +152,6 @@ class FrontendUserSessionUtility
      *
      * @toDo: This function could be also a static part of a FrontendUserUtility
      *
-     * validUsername
      * array $userData
      * @return FrontendUser
      */

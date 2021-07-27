@@ -6,10 +6,13 @@ use \RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use \RKW\RkwRegistration\Utility\PasswordUtility;
 use RKW\RkwRegistration\Utility\RemoteUtility;
 use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -35,6 +38,11 @@ use TYPO3\CMS\Core\Log\LogLevel;
 class FrontendUserRegisterService extends AbstractService
 {
     /**
+     * @var array
+     */
+    protected $settings;
+
+    /**
      * FrontendUser
      *
      * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
@@ -53,6 +61,8 @@ class FrontendUserRegisterService extends AbstractService
      */
     public function __construct(FrontendUser $frontendUser)
     {
+        $this->settings = $this->getSettings();
+
         $this->frontendUser = $frontendUser;
 
         if ($frontendUser->_isNew()) {
@@ -103,15 +113,19 @@ class FrontendUserRegisterService extends AbstractService
 
 
     /**
-     * enables a newly created frontendUser (if not enabled yet)
+     * enables or disables a created frontendUser (if not enabled yet)
+     * Hint: This function is made for new created frontendUser and should not used for already existing users with lifetime
      *
      * @param bool $enable if the user should be enabled or not
      * @return void
      */
     public function setClearanceAndLifetime($enable = false)
     {
-        if (!$this->frontendUser->getDisable()) {
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Cannot enable active user.', $this->frontendUser->getUid()));
+        if (
+            $enable
+            && !$this->frontendUser->getDisable()
+        ) {
+            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Cannot enable active user %s.', $this->frontendUser->getUid()));
         }
 
         // enable or disable
@@ -137,43 +151,34 @@ class FrontendUserRegisterService extends AbstractService
     /**
      * Removes existing account of FE-user
      *
-     * @param string $category
      * @return boolean
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      */
-    public function delete($category = null)
+    public function delete(): bool
     {
-        // check if user is logged in - only the user himself can delete his account!
         if (FrontendUserSessionUtility::isUserLoggedIn($this->frontendUser)) {
-
             FrontendUserSessionUtility::logout();
-            $this->getFrontendUserRepository()->remove($this->frontendUser);
-            $this->getPersistenceManager()->persistAll();
-
-            return true;
         }
 
-        $this->getLogger()->log(LogLevel::WARNING, sprintf('Could not delete user "%s". User is not logged in.', strtolower($this->frontendUser->getUsername())));
+        // @toDo: Check it: Added "setDelete" while writing the functions tests. The remove itself does not work. Should not be necessary
+        $this->frontendUser->setDeleted(1);
+        $this->getFrontendUserRepository()->remove($this->frontendUser);
+        $this->getPersistenceManager()->persistAll();
 
-        return false;
-        //===
+        return true;
     }
 
 
 
     /**
      * Checks if FE-User has valid email
-     *
-     * @toDo: This function could be also a static part of a FrontendUserUtility
+     * Because we're using the email also as username, this function can also be used as "validUsername"
      *
      * @param string | \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $email
      * @return boolean
      */
-    public function validEmail($email = null)
+    public function validateEmail($email = null): bool
     {
-
         if ($email) {
 
             if ($email instanceof \TYPO3\CMS\Extbase\Domain\Model\FrontendUser) {
@@ -187,58 +192,34 @@ class FrontendUserRegisterService extends AbstractService
             ) {
                 return true;
             }
-            //===
         }
 
         return false;
-        //===
     }
 
 
 
     /**
-     * Checks if FE-User has valid email
+     * Checks if an email address is unique
      *
      * @param string | \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $email
-     * @return boolean
+     * @return boolean Return true is email still available (not used by another FrontendUser)
      */
-    public function validEmailUnique($email)
+    public function uniqueEmail($email): bool
     {
         if ($email instanceof \TYPO3\CMS\Extbase\Domain\Model\FrontendUser) {
             $email = $email->getEmail();
         }
 
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $this->frontendUserRepository */
-        $this->frontendUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\FrontendUserRepository');
-        $dbFrontendUser = $this->frontendUserRepository->findOneByEmailOrUsernameInactive(strtolower($email));
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var FrontendUserRepository $frontendUserRepository */
+        $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
+        $dbFrontendUser = $frontendUserRepository->findOneByEmailOrUsernameInactive(strtolower($email));
 
         if (
-            (\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail(strtolower($email)))
-            && (strpos(strtolower($email), '@facebook.com') === false)
-            && (strpos(strtolower($email), '@twitter.com') === false)
-            && (
-                !$dbFrontendUser
-                || $dbFrontendUser->getUsername() == $this->frontendUser->getUsername()
-            )
+            !$dbFrontendUser
+            || ($dbFrontendUser->getUsername() == $this->frontendUser->getUsername())
         ) {
-            return true;
-        }
-        return false;
-    }
-
-
-
-    /**
-     * Checks if FE-User has a a valid username
-     *
-     * @toDo: This function could be also a static part of a FrontendUserUtility
-     *
-     * @return boolean
-     */
-    public function validUsername()
-    {
-        if (\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail(strtolower($this->frontendUser->getEmail()))) {
             return true;
         }
         return false;
@@ -293,6 +274,28 @@ class FrontendUserRegisterService extends AbstractService
 
         return $plaintextPassword;
     }
+
+
+    /**
+     * Returns TYPO3 settings
+     *
+     * @return array
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    protected function getSettings()
+    {
+
+        if (!$this->settings) {
+            $this->settings = GeneralUtility::getTyposcriptConfiguration('Rkwregistration');
+        }
+
+        if (!$this->settings) {
+            return array();
+        }
+
+        return $this->settings;
+    }
+
 
 
     /**

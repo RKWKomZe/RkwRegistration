@@ -15,6 +15,8 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Service\FrontendUserRegisterService;
+use RKW\RkwRegistration\Service\RegistrationService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -140,12 +142,11 @@ class FrontendUserController extends AbstractController
             $this->redirectToLogin();
 
             return;
-            //===
         }
 
-        /** @var \RKW\RkwRegistration\Service\RegistrationService $registration */
-        $registration = GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
-        $registration->delete($frontendUser);
+        /** @var FrontendUserRegisterService $frontendUserRegisterService */
+        $frontendUserRegisterService = GeneralUtility::makeInstance(FrontendUserRegisterService::class, $frontendUser);
+        $frontendUserRegisterService->delete();
 
         $this->addFlashMessage(
             LocalizationUtility::translate(
@@ -160,9 +161,6 @@ class FrontendUserController extends AbstractController
         $this->redirect('index', 'Auth');
 
         return;
-        //===
-
-
     }
 }
 

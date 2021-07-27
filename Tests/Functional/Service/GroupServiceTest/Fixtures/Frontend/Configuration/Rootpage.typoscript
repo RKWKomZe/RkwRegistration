@@ -4,10 +4,9 @@ plugin.tx_rkwregistration  {
         storagePid = 1
     }
 
-    settings {
-
-    }
 }
 
 // for cronjob
 module.tx_rkwregistration < plugin.tx_rkwregistration
+
+
