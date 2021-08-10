@@ -55,6 +55,7 @@ $tempCols = [
 			'items' => [
 				['LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.neutral', 0],
 			],
+            'default' => 0
 		],
 	],
 
@@ -65,7 +66,8 @@ $tempCols = [
             'type'=>'input',
             'size' => 30,
             'max' => '256',
-            'eval' => 'trim'
+            'eval' => 'trim',
+            'default' => 0
         ],
     ],
 

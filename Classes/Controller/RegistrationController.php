@@ -16,8 +16,10 @@ namespace RKW\RkwRegistration\Controller;
  */
 
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Repository\TitleRepository;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 
@@ -92,7 +94,7 @@ class RegistrationController extends AbstractController
 
 
     /**
-     * Takes optin parameters and checks them
+     * Takes optIn parameters and checks them
      *
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
@@ -111,7 +113,7 @@ class RegistrationController extends AbstractController
 
         /** @var \RKW\RkwRegistration\Service\RegistrationService $register */
         $register = GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
-        $check = $register->checkTokens($tokenYes, $tokenNo, $userSha1, $this->request);
+        $check = $register->processOptIn($tokenYes, $tokenNo, $userSha1, $this->request);
 
         if ($check == 1) {
 
@@ -152,6 +154,8 @@ class RegistrationController extends AbstractController
      * action register
      * RKW own register action
      *
+     * ---Ggf in "FrontendUserController" verschieben?---
+     *
      * @param FrontendUser $newFrontendUser
      * @ignorevalidation $newFrontendUser
      * @return void
@@ -168,21 +172,20 @@ class RegistrationController extends AbstractController
             }
 
             $this->redirect('index');
-            //===
         }
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
-        $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
+        /** @var ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var TitleRepository $titleRepository */
+        $titleRepository = $objectManager->get(TitleRepository::class);
 
         $titles = $titleRepository->findAllOfType(true, false, false);
 
         $this->view->assignMultiple(
             array(
-                'newFrontendUser' => $newFrontendUser,
-                'termsPid'        => intval($this->settings['users']['termsPid']),
-                'titles' => $titles
+                'newFrontendUser'   => $newFrontendUser,
+                'termsPid'          => intval($this->settings['users']['termsPid']),
+                'titles'            => $titles
             )
         );
     }
@@ -191,6 +194,8 @@ class RegistrationController extends AbstractController
     /**
      * action create
      * created a rkw user
+     *
+     * ---Ggf in "FrontendUserController" verschieben?---
      *
      * @param FrontendUser $newFrontendUser
      * @param integer                                        $terms
@@ -216,7 +221,6 @@ class RegistrationController extends AbstractController
                 AbstractMessage::ERROR
             );
             $this->forward('new', null, null, array('newFrontendUser' => $newFrontendUser));
-            //===
         }
 
         if (!$privacy) {
@@ -228,7 +232,6 @@ class RegistrationController extends AbstractController
                 AbstractMessage::ERROR
             );
             $this->forward('new', null, null, array('newFrontendUser' => $newFrontendUser));
-            //===
         }
 
         if ($this->frontendUserRepository->findOneByUsernameInactive($newFrontendUser->getEmail())) {
@@ -242,7 +245,6 @@ class RegistrationController extends AbstractController
             );
 
             $this->forward('new', null, null, array('newFrontendUser' => $newFrontendUser));
-            //===
         }
 
         // register new user

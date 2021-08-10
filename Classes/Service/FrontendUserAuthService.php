@@ -4,9 +4,13 @@ namespace RKW\RkwRegistration\Service;
 
 use \RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use RKW\RkwRegistration\Domain\Repository\GuestUserRepository;
 use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use \TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use \TYPO3\CMS\Core\Database\ConnectionPool;
 use \TYPO3\CMS\Core\Database\Connection;
@@ -62,7 +66,7 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
     /**
      * FrontendUserRepository
      *
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @var FrontendUserRepository
      */
     protected $frontendUserRepository;
 
@@ -88,6 +92,8 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
     {
         $this->authStatusResult = $authStatusResult;
     }
+
+
 
     /**
      * @return bool
@@ -124,7 +130,7 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
         */
 
         //$user = $this->fetchUserRecord($this->login['uname']);
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
+        /** @var FrontendUserRepository $frontendUserRepository */
         //$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         //$frontendUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\FrontendUserRepository');
         //$user = $frontendUserRepository->findOneByUsername(strtolower(trim($this->login['uname'])));
@@ -227,10 +233,9 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
      */
     public function authGuest($token)
     {
-
-        /** @var \RKW\RkwRegistration\Domain\Repository\GuestUserRepository $frontendUserRepository */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $guestUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\GuestUserRepository');
+        /** @var GuestUserRepository $frontendUserRepository */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+        $guestUserRepository = $objectManager->get(GuestUserRepository::class);
 
         // check if given token exists and has the expected length!
         if (
@@ -383,7 +388,7 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
      */
     protected static function getLogger()
     {
-        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
     }
 
 
@@ -391,14 +396,14 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
     /**
      * Returns FrontendUserRepository
      *
-     * @return \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @return FrontendUserRepository
      */
     protected function getFrontendUserRepository()
     {
 
         if (!$this->frontendUserRepository) {
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            $this->frontendUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\FrontendUserRepository');
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+            $this->frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
         }
 
         return $this->frontendUserRepository;

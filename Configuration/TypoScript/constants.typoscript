@@ -95,6 +95,7 @@ plugin.tx_rkwregistration {
             lifetime =
 
             # cat=plugin.tx_rkwregistration//a; type=integer; label=DEPRECATED! Lifetime of registered anonymous users (default = 7776000 = 90 days)
+            # @toDo @deprecated
             lifetimeAnonymous = 7776000
 
             # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered guest users (default = 7776000 = 90 days)

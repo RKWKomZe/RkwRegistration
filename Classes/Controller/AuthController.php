@@ -2,9 +2,15 @@
 
 namespace RKW\RkwRegistration\Controller;
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\GuestUser;
+use RKW\RkwRegistration\Domain\Model\Pages;
+use RKW\RkwRegistration\Domain\Model\SysDomain;
 use RKW\RkwRegistration\Service\AuthService as Authentication;
+use RKW\RkwRegistration\Service\FrontendUserAuthService;
 use RKW\RkwRegistration\Utility\RedirectUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -93,7 +99,6 @@ class AuthController extends AbstractController
 
 
         // Else: Do nothing and show login form!
-
     }
 
 
@@ -107,7 +112,6 @@ class AuthController extends AbstractController
      */
     public function loginExternalAction()
     {
-
         // if user is a GUEST, make a redirect
         // @toDo: WHY?
         /*
@@ -199,8 +203,8 @@ class AuthController extends AbstractController
 
                         $sysDomain = $this->sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
                         if (
-                            $sysDomain instanceof \RKW\RkwRegistration\Domain\Model\SysDomain
-                            && $sysDomain->getTxRkwregistrationPageLoginAnonymous() instanceof \RKW\RkwRegistration\Domain\Model\Pages
+                            $sysDomain instanceof SysDomain
+                            && $sysDomain->getTxRkwregistrationPageLoginAnonymous() instanceof Pages
                         ) {
                             $targetPageUid = $sysDomain->getTxRkwregistrationPageLoginAnonymous()->getUid();
                         }
@@ -227,7 +231,7 @@ class AuthController extends AbstractController
                             'registrationController.error.invalid_anonymous_token', $this->extensionName
                         ),
                         '',
-                        \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                        AbstractMessage::ERROR
                     );
                 }
 
@@ -252,7 +256,7 @@ class AuthController extends AbstractController
                     'registrationController.error.anonymous_login_impossible', $this->extensionName
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
 
         }
@@ -281,7 +285,7 @@ class AuthController extends AbstractController
                     'registrationController.error.anonymous_login_impossible', $this->extensionName
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
 
             $this->redirect('loginExternal');
@@ -333,13 +337,17 @@ class AuthController extends AbstractController
      */
     public function loginAction($username, $password)
     {
+
+
+        // @toDo: Möglicherweise eine nicht Domain-Gebundene Validierungs-Klasse einfügen, um folgenden Abfragecode auszulagern?
+
         if (!$username) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'registrationController.error.login_no_username', $this->extensionName
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
             $this->redirect('index');
         }
@@ -350,13 +358,13 @@ class AuthController extends AbstractController
                     'registrationController.error.login_no_password', $this->extensionName
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
             $this->redirect('index');
         }
 
-        /** @var \RKW\RkwRegistration\Service\FrontendUserAuthService $authService */
-        $authService = GeneralUtility::makeInstance(\RKW\RkwRegistration\Service\FrontendUserAuthService::class);
+        /** @var FrontendUserAuthService $authService */
+        $authService = GeneralUtility::makeInstance(FrontendUserAuthService::class);
         $authService->setLoginData($username, $password);
         $frontendUserArray = $authService->getUser();
         // do it: check given user data
@@ -365,9 +373,8 @@ class AuthController extends AbstractController
         if (
             $authResult === 200
             && ($frontendUser = $this->frontendUserRepository->findOneByUsername(strtolower(trim($username))))
-            && ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser)
+            && ($frontendUser instanceof FrontendUser)
         ) {
-
             // ! LOGIN SUCCESS !
 
             FrontendUserSessionUtility::login($frontendUser);
@@ -376,8 +383,8 @@ class AuthController extends AbstractController
             $sysDomain = $this->sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
 
             if (
-                $sysDomain instanceof \RKW\RkwRegistration\Domain\Model\SysDomain
-                && $sysDomain->getTxRkwregistrationPageLogin() instanceof \RKW\RkwRegistration\Domain\Model\Pages
+                $sysDomain instanceof SysDomain
+                && $sysDomain->getTxRkwregistrationPageLogin() instanceof Pages
             ) {
                 $this->redirectToUri(RedirectUtility::urlToPageUid($sysDomain->getTxRkwregistrationPageLogin()->getUid()));
             }
@@ -387,7 +394,6 @@ class AuthController extends AbstractController
             }
 
             $this->redirect('index', 'Registration');
-            //===
         }
 
         // ! LOGIN FAILED !
@@ -402,7 +408,7 @@ class AuthController extends AbstractController
                     array(($this->settings['users']['maxLoginErrors'] ? intval($this->settings['users']['maxLoginErrors']) : 10))
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
 
             // wrong login
@@ -414,7 +420,7 @@ class AuthController extends AbstractController
                         'registrationController.error.wrong_login', $this->extensionName
                     ),
                     '',
-                    \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                    AbstractMessage::ERROR
                 );
 
                 // user not found
@@ -425,7 +431,7 @@ class AuthController extends AbstractController
                         'registrationController.error.user_not_found', $this->extensionName
                     ),
                     '',
-                    \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                    AbstractMessage::ERROR
                 );
             }
         }
@@ -471,8 +477,8 @@ class AuthController extends AbstractController
         // 1. Redirect according to SysDomain entry
         $sysDomain = $this->sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
         if (
-            $sysDomain instanceof \RKW\RkwRegistration\Domain\Model\SysDomain
-            && $sysDomain->getTxRkwregistrationPageLogout() instanceof \RKW\RkwRegistration\Domain\Model\Pages
+            $sysDomain instanceof SysDomain
+            && $sysDomain->getTxRkwregistrationPageLogout() instanceof Pages
         ) {
             $this->redirectToUri(RedirectUtility::urlToPageUid($sysDomain->getTxRkwregistrationPageLogout()->getUid()));
         }
@@ -489,9 +495,7 @@ class AuthController extends AbstractController
 
     /**
      * action logoutExternal
-     * Hint: primarily for anonymous users
-     *
-     * @deprecated Does we really need this?!?!?!?!? Either FrontendUser and GuestUser are both FeUser. So the logoutAction should work for both
+     * Primarily handles GuestUser. Is forwarding standard FrontendUsers.
      *
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
@@ -499,33 +503,25 @@ class AuthController extends AbstractController
      */
     public function logoutExternalAction()
     {
+        // simply logout anonymous users and show hint
+        if ($this->getFrontendUser() instanceof GuestUser) {
 
-        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+            FrontendUserSessionUtility::logout();
 
-        //var_dump("LogoutExternal here. This function is deprecated. Please use the 'logoutAction' instead"); exit;
-        // redirect logged-in users to welcome pages
-        if ($frontendUser = $this->getFrontendUserAnonymous()) {
-
-            // simply logout anonymous users and show hint
-            if ($frontendUser->getTxRkwregistrationIsAnonymous()) {
-
-                FrontendUserSessionUtility::logout();
-
-                // redirect to login page including message
-                if ($this->settings['users']['loginExternalPid']) {
-                    $this->redirect('loginExternal', null, null, array('logoutMessage' => 1), $this->settings['users']['loginExternalPid']);
-                }
-
-                if ($this->settings['users']['loginPid']) {
-                    $this->redirect('index', null, null, array('logoutMessage' => 1), $this->settings['users']['loginPid']);
-                }
-
-                $this->redirect('index');
-
-                // redirect normal users to default logout page
-            } else {
-                $this->redirect('logout', null, null, null, $this->settings['users']['logoutPid']);
+            // redirect to login page including message
+            if ($this->settings['users']['loginExternalPid']) {
+                $this->redirect('loginExternal', null, null, array('logoutMessage' => 1), $this->settings['users']['loginExternalPid']);
             }
+
+            if ($this->settings['users']['loginPid']) {
+                $this->redirect('index', null, null, array('logoutMessage' => 1), $this->settings['users']['loginPid']);
+            }
+
+            $this->redirect('index');
+
+            // redirect normal users to default logout page
+        } else {
+            $this->redirect('logout', null, null, null, $this->settings['users']['logoutPid']);
         }
     }
 

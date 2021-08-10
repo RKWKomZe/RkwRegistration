@@ -245,7 +245,7 @@ class RegistrationService extends AbstractService
      * Checks given tokens from E-mail
      *
      * @deprecated This function will be removed soon. Use processOptIn instead
-     * @see RegistrationService::processOptIn()
+     * @see RegistrationService->processOptIn()
      *
      * @param string $tokenYes
      * @param string $tokenNo
@@ -516,6 +516,8 @@ class RegistrationService extends AbstractService
     /**
      * Creates a new guest FE-user
      *
+     * @deprecated Use GuestRegisterService->register instead
+     *
      * @param int $lifetime Individual lifetime of the guest user. For default value see settings.users.lifetimeGuest
      * @param string $category
      * @return FrontendUser
@@ -603,7 +605,7 @@ class RegistrationService extends AbstractService
     /**
      * setUsersGroupsOnRegister
      *
-     * @deprecated Use Server/FrontendUserRegisterService->setUserGroupsOnRegister instead
+     * @deprecated Use Service/FrontendUserRegisterService->setUserGroupsOnRegister instead
      *
      * @param FrontendUser $frontendUser
      * @param string $userGroups
@@ -769,6 +771,8 @@ class RegistrationService extends AbstractService
 
     /**
      * creates a valid token for a guest user
+     *
+     * @deprecated Use GuestRegisterService->createToken instead
      *
      * @return string
      */

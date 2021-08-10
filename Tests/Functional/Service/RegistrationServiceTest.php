@@ -700,9 +700,6 @@ class RegistrationServiceTest extends FunctionalTestCase
 
 
 
-
-
-
     /**
      * TearDown
      */

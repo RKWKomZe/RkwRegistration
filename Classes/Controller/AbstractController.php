@@ -133,7 +133,6 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      */
     protected function getFrontendUserId()
     {
-
         // is $GLOBALS set?
         if (
             ($GLOBALS['TSFE'])
@@ -141,16 +140,16 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
             && ($GLOBALS['TSFE']->fe_user->user['uid'])
         ) {
             return intval($GLOBALS['TSFE']->fe_user->user['uid']);
-            //===
         }
 
         return null;
-        //===
     }
 
 
     /**
      * Returns current logged in user object
+     *
+     * Hint: Handles GuestUser and normal FrontendUser. Should we split it up?
      *
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|\RKW\RkwRegistration\Domain\Model\GuestUser|NULL
      */
@@ -161,6 +160,7 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
 
             // Guest user?
             $guestUser = $this->guestUserRepository->findByUid(FrontendUserSessionUtility::getFrontendUserId());
+
             if ($guestUser instanceof \RKW\RkwRegistration\Domain\Model\GuestUser) {
                 $this->frontendUser = $guestUser;
             } else {

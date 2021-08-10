@@ -4,6 +4,7 @@ namespace RKW\RkwRegistration\Utility;
 
 use RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Exception;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
@@ -43,12 +44,13 @@ class FrontendUserSessionUtility
      *
      * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser
      * @return void
-     * @throws \RKW\RkwRegistration\Exception
+     * @throws Exception
      */
     public static function login(\TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser)
     {
+
         if (!$frontendUser->getUid()) {
-            throw new \RKW\RkwRegistration\Exception('No valid uid for user given.', 1435002338);
+            throw new Exception('No valid uid for user given.', 1435002338);
         }
 
         $userArray = array(
@@ -131,7 +133,6 @@ class FrontendUserSessionUtility
      */
     public static function getFrontendUserId()
     {
-
         // is $GLOBALS set?
         if (
             ($GLOBALS['TSFE'])
@@ -139,11 +140,9 @@ class FrontendUserSessionUtility
             && ($GLOBALS['TSFE']->fe_user->user['uid'])
         ) {
             return intval($GLOBALS['TSFE']->fe_user->user['uid']);
-            //===
         }
 
         return null;
-        //===
     }
 
 

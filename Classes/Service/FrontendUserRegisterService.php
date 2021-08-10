@@ -10,7 +10,9 @@ use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use \RKW\RkwRegistration\Utility\PasswordUtility;
 use RKW\RkwRegistration\Utility\RemoteUtility;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
@@ -50,7 +52,7 @@ class FrontendUserRegisterService extends AbstractService
     protected $frontendUser;
 
     /**
-     * @var \TYPO3\CMS\Core\Log\Logger
+     * @var Logger
      */
     protected $logger;
 
@@ -61,6 +63,7 @@ class FrontendUserRegisterService extends AbstractService
      */
     public function __construct(FrontendUser $frontendUser)
     {
+        $this->initializeObject();
         $this->settings = $this->getSettings();
 
         $this->frontendUser = $frontendUser;
@@ -125,16 +128,24 @@ class FrontendUserRegisterService extends AbstractService
             $enable
             && !$this->frontendUser->getDisable()
         ) {
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Cannot enable active user %s.', $this->frontendUser->getUid()));
+            $this->getLogger()->log(LogLevel::WARNING, sprintf('Cannot enable active user %s.', $this->frontendUser->getUid()));
         }
 
         // enable or disable
         if ($enable) {
             $this->frontendUser->setDisable(0);
 
-            // set normal lifetime
+            // set frontendUser lifetime
             if (intval($this->settings['users']['lifetime'])) {
                 $this->frontendUser->setEndtime(time() + intval($this->settings['users']['lifetime']));
+            }
+
+            // override if it's a GuestUser
+            if ($this->frontendUser instanceof GuestUser) {
+                // set guestUser lifetime
+                if (intval($this->settings['users']['lifetimeGuest'])) {
+                    $this->frontendUser->setEndtime(time() + intval($this->settings['users']['lifetimeGuest']));
+                }
             }
         } else {
             $this->frontendUser->setDisable(1);
@@ -211,10 +222,7 @@ class FrontendUserRegisterService extends AbstractService
             $email = $email->getEmail();
         }
 
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
-        $dbFrontendUser = $frontendUserRepository->findOneByEmailOrUsernameInactive(strtolower($email));
+        $dbFrontendUser = $this->frontendUserRepository->findOneByEmailOrUsernameInactive(strtolower($email));
 
         if (
             !$dbFrontendUser
@@ -230,6 +238,8 @@ class FrontendUserRegisterService extends AbstractService
     /**
      * setUsersGroupsOnRegister
      *
+     * Hint: Handles FrontendUser AND GuestUser. Split GuestUser part into GuestRegisterService?
+     *
      * @param string $userGroups
      * @return void
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
@@ -243,10 +253,14 @@ class FrontendUserRegisterService extends AbstractService
                 $userGroups = $settings['users']['groupsOnRegisterGuest'];
 
                 if (!$settings['users']['groupsOnRegisterGuest']) {
-                    $this->getLogger()->log(LogLevel::ERROR, sprintf('Login for guest user "%s" failed. Reason: No groupsOnRegisterGuest is defined in TypoScript.', strtolower($this->frontendUser->getUsername())));
+                    $this->getLogger()->log(LogLevel::ERROR, sprintf('GuestUser "%s" will not be useable. Reason: Setting groupsOnRegisterGuest is not defined in TypoScript.', strtolower($this->frontendUser->getUsername())));
                 }
             } else {
                 $userGroups = $settings['users']['groupsOnRegister'];
+
+                if (!$settings['users']['groupsOnRegister']) {
+                    $this->getLogger()->log(LogLevel::ERROR, sprintf('FrontendUser "%s" will not be useable. Reason: Setting groupsOnRegister is not defined in TypoScript.', strtolower($this->frontendUser->getUsername())));
+                }
             }
         }
 
@@ -301,12 +315,12 @@ class FrontendUserRegisterService extends AbstractService
     /**
      * Returns logger instance
      *
-     * @return \TYPO3\CMS\Core\Log\Logger
+     * @return Logger
      */
     protected function getLogger()
     {
-        if (!$this->logger instanceof \TYPO3\CMS\Core\Log\Logger) {
-            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+        if (!$this->logger instanceof Logger) {
+            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
         }
 
         return $this->logger;

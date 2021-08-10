@@ -15,9 +15,11 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Repository\TitleRepository;
 use RKW\RkwRegistration\Service\FrontendUserRegisterService;
 use RKW\RkwRegistration\Service\RegistrationService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -40,21 +42,18 @@ class FrontendUserController extends AbstractController
      */
     public function editAction()
     {
-        //DebuggerUtility::var_dump($this->controllerContext->getFlashMessageQueue()->getIdentifier() ); exit;
-
         $registeredUser = null;
         if (!$registeredUser = $this->getFrontendUser()) {
 
             $this->redirectToLogin();
 
             return;
-            //===
         }
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
-        $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
+        /** @var ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var TitleRepository $titleRepository */
+        $titleRepository = $objectManager->get(TitleRepository::class);
 
         $titles = $titleRepository->findAllOfType(true, false, false);
 

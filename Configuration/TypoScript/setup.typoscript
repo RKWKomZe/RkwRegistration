@@ -228,6 +228,7 @@ plugin.tx_rkwregistration {
 			termsPid = {$plugin.tx_rkwregistration.settings.users.termsPid}
 			privacyPid = {$plugin.tx_rkwregistration.settings.users.privacyPid}
 			storagePid = {$plugin.tx_rkwregistration.settings.users.storagePid}
+            # @toDo @deprecated
             lifetimeAnonymous = {$plugin.tx_rkwregistration.settings.users.lifetimeAnonymous}
             lifetimeGuest = {$plugin.tx_rkwregistration.settings.users.lifetimeGuest}
             lifetime = {$plugin.tx_rkwregistration.settings.users.lifetime}

@@ -3,6 +3,10 @@
 namespace RKW\RkwRegistration\Utility;
 
 use \RKW\RkwBasics\Utility\GeneralUtility;
+use RKW\RkwRegistration\Domain\Model\Pages;
+use RKW\RkwRegistration\Domain\Model\SysDomain;
+use RKW\RkwRegistration\Domain\Repository\SysDomainRepository;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -37,7 +41,7 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
      */
     public static function urlToPageUid($pageUid, $createAbsoluteUri = true, $linkAccessRestrictedPages = true, $useCacheHash = false)
     {
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        /** @var ObjectManager $objectManager */
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
         $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
@@ -160,15 +164,15 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
     {
         $settings = self::getSettings();
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        /** @var ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
 
-        $sysDomainRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\SysDomainRepository');
+        $sysDomainRepository = $objectManager->get(SysDomainRepository::class);
         $sysDomain = $sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
         $targetPageUid = 0;
         if (
-            $sysDomain instanceof \RKW\RkwRegistration\Domain\Model\SysDomain
-            && $sysDomain->getTxRkwregistrationPageLoginGuest() instanceof \RKW\RkwRegistration\Domain\Model\Pages
+            $sysDomain instanceof SysDomain
+            && $sysDomain->getTxRkwregistrationPageLoginGuest() instanceof Pages
         ) {
             $targetPageUid = $sysDomain->getTxRkwregistrationPageLoginGuest()->getUid();
         }

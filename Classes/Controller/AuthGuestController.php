@@ -2,9 +2,12 @@
 
 namespace RKW\RkwRegistration\Controller;
 
+use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Service\AuthService as Authentication;
+use RKW\RkwRegistration\Service\GuestRegisterService;
 use RKW\RkwRegistration\Utility\RedirectUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
@@ -40,10 +43,11 @@ class AuthGuestController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function loginAction()
     {
-        // ERROR: send back logged user. Nothing to do here
+        // a) ERROR: send back already logged in user. Nothing to do here
         if ($this->getFrontendUser()) {
             $this->addFlashMessage(
                 \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
@@ -56,14 +60,34 @@ class AuthGuestController extends AbstractController
         }
 
 
-        // LOGIN: if token is given: Re-login guest user
+        // b) NEW USER: if no token is given, a new guest user will be created
+        if (!$this->request->hasArgument('token')) {
+
+            /** @var GuestUser $guestUser */
+            $guestUser = GeneralUtility::makeInstance(GuestUser::class);
+
+            /** @var GuestRegisterService $guestRegisterService */
+            $guestRegisterService = GeneralUtility::makeInstance(GuestRegisterService::class, $guestUser);
+            $guestRegisterService->setClearanceAndLifetime(true);
+            $guestRegisterService->setUserGroupsOnRegister();
+            $guestRegisterService->persistAll();
+
+            FrontendUserSessionUtility::login($guestUser);
+
+            // @toDo: GENERATE LOGIN LINK HERE!!!
+
+            $this->redirect('loginHint');
+        }
+
+
+        // c) LOGIN: if token is given: Re-login guest user
         if (
             $this->request->hasArgument('token')
             && $token = $this->request->getArgument('token')
         ) {
 
             /** @var \RKW\RkwRegistration\Service\FrontendUserAuthService $authService */
-            $authService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\RKW\RkwRegistration\Service\FrontendUserAuthService::class);
+            $authService = GeneralUtility::makeInstance(\RKW\RkwRegistration\Service\FrontendUserAuthService::class);
             if ($guestUser = $authService->authGuest($token)) {
 
                 FrontendUserSessionUtility::login($guestUser);
@@ -87,18 +111,6 @@ class AuthGuestController extends AbstractController
                 );
             }
         }
-
-
-        // NEW USER: if no token is given, a new guest user will be created
-        if (!$this->request->hasArgument('token')) {
-            /** @var \RKW\RkwRegistration\Service\RegistrationService $registration */
-            $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
-            $guestUser = $registration->registerGuest();
-
-            FrontendUserSessionUtility::login($guestUser);
-
-            $this->redirect('loginHint');
-        }
     }
 
 
@@ -113,8 +125,8 @@ class AuthGuestController extends AbstractController
 
     public function loginHintAction()
     {
-
-        if (!$this->getFrontendUser() instanceof \RKW\RkwRegistration\Domain\Model\GuestUser) {
+        // if user has session AND is of type GuestUser
+        if (!$this->getFrontendUser() instanceof GuestUser) {
 
             $this->addFlashMessage(
                 \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
@@ -154,6 +166,8 @@ class AuthGuestController extends AbstractController
             )
         );
 
+        // for security reasons: redirect after creating special login link
+        $this->redirect('loginExternal', 'Auth');
     }
 
 
