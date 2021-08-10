@@ -62,6 +62,7 @@ class AuthController extends AbstractController
      */
     public function indexAction()
     {
+
         // A Service: Set a register link for the not logged in user
         if ($this->controllerContext->getFlashMessageQueue()->isEmpty()) {
 
