@@ -29,21 +29,21 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 
 /**
- * FrontendUserRegisterService
+ * RegisterGuestUserService
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class GuestRegisterService extends FrontendUserRegisterService
+class RegisterGuestUserService extends RegisterFrontendUserService
 {
     /**
-     * GuestUserRepository
+     * Signal name for use in ext_localconf.php
      *
-     * @var GuestUserRepository
+     * @const string
      */
-    protected $guestUserRepository;
+    const SIGNAL_AFTER_REGISTER_GUEST = 'afterRegisterGuest';
 
     /**
      *  Length of token for guest users
@@ -52,6 +52,19 @@ class GuestRegisterService extends FrontendUserRegisterService
      */
     const GUEST_TOKEN_LENGTH = 20;
 
+    /**
+     * GuestUser
+     *
+     * @var \RKW\RkwRegistration\Domain\Model\GuestUser
+     */
+    protected $guestUser;
+
+    /**
+     * GuestUserRepository
+     *
+     * @var GuestUserRepository
+     */
+    protected $guestUserRepository;
 
 
     /**
@@ -65,12 +78,14 @@ class GuestRegisterService extends FrontendUserRegisterService
 
         $this->getGuestUserRepository();
 
-        if ($guestUser->_isNew()) {
-            $guestUser->setUsername($this->createGuestToken());
-            $guestUser->setPassword(PasswordUtility::saltPassword(PasswordUtility::generatePassword()));
+        $this->guestUser = $guestUser;
+
+        if ($this->guestUser->_isNew()) {
+            $this->guestUser->setUsername($this->createGuestToken());
+            $this->guestUser->setPassword(PasswordUtility::saltPassword(PasswordUtility::generatePassword()));
             // initial add it to repo (not persistent yet)
             // in opposite to the standard FrontendUser we will have no further checks with OptIn or similar
-            $this->guestUserRepository->add($guestUser);
+            $this->guestUserRepository->add($this->guestUser);
         }
     }
 
@@ -99,13 +114,18 @@ class GuestRegisterService extends FrontendUserRegisterService
 
 
     /**
-     * persistAll service function
+     * persistAll
      *
+     * Triggers also a signalSlot
+     *
+     * @param string $category
      * @return void
      */
-    public function persistAll()
+    public function persistAll($category = null)
     {
         $this->persistenceManager->persistAll();
+
+        $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_REGISTER_GUEST . ucfirst($category), array($this->guestUser));
     }
 
 

@@ -7,7 +7,8 @@ use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Domain\Model\Pages;
 use RKW\RkwRegistration\Domain\Model\SysDomain;
 use RKW\RkwRegistration\Service\AuthService as Authentication;
-use RKW\RkwRegistration\Service\FrontendUserAuthService;
+use RKW\RkwRegistration\Service\AuthFrontendUserService;
+use RKW\RkwRegistration\Service\OptInService;
 use RKW\RkwRegistration\Utility\RedirectUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
@@ -240,8 +241,8 @@ class AuthController extends AbstractController
 
                 // ! CREATE NEW ANONYMOUS USER !
 
-                /** @var \RKW\RkwRegistration\Service\RegistrationService $registration */
-                $registration = GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
+                /** @var OptInService $registration */
+                $registration = GeneralUtility::makeInstance(OptInService::class);
 
                 // register anonymous user and login
                 $anonymousUser = $registration->registerAnonymous();
@@ -364,8 +365,8 @@ class AuthController extends AbstractController
             $this->redirect('index');
         }
 
-        /** @var FrontendUserAuthService $authService */
-        $authService = GeneralUtility::makeInstance(FrontendUserAuthService::class);
+        /** @var AuthFrontendUserService $authService */
+        $authService = GeneralUtility::makeInstance(AuthFrontendUserService::class);
         $authService->setLoginData($username, $password);
         $frontendUserArray = $authService->getUser();
         // do it: check given user data
@@ -455,7 +456,7 @@ class AuthController extends AbstractController
         FrontendUserSessionUtility::logout();
 
         // Important: This redirect is a workaround for setting the "logoutMessage" via flashMessenger
-        // Reason: Deleting the whole FeUser Session and setting a FlashMessage in one action does not work!
+        // Reason: Deleting the FeUser-Session AND setting a FlashMessage in one action DOES NOT WORK!
         $this->redirect('logoutRedirect');
     }
 
@@ -509,13 +510,19 @@ class AuthController extends AbstractController
 
             FrontendUserSessionUtility::logout();
 
+            $this->addFlashMessage(
+                LocalizationUtility::translate(
+                    'registrationController.message.logout_message', $this->extensionName
+                )
+            );
+
             // redirect to login page including message
             if ($this->settings['users']['loginExternalPid']) {
-                $this->redirect('loginExternal', null, null, array('logoutMessage' => 1), $this->settings['users']['loginExternalPid']);
+                $this->redirect('loginExternal', null, null, null, $this->settings['users']['loginExternalPid']);
             }
 
             if ($this->settings['users']['loginPid']) {
-                $this->redirect('index', null, null, array('logoutMessage' => 1), $this->settings['users']['loginPid']);
+                $this->redirect('index', null, null, null, $this->settings['users']['loginPid']);
             }
 
             $this->redirect('index');

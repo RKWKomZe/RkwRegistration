@@ -15,11 +15,15 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Repository\TitleRepository;
-use RKW\RkwRegistration\Service\FrontendUserRegisterService;
-use RKW\RkwRegistration\Service\RegistrationService;
+use RKW\RkwRegistration\Service\OptInService;
+use RKW\RkwRegistration\Service\RegisterFrontendUserService;
+use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -32,6 +36,80 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class FrontendUserController extends AbstractController
 {
+    /**
+     * action register
+     * RKW own register action
+     *
+     * @param FrontendUser $newFrontendUser
+     * @ignorevalidation $newFrontendUser
+     * @return void
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     */
+    public function newAction(FrontendUser $newFrontendUser = null)
+    {
+        // not for already logged in users!
+        if (FrontendUserSessionUtility::getFrontendUserId()) {
+
+            if ($this->settings['users']['welcomePid']) {
+                $this->redirect('index', null, null, null, $this->settings['users']['welcomePid']);
+            }
+
+            $this->redirect('index');
+        }
+
+        /** @var ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var TitleRepository $titleRepository */
+        $titleRepository = $objectManager->get(TitleRepository::class);
+
+        $titles = $titleRepository->findAllOfType(true, false, false);
+
+        $this->view->assignMultiple(
+            array(
+                'newFrontendUser'   => $newFrontendUser,
+                'termsPid'          => intval($this->settings['users']['termsPid']),
+                'titles'            => $titles
+            )
+        );
+    }
+
+
+    /**
+     * action create
+     * created a rkw user
+     *
+     * @param FrontendUser $newFrontendUser
+     * @validate $newFrontendUser \RKW\RkwRegistration\Validation\FrontendUserValidator, \RKW\RkwRegistration\Validation\TermsValidator, \RKW\RkwRegistration\Validation\PrivacyValidator
+     * @return void
+     * @throws \RKW\RkwRegistration\Exception
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     */
+    public function createAction(FrontendUser $newFrontendUser)
+    {
+        /** @var OptInService $registration */
+        $registration = $this->objectManager->get(OptInService::class);
+        $registration->register($newFrontendUser, false, null, null, $this->request);
+
+        $this->addFlashMessage(
+            LocalizationUtility::translate(
+                'registrationController.message.registration_watch_for_email', $this->extensionName
+            )
+        );
+
+        if ($this->settings['users']['loginPid']) {
+            $this->redirect('index', 'Auth', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
+        }
+
+        $this->redirect('new');
+    }
+
+
     /**
      * action editUser
      *
@@ -143,9 +221,9 @@ class FrontendUserController extends AbstractController
             return;
         }
 
-        /** @var FrontendUserRegisterService $frontendUserRegisterService */
-        $frontendUserRegisterService = GeneralUtility::makeInstance(FrontendUserRegisterService::class, $frontendUser);
-        $frontendUserRegisterService->delete();
+        /** @var RegisterFrontendUserService $registerFrontendUserService */
+        $registerFrontendUserService = GeneralUtility::makeInstance(RegisterFrontendUserService::class, $frontendUser);
+        $registerFrontendUserService->delete();
 
         $this->addFlashMessage(
             LocalizationUtility::translate(

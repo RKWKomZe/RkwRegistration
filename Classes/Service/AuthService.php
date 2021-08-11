@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 /**
  * Class AuthService
  *
- * @deprecated Will be removed soon. Use \RKW\RkwRegistration\Service\FrontendUserAuthService instead
+ * @deprecated Will be removed soon. Use \RKW\RkwRegistration\Service\AuthFrontendUserService instead
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
@@ -36,7 +36,7 @@ class AuthService implements \TYPO3\CMS\Core\SingletonInterface
      * Length of token for anonymous users
      *
      * @const integer
-     * @see \RKW\RkwRegistration\Service\RegistrationService::ANONYMOUS_TOKEN_LENGTH
+     * @see \RKW\RkwRegistration\Service\OptInService::ANONYMOUS_TOKEN_LENGTH
      */
     const ANONYMOUS_TOKEN_LENGTH = 20;
 

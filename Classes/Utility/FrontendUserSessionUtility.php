@@ -24,7 +24,7 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 /**
  * Class FrontendUserSessionUtility
  * Handles everything to a FeUser session (e.g. login and logout).
- * Hint: For authentication take a look to \RKW\RkwRegistration\Service\FrontendUserAuthService
+ * Hint: For authentication take a look to \RKW\RkwRegistration\Service\AuthFrontendUserService
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
@@ -40,7 +40,7 @@ class FrontendUserSessionUtility
      * Sets a temporary session cookie with the user-id
      * IMPORTANT: After a redirect the user is logged in then
      * DANGER: This method authenticates the given user without checking for password!!!
-     * @see \RKW\RkwRegistration\Service\FrontendUserAuthService for authentication
+     * @see \RKW\RkwRegistration\Service\AuthFrontendUserService for authentication
      *
      * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser
      * @return void

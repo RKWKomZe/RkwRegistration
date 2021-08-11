@@ -3,6 +3,7 @@
 namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Service\AuthFrontendUserService;
 use RKW\RkwRegistration\Utility\PasswordUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -96,8 +97,8 @@ class PasswordController extends AbstractController
         }
 
         // check if password is valid
-        /** @var \RKW\RkwRegistration\Service\FrontendUserAuthService $authentication */
-        $authentication = GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\FrontendUserAuthService');
+        /** @var AuthFrontendUserService $authentication */
+        $authentication = GeneralUtility::makeInstance(AuthFrontendUserService::class);
         if (
             ($username = $frontendUser->getUsername())
             && ($registeredUser = $authentication->validateUser($username, $passwordOld))

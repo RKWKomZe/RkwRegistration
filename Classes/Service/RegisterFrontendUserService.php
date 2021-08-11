@@ -30,15 +30,22 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 
 /**
- * FrontendUserRegisterService
+ * RegisterFrontendUserService
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class FrontendUserRegisterService extends AbstractService
+class RegisterFrontendUserService extends AbstractService
 {
+    /**
+     * Signal name for use in ext_localconf.php
+     *
+     * @const string
+     */
+    const SIGNAL_AFTER_DELETING_USER = 'afterDeletingUser';
+
     /**
      * @var array
      */
@@ -63,15 +70,14 @@ class FrontendUserRegisterService extends AbstractService
      */
     public function __construct(FrontendUser $frontendUser)
     {
-        $this->initializeObject();
-        $this->settings = $this->getSettings();
-
         $this->frontendUser = $frontendUser;
 
-        if ($frontendUser->_isNew()) {
+        if ($this->frontendUser->_isNew()) {
             $this->setBasicData();
         }
     }
+
+
 
     /**
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
@@ -80,6 +86,8 @@ class FrontendUserRegisterService extends AbstractService
     {
         return $this->frontendUser;
     }
+
+
 
     /**
      * sets some basic data to a frontendUser (if not already set)
@@ -162,10 +170,11 @@ class FrontendUserRegisterService extends AbstractService
     /**
      * Removes existing account of FE-user
      *
+     * @param string $category
      * @return boolean
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
-    public function delete(): bool
+    public function delete($category = null): bool
     {
         if (FrontendUserSessionUtility::isUserLoggedIn($this->frontendUser)) {
             FrontendUserSessionUtility::logout();
@@ -175,6 +184,10 @@ class FrontendUserRegisterService extends AbstractService
         $this->frontendUser->setDeleted(1);
         $this->getFrontendUserRepository()->remove($this->frontendUser);
         $this->getPersistenceManager()->persistAll();
+
+        // Signal for e.g. E-Mails or other extensions
+        $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_DELETING_USER . ucfirst($category), array($this->frontendUser));
+        $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully logged out and deleted user "%s".', strtolower($this->frontendUser->getUsername())));
 
         return true;
     }
@@ -196,15 +209,21 @@ class FrontendUserRegisterService extends AbstractService
                 $email = $email->getEmail();
             }
 
+            DebuggerUtility::var_dump((\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail(strtolower($email)))
+                && (strpos(strtolower($email), '@facebook.com') === false)
+                && (strpos(strtolower($email), '@twitter.com') === false));
+
+
             if (
                 (\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail(strtolower($email)))
                 && (strpos(strtolower($email), '@facebook.com') === false)
                 && (strpos(strtolower($email), '@twitter.com') === false)
             ) {
+                var_dump("Hallo?");
                 return true;
             }
         }
-
+        var_dump("Hallo222");
         return false;
     }
 
@@ -224,10 +243,7 @@ class FrontendUserRegisterService extends AbstractService
 
         $dbFrontendUser = $this->frontendUserRepository->findOneByEmailOrUsernameInactive(strtolower($email));
 
-        if (
-            !$dbFrontendUser
-            || ($dbFrontendUser->getUsername() == $this->frontendUser->getUsername())
-        ) {
+        if (!$dbFrontendUser) {
             return true;
         }
         return false;
@@ -238,7 +254,7 @@ class FrontendUserRegisterService extends AbstractService
     /**
      * setUsersGroupsOnRegister
      *
-     * Hint: Handles FrontendUser AND GuestUser. Split GuestUser part into GuestRegisterService?
+     * Hint: Handles FrontendUser AND GuestUser. Split GuestUser part into RegisterGuestUserService?
      *
      * @param string $userGroups
      * @return void

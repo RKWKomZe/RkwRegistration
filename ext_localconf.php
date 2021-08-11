@@ -12,12 +12,14 @@ call_user_func(
             'RKW.' . $extKey,
             'Register',
             array(
-                'Registration' => 'new, create, optIn',
+                'FrontendUser' => 'new, create',
+                'Registration' => 'optIn',
                 'Service' => 'list, show, create, delete, optIn',
             ),
             // non-cacheable actions
             array(
-                'Registration' => 'new, create, optIn',
+                'FrontendUser' => 'new, create',
+                'Registration' => 'optIn',
                 'Service' => 'list, show, create, delete, optIn',
             )
         );
@@ -198,22 +200,22 @@ call_user_func(
          */
         $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Service\\RegistrationService',
-            \RKW\RkwRegistration\Service\RegistrationService::SIGNAL_AFTER_CREATING_OPTIN_USER,
+            'RKW\\RkwRegistration\\Service\\OptInService',
+            \RKW\RkwRegistration\Service\OptInService::SIGNAL_AFTER_CREATING_OPTIN_USER,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleCreateUserEvent'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Service\\RegistrationService',
-            \RKW\RkwRegistration\Service\RegistrationService::SIGNAL_AFTER_CREATING_FINAL_USER,
+            'RKW\\RkwRegistration\\Service\\OptInService',
+            \RKW\RkwRegistration\Service\OptInService::SIGNAL_AFTER_CREATING_FINAL_USER,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleRegisterUserEvent'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Service\\RegistrationService',
-            \RKW\RkwRegistration\Service\RegistrationService::SIGNAL_AFTER_USER_REGISTER_GRANT,
+            'RKW\\RkwRegistration\\Service\\OptInService',
+            \RKW\RkwRegistration\Service\OptInService::SIGNAL_AFTER_USER_REGISTER_GRANT,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleRegisterUserEvent'
         );
@@ -275,7 +277,7 @@ call_user_func(
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
             $extKey,
             'auth',
-            RKW\RkwRegistration\Service\FrontendUserAuthService::class,
+            RKW\RkwRegistration\Service\AuthFrontendUserService::class,
             array(
                 'title' => 'Authentication Service for fe_users',
                 'description' => 'Authentication Service for fe_users',
@@ -286,7 +288,7 @@ call_user_func(
                 'quality' => 80,
                 'os' => '',
                 'exec' => '',
-                'className' => RKW\RkwRegistration\Service\FrontendUserAuthService::class
+                'className' => RKW\RkwRegistration\Service\AuthFrontendUserService::class
             )
         );
 

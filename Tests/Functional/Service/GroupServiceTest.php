@@ -3,19 +3,12 @@ namespace RKW\RkwRegistration\Tests\Functional\Utility;
 
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
-use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use \RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
-use RKW\RkwRegistration\Service\FrontendUserRegisterService;
 use RKW\RkwRegistration\Service\GroupService;
-use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
 /*
  * This file is part of the TYPO3 CMS project.

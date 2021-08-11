@@ -4,7 +4,7 @@ namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Service\AuthService as Authentication;
-use RKW\RkwRegistration\Service\GuestRegisterService;
+use RKW\RkwRegistration\Service\RegisterGuestUserService;
 use RKW\RkwRegistration\Utility\RedirectUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -66,15 +66,13 @@ class AuthGuestController extends AbstractController
             /** @var GuestUser $guestUser */
             $guestUser = GeneralUtility::makeInstance(GuestUser::class);
 
-            /** @var GuestRegisterService $guestRegisterService */
-            $guestRegisterService = GeneralUtility::makeInstance(GuestRegisterService::class, $guestUser);
-            $guestRegisterService->setClearanceAndLifetime(true);
-            $guestRegisterService->setUserGroupsOnRegister();
-            $guestRegisterService->persistAll();
+            /** @var RegisterGuestUserService $registerGuestUserService */
+            $registerGuestUserService = GeneralUtility::makeInstance(RegisterGuestUserService::class, $guestUser);
+            $registerGuestUserService->setClearanceAndLifetime(true);
+            $registerGuestUserService->setUserGroupsOnRegister();
+            $registerGuestUserService->persistAll();
 
             FrontendUserSessionUtility::login($guestUser);
-
-            // @toDo: GENERATE LOGIN LINK HERE!!!
 
             $this->redirect('loginHint');
         }
@@ -86,8 +84,11 @@ class AuthGuestController extends AbstractController
             && $token = $this->request->getArgument('token')
         ) {
 
-            /** @var \RKW\RkwRegistration\Service\FrontendUserAuthService $authService */
-            $authService = GeneralUtility::makeInstance(\RKW\RkwRegistration\Service\FrontendUserAuthService::class);
+
+            // @toDo: Is AuthFrontendUserService correct? Or would be AuthGuestUserService the right one?
+
+            /** @var \RKW\RkwRegistration\Service\AuthFrontendUserService $authService */
+            $authService = GeneralUtility::makeInstance(\RKW\RkwRegistration\Service\AuthFrontendUserService::class);
             if ($guestUser = $authService->authGuest($token)) {
 
                 FrontendUserSessionUtility::login($guestUser);

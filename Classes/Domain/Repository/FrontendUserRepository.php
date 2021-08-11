@@ -2,6 +2,7 @@
 
 namespace RKW\RkwRegistration\Domain\Repository;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /*
@@ -186,19 +187,41 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Finds inactive users - this is relevant for registration
      * This way we can activate the user then
      *
+     * @deprecated Will be removed soon. Use findByUidInactiveNonGuest instead
+     *
      * @param string $uid
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser
      */
     public function findByUidInactiveNonAnonymous($uid)
     {
+        GeneralUtility::deprecationLog(__CLASS__ . ' will be removed soon. Do not use it any more.');
+        return $this->findByUidInactiveNonGuest($uid);
+    }
 
+
+
+    /**
+     * Finds inactive users - this is relevant for registration
+     * This way we can activate the user then
+     *
+     * @param string $uid
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser
+     */
+    public function findByUidInactiveNonGuest($uid)
+    {
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
 
+        // the field "txRkwregistrationIsAnonymous" is deprecated. Solely not removed for backward compatibility reasons
         $user = $query->matching(
             $query->logicalAnd(
                 $query->equals('uid', $uid),
-                $query->equals('txRkwregistrationIsAnonymous', 0)
+                $query->logicalOr(
+                    $query->equals('txRkwregistrationIsAnonymous', 0),
+                    $query->logicalNot(
+                        $query->equals('tx_extbase_type', '\RKW\RkwRegistration\Domain\Model\GuestUser'),
+                    )
+                )
             )
         )->setLimit(1)
             ->execute();
@@ -264,7 +287,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findExpired($tolerance = 0, $anonymousOnly = false)
     {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
+        GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
@@ -304,7 +327,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     public function findDeletedOrDisabled($tolerance = 0, $anonymousOnly = false)
     {
 
-        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
+        GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);
@@ -350,7 +373,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findExpiredOrDeletedByTstamp($tolerance = 0, $anonymousOnly = false)
     {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
+        GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);

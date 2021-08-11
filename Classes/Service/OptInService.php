@@ -4,6 +4,9 @@ namespace RKW\RkwRegistration\Service;
 
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
+use RKW\RkwRegistration\Domain\Model\Registration;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use RKW\RkwRegistration\Domain\Repository\GuestUserRepository;
 use RKW\RkwRegistration\Exception;
 use \RKW\RkwBasics\Utility\GeneralUtility;
 use \RKW\RkwRegistration\Utility\PasswordUtility;
@@ -11,7 +14,12 @@ use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use \RKW\RkwRegistration\Utility\RemoteUtility;
 use RKW\RkwRegistration\Utility\TitleUtility;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
@@ -28,7 +36,7 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 
 /**
- * Class RegistrationService
+ * Class OptInService
  *
  * @toDo: Services SHOULD NOT be singletons
  * @toDo: Services MUST be used as objects, they are never static
@@ -40,7 +48,7 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class RegistrationService extends AbstractService
+class OptInService extends AbstractService
 {
 
     /**
@@ -85,7 +93,7 @@ class RegistrationService extends AbstractService
 
     /**
      * Signal name for use in ext_localconf.php
-     *
+     * @deprecated Will be removed soon. Use signal in RegisterFrontendUserService instead
      * @const string
      */
     const SIGNAL_AFTER_DELETING_USER = 'afterDeletingUser';
@@ -93,13 +101,15 @@ class RegistrationService extends AbstractService
     /**
      * Signal name for use in ext_localconf.php
      *
+     * @deprecated Will be removed soon. Use signal in RegisterGuestUserService instead
      * @const string
      */
     const SIGNAL_AFTER_REGISTER_GUEST = 'afterRegisterGuest';
 
     /**
-     *  Length of token for guest users
+     * Length of token for guest users
      *
+     * @deprecated Will be removed soon. Use constant in RegisterGuestUserService instead
      * @const integer
      * @see \RKW\RkwRegistration\Service\AuthService::GUEST_TOKEN_LENGTH
      */
@@ -114,31 +124,29 @@ class RegistrationService extends AbstractService
 
 
     /**
-     * @var \TYPO3\CMS\Core\Log\Logger
+     * @var Logger
      */
     protected $logger;
-
 
 
     /**
      * Checks given tokens from E-mail
      *
-     * @param string $tokenYes
-     * @param string $tokenNo
-     * @param string $userSha1
-     * @param \TYPO3\CMS\Extbase\Mvc\Request $request
-     * @param array $data Data as reference
+     * @param string       $tokenYes
+     * @param string       $tokenNo
+     * @param string       $userSha1
+     * @param Request|null $request
+     * @param array        $data Data as reference
      * @return integer 0 = unexpected error; 1 = registration created; 2 = registration dismissed by user; 400 = expired; 500 = registration not found
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function processOptIn($tokenYes, $tokenNo, $userSha1, \TYPO3\CMS\Extbase\Mvc\Request $request = null, &$data = array())
+    public function process($tokenYes, $tokenNo, $userSha1, Request $request = null, &$data = array())
     {
         // load register by SHA-token
-        /** @var \RKW\RkwRegistration\Domain\Model\Registration $register */
+        /** @var Registration $register */
         $register = $this->registrationRepository->findOneByUserSha1($userSha1);
 
         // not found
@@ -147,11 +155,10 @@ class RegistrationService extends AbstractService
             return 500;
         }
 
-        // @toDo: Check if this "NonAnonymous" query is necessary. We're working with record types now
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser());
+        /** @var FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser());
 
-        $status = $this->checkRegister($register, $tokenYes, $tokenNo);
+        $status = $this->check($register, $tokenYes, $tokenNo);
 
         // token "no" or "expired"
         if (
@@ -177,7 +184,7 @@ class RegistrationService extends AbstractService
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-in with id "%s" (FE-User-Id=%s, category=%s) was successfully canceled.', strtolower($register->getUid()), $frontendUser->getUid(), $category));
                 return 2;
             } elseif ($status == 400) {
-                $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('Opt-in with id "%s" is not valid any more.', strtolower($register->getUid())));
+                $this->getLogger()->log(LogLevel::WARNING, sprintf('Opt-in with id "%s" is not valid any more.', strtolower($register->getUid())));
                 return 400;
             }
         }
@@ -186,7 +193,7 @@ class RegistrationService extends AbstractService
         if ($status === 1) {
 
             // load fe-user
-            if ($frontendUser = $this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser())) {
+            if ($frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser())) {
 
                 if ($frontendUser->getDisable()) {
 
@@ -194,10 +201,10 @@ class RegistrationService extends AbstractService
                     $plaintextPassword = PasswordUtility::generatePassword();
                     $frontendUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
 
-                    $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-                    /** @var FrontendUserRegisterService $frontendUserRegisterService */
-                    $frontendUserRegisterService = $objectManager->get('RKW\\RkwRegistration\\Service\\FrontendUserRegisterService', $frontendUser);
-                    $frontendUserRegisterService->setClearanceAndLifetime(true);
+                    $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+                    /** @var RegisterFrontendUserService $registerFrontendUserService */
+                    $registerFrontendUserService = $objectManager->get(RegisterFrontendUserService::class, $frontendUser);
+                    $registerFrontendUserService->setClearanceAndLifetime(true);
 
                     // Signal for E-Mails
                     $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_GRANT, array($frontendUser, $plaintextPassword, $register));
@@ -226,7 +233,7 @@ class RegistrationService extends AbstractService
             // delete registration
             $this->registrationRepository->remove($register);
             $this->persistenceManager->persistAll();
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Opt-in with id "%s" (FE-User-Id=%s, category=%s) was successful.', strtolower($register->getUid()), $frontendUser->getUid(), $register->getCategory()));
+            $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-in with id "%s" (FE-User-Id=%s, category=%s) was successful.', strtolower($register->getUid()), $frontendUser->getUid(), $register->getCategory()));
 
             return 1;
         }
@@ -244,13 +251,12 @@ class RegistrationService extends AbstractService
     /**
      * Checks given tokens from E-mail
      *
-     * @deprecated This function will be removed soon. Use processOptIn instead
-     * @see RegistrationService->processOptIn()
+     * @deprecated This function will be removed soon. Use OptInService->process instead
      *
      * @param string $tokenYes
      * @param string $tokenNo
      * @param string $userSha1
-     * @param \TYPO3\CMS\Extbase\Mvc\Request $request
+     * @param Request $request
      * @param array $data Data as reference
      * @return integer
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
@@ -259,10 +265,10 @@ class RegistrationService extends AbstractService
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function checkTokens($tokenYes, $tokenNo, $userSha1, \TYPO3\CMS\Extbase\Mvc\Request $request = null, &$data = array())
+    public function checkTokens($tokenYes, $tokenNo, $userSha1, Request $request = null, &$data = array())
     {
         // load register by SHA-token
-        /** @var \RKW\RkwRegistration\Domain\Model\Registration $register */
+        /** @var Registration $register */
         $register = $this->getRegistrationRepository()->findOneByUserSha1($userSha1);
         if (!$register) {
             $this->getLogger()->log(LogLevel::ERROR, sprintf('No opt-in found for given SHA1-key.'));
@@ -287,17 +293,23 @@ class RegistrationService extends AbstractService
 
 
         // load fe-user
-        // @toDo: Check if this "NonAnonymous" query is necessary. We're working with record types now
-        if ($frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonAnonymous($register->getUser())) {
+        if ($frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonGuest($register->getUser())) {
 
             // check yes-token
             $category = $register->getCategory();
             if ($register->getTokenYes() == $tokenYes) {
 
-                if ($frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonAnonymous($register->getUser())) {
+                if ($frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonGuest($register->getUser())) {
 
                     if ($frontendUser->getDisable()) {
-                        $plaintextPassword = $this->frontendUserRegisterService->enableNewFrontendUser($frontendUser);
+
+                        /** @var RegisterFrontendUserService $registerFrontendUserService */
+                        $registerFrontendUserService = GeneralUtility::makeInstance(RegisterFrontendUserService::class, $frontendUser);
+                        $registerFrontendUserService->setClearanceAndLifetime(true);
+                        $plaintextPassword = $registerFrontendUserService->setNewPassword();
+
+                        // @toDo: add to Repo?
+                        // @toDo: persist?
 
                         // Signal for E-Mails
                         $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_GRANT, array($frontendUser, $plaintextPassword, $register));
@@ -331,7 +343,6 @@ class RegistrationService extends AbstractService
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-in with id "%s" (FE-User-Id=%s, category=%s) was successful.', strtolower($register->getUid()), $frontendUser->getUid(), $category));
 
                 return 1;
-                //====
 
                 // check no-token
             } elseif ($register->getTokenNo() == $tokenNo) {
@@ -353,7 +364,6 @@ class RegistrationService extends AbstractService
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-in with id "%s" (FE-User-Id=%s, category=%s) was successfully canceled.', strtolower($register->getUid()), $frontendUser->getUid(), $category));
 
                 return 2;
-                //===
             }
         }
 
@@ -364,8 +374,6 @@ class RegistrationService extends AbstractService
         $this->getLogger()->log(LogLevel::ERROR, sprintf('Something went wrong when trying to register via opt-in with id "%s".', strtolower($register->getUid())));
 
         return 0;
-        //====
-
     }
 
 
@@ -376,7 +384,7 @@ class RegistrationService extends AbstractService
      * @param boolean $enable If a new user should be enabled or not
      * @param mixed $additionalData Could be an array or a whole object. Everything you need in relation of a registration of something
      * @param string $category To identify a specific context. Normally used to identify an external extension which is using this function
-     * @param \TYPO3\CMS\Extbase\Mvc\Request $request For privacy purpose to identify the given context
+     * @param Request $request For privacy purpose to identify the given context
      * @return FrontendUser
      * @throws Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
@@ -386,7 +394,7 @@ class RegistrationService extends AbstractService
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function register($userData, $enable = false, $additionalData = null, $category = null, \TYPO3\CMS\Extbase\Mvc\Request $request = null)
+    public function register($userData, $enable = false, $additionalData = null, $category = null, Request $request = null)
     {
         // if we get an array we just migrate the data to our object!
         $frontendUser = FrontendUserUtility::convertArrayToObject($userData);
@@ -396,9 +404,9 @@ class RegistrationService extends AbstractService
             throw new Exception('No valid object given.', 1434997734);
         }
 
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var FrontendUserRegisterService $frontendUserRegisterService */
-        $frontendUserRegisterService = $objectManager->get(FrontendUserRegisterService::class, $frontendUser);
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var RegisterFrontendUserService $registerFrontendUserService */
+        $registerFrontendUserService = $objectManager->get(RegisterFrontendUserService::class, $frontendUser);
 
         // set email as fallback
         if (!$frontendUser->getUsername()) {
@@ -406,7 +414,10 @@ class RegistrationService extends AbstractService
         }
 
         // check username (aka email)
-        if (!$frontendUserRegisterService->validateEmail()) {
+
+        DebuggerUtility::var_dump($registerFrontendUserService->validateEmail()); exit;
+
+        if (!$registerFrontendUserService->validateEmail()) {
             $this->getLogger()->log(LogLevel::ERROR, sprintf('"%s" is not a valid username.', strtolower($frontendUser->getUsername())));
             throw new Exception('No valid username given.', 1407312133);
         }
@@ -439,7 +450,7 @@ class RegistrationService extends AbstractService
 
                 if (
                     ($frontendUser->getEmail() != strtolower($frontendUserDatabase->getEmail()))
-                    && (!$frontendUserRegisterService->uniqueEmail($frontendUserDatabase))
+                    && (!$registerFrontendUserService->uniqueEmail($frontendUserDatabase))
                 ) {
 
                     $this->getLogger()->log(LogLevel::ERROR, sprintf('E-mail "%s" is already used by another user.', strtolower($frontendUser->getEmail())));
@@ -462,9 +473,9 @@ class RegistrationService extends AbstractService
             // if user does not exist yet, we need some more data to be set!
         } else {
 
-            $frontendUserRegisterService->setBasicData();
-            $frontendUserRegisterService->setClearanceAndLifetime($enable);
-            $plaintextPassword = $frontendUserRegisterService->setNewPassword();
+            $registerFrontendUserService->setBasicData();
+            $registerFrontendUserService->setClearanceAndLifetime($enable);
+            $plaintextPassword = $registerFrontendUserService->setNewPassword();
 
             // add user and persist!
             $this->getFrontendUserRepository()->add($frontendUser);
@@ -516,7 +527,7 @@ class RegistrationService extends AbstractService
     /**
      * Creates a new guest FE-user
      *
-     * @deprecated Use GuestRegisterService->register instead
+     * @deprecated Use RegisterGuestUserService->register instead
      *
      * @param int $lifetime Individual lifetime of the guest user. For default value see settings.users.lifetimeGuest
      * @param string $category
@@ -527,15 +538,15 @@ class RegistrationService extends AbstractService
     public function registerGuest($lifetime = 0, $category = '')
     {
         /** @var \RKW\RkwWepstra\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $guestUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\GuestUserRepository');
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+        $guestUserRepository = $objectManager->get(GuestUserRepository::class);
 
         // get settings
         $settings = $this->getSettings();
 
         // now that we know that the token is non-existent we create a new user from it!
         /** @var GuestUser $guestUser */
-        $guestUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\GuestUser');
+        $guestUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(GuestUser::class);
 
         // for session identification set username (token == username)
         $guestUser->setUsername($this->createGuestToken());
@@ -556,7 +567,7 @@ class RegistrationService extends AbstractService
         $guestUserRepository->add($guestUser);
 
         /** @var \TYPO3\CMS\Extbase\\Persistence\Generic\PersistenceManager $persistenceManager */
-        $persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+        $persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(PersistenceManager::class);
         $persistenceManager->persistAll();
 
         $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_REGISTER_GUEST . ucfirst($category), array($guestUser));
@@ -568,7 +579,7 @@ class RegistrationService extends AbstractService
     /**
      * Removes existing account of FE-user
      *
-     * @deprecated Will be removed soon. Use Service/FrontendUserRegisterService->delete instead
+     * @deprecated Will be removed soon. Use Service/RegisterFrontendUserService->delete instead
      *
      * @param FrontendUser $frontendUser
      * @param string $category
@@ -605,7 +616,7 @@ class RegistrationService extends AbstractService
     /**
      * setUsersGroupsOnRegister
      *
-     * @deprecated Use Service/FrontendUserRegisterService->setUserGroupsOnRegister instead
+     * @deprecated Use Service/RegisterFrontendUserService->setUserGroupsOnRegister instead
      *
      * @param FrontendUser $frontendUser
      * @param string $userGroups
@@ -643,7 +654,7 @@ class RegistrationService extends AbstractService
     /**
      * Checks if FE-User has valid email
      *
-     * @deprecated Will be removed soon. Use Service/FrontendUserRegisterService->validEmail instead
+     * @deprecated Will be removed soon. Use Service/RegisterFrontendUserService->validEmail instead
      *
      * @param string | \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $email
      * @return boolean
@@ -664,18 +675,16 @@ class RegistrationService extends AbstractService
             ) {
                 return true;
             }
-            //===
         }
 
         return false;
-        //===
     }
 
 
     /**
      * Checks if FE-User has valid email
      *
-     * @deprecated Will be removed soon. Use Service/FrontendUserRegisterService->validEmailUnique instead
+     * @deprecated Will be removed soon. Use Service/RegisterFrontendUserService->validEmailUnique instead
      *
      * @param string | \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $email
      * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser
@@ -687,9 +696,9 @@ class RegistrationService extends AbstractService
             $email = $email->getEmail();
         }
 
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\FrontendUserRepository');
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var FrontendUserRepository $frontendUserRepository */
+        $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
         $dbFrontendUser = $frontendUserRepository->findOneByEmailOrUsernameInactive(strtolower($email));
 
         if (
@@ -704,18 +713,16 @@ class RegistrationService extends AbstractService
             )
         ) {
             return true;
-            //===
         }
 
         return false;
-        //===
     }
 
 
     /**
      * Checks if FE-User has a a valid username
      *
-     * @deprecated Will be removed soon. Use Service/FrontendUserRegisterService->validUsername instead
+     * @deprecated Will be removed soon. Use Service/RegisterFrontendUserService->validUsername instead
      *
      * @param string | \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $email
      * @return boolean
@@ -740,12 +747,12 @@ class RegistrationService extends AbstractService
     /**
      * Checks given tokens from E-mail
      *
-     * @param \RKW\RkwRegistration\Domain\Model\Registration $register
+     * @param Registration $register
      * @param string $tokenYes
      * @param string $tokenNo
      * @return integer The status. 0 = unexpected error, 1 = token yes, 2 = token no, 400 = expired
      */
-    protected function checkRegister(\RKW\RkwRegistration\Domain\Model\Registration $register, $tokenYes, $tokenNo)
+    protected function check(Registration $register, $tokenYes, $tokenNo): int
     {
         // is token already invalid?
         if (
@@ -772,15 +779,15 @@ class RegistrationService extends AbstractService
     /**
      * creates a valid token for a guest user
      *
-     * @deprecated Use GuestRegisterService->createToken instead
+     * @deprecated Use RegisterGuestUserService->createToken instead
      *
      * @return string
      */
     protected function createGuestToken()
     {
         /** @var \RKW\RkwWepstra\Domain\Repository\FrontendUserRepository $guestUserRepository */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $guestUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\GuestUserRepository');
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+        $guestUserRepository = $objectManager->get(GuestUserRepository::class);
 
         // create a token for anonymous login and check if this token already exists
         $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
@@ -796,7 +803,7 @@ class RegistrationService extends AbstractService
     /**
      * converts an feUser array to an object
      *
-     * @deprecated Will be removed soon. Use Service/FrontendUserRegisterService->convertFrontendUserArrayToObject instead
+     * @deprecated Will be removed soon. Use Service/RegisterFrontendUserService->convertFrontendUserArrayToObject instead
      * validUsername
      * array $userData
      * @return FrontendUser
@@ -806,7 +813,7 @@ class RegistrationService extends AbstractService
         $frontendUser = $userData;
         if (is_array($userData)) {
             /** @var FrontendUser $frontendUser */
-            $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\FrontendUser');
+            $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(FrontendUser::class);
             foreach ($userData as $key => $value) {
                 $setter = 'set' . ucfirst(GeneralUtility::camelize($key));
                 if (method_exists($frontendUser, $setter)) {
@@ -820,6 +827,8 @@ class RegistrationService extends AbstractService
 
     /**
      * returns the lifetime of the guest user
+     *
+     * @deprecated Will be removed soon. Use Service/RegisterGuestUserService->setClearanceAndLifetime instead
      *
      * @return string
      */
@@ -845,12 +854,12 @@ class RegistrationService extends AbstractService
     /**
      * Returns logger instance
      *
-     * @return \TYPO3\CMS\Core\Log\Logger
+     * @return Logger
      */
     protected function getLogger()
     {
-        if (!$this->logger instanceof \TYPO3\CMS\Core\Log\Logger) {
-            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+        if (!$this->logger instanceof Logger) {
+            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
         }
 
         return $this->logger;

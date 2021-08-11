@@ -17,6 +17,7 @@ namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Repository\TitleRepository;
+use RKW\RkwRegistration\Service\OptInService;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -66,7 +67,6 @@ class RegistrationController extends AbstractController
      */
     public function indexAction()
     {
-
         // only for logged in users!
         $this->hasUserValidLoginRedirect();
 
@@ -111,9 +111,9 @@ class RegistrationController extends AbstractController
         $tokenNo = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_no') ? $this->request->getArgument('token_no') : ''));
         $userSha1 = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('user'));
 
-        /** @var \RKW\RkwRegistration\Service\RegistrationService $register */
-        $register = GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
-        $check = $register->processOptIn($tokenYes, $tokenNo, $userSha1, $this->request);
+        /** @var OptInService $optInService */
+        $optInService = GeneralUtility::makeInstance(OptInService::class);
+        $check = $optInService->process($tokenYes, $tokenNo, $userSha1, $this->request);
 
         if ($check == 1) {
 
@@ -146,124 +146,12 @@ class RegistrationController extends AbstractController
             );
         }
 
+        // @toDo: Wohin leiten?
         $this->redirect('new');
     }
 
 
-    /**
-     * action register
-     * RKW own register action
-     *
-     * ---Ggf in "FrontendUserController" verschieben?---
-     *
-     * @param FrontendUser $newFrontendUser
-     * @ignorevalidation $newFrontendUser
-     * @return void
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
-     */
-    public function newAction(FrontendUser $newFrontendUser = null)
-    {
-        // not for already logged in users!
-        if (FrontendUserSessionUtility::getFrontendUserId()) {
 
-            if ($this->settings['users']['welcomePid']) {
-                $this->redirect('index', null, null, null, $this->settings['users']['welcomePid']);
-            }
-
-            $this->redirect('index');
-        }
-
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var TitleRepository $titleRepository */
-        $titleRepository = $objectManager->get(TitleRepository::class);
-
-        $titles = $titleRepository->findAllOfType(true, false, false);
-
-        $this->view->assignMultiple(
-            array(
-                'newFrontendUser'   => $newFrontendUser,
-                'termsPid'          => intval($this->settings['users']['termsPid']),
-                'titles'            => $titles
-            )
-        );
-    }
-
-
-    /**
-     * action create
-     * created a rkw user
-     *
-     * ---Ggf in "FrontendUserController" verschieben?---
-     *
-     * @param FrontendUser $newFrontendUser
-     * @param integer                                        $terms
-     * @param integer                                        $privacy
-     * @validate $newFrontendUser \RKW\RkwRegistration\Validation\FormValidator
-     * @return void
-     * @throws \RKW\RkwRegistration\Exception
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     */
-    public function createAction(FrontendUser $newFrontendUser, $terms, $privacy)
-    {
-        if (!$terms) {
-            $this->addFlashMessage(
-                LocalizationUtility::translate(
-                    'registrationController.error.accept_terms', $this->extensionName
-                ),
-                '',
-                AbstractMessage::ERROR
-            );
-            $this->forward('new', null, null, array('newFrontendUser' => $newFrontendUser));
-        }
-
-        if (!$privacy) {
-            $this->addFlashMessage(
-                LocalizationUtility::translate(
-                    'registrationController.error.accept_privacy', $this->extensionName
-                ),
-                '',
-                AbstractMessage::ERROR
-            );
-            $this->forward('new', null, null, array('newFrontendUser' => $newFrontendUser));
-        }
-
-        if ($this->frontendUserRepository->findOneByUsernameInactive($newFrontendUser->getEmail())) {
-
-            $this->addFlashMessage(
-                LocalizationUtility::translate(
-                    'registrationController.error.username_exists', $this->extensionName
-                ),
-                '',
-                AbstractMessage::ERROR
-            );
-
-            $this->forward('new', null, null, array('newFrontendUser' => $newFrontendUser));
-        }
-
-        // register new user
-        /** @var \RKW\RkwRegistration\Service\RegistrationService $registration */
-        $registration = GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\RegistrationService');
-        $registration->register($newFrontendUser, false, null, null, $this->request);
-
-        $this->addFlashMessage(
-            LocalizationUtility::translate(
-                'registrationController.message.registration_watch_for_email', $this->extensionName
-            )
-        );
-
-        if ($this->settings['users']['loginPid']) {
-            $this->redirect('index', 'Auth', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
-        }
-
-        $this->redirect('new');
-    }
 
 
 }

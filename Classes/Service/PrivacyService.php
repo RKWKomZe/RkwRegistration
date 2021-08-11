@@ -179,7 +179,7 @@ class PrivacyService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * addPrivacyDataForOptIn
      * normally automatically used by the RkwRegistration while creating optIn if you are using
-     * RKW\\RkwRegistration\\Service\\RegistrationService->register You have just to use ->setPrivacyDataBeforeOptIn and
+     * \RKW\RkwRegistration\Service\OptInService->register You have just to use ->setPrivacyDataBeforeOptIn and
      * ->setPrivacyDataFinal (with registration-object) to complete the procedure
      *
      * @param \TYPO3\CMS\Extbase\Mvc\Request $request

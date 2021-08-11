@@ -64,7 +64,7 @@ abstract class AbstractService
      *
      * @var \TYPO3\CMS\Extbase\Object\ObjectManager
      */
-    #protected $objectManager;
+    protected $objectManager;
 
     /**
      * Signal-Slot Dispatcher

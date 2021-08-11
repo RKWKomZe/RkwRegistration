@@ -21,7 +21,7 @@ use RKW\RkwRegistration\Domain\Model\FrontendUser;
 /**
  * Class FrontendUserUtility
  * Handles everything to a FeUser session (e.g. login and logout).
- * Hint: For authentication take a look to \RKW\RkwRegistration\Service\FrontendUserAuthService
+ * Hint: For authentication take a look to \RKW\RkwRegistration\Service\AuthFrontendUserService
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum

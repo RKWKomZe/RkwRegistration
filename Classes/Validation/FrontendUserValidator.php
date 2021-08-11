@@ -15,8 +15,16 @@ namespace RKW\RkwRegistration\Validation;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Service\RegisterFrontendUserService;
+use RKW\RkwRegistration\Utility\FrontendUserUtility;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+
 /**
- * Class FormValidator
+ * Class FrontendUserValidator
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
@@ -24,7 +32,7 @@ namespace RKW\RkwRegistration\Validation;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class FormValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator
+class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator
 {
     /**
      * booleanValidator
@@ -52,7 +60,6 @@ class FormValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVali
      */
     public function isValid($frontendUserForm)
     {
-
         $isValid = true;
 
         // get required fields of user
@@ -86,7 +93,11 @@ class FormValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVali
         // check valid email
         if (in_array('email', $requiredFields)) {
 
-            if (!\RKW\RkwRegistration\Service\RegistrationService::validEmail($frontendUserForm->getEmail())) {
+            $objectManager = \RKW\RkwBasics\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+            /** @var RegisterFrontendUserService $registerFrontendUserService */
+            $registerFrontendUserService = $objectManager->get(RegisterFrontendUserService::class, FrontendUserUtility::convertArrayToObject($frontendUserForm));
+
+            if (!$registerFrontendUserService->validateEmail($frontendUserForm->getEmail())) {
 
                 $this->result->forProperty('email')->addError(
                     new \TYPO3\CMS\Extbase\Error\Error(
@@ -94,6 +105,19 @@ class FormValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVali
                             'validator.email_invalid',
                             'rkw_registration'
                         ), 1414589184
+                    )
+                );
+                $isValid = false;
+            }
+
+            if (!$registerFrontendUserService->uniqueEmail($frontendUserForm->getEmail())) {
+
+                $this->result->forProperty('email')->addError(
+                    new \TYPO3\CMS\Extbase\Error\Error(
+                        \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                            'registrationController.error.username_exists',
+                            'rkw_registration'
+                        ), 1628688993
                     )
                 );
                 $isValid = false;
@@ -147,8 +171,6 @@ class FormValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVali
         }
 
         return $isValid;
-        //====
-
     }
 
 

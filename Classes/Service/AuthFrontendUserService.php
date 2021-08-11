@@ -31,14 +31,14 @@ use TYPO3\CMS\Saltedpasswords\Utility\SaltedPasswordsUtility;
  */
 
 /**
- * FrontendUserAuthService
+ * AuthFrontendUserService
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationService
+class AuthFrontendUserService extends \TYPO3\CMS\Sv\AbstractAuthenticationService
 {
     /**
      * 0 - this service was the right one to authenticate the user but it failed
@@ -54,14 +54,6 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
      * 200 - authenticated and no more checking needed
      */
     const STATUS_AUTHENTICATION_SUCCESS_BREAK = 200;
-
-    /**
-     * Length of token for guest users
-     *
-     * @const integer
-     * @see \RKW\RkwRegistration\Service\RegistrationService::GUEST_TOKEN_LENGTH
-     */
-    const GUEST_TOKEN_LENGTH = 20;
 
     /**
      * FrontendUserRepository
@@ -239,12 +231,12 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
 
         // check if given token exists and has the expected length!
         if (
-            (strlen($token) == self::GUEST_TOKEN_LENGTH)
+            (strlen($token) == RegisterGuestUserService::GUEST_TOKEN_LENGTH)
             && ($guestUser = $guestUserRepository->findByUsername($token)->getFirst())
         ) {
             $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully authenticated guest user with token "%s".', trim($token)));
 
-            // @toDo: A thought: Maybe give here also back the STATUS_AUTHENTICATION_SUCCESS_BREAK value
+            // @toDo: A thought: Maybe give here back the STATUS_AUTHENTICATION_SUCCESS_BREAK value
             // Impact: A further repository call inside the called action to get the associated user
             return $guestUser;
         } else {
@@ -252,8 +244,8 @@ class FrontendUserAuthService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
             // Fallback: THIS AREA WILL BE REMOVED SOON!
             // with @deprecated function $frontendUserRepository->findOneByToken($token). Is just a fallback vor already registered anonymous user
             if (
-                (strlen($token) == self::GUEST_TOKEN_LENGTH)
-                && ($frontendUser = $frontendUserRepository->findOneByToken($token))
+                (strlen($token) == RegisterGuestUserService::GUEST_TOKEN_LENGTH)
+                && ($frontendUser = $frontendUserRepository->findOneByUsername($token))
             ) {
                 return $frontendUser;
             }

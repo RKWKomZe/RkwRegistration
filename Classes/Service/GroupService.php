@@ -4,6 +4,7 @@ namespace RKW\RkwRegistration\Service;
 
 use \RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -21,13 +22,15 @@ use RKW\RkwRegistration\Domain\Model\FrontendUser;
 /**
  * Class GroupService
  *
+ * This service manage fe_groups, which are a an explicit "Service".
+ *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class GroupService implements \TYPO3\CMS\Core\SingletonInterface
+class GroupService
 {
     /**
      * Signal name for use in ext_localconf.php
@@ -97,11 +100,11 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
      * gives the required fields back that needs to fill out a user in the light of its service affiliation
      *
      * @param FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup
+     * @param FrontendUserGroup $frontendUserGroup
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function getMandatoryFieldsOfUser(FrontendUser $frontendUser = null, \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup = null)
+    public function getMandatoryFieldsOfUser(FrontendUser $frontendUser = null, FrontendUserGroup $frontendUserGroup = null)
     {
         // get mandatory fields from TypoScript
         $settings = $this->getSettings();
@@ -130,7 +133,7 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
                 // get mandatory fields by fe_groups the user is registered for
                 $groupsOfUser = $frontendUser->getUsergroup();
                 foreach ($groupsOfUser as $group) {
-                    if ($group instanceof \RKW\RkwRegistration\Domain\Model\FrontendUserGroup) {
+                    if ($group instanceof FrontendUserGroup) {
                         if ($groupMandatoryFields = $group->getTxRkwregistrationServiceMandatoryFields()) {
                             $requiredFields = array_merge($requiredFields, explode(',', str_replace(' ', '', $groupMandatoryFields)));
                         }
@@ -150,7 +153,7 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
 
                     if ($groups = $serviceInquiry->getUsergroup()) {
                         foreach ($groups as $group) {
-                            if ($group instanceof \RKW\RkwRegistration\Domain\Model\FrontendUserGroup) {
+                            if ($group instanceof FrontendUserGroup) {
                                 if ($groupMandatoryFields = $group->getTxRkwregistrationServiceMandatoryFields()) {
                                     $requiredFields = array_merge($requiredFields, explode(',', str_replace(' ', '', $groupMandatoryFields)));
                                 }
@@ -200,7 +203,7 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
 
         // load fe-user
         if (
-            ($frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonAnonymous($service->getUser()))
+            ($frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonGuest($service->getUser()))
             && ($frontendUserGroups = $service->getUsergroup())
         ) {
 
@@ -217,7 +220,7 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
                 // check if there are mandatory fields for the service
                 $mandatoryFields = array();
                 foreach ($frontendUserGroups as $frontendUserGroup) {
-                    if ($frontendUserGroup instanceof \RKW\RkwRegistration\Domain\Model\FrontendUserGroup) {
+                    if ($frontendUserGroup instanceof FrontendUserGroup) {
                         $mandatoryFields = array_merge($mandatoryFields, $this->getMandatoryFieldsOfUser($frontendUser, $frontendUserGroup));
                     }
                 }
@@ -229,7 +232,7 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
                     // if there is none, we finally add the user to the fe-groups and remove the service request
                 } else {
                     foreach ($frontendUserGroups as $frontendUserGroup) {
-                        if ($frontendUserGroup instanceof \RKW\RkwRegistration\Domain\Model\FrontendUserGroup) {
+                        if ($frontendUserGroup instanceof FrontendUserGroup) {
                             $frontendUser->addUsergroup($frontendUserGroup);
                         }
                     }
@@ -296,7 +299,7 @@ class GroupService implements \TYPO3\CMS\Core\SingletonInterface
                         foreach ($frontendUserGroups as $frontendUserGroup) {
 
                             // add user to group
-                            if ($frontendUserGroup instanceof \RKW\RkwRegistration\Domain\Model\FrontendUserGroup) {
+                            if ($frontendUserGroup instanceof FrontendUserGroup) {
                                 $frontendUser->addUsergroup($frontendUserGroup);
                                 $cnt++;
                             }

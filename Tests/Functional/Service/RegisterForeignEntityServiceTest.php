@@ -8,7 +8,7 @@ use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use \RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use RKW\RkwRegistration\Service\RegistrationService;
+use RKW\RkwRegistration\Service\OptInService;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /*
@@ -24,14 +24,14 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
  * The TYPO3 project - inspiring people to share!
  */
 /**
- * RegistrationServiceTest
+ * OptInServiceTest
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class RegistrationServiceTest extends FunctionalTestCase
+class OptInServiceTest extends FunctionalTestCase
 {
     /**
      * @var string[]
@@ -59,7 +59,7 @@ class RegistrationServiceTest extends FunctionalTestCase
     private $registrationRepository = null;
 
     /**
-     * @var \RKW\RkwRegistration\Service\RegistrationService
+     * @var \RKW\RkwRegistration\Service\OptInService
      */
     private $registrationService = null;
 
@@ -72,7 +72,7 @@ class RegistrationServiceTest extends FunctionalTestCase
     {
 
         parent::setUp();
-        $this->importDataSet(__DIR__ . '/RegistrationServiceTest/Fixtures/Database/Global.xml');
+        $this->importDataSet(__DIR__ . '/OptInServiceTest/Fixtures/Database/Global.xml');
 
         $this->setUpFrontendRootPage(
             1,
@@ -81,7 +81,7 @@ class RegistrationServiceTest extends FunctionalTestCase
                 'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
-                'EXT:rkw_registration/Tests/Functional/Service/RegistrationServiceTest/Fixtures/Frontend/Configuration/Rootpage.typoscript',
+                'EXT:rkw_registration/Tests/Functional/Service/OptInServiceTest/Fixtures/Frontend/Configuration/Rootpage.typoscript',
             ]
         );
 
@@ -91,7 +91,7 @@ class RegistrationServiceTest extends FunctionalTestCase
         $this->frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
         $this->registrationRepository = $objectManager->get(RegistrationRepository::class);
         // Service
-        $this->registrationService = $objectManager->get(RegistrationService::class);
+        $this->registrationService = $objectManager->get(OptInService::class);
 
         $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromAddress'] = 'mail@default.rkw';
         $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromName'] = 'RKW Default';
@@ -103,7 +103,7 @@ class RegistrationServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processOptInWithTokenYesReturnsSuccess ()
+    public function processWithTokenYesReturnsSuccess ()
     {
         /**
          * Scenario:
@@ -116,7 +116,7 @@ class RegistrationServiceTest extends FunctionalTestCase
          * Then the frontendUser is still part of the database
          */
 
-        $this->importDataSet(__DIR__ . '/RegistrationServiceTest/Fixtures/Database/Check20.xml');
+        $this->importDataSet(__DIR__ . '/OptInServiceTest/Fixtures/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\Registration $register */
         $register = $this->registrationRepository->findByIdentifier(1);
@@ -124,16 +124,16 @@ class RegistrationServiceTest extends FunctionalTestCase
         $register->setValidUntil(time() + 60);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser());
+        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser());
 
         static::assertTrue($frontendUser->getDisable() === 0);
 
-        $result = $this->registrationService->processOptIn($register->getTokenYes(), '', $register->getUserSha1());
+        $result = $this->registrationService->process($register->getTokenYes(), '', $register->getUserSha1());
 
         static::assertTrue($result === 1);
         static::assertTrue($frontendUser->getDisable() === 0);
         // And check that the feUser entry is still in database
-        $frontendUserFromDb = $this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser());
+        $frontendUserFromDb = $this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser());
         static::assertNotNull($frontendUserFromDb);
         // the new disable value is also persistent now
         static::assertTrue($frontendUserFromDb->getDisable() === 0);
@@ -145,7 +145,7 @@ class RegistrationServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processOptInWithTokenYesReturnsSuccessAndEnablesTheDisabledFrontendUser ()
+    public function processWithTokenYesReturnsSuccessAndEnablesTheDisabledFrontendUser ()
     {
         /**
          * Scenario:
@@ -158,7 +158,7 @@ class RegistrationServiceTest extends FunctionalTestCase
          * Then the disabled frontendUser is enabled
          */
 
-        $this->importDataSet(__DIR__ . '/RegistrationServiceTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(__DIR__ . '/OptInServiceTest/Fixtures/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\Registration $register */
         $register = $this->registrationRepository->findByIdentifier(1);
@@ -166,16 +166,16 @@ class RegistrationServiceTest extends FunctionalTestCase
         $register->setValidUntil(time() + 60);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser());
+        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser());
 
         static::assertTrue($frontendUser->getDisable() === 1);
 
-        $result = $this->registrationService->processOptIn($register->getTokenYes(), '', $register->getUserSha1());
+        $result = $this->registrationService->process($register->getTokenYes(), '', $register->getUserSha1());
 
         static::assertTrue($result === 1);
         static::assertTrue($frontendUser->getDisable() === 0);
         // And check that the feUser entry is still in database
-        $frontendUserFromDb = $this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser());
+        $frontendUserFromDb = $this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser());
         static::assertNotNull($frontendUserFromDb);
         // the new disable value is also persistent now
         static::assertTrue($frontendUserFromDb->getDisable() === 0);
@@ -187,7 +187,7 @@ class RegistrationServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processOptInWithTokenNoReturnsDismissed ()
+    public function processWithTokenNoReturnsDismissed ()
     {
         /**
          * Scenario:
@@ -200,7 +200,7 @@ class RegistrationServiceTest extends FunctionalTestCase
          * Then the frontendUser is still part of the database
          */
 
-        $this->importDataSet(__DIR__ . '/RegistrationServiceTest/Fixtures/Database/Check20.xml');
+        $this->importDataSet(__DIR__ . '/OptInServiceTest/Fixtures/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\Registration $register */
         $register = $this->registrationRepository->findByIdentifier(1);
@@ -208,13 +208,13 @@ class RegistrationServiceTest extends FunctionalTestCase
         $register->setValidUntil(time() + 60);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser());
+        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser());
 
-        $result = $this->registrationService->processOptIn('', $register->getTokenNo(), $register->getUserSha1());
+        $result = $this->registrationService->process('', $register->getTokenNo(), $register->getUserSha1());
 
         static::assertTrue($result === 2);
         // but the database entry is completely deleted (because disabled users are removed when using token "No")
-        static::assertNotNull($this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser()));
+        static::assertNotNull($this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser()));
         static::assertNull($this->registrationRepository->findByIdentifier(1));
     }
 
@@ -223,7 +223,7 @@ class RegistrationServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processOptInWithTokenNoReturnsDismissedAndRemovesTheDisabledFrontendUser ()
+    public function processWithTokenNoReturnsDismissedAndRemovesTheDisabledFrontendUser ()
     {
         /**
          * Scenario:
@@ -235,7 +235,7 @@ class RegistrationServiceTest extends FunctionalTestCase
          * Then the disabled frontendUser is removed from database
          */
 
-        $this->importDataSet(__DIR__ . '/RegistrationServiceTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(__DIR__ . '/OptInServiceTest/Fixtures/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\Registration $register */
         $register = $this->registrationRepository->findByIdentifier(1);
@@ -243,17 +243,17 @@ class RegistrationServiceTest extends FunctionalTestCase
         $register->setValidUntil(time() + 60);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser());
+        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser());
 
         static::assertTrue($frontendUser->getDisable() === 1);
 
-        $result = $this->registrationService->processOptIn('', $register->getTokenNo(), $register->getUserSha1());
+        $result = $this->registrationService->process('', $register->getTokenNo(), $register->getUserSha1());
 
         static::assertTrue($result === 2);
         // the given dataset is still disabled
         static::assertTrue($frontendUser->getDisable() === 1);
         // but the database entry is completely deleted (because disabled users are removed when using token "No")
-        static::assertNull($this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser()));
+        static::assertNull($this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser()));
         static::assertNull($this->registrationRepository->findByIdentifier(1));
     }
 
@@ -262,7 +262,7 @@ class RegistrationServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processOptInWithWrongYesTokenReturnsFailed ()
+    public function processWithWrongYesTokenReturnsFailed ()
     {
         /**
          * Scenario:
@@ -274,7 +274,7 @@ class RegistrationServiceTest extends FunctionalTestCase
          * Then the disabled frontendUser is NOT removed from database
          */
 
-        $this->importDataSet(__DIR__ . '/RegistrationServiceTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(__DIR__ . '/OptInServiceTest/Fixtures/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\Registration $register */
         $register = $this->registrationRepository->findByIdentifier(1);
@@ -282,17 +282,17 @@ class RegistrationServiceTest extends FunctionalTestCase
         $register->setValidUntil(time() + 60);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser());
+        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser());
 
         static::assertTrue($frontendUser->getDisable() === 1);
 
-        $result = $this->registrationService->processOptIn('thisTokenIsBullshit', '', $register->getUserSha1());
+        $result = $this->registrationService->process('thisTokenIsBullshit', '', $register->getUserSha1());
 
         static::assertTrue($result === 0);
         // the given dataset is still disabled
         static::assertTrue($frontendUser->getDisable() === 1);
         // but nothing is happen. User and registration still exist in database
-        static::assertNotNull($this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser()));
+        static::assertNotNull($this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser()));
         static::assertNotNull($this->registrationRepository->findByIdentifier(1));
     }
 
@@ -301,7 +301,7 @@ class RegistrationServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processOptInWithWrongNoTokenReturnsFailed ()
+    public function processWithWrongNoTokenReturnsFailed ()
     {
         /**
          * Scenario:
@@ -313,7 +313,7 @@ class RegistrationServiceTest extends FunctionalTestCase
          * Then the disabled frontendUser is NOT removed from database
          */
 
-        $this->importDataSet(__DIR__ . '/RegistrationServiceTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(__DIR__ . '/OptInServiceTest/Fixtures/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\Registration $register */
         $register = $this->registrationRepository->findByIdentifier(1);
@@ -321,18 +321,18 @@ class RegistrationServiceTest extends FunctionalTestCase
         $register->setValidUntil(time() + 60);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser());
+        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser());
 
         static::assertTrue($frontendUser->getDisable() === 1);
 
-        /** @var RegistrationService $service */
-        $result = $this->registrationService->processOptIn('', 'thisTokenIsBullshit', $register->getUserSha1());
+        /** @var OptInService $service */
+        $result = $this->registrationService->process('', 'thisTokenIsBullshit', $register->getUserSha1());
 
         static::assertTrue($result === 0);
         // the given dataset is still disabled
         static::assertTrue($frontendUser->getDisable() === 1);
         // but nothing is happen. User and registration still exist in database
-        static::assertNotNull($this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser()));
+        static::assertNotNull($this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser()));
         static::assertNotNull($this->registrationRepository->findByIdentifier(1));
     }
 
@@ -341,7 +341,7 @@ class RegistrationServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processOptInExpiredReturnsFailedAndRemovesRegistration ()
+    public function processExpiredReturnsFailedAndRemovesRegistration ()
     {
         /**
          * Scenario:
@@ -353,7 +353,7 @@ class RegistrationServiceTest extends FunctionalTestCase
          * Then the disabled frontendUser is removed from database
          */
 
-        $this->importDataSet(__DIR__ . '/RegistrationServiceTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(__DIR__ . '/OptInServiceTest/Fixtures/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\Registration $register */
         $register = $this->registrationRepository->findByIdentifier(1);
@@ -361,12 +361,12 @@ class RegistrationServiceTest extends FunctionalTestCase
         $register->setValidUntil(time() - 60);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser());
+        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser());
 
-        $result = $this->registrationService->processOptIn('', 'thisTokenIsBullshit', $register->getUserSha1());
+        $result = $this->registrationService->process('', 'thisTokenIsBullshit', $register->getUserSha1());
 
         static::assertTrue($result === 400);
-        static::assertNull($this->frontendUserRepository->findByUidInactiveNonAnonymous($register->getUser()));
+        static::assertNull($this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser()));
         static::assertNull($this->registrationRepository->findByIdentifier(1));
     }
 
@@ -375,7 +375,7 @@ class RegistrationServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processOptInWhichNotExistsReturnsNotFound ()
+    public function processWhichNotExistsReturnsNotFound ()
     {
         /**
          * Scenario:
@@ -385,7 +385,7 @@ class RegistrationServiceTest extends FunctionalTestCase
          * Then the function gives back a not found value ("500")
          */
 
-        $result = $this->registrationService->processOptIn('something', '', 'whatEver :)');
+        $result = $this->registrationService->process('something', '', 'whatEver :)');
 
         static::assertTrue($result === 500);
     }
@@ -474,7 +474,7 @@ class RegistrationServiceTest extends FunctionalTestCase
          * Then the already existing user is returned without any changes
          */
 
-        $this->importDataSet(__DIR__ . '/RegistrationServiceTest/Fixtures/Database/Check20.xml');
+        $this->importDataSet(__DIR__ . '/OptInServiceTest/Fixtures/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $existingFrontendUser */
         $existingFrontendUser = $this->frontendUserRepository->findByIdentifier(1);
@@ -509,10 +509,10 @@ class RegistrationServiceTest extends FunctionalTestCase
          * Then the already existing user is returned without any changes (still disabled)
          */
 
-        $this->importDataSet(__DIR__ . '/RegistrationServiceTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(__DIR__ . '/OptInServiceTest/Fixtures/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $existingFrontendUser */
-        $existingFrontendUser = $this->frontendUserRepository->findByUidInactiveNonAnonymous(1);
+        $existingFrontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest(1);
 
         // email does not exists
         static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $existingFrontendUser);
@@ -544,10 +544,10 @@ class RegistrationServiceTest extends FunctionalTestCase
          * Then the already existing user is returned as enabled user
          */
 
-        $this->importDataSet(__DIR__ . '/RegistrationServiceTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(__DIR__ . '/OptInServiceTest/Fixtures/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $existingFrontendUser */
-        $existingFrontendUser = $this->frontendUserRepository->findByUidInactiveNonAnonymous(1);
+        $existingFrontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest(1);
 
         // email does not exists
         static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $existingFrontendUser);
@@ -581,7 +581,7 @@ class RegistrationServiceTest extends FunctionalTestCase
          * Then a registration dataset is created with given data array
          */
 
-        $this->importDataSet(__DIR__ . '/RegistrationServiceTest/Fixtures/Database/Check20.xml');
+        $this->importDataSet(__DIR__ . '/OptInServiceTest/Fixtures/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $existingFrontendUser */
         $existingFrontendUser = $this->frontendUserRepository->findByUid(1);
@@ -668,7 +668,7 @@ class RegistrationServiceTest extends FunctionalTestCase
          * Then a registration dataset is created with given data object
          */
 
-        $this->importDataSet(__DIR__ . '/RegistrationServiceTest/Fixtures/Database/Check20.xml');
+        $this->importDataSet(__DIR__ . '/OptInServiceTest/Fixtures/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $existingFrontendUser */
         $existingFrontendUser = $this->frontendUserRepository->findByUid(1);
