@@ -69,7 +69,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             ));
 
             $mailService->getQueueMail()->setSubject(
-                \RKW\RkwMailer\Helper\FrontendLocalization::translate(
+                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
                     'rkwMailService.createUserEvent.subject',
                     'rkw_registration',
                     null,
@@ -124,7 +124,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             ));
 
             $mailService->getQueueMail()->setSubject(
-                \RKW\RkwMailer\Helper\FrontendLocalization::translate(
+                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
                     'rkwMailService.registerUserEvent.subject',
                     'rkw_registration',
                     null,
@@ -180,7 +180,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             ));
 
             $mailService->getQueueMail()->setSubject(
-                \RKW\RkwMailer\Helper\FrontendLocalization::translate(
+                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
                     'rkwMailService.passwordResetEvent.subject',
                     'rkw_registration',
                     null,
@@ -241,7 +241,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             ));
 
             $mailService->getQueueMail()->setSubject(
-                \RKW\RkwMailer\Helper\FrontendLocalization::translate(
+                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
                     'rkwMailService.adminServiceEvent.subject',
                     'rkw_registration',
                     null,
@@ -295,7 +295,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             ));
 
             $mailService->getQueueMail()->setSubject(
-                \RKW\RkwMailer\Helper\FrontendLocalization::translate(
+                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
                     'rkwMailService.adminServiceGrantEvent.subject',
                     'rkw_registration',
                     null,
@@ -349,7 +349,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             ));
 
             $mailService->getQueueMail()->setSubject(
-                \RKW\RkwMailer\Helper\FrontendLocalization::translate(
+                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
                     'rkwMailService.adminServiceDenialEvent.subject',
                     'rkw_registration',
                     null,
