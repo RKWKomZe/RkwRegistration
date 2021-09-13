@@ -15,6 +15,10 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Service\GroupService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+
 /**
  * IsMandatoryFieldViewHelper
  *
@@ -24,7 +28,7 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class IsMandatoryFieldViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class IsMandatoryFieldViewHelper extends AbstractViewHelper
 {
     /**
      * @param string $fieldName
@@ -35,14 +39,10 @@ class IsMandatoryFieldViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abstra
     public function render($fieldName, $frontendUser = null)
     {
 
-        /** @var \RKW\RkwRegistration\Service\GroupService $register */
-        $register = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\GroupService');
+        /** @var GroupService $register */
+        $register = GeneralUtility::makeInstance(GroupService::class);
         $requiredFields = $register->getMandatoryFieldsOfUser($frontendUser);
 
         return in_array($fieldName, $requiredFields);
-        //===
-
     }
-
-
 }

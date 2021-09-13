@@ -5,6 +5,12 @@ namespace RKW\RkwRegistration\Service;
 use \RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
+use RKW\RkwRegistration\Domain\Model\Service;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use RKW\RkwRegistration\Domain\Repository\ServiceRepository;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -51,7 +57,7 @@ class GroupService
     /**
      * ServiceRepository
      *
-     * @var \RKW\RkwRegistration\Domain\Repository\ServiceRepository
+     * @var ServiceRepository
      */
     protected $serviceRepository;
 
@@ -59,7 +65,7 @@ class GroupService
     /**
      * FrontendUserRepository
      *
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @var FrontendUserRepository
      */
     protected $frontendUserRepository;
 
@@ -74,7 +80,7 @@ class GroupService
     /**
      * Persistence Manager
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     * @var PersistenceManager
      */
     protected $persistenceManager;
 
@@ -82,7 +88,7 @@ class GroupService
     /**
      * Signal-Slot Dispatcher
      *
-     * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     * @var Dispatcher
      */
     protected $signalSlotDispatcher;
 
@@ -142,11 +148,11 @@ class GroupService
 
                 //=======================================
                 // get mandatory fields by fe_groups the user is still waiting to be registered but admin has already granted him access
-                /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-                $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+                /** @var ObjectManager $objectManager */
+                $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
 
-                /** @var \RKW\RkwRegistration\Domain\Repository\ServiceRepository $serviceRepository */
-                $serviceRepository = $objectManager->get('RKW\RkwRegistration\Domain\Repository\ServiceRepository');
+                /** @var ServiceRepository $serviceRepository */
+                $serviceRepository = $objectManager->get(ServiceRepository::class);
 
                 $serviceInquiries = $serviceRepository->findEnabledByAdminByUser($frontendUser);
                 foreach ($serviceInquiries as $serviceInquiry) {
@@ -186,7 +192,7 @@ class GroupService
     {
         // load service by SHA-token
         $service = $this->getServiceRepository()->findOneByServiceSha1($userSha1);
-        if (!$service instanceof \RKW\RkwRegistration\Domain\Model\Service) {
+        if (!$service instanceof Service) {
             return 0;
         }
 
@@ -290,7 +296,7 @@ class GroupService
 
             // go through all found services...
             foreach ($services as $service) {
-                if ($service instanceof \RKW\RkwRegistration\Domain\Model\Service) {
+                if ($service instanceof Service) {
 
                     // get frontend user groups...
                     if (($frontendUserGroups = $service->getUsergroup())) {
@@ -323,13 +329,13 @@ class GroupService
     /**
      * Returns ServiceRepository
      *
-     * @return \RKW\RkwRegistration\Domain\Repository\ServiceRepository
+     * @return ServiceRepository
      */
     protected function getServiceRepository()
     {
         if (!$this->serviceRepository) {
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            $this->serviceRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\ServiceRepository');
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+            $this->serviceRepository = $objectManager->get(ServiceRepository::class);
         }
 
         return $this->serviceRepository;
@@ -339,13 +345,13 @@ class GroupService
     /**
      * Returns FrontendUserRepository
      *
-     * @return \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @return FrontendUserRepository
      */
     protected function getFrontendUserRepository()
     {
         if (!$this->frontendUserRepository) {
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            $this->frontendUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\FrontendUserRepository');
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+            $this->frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
         }
 
         return $this->frontendUserRepository;
@@ -355,13 +361,13 @@ class GroupService
     /**
      * Returns PersistanceManager
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     * @return PersistenceManager
      */
     protected function getPersistanceManager()
     {
         if (!$this->persistenceManager) {
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            $this->persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+            $this->persistenceManager = $objectManager->get(PersistenceManager::class);
         }
 
         return $this->persistenceManager;
@@ -371,13 +377,13 @@ class GroupService
     /**
      * Returns SignalSlotDispatcher
      *
-     * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     * @return Dispatcher
      */
     protected function getSignalSlotDispatcher()
     {
         if (!$this->signalSlotDispatcher) {
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            $this->signalSlotDispatcher = $objectManager->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+            $this->signalSlotDispatcher = $objectManager->get(Dispatcher::class);
         }
 
         return $this->signalSlotDispatcher;

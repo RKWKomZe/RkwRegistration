@@ -278,15 +278,12 @@ class AuthFrontendUserService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
         if (!$username) {
             $this->getLogger()->log(LogLevel::ERROR, sprintf('No valid username given.'));
             throw new \RKW\RkwRegistration\Exception('No valid username given.', 1435035135);
-            //===
         }
 
         if (!$password) {
             $this->getLogger()->log(LogLevel::ERROR, sprintf('No valid password given.'));
             throw new \RKW\RkwRegistration\Exception('No valid password given.', 1435035166);
-            //===
         }
-
 
         if (
             ($user = $this->getFrontendUserRepository()->findOneByUsername(strtolower(trim($username))))
@@ -311,7 +308,6 @@ class AuthFrontendUserService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
                         $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully authentificated user "%s" using a salted password.', strtolower(trim($username))));
 
                         return $user;
-                        //===
                     }
                 }
 
@@ -326,7 +322,6 @@ class AuthFrontendUserService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
                     $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully authenticated user "%s" using a plaintext password.', strtolower(trim($username))));
 
                     return $user;
-                    //===
                 }
             }
 

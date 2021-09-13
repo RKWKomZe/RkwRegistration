@@ -33,7 +33,6 @@ class GenderValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVa
      */
     public function isValid($value)
     {
-
         if ($value == 99) {
 
             $this->addError(
@@ -45,12 +44,9 @@ class GenderValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVa
             );
 
             return false;
-            //===
         }
 
         return true;
-        //===
     }
-
 
 }

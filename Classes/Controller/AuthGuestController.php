@@ -3,12 +3,15 @@
 namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Domain\Model\GuestUser;
+use RKW\RkwRegistration\Service\AuthFrontendUserService;
 use RKW\RkwRegistration\Service\AuthService as Authentication;
 use RKW\RkwRegistration\Service\RegisterGuestUserService;
 use RKW\RkwRegistration\Utility\RedirectUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -50,11 +53,11 @@ class AuthGuestController extends AbstractController
         // a) ERROR: send back already logged in user. Nothing to do here
         if ($this->getFrontendUser()) {
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.error.anonymous_login_impossible', $this->extensionName
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
             $this->redirect('loginExternal', 'Auth');
         }
@@ -76,18 +79,16 @@ class AuthGuestController extends AbstractController
             $this->redirect('loginHint');
         }
 
-
         // c) LOGIN: if token is given: Re-login guest user
         if (
             $this->request->hasArgument('token')
             && $token = $this->request->getArgument('token')
         ) {
 
-
             // @toDo: Is AuthFrontendUserService correct? Or would be AuthGuestUserService the right one?
 
-            /** @var \RKW\RkwRegistration\Service\AuthFrontendUserService $authService */
-            $authService = GeneralUtility::makeInstance(\RKW\RkwRegistration\Service\AuthFrontendUserService::class);
+            /** @var AuthFrontendUserService $authService */
+            $authService = GeneralUtility::makeInstance(AuthFrontendUserService::class);
             if ($guestUser = $authService->authGuest($token)) {
 
                 FrontendUserSessionUtility::login($guestUser);
@@ -103,11 +104,11 @@ class AuthGuestController extends AbstractController
                 FrontendUserSessionUtility::logout();
 
                 $this->addFlashMessage(
-                    \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                    LocalizationUtility::translate(
                         'registrationController.error.invalid_anonymous_token', $this->extensionName
                     ),
                     '',
-                    \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                    AbstractMessage::ERROR
                 );
             }
         }
@@ -129,11 +130,11 @@ class AuthGuestController extends AbstractController
         if (!$this->getFrontendUser() instanceof GuestUser) {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                LocalizationUtility::translate(
                     'registrationController.error.anonymous_login_impossible', $this->extensionName
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
 
             $this->redirect('loginExternal', 'Auth');
@@ -156,7 +157,7 @@ class AuthGuestController extends AbstractController
 
         // show link with token to anonymous user
         $this->addFlashMessage(
-            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+            LocalizationUtility::translate(
                 'registrationController.message.guest_link',
                 $this->extensionName,
                 array(
@@ -169,23 +170,6 @@ class AuthGuestController extends AbstractController
         // for security reasons: redirect after creating special login link
         $this->redirect('loginExternal', 'Auth');
     }
-
-
-
-    /**
-     * action forget
-     *
-     * @return void
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
-     */
-
-    public function forgetAction()
-    {
-        // @toDo: Idea: Guest user with email has lost his token. Send the token again to it's email address, if available?
-        // Or should this also done by the normal password forget function?
-    }
-
 }
 
 

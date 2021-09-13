@@ -15,9 +15,14 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\GuestUser;
+use RKW\RkwRegistration\Service\OptInService;
+use RKW\RkwRegistration\Service\RegisterFrontendUserService;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Class AbstractController
@@ -105,7 +110,6 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
     protected function getErrorFlashMessage()
     {
         return false;
-        //===
     }
 
     /**
@@ -121,7 +125,6 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
         }
 
         return $this->logger;
-        //===
     }
 
 
@@ -152,7 +155,7 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      *
      * Hint: Handles GuestUser and normal FrontendUser. Should we split it up?
      *
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|\RKW\RkwRegistration\Domain\Model\GuestUser|NULL
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|GuestUser|NULL
      */
     protected function getFrontendUser()
     {
@@ -162,7 +165,7 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
             // Guest user?
             $guestUser = $this->guestUserRepository->findByUid(FrontendUserSessionUtility::getFrontendUserId());
 
-            if ($guestUser instanceof \RKW\RkwRegistration\Domain\Model\GuestUser) {
+            if ($guestUser instanceof GuestUser) {
 
                 $this->frontendUser = $guestUser;
             } else {
@@ -208,14 +211,15 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      */
     protected function hasUserValidEmailRedirect()
     {
-
         // check if user has a email-address!
         // if not redirect to edit form
         if ($this->getFrontendUser()) {
 
-            if (!\RKW\RkwRegistration\Service\OptInService::validEmail($this->getFrontendUser()->getEmail())) {
+            /** @var RegisterFrontendUserService $registerFrontendUserService */
+            $registerFrontendUserService = GeneralUtility::makeInstance(RegisterFrontendUserService::class, $this->getFrontendUser());
+            if (!$registerFrontendUserService->validateEmail()) {
                 $this->addFlashMessage(
-                    \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                    LocalizationUtility::translate(
                         'abstractController.message.enter_valid_email', 'rkw_registration'
                     )
                 );
@@ -237,15 +241,10 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      */
     protected function hasUserValidLoginRedirect()
     {
-
         if (!$this->getFrontendUser()) {
-
             $this->redirectToLogin();
-
-            return;
-            //===
         }
-
+        return;
     }
 
 
@@ -273,7 +272,7 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
                 if (!$frontendUser->$getter()) {
 
                     $this->addFlashMessage(
-                        \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                        LocalizationUtility::translate(
                             'abstractController.message.enter_mandatory_fields', 'rkw_registration'
                         )
                     );
@@ -299,7 +298,7 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
     {
 
         $this->addFlashMessage(
-            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+            LocalizationUtility::translate(
                 'abstractController.error.user_not_logged_in', 'rkw_registration'
             ),
             '',

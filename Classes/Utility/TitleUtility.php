@@ -15,6 +15,12 @@ namespace RKW\RkwRegistration\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\Title;
+use RKW\RkwRegistration\Domain\Repository\TitleRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+
 /**
  * Class TitleUtility
  *
@@ -25,33 +31,32 @@ namespace RKW\RkwRegistration\Utility;
  */
 class TitleUtility
 {
-
     /**
      * Returns \RKW\RkwRegistration\Domain\Model\Title instance
      *
      * @param string $title
      * @param array $settings
      *
-     * @return \RKW\RkwRegistration\Domain\Model\Title
+     * @return Title
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
     public static function extractTxRegistrationTitle($title = '', $settings = [])
     {
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
-        $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
+        /** @var ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var TitleRepository $titleRepository */
+        $titleRepository = $objectManager->get(TitleRepository::class);
         $txRegistrationTitle = $titleRepository->findOneByName($title);
 
         if (!$txRegistrationTitle && $title !== '') {
 
-            $txRegistrationTitle = new \RKW\RkwRegistration\Domain\Model\Title;
+            $txRegistrationTitle = GeneralUtility::makeInstance(Title::class);
 
             $txRegistrationTitle->setPid(intval($settings['titles']['storagePid']));
 
             $txRegistrationTitle->setName($title);
 
-            $persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+            $persistenceManager = $objectManager->get(PersistenceManager::class);
 
             $titleRepository->add($txRegistrationTitle);
             $persistenceManager->persistAll();

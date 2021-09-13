@@ -61,9 +61,7 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
             );
 
             return false;
-            //===
         }
-
 
         // check if identical
         if ($passwordArray['first'] != $passwordArray['second']) {
@@ -78,9 +76,7 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
             );
 
             return false;
-            //===
         }
-
 
         // check length
         if (strlen($passwordArray['first']) < intval($minLength)) {
@@ -95,7 +91,6 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
             );
 
             return false;
-            //===
         }
 
         // check if all important signs are included
@@ -114,14 +109,9 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
                 );
 
                 return false;
-                //===
             }
         }
 
         return true;
-        //===
-
     }
-
-
 }

@@ -25,7 +25,6 @@ namespace RKW\RkwRegistration\Utility;
  */
 class RemoteUtility
 {
-
     /**
      * Returns the users ip
      *
@@ -44,5 +43,4 @@ class RemoteUtility
 
         return $remoteAddr;
     }
-
 }

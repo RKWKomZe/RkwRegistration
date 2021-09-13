@@ -18,6 +18,7 @@ namespace RKW\RkwRegistration\Utility;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 use TYPO3\CMS\Saltedpasswords\Salt\SaltFactory;
 use TYPO3\CMS\Saltedpasswords\Utility\SaltedPasswordsUtility;
 
@@ -61,11 +62,11 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
      *
      * @deprecated This function will be removed soon. Use generatePassword and saltPassword instead
      *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser
+     * @param FrontendUser $frontendUser
      * @param string $plaintextPassword
      * @return string
      */
-    public static function generate(\TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser, $plaintextPassword = null): ?string
+    public static function generate(FrontendUser $frontendUser, $plaintextPassword = null): ?string
     {
         if (!$plaintextPassword) {
             $plaintextPassword = self::generatePassword();
@@ -79,7 +80,6 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
         $frontendUser->setPassword($saltedPassword);
 
         return $plaintextPassword;
-        //===
     }
 
 
@@ -110,7 +110,6 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
                 substr(str_shuffle($symbols),0,round($length / 2, 0, PHP_ROUND_HALF_DOWN))
             );
         }
-
     }
 
 

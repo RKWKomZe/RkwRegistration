@@ -3,6 +3,12 @@
 namespace RKW\RkwRegistration\Service;
 
 use \RKW\RkwBasics\Utility\GeneralUtility;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -34,42 +40,42 @@ abstract class AbstractService
     /**
      * RegistrationRepository
      *
-     * @var \RKW\RkwRegistration\Domain\Repository\RegistrationRepository
+     * @var RegistrationRepository
      */
     protected $registrationRepository;
 
     /**
      * FrontendUserRepository
      *
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @var FrontendUserRepository
      */
     protected $frontendUserRepository;
 
     /**
      * FrontendUserGroupRepository
      *
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
+     * @var FrontendUserGroupRepository
      */
     protected $frontendUserGroupRepository;
 
     /**
      * Persistence Manager
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     * @var PersistenceManager
      */
     protected $persistenceManager;
 
     /**
      * ObjectManager
      *
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @var ObjectManager
      */
     protected $objectManager;
 
     /**
      * Signal-Slot Dispatcher
      *
-     * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     * @var Dispatcher
      */
     protected $signalSlotDispatcher;
 
@@ -104,13 +110,13 @@ abstract class AbstractService
     /**
      * Returns RegistrationRepository
      *
-     * @return \RKW\RkwRegistration\Domain\Repository\RegistrationRepository
+     * @return RegistrationRepository
      */
     protected function getRegistrationRepository()
     {
         if (!$this->registrationRepository) {
-            $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            $this->registrationRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\RegistrationRepository');
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $this->registrationRepository = $objectManager->get(RegistrationRepository::class);
         }
         return $this->registrationRepository;
     }
@@ -118,13 +124,13 @@ abstract class AbstractService
     /**
      * Returns FrontendUserRepository
      *
-     * @return \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @return FrontendUserRepository
      */
     protected function getFrontendUserRepository()
     {
         if (!$this->frontendUserRepository) {
-            $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            $this->frontendUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\FrontendUserRepository');
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $this->frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
         }
         return $this->frontendUserRepository;
     }
@@ -132,41 +138,27 @@ abstract class AbstractService
     /**
      * Returns FrontendUserGroupRepository
      *
-     * @return \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
+     * @return FrontendUserGroupRepository
      */
     protected function getFrontendUserGroupRepository()
     {
         if (!$this->frontendUserGroupRepository) {
-            $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            $this->frontendUserGroupRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\FrontendUserGroupRepository');
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $this->frontendUserGroupRepository = $objectManager->get(FrontendUserGroupRepository::class);
         }
         return $this->frontendUserGroupRepository;
     }
 
     /**
-     * Returns ObjectManager
-     *
-     * @return \TYPO3\CMS\Extbase\Object\ObjectManager
-     */
-    /*
-    protected function getObjectManager()
-    {
-        if (!$this->objectManager) {
-            $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        }
-        return $this->objectManager;
-    }*/
-
-    /**
      * Returns PersistenceManager
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     * @return PersistenceManager
      */
     protected function getPersistenceManager()
     {
         if (!$this->persistenceManager) {
-            $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            $this->persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $this->persistenceManager = $objectManager->get(PersistenceManager::class);
         }
         return $this->persistenceManager;
     }
@@ -174,13 +166,13 @@ abstract class AbstractService
     /**
      * Returns SignalSlotDispatcher
      *
-     * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     * @return Dispatcher
      */
     protected function getSignalSlotDispatcher()
     {
         if (!$this->signalSlotDispatcher) {
-            $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            $this->signalSlotDispatcher = $objectManager->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $this->signalSlotDispatcher = $objectManager->get(Dispatcher::class);
         }
         return $this->signalSlotDispatcher;
     }

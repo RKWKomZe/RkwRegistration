@@ -14,6 +14,7 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
@@ -36,12 +37,12 @@ if ($currentVersion < 8000000) {
         /**
          * Return the full name of the user
          *
-         * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+         * @param FrontendUser $frontendUser
          * @param bool $includeFirstName
          * @param bool $includeGender
          * @return string $string
          */
-        public function render(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, $includeFirstName = false, $includeGender = true)
+        public function render(FrontendUser $frontendUser, $includeFirstName = false, $includeGender = true)
         {
 
             return static::renderStatic(
@@ -67,7 +68,7 @@ if ($currentVersion < 8000000) {
         static public function renderStatic(array $arguments, \Closure $renderChildrenClosure, \TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface $renderingContext)
         {
 
-            /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+            /** @var FrontendUser $frontendUser */
             $frontendUser = $arguments['frontendUser'];
             $includeFirstName = $arguments['includeFirstName'];
             $includeGender = $arguments['includeGender'];
@@ -116,12 +117,12 @@ if ($currentVersion < 8000000) {
         /**
          * Return the full name of the user
          *
-         * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+         * @param FrontendUser $frontendUser
          * @param bool $includeFirstName
          * @param bool $includeGender
          * @return string $string
          */
-        public function render(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, $includeFirstName = false, $includeGender = true)
+        public function render(FrontendUser $frontendUser, $includeFirstName = false, $includeGender = true)
         {
 
             return static::renderStatic(
@@ -147,7 +148,7 @@ if ($currentVersion < 8000000) {
         static public function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
         {
 
-            /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+            /** @var FrontendUser $frontendUser */
             $frontendUser = $arguments['frontendUser'];
             $includeFirstName = $arguments['includeFirstName'];
             $includeGender = $arguments['includeGender'];

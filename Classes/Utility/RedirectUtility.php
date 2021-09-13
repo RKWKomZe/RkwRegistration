@@ -121,7 +121,6 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
         $checkedUrl = preg_replace('/[&?]logintype=[a-z]+/', '', $checkedUrl);
 
         return $checkedUrl;
-        //===
     }
 
 

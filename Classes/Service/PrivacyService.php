@@ -15,6 +15,18 @@ namespace RKW\RkwRegistration\Service;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\Privacy;
+use RKW\RkwRegistration\Domain\Model\Registration;
+use RKW\RkwRegistration\Domain\Repository\PrivacyRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+
 /**
  * Class PrivacyService
  *
@@ -40,21 +52,21 @@ class PrivacyService implements \TYPO3\CMS\Core\SingletonInterface
      *    RKW\RkwRegistration\Domain\Model\Registration it will be automatically identified and set below in $this->setDataObject
      * 2. After successful optIn the 5th param is used to create the relationship between the two created privacy-datasets
      *
-     * @param \RKW\RkwRegistration\Domain\Model\Privacy $privacy
-     * @param \TYPO3\CMS\Extbase\Mvc\Request $request
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Registration|\TYPO3\CMS\Extbase\DomainObject\AbstractEntity|\TYPO3\CMS\Extbase\Persistence\ObjectStorage $referenceObject
-     * @param string $comment
-     * @param bool $isOptInFinal
+     * @param Privacy                                   $privacy
+     * @param Request                                   $request
+     * @param FrontendUser                              $frontendUser
+     * @param Registration|AbstractEntity|ObjectStorage $referenceObject
+     * @param string                                    $comment
+     * @param bool                                      $isOptInFinal
      * @return void
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      */
     protected static function setPrivacyData(
-        \RKW\RkwRegistration\Domain\Model\Privacy $privacy,
-        \TYPO3\CMS\Extbase\Mvc\Request $request,
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser = null,
+        Privacy $privacy,
+        Request $request,
+        FrontendUser $frontendUser = null,
         $referenceObject = null,
         $comment = '',
         $isOptInFinal = false
@@ -71,7 +83,7 @@ class PrivacyService implements \TYPO3\CMS\Core\SingletonInterface
 
             if (
                 ($isOptInFinal)
-                && ($referenceObject instanceof \RKW\RkwRegistration\Domain\Model\Registration)
+                && ($referenceObject instanceof Registration)
             ) {
                 self::setReferenceObjectInfo($privacy, $referenceObject->getData());
             } else {
@@ -82,7 +94,7 @@ class PrivacyService implements \TYPO3\CMS\Core\SingletonInterface
         // set ipAddress
         $remoteAddress = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
         if ($_SERVER['HTTP_X_FORWARDED_FOR']) {
-            $ips = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            $ips = GeneralUtility::trimExplode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
             if ($ips[0]) {
                 $remoteAddress = filter_var($ips[0], FILTER_VALIDATE_IP);
             }
@@ -113,15 +125,15 @@ class PrivacyService implements \TYPO3\CMS\Core\SingletonInterface
         // set parent privacy entry in final step on opt-in
         if (
             ($isOptInFinal)
-            && ($referenceObject instanceof \RKW\RkwRegistration\Domain\Model\Registration)
+            && ($referenceObject instanceof Registration)
         ) {
 
             // get optIn privacy-entry via registrationUserSha1, because uid may be already re-used and cleanup reference in parent here
-            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
+            /** @var ObjectManager $objectManager */
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-            /** @var \RKW\RkwRegistration\Domain\Repository\PrivacyRepository $privacyRepository */
-            $privacyRepository = $objectManager->get(\RKW\RkwRegistration\Domain\Repository\PrivacyRepository::class);
+            /** @var PrivacyRepository $privacyRepository */
+            $privacyRepository = $objectManager->get(PrivacyRepository::class);
             $privacyParent = $privacyRepository->findOneByRegistration($referenceObject);
             if ($privacyParent) {
                 $privacy->setParent($privacyParent);
@@ -135,40 +147,40 @@ class PrivacyService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * setReferenceObjectInfo
      *
-     * @param \RKW\RkwRegistration\Domain\Model\Privacy $privacy
-     * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity|\TYPO3\CMS\Extbase\Persistence\ObjectStorage $referenceObject
+     * @param Privacy                                                      $privacy
+     * @param AbstractEntity|ObjectStorage $referenceObject
      * @return void
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      */
     protected static function setReferenceObjectInfo(
-        \RKW\RkwRegistration\Domain\Model\Privacy $privacy,
+        Privacy $privacy,
         $referenceObject
     )
     {
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
+        /** @var ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper */
-        $dataMapper = $objectManager->get(\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper::class);
+        /** @var DataMapper $dataMapper */
+        $dataMapper = $objectManager->get(DataMapper::class);
 
         // if we get an object storage we take the first item to determine the table and leave the foreignUid
-        if ($referenceObject instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage) {
+        if ($referenceObject instanceof ObjectStorage) {
             $referenceObject = $referenceObject->current();
 
-            if ($referenceObject instanceof \TYPO3\CMS\Extbase\DomainObject\AbstractEntity) {
+            if ($referenceObject instanceof AbstractEntity) {
                 $privacy->setForeignTable(filter_var($dataMapper->getDataMap(get_class($referenceObject))->getTableName(), FILTER_SANITIZE_STRING));
             }
 
             // else we determine the concrete foreignTable and foreignUid
         } else {
-            if ($referenceObject instanceof \TYPO3\CMS\Extbase\DomainObject\AbstractEntity) {
+            if ($referenceObject instanceof AbstractEntity) {
 
                 $privacy->setForeignTable(filter_var($dataMapper->getDataMap(get_class($referenceObject))->getTableName(), FILTER_SANITIZE_STRING));
                 $privacy->setForeignUid($referenceObject->getUid());
 
                 // additional: Set registration, if $referenceObject is of type \RKW\RkwRegistration\Domain\Model\Registration
                 // -> we need to set this to identify it on successful optIn (for creating a parent-relationship)
-                if ($referenceObject instanceof \RKW\RkwRegistration\Domain\Model\Registration) {
+                if ($referenceObject instanceof Registration) {
                     $privacy->setRegistrationUserSha1($referenceObject->getUserSha1());
                 }
             }
@@ -182,42 +194,40 @@ class PrivacyService implements \TYPO3\CMS\Core\SingletonInterface
      * \RKW\RkwRegistration\Service\OptInService->register You have just to use ->setPrivacyDataBeforeOptIn and
      * ->setPrivacyDataFinal (with registration-object) to complete the procedure
      *
-     * @param \TYPO3\CMS\Extbase\Mvc\Request $request
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
+     * @param Request $request
+     * @param FrontendUser $frontendUser
+     * @param Registration $registration
      * @param string $comment
-     * @return \RKW\RkwRegistration\Domain\Model\Privacy
+     * @return Privacy
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @api
      */
     public static function addPrivacyDataForOptIn(
-        \TYPO3\CMS\Extbase\Mvc\Request $request,
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
-        \RKW\RkwRegistration\Domain\Model\Registration $registration,
+        Request $request,
+        FrontendUser $frontendUser,
+        Registration $registration,
         $comment = ''
     )
     {
 
-        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $privacy */
-        $privacy = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\Privacy');
+        /** @var Privacy $privacy */
+        $privacy = GeneralUtility::makeInstance(Privacy::class);
         self::setPrivacyData($privacy, $request, $frontendUser, $registration, $comment);
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        /** @var ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-        /** @var \RKW\RkwRegistration\Domain\Repository\PrivacyRepository $privacyRepository */
-        $privacyRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\PrivacyRepository');
+        /** @var PrivacyRepository $privacyRepository */
+        $privacyRepository = $objectManager->get(PrivacyRepository::class);
         $privacyRepository->add($privacy);
 
         // @toDo: should normally be called in the context of RKW\RkwRegistration\Service\RegistrationService where already persistence happens
-        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager $persistenceManager */
+        /** @var PersistenceManager $persistenceManager */
         // $persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
         // $persistenceManager->persistAll();
 
         return $privacy;
-        //===
-
     }
 
 
@@ -225,42 +235,41 @@ class PrivacyService implements \TYPO3\CMS\Core\SingletonInterface
      * addPrivacyDataForOptInFinal
      * set the $registration-object if you want to complete an optIn
      *
-     * @param \TYPO3\CMS\Extbase\Mvc\Request $request
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
+     * @param Request $request
+     * @param FrontendUser $frontendUser
+     * @param Registration $registration
      * @param string $comment
-     * @return \RKW\RkwRegistration\Domain\Model\Privacy
+     * @return Privacy
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @api
      */
     public static function addPrivacyDataForOptInFinal(
-        \TYPO3\CMS\Extbase\Mvc\Request $request,
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
-        \RKW\RkwRegistration\Domain\Model\Registration $registration = null,
+        Request $request,
+        FrontendUser $frontendUser,
+        Registration $registration = null,
         $comment = ''
 
     )
     {
-        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $privacy */
-        $privacy = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\Privacy');
+        /** @var Privacy $privacy */
+        $privacy = GeneralUtility::makeInstance(Privacy::class);
 
         self::setPrivacyData($privacy, $request, $frontendUser, $registration, $comment, true);
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        /** @var ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-        /** @var \RKW\RkwRegistration\Domain\Repository\PrivacyRepository $privacyRepository */
-        $privacyRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\PrivacyRepository');
+        /** @var PrivacyRepository $privacyRepository */
+        $privacyRepository = $objectManager->get(PrivacyRepository::class);
         $privacyRepository->add($privacy);
 
         // @toDo: should normally be called in the context of RKW\RkwRegistration\Service\RegistrationService where already persistence happens
-        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager $persistenceManager */
+        /** @var PersistenceManager $persistenceManager */
         // $persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
         // $persistenceManager->persistAll();
 
         return $privacy;
-        //===
     }
 
 
@@ -268,41 +277,39 @@ class PrivacyService implements \TYPO3\CMS\Core\SingletonInterface
      * addPrivacyData
      * set the $registration-object if you want to complete an optIn
      *
-     * @param \TYPO3\CMS\Extbase\Mvc\Request $request
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity|\TYPO3\CMS\Extbase\Persistence\ObjectStorage $dataObject
-     * @param string $comment
-     * @return \RKW\RkwRegistration\Domain\Model\Privacy
+     * @param Request                                                      $request
+     * @param FrontendUser                                                 $frontendUser
+     * @param AbstractEntity|ObjectStorage $dataObject
+     * @param string                                                       $comment
+     * @return Privacy
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @api
      */
     public static function addPrivacyData(
-        \TYPO3\CMS\Extbase\Mvc\Request $request,
-        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
+        Request $request,
+        FrontendUser $frontendUser,
         $dataObject,
         $comment = ''
-
     )
     {
-        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $privacy */
-        $privacy = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\Privacy');
+        /** @var Privacy $privacy */
+        $privacy = GeneralUtility::makeInstance(Privacy::class);
 
         self::setPrivacyData($privacy, $request, $frontendUser, $dataObject, $comment);
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        /** @var ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-        /** @var \RKW\RkwRegistration\Domain\Repository\PrivacyRepository $privacyRepository */
-        $privacyRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\PrivacyRepository');
+        /** @var PrivacyRepository $privacyRepository */
+        $privacyRepository = $objectManager->get(PrivacyRepository::class);
         $privacyRepository->add($privacy);
 
-        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager $persistenceManager */
-        $persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+        /** @var PersistenceManager $persistenceManager */
+        $persistenceManager = $objectManager->get(PersistenceManager::class);
         $persistenceManager->persistAll();
 
         return $privacy;
-        //===
     }
 
 

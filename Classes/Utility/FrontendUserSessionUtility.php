@@ -5,6 +5,7 @@ namespace RKW\RkwRegistration\Utility;
 use RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Exception;
+use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
@@ -84,7 +85,7 @@ class FrontendUserSessionUtility
             $GLOBALS['TSFE']->fe_user->setAndSaveSessionData('dummy', true);
         }
 
-        self::getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Logging in User "%s" with uid %s.', strtolower($frontendUser->getUsername()), $frontendUser->getUid()));
+        self::getLogger()->log(LogLevel::INFO, sprintf('Logging in User "%s" with uid %s.', strtolower($frontendUser->getUsername()), $frontendUser->getUid()));
     }
 
 
@@ -95,7 +96,7 @@ class FrontendUserSessionUtility
      */
     public static function logout()
     {
-        self::getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Logging out user with uid %s.', intval($GLOBALS['TSFE']->fe_user->user['uid'])));
+        self::getLogger()->log(LogLevel::INFO, sprintf('Logging out user with uid %s.', intval($GLOBALS['TSFE']->fe_user->user['uid'])));
         $GLOBALS['TSFE']->fe_user->removeSessionData();
         $GLOBALS['TSFE']->fe_user->logoff();
     }
@@ -104,23 +105,30 @@ class FrontendUserSessionUtility
     /**
      * Checks if user is logged in
      *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser
+     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser To check a specific user
      * @return boolean
      */
-    public static function isUserLoggedIn(\TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser)
+    public static function isUserLoggedIn(\TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser = null)
     {
-
         // check which id is logged in and compare it with given user
         if (
             ($GLOBALS['TSFE'])
             && ($GLOBALS['TSFE']->loginUser)
             && ($GLOBALS['TSFE']->fe_user->user['uid'])
         ) {
-            if ($frontendUser->getUid() == intval($GLOBALS['TSFE']->fe_user->user['uid'])) {
+            if (
+                $frontendUser
+                && $frontendUser->getUid() == intval($GLOBALS['TSFE']->fe_user->user['uid'])
+            ) {
+                // the given frontendUser is logged in
+                return true;
+            } else {
+                // somebody is logged in
                 return true;
             }
         }
 
+        // nobody is logged in
         return false;
     }
 
@@ -159,7 +167,7 @@ class FrontendUserSessionUtility
         $frontendUser = $userData;
         if (is_array($userData)) {
             /** @var FrontendUser $frontendUser */
-            $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\FrontendUser');
+            $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(FrontendUser::class);
             foreach ($userData as $key => $value) {
                 $setter = 'set' . ucfirst(GeneralUtility::camelize($key));
                 if (method_exists($frontendUser, $setter)) {

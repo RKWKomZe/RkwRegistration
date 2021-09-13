@@ -42,7 +42,7 @@ class FrontendUserUtility
         $frontendUser = $userData;
         if (is_array($userData)) {
             /** @var FrontendUser $frontendUser */
-            $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\FrontendUser::class);
+            $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(FrontendUser::class);
             foreach ($userData as $key => $value) {
                 $setter = 'set' . ucfirst(GeneralUtility::camelize($key));
                 if (method_exists($frontendUser, $setter)) {

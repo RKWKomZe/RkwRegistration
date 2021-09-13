@@ -32,9 +32,9 @@ class PrivacyValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractV
     /**
      * Validation of terms checkbox
      *
-     * - The given entity is not important
+     * - The given entity is not important / not used
      * - The function "forProperty" will not work proper
-     * - This validator will only return the message
+     * - This validator will only return the message (no field highlighting)
      *
      * @var array $entity
      * @return boolean
@@ -62,6 +62,4 @@ class PrivacyValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractV
 
         return $isValid;
     }
-
-
 }

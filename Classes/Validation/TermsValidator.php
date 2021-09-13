@@ -4,6 +4,7 @@ namespace RKW\RkwRegistration\Validation;
 
 use \RKW\RkwBasics\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -27,14 +28,14 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class TermsValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator
+class TermsValidator extends AbstractValidator
 {
     /**
      * Validation of terms checkbox
      *
-     * - The given entity is not important
+     * - The given entity is not important / not used
      * - The function "forProperty" will not work proper
-     * - This validator will only return the message
+     * - This validator will only return the message (no field highlighting)
      *
      * @var array $entity
      * @return boolean
@@ -61,6 +62,4 @@ class TermsValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVal
 
         return $isValid;
     }
-
-
 }

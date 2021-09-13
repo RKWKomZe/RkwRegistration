@@ -15,6 +15,13 @@ namespace RKW\RkwRegistration\Validation;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Error\Error;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
+
 
 /**
  * Class UniqueEmailValidator
@@ -25,7 +32,7 @@ namespace RKW\RkwRegistration\Validation;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class UniqueEmailValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator
+class UniqueEmailValidator extends AbstractValidator
 {
     /**
      * validation
@@ -39,12 +46,12 @@ class UniqueEmailValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstr
         // check if given E-Mail is valid at all
         if (
             ($email = $givenFrontendUser->getEmail())
-            && (\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail($email))
+            && (GeneralUtility::validEmail($email))
         ) {
 
             // user may not be able to accept the email address of another person
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            $frontendUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\FrontendUserRepository');
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
 
             // check email is still available
             if ($frontendUser = $frontendUserRepository->findOneByEmailOrUsernameInactive($email)) {
@@ -55,8 +62,8 @@ class UniqueEmailValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstr
                 ) {
 
                     $this->result->forProperty('email')->addError(
-                        new \TYPO3\CMS\Extbase\Error\Error(
-                            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                        new Error(
+                            LocalizationUtility::translate(
                                 'validator.email_alreadyassigned',
                                 'rkw_registration'
                             ), 1406119134
@@ -64,17 +71,15 @@ class UniqueEmailValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstr
                     );
 
                     return false;
-                    //===
                 }
             }
 
             return true;
-            //===
         }
 
         $this->result->forProperty('email')->addError(
-            new \TYPO3\CMS\Extbase\Error\Error(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+            new Error(
+                LocalizationUtility::translate(
                     'validator.email_invalid',
                     'rkw_registration'
                 ), 1434966688
@@ -82,9 +87,5 @@ class UniqueEmailValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstr
         );
 
         return false;
-        //===
-
     }
-
-
 }

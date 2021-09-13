@@ -14,6 +14,9 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+
 /**
  * IsUserInGroupViewHelper
  *
@@ -23,7 +26,7 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class IsUserInGroupViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class IsUserInGroupViewHelper extends AbstractViewHelper
 {
     /**
      * @param int $groupId
@@ -37,21 +40,16 @@ class IsUserInGroupViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractV
 
             foreach ($groupsOfFrontendUser as $groupOfUser) {
 
-                if ($groupOfUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUserGroup) {
+                if ($groupOfUser instanceof FrontendUserGroup) {
 
                     $groupOfUserId = $groupOfUser->getUid();
                     if ($groupId == $groupOfUserId) {
                         return true;
                     }
-                    //===
-
                 }
             }
         }
 
         return false;
-        //===
-
     }
-
 }

@@ -15,6 +15,9 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
+use RKW\RkwRegistration\Domain\Model\Service;
+
 /**
  * IsGroupInServiceInquiryListViewHelper
  *
@@ -42,7 +45,7 @@ class IsGroupInServiceInquiryListViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHe
             foreach ($serviceInquiries as $inquiry) {
 
                 // check instance type
-                if ($inquiry instanceof \RKW\RkwRegistration\Domain\Model\Service) {
+                if ($inquiry instanceof Service) {
 
                     // get group list
                     $userGroups = $inquiry->getUsergroup();
@@ -50,23 +53,16 @@ class IsGroupInServiceInquiryListViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHe
                     // go through all given groups and check them against given group id
                     foreach ($userGroups as $userGroup) {
 
-                        if ($userGroup instanceof \RKW\RkwRegistration\Domain\Model\FrontendUserGroup) {
+                        if ($userGroup instanceof FrontendUserGroup) {
                             if ($userGroup->getUid() == $groupId) {
                                 return true;
                             }
                         }
-                        //===
-
                     }
                 }
             }
         }
 
-
         return false;
-        //===
-
     }
-
-
 }

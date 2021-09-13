@@ -55,3 +55,4 @@ class ZipValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValid
         }
     }
 }
+

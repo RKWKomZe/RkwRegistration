@@ -16,6 +16,7 @@ namespace RKW\RkwRegistration\Controller;
  */
 
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
+use RKW\RkwRegistration\Service\GroupService;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -104,7 +105,6 @@ class ServiceController extends AbstractController
      */
     public function listAction()
     {
-
         // for logged in users only!
         $this->hasUserValidLoginRedirect();
 
@@ -131,7 +131,6 @@ class ServiceController extends AbstractController
                 'editUserPid'           => intval($this->settings['users']['editUserPid']),
             )
         );
-
     }
 
 
@@ -143,7 +142,6 @@ class ServiceController extends AbstractController
      */
     public function showAction(FrontendUserGroup $frontendUserGroup)
     {
-
         // for logged in users only!
         $this->hasUserValidLoginRedirect();
 
@@ -173,12 +171,11 @@ class ServiceController extends AbstractController
      */
     public function createAction(FrontendUserGroup $frontendUserGroup)
     {
-
         // for logged in users only!
         $this->hasUserValidLoginRedirect();
 
         // Get the mandatory fields for the given group?
-        $serviceClass = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\GroupService');
+        $serviceClass = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(GroupService::class);
         $mandatoryFields = $serviceClass->getMandatoryFieldsOfUser($this->getFrontendUser(), $frontendUserGroup);
 
         // get the admins of the given group (if any)
@@ -216,10 +213,8 @@ class ServiceController extends AbstractController
                 );
 
                 $this->redirect('list');
-                //===
             }
         }
-
 
         // if there is nothing to check - we simply add the user-group to the fe-user's
         $frontendUser = $this->getFrontendUser();
@@ -233,7 +228,6 @@ class ServiceController extends AbstractController
         );
 
         $this->redirect('list');
-        //===
     }
 
 
@@ -245,12 +239,11 @@ class ServiceController extends AbstractController
      */
     public function optInAction()
     {
-
         $tokenYes = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_yes') ? $this->request->getArgument('token_yes') : ''));
         $tokenNo = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_no') ? $this->request->getArgument('token_no') : ''));
         $serviceSha1 = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('service'));
 
-        $service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\GroupService');
+        $service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(GroupService::class);
         $check = $service->checkTokens($tokenYes, $tokenNo, $serviceSha1);
 
         if ($check == 1) {
@@ -280,7 +273,6 @@ class ServiceController extends AbstractController
                 AbstractMessage::ERROR
             );
         }
-
     }
 
 
@@ -298,7 +290,6 @@ class ServiceController extends AbstractController
      */
     public function deleteAction(FrontendUserGroup $frontendUserGroup)
     {
-
         // for logged in users only!
         $this->hasUserValidLoginRedirect();
 
@@ -317,7 +308,6 @@ class ServiceController extends AbstractController
         );
 
         $this->redirect('list');
-        //===
     }
 
 

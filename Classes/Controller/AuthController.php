@@ -183,14 +183,9 @@ class AuthController extends AbstractController
             }
         }
 
-
         $this->view->assignMultiple(
             array(
-              //  'linkParams'       => $linkParams,
-               // 'linkTargetLogin'  => $linkTargetLogin,
-               // 'linkTargetLogout' => $linkTargetLogout,
-                'frontendUser'     => $this->getFrontendUser(),
-                //'myRkwSysDomain'   => $this->sysDomainRepository->findByUid(intval($this->settings['users']['myRkwSysDomain']))
+                'frontendUser' => $this->getFrontendUser(),
             )
         );
     }
@@ -377,6 +372,7 @@ class AuthController extends AbstractController
     {
 
         // @toDo: Möglicherweise eine nicht Domain-Gebundene Validierungs-Klasse einfügen, um folgenden Abfragecode auszulagern?
+        // siehe "PrivacyValidator" bzw. auch "TermsValidator"
 
         if (!$username) {
             $this->addFlashMessage(
@@ -414,7 +410,7 @@ class AuthController extends AbstractController
         ) {
             // ! LOGIN SUCCESS !
 
-            // before login: Do logout. Somebody could also logged in as GuestUser
+            // before login: Do logout. The user could currently logged in as GuestUser
             FrontendUserSessionUtility::logout();
 
             FrontendUserSessionUtility::login($frontendUser);
@@ -483,6 +479,9 @@ class AuthController extends AbstractController
     /**
      * logout
      *
+     * Important: This action with redirect is a workaround for setting the "logoutMessage" via flashMessenger
+     * Reason: Deleting the FeUser-Session AND setting a FlashMessage in one action DOES NOT WORK! (this kills the message..)
+     *
      * @param string $redirectAction Optional redirect parameter
      * @param string $redirectController Optional redirect parameter
      * @param string $extensionName Optional redirect parameter
@@ -497,8 +496,6 @@ class AuthController extends AbstractController
         // do logout here
         FrontendUserSessionUtility::logout();
 
-        // Important: This redirect is a workaround for setting the "logoutMessage" via flashMessenger
-        // Reason: Deleting the FeUser-Session AND setting a FlashMessage in one action DOES NOT WORK!
         $this->redirect($redirectAction, $redirectController, $extensionName, $arguments, $pageUid);
     }
 
@@ -574,25 +571,6 @@ class AuthController extends AbstractController
             $this->redirect('logout', null, null, null, $this->settings['users']['logoutPid']);
         }
     }
-
-
-
-    /**
-     * logoutGuestWithRedirectAction
-     *
-     * @param $redirectAction
-     * @param $redirectController
-     */
-    public function logoutGuestWithRedirectAction ($redirectAction = 'new', $redirectController = '')
-    {
-        var_dump("Tschalllalal"); exit;
-
-        FrontendUserSessionUtility::logout();
-
-        $this->redirect($redirectAction, $redirectController);
-    }
-
-
 }
 
 

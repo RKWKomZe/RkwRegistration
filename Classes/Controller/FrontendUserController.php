@@ -17,9 +17,11 @@ namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Repository\TitleRepository;
+use RKW\RkwRegistration\Service\GroupService;
 use RKW\RkwRegistration\Service\OptInService;
 use RKW\RkwRegistration\Service\RegisterFrontendUserService;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use RKW\RkwRegistration\Utility\TitleUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -148,7 +150,7 @@ class FrontendUserController extends AbstractController
      * action update
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @validate $frontendUser \RKW\RkwRegistration\Validation\FormValidator
+     * @validate $frontendUser \RKW\RkwRegistration\Validation\FrontendUserValidator
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
@@ -162,11 +164,11 @@ class FrontendUserController extends AbstractController
 
         // all mandatory fields should be checked here.
         // therefore we can finally add the user to all relevant groups now
-        $serviceClass = GeneralUtility::makeInstance('RKW\\RkwRegistration\\Service\\GroupService');
+        $serviceClass = GeneralUtility::makeInstance(GroupService::class);
         $serviceClass->addUserToAllGrantedGroups($frontendUser);
 
         if ($frontendUser->getTxRkwregistrationTitle()) {
-            $frontendUser->setTxRkwregistrationTitle(\RKW\RkwRegistration\Utility\TitleUtility::extractTxRegistrationTitle($frontendUser->getTxRkwregistrationTitle()->getName()));
+            $frontendUser->setTxRkwregistrationTitle(TitleUtility::extractTxRegistrationTitle($frontendUser->getTxRkwregistrationTitle()->getName()));
         }
 
         $this->frontendUserRepository->update($frontendUser);
