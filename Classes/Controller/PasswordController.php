@@ -175,10 +175,9 @@ class PasswordController extends AbstractController
                 AbstractMessage::ERROR
             );
 
-            $this->redirect('passwordForgotShow');
+            $this->redirect('new');
 
             return;
-            //===
         }
 
         // check if user exists
@@ -192,28 +191,16 @@ class PasswordController extends AbstractController
 
             // dispatcher for e.g. E-Mail
             $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_PASSWORD_RESET, array($registeredUser, $plaintextPassword));
-
-            $this->addFlashMessage(
-                LocalizationUtility::translate(
-                    'registrationController.message.new_password', $this->extensionName
-                )
-            );
-
-            $this->redirect('index', 'Auth', null, array('noRedirect' => 1));
-
-            return;
-            //===
         }
 
+        // Either user exists or not: Send user back with message
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'registrationController.error.invalid_username', $this->extensionName
-            ),
-            '',
-            AbstractMessage::ERROR
+                'registrationController.message.new_password', $this->extensionName
+            )
         );
 
-        $this->redirect('passwordForgotShow');
+        $this->redirect('index', 'Auth', null, array('noRedirect' => 1));
     }
 
 

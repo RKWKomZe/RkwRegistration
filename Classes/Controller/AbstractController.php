@@ -16,6 +16,7 @@ namespace RKW\RkwRegistration\Controller;
  */
 
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
@@ -39,7 +40,7 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
     /**
      * logged in FrontendUser
      *
-     * @var \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+     * @var FrontendUser
      */
     protected $frontendUser;
 
@@ -162,18 +163,18 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
             $guestUser = $this->guestUserRepository->findByUid(FrontendUserSessionUtility::getFrontendUserId());
 
             if ($guestUser instanceof \RKW\RkwRegistration\Domain\Model\GuestUser) {
+
                 $this->frontendUser = $guestUser;
             } else {
                 // Or standard user?
                 $frontendUser = $this->frontendUserRepository->findByUid(FrontendUserSessionUtility::getFrontendUserId());
-                if ($frontendUser instanceof \TYPO3\CMS\Extbase\Domain\Model\FrontendUser) {
+                if ($frontendUser instanceof FrontendUser) {
                     $this->frontendUser = $frontendUser;
                 }
             }
         }
 
         return $this->frontendUser;
-        //===
     }
 
     /**
@@ -189,13 +190,12 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
         if (!$this->frontendUser) {
 
             $frontendUser = $this->frontendUserRepository->findByUid(FrontendUserSessionUtility::getFrontendUserId());
-            if ($frontendUser instanceof \TYPO3\CMS\Extbase\Domain\Model\FrontendUser) {
+            if ($frontendUser instanceof FrontendUser) {
                 $this->frontendUser = $frontendUser;
             }
         }
 
         return $this->frontendUser;
-        //===
     }
 
 

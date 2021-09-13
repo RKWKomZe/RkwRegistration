@@ -14,6 +14,8 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+
 /**
  * InstanceOfViewHelper
  *
@@ -22,7 +24,7 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class InstanceOfViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class InstanceOfViewHelper extends AbstractViewHelper
 {
     /**
      * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $entity

@@ -362,6 +362,10 @@
                 <source><![CDATA[Please login here or <a href="%s">register</a> for free.]]></source>
                 <target><![CDATA[Bitte loggen Sie sich ein oder <a href="%s">registrieren Sie sich</a> kostenlos.]]></target>
             </trans-unit>
+            <trans-unit id="registrationController.message.login_message_guest">
+                <source><![CDATA[You are currently logged in as guest. Please login here or <a href="%s">register</a> for free.]]></source>
+                <target><![CDATA[Sie sind aktuell als Gast angemeldet. Um weitere Services des RKW nutzen zu können, wird ein reguläres Nutzerkonto benötigt. Bitte loggen Sie sich ein oder <a href="%s">registrieren Sie sich</a> kostenlos.]]></target>
+            </trans-unit>
             <trans-unit id="registrationController.error.registration_error">
                 <source>An error occurred. Please try again</source>
                 <target>Upps, da ist wohl etwas schief gelaufen. Haben Sie Ihre Registrierung vielleicht schon bestätigt?</target>
@@ -386,13 +390,9 @@
                 <source>Wrong username or password.</source>
                 <target>Hm, leider sind E-Mail oder Passwort falsch. Bitte prüfen Sie die Angaben noch mal.</target>
             </trans-unit>
-            <trans-unit id="registrationController.error.invalid_username">
-                <source>Username does not exist.</source>
-                <target>Hm, die angebenene E-Mail-Adresse scheint nicht zu existieren. Sind Sie denn mit dieser E-Mail-Adresse registriert?</target>
-            </trans-unit>
             <trans-unit id="registrationController.message.new_password">
                 <source>Password was reset and send to you via E-Mail.</source>
-                <target><![CDATA[Das hat geklappt! Wir haben Ihnen das neue Passwort per E-Mail zugesendet. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
+                <target><![CDATA[Das hat geklappt! Sofern ein Nutzer mit dieser E-Mail Adresse existiert, haben wir Ihnen ihr neues Passwort soeben per E-Mail zugesendet. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.message.update_successfull">
                 <source>Update was successfull.</source>
@@ -693,8 +693,8 @@
                 <target>Ausloggen</target>
             </trans-unit>
             <trans-unit id="templates_registration_loginShowExternal.anonymous">
-                <source>Start anonymously</source>
-                <target>Anonym starten</target>
+                <source>Start as guest</source>
+                <target>Als Gast einloggen</target>
             </trans-unit>
             <trans-unit id="templates_registration_loginShowExternal.login2">
                 <source>Login</source>

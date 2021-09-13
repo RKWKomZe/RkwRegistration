@@ -21,6 +21,7 @@ use RKW\RkwRegistration\Service\OptInService;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 
@@ -146,8 +147,7 @@ class RegistrationController extends AbstractController
             );
         }
 
-        // @toDo: Wohin leiten?
-        $this->redirect('new');
+        $this->redirect('index', 'Auth', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
     }
 
 

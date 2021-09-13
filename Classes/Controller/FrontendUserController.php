@@ -52,7 +52,7 @@ class FrontendUserController extends AbstractController
         if (FrontendUserSessionUtility::getFrontendUserId()) {
 
             if ($this->settings['users']['welcomePid']) {
-                $this->redirect('index', null, null, null, $this->settings['users']['welcomePid']);
+                $this->redirect('index', 'Auth', null, null, $this->settings['users']['welcomePid']);
             }
 
             $this->redirect('index');
@@ -92,9 +92,9 @@ class FrontendUserController extends AbstractController
      */
     public function createAction(FrontendUser $newFrontendUser)
     {
-        /** @var OptInService $registration */
-        $registration = $this->objectManager->get(OptInService::class);
-        $registration->register($newFrontendUser, false, null, null, $this->request);
+        /** @var OptInService $optInService */
+        $optInService = $this->objectManager->get(OptInService::class);
+        $optInService->register($newFrontendUser, false, null, null, $this->request);
 
         $this->addFlashMessage(
             LocalizationUtility::translate(
@@ -239,6 +239,7 @@ class FrontendUserController extends AbstractController
 
         return;
     }
+
 }
 
 

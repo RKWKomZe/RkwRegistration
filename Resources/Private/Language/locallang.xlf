@@ -291,6 +291,9 @@
             <trans-unit id="registrationController.message.login_message">
                 <source><![CDATA[Please login here or <a href="%s">register</a> for free.]]></source>
             </trans-unit>
+            <trans-unit id="registrationController.message.login_message_guest">
+                <source><![CDATA[You are currently logged in as guest. Please login here or <a href="%s">register</a> for free.]]></source>
+            </trans-unit>
             <trans-unit id="registrationController.error.registration_error">
                 <source>An error occurred. Please try again</source>
             </trans-unit>
@@ -308,9 +311,6 @@
             </trans-unit>
             <trans-unit id="registrationController.error.wrong_login">
                 <source>Wrong username or password.</source>
-            </trans-unit>
-            <trans-unit id="registrationController.error.invalid_username">
-                <source>Username does not exist.</source>
             </trans-unit>
             <trans-unit id="registrationController.message.new_password">
                 <source>Password was reset and send to you via E-Mail.</source>
@@ -541,7 +541,7 @@
                 <source>Logout</source>
             </trans-unit>
             <trans-unit id="templates_registration_loginShowExternal.anonymous">
-                <source>Start anonymously</source>
+                <source>Start as guest</source>
             </trans-unit>
             <trans-unit id="templates_registration_loginShowExternal.login2">
                 <source>Login</source>

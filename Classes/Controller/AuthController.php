@@ -13,6 +13,8 @@ use RKW\RkwRegistration\Utility\RedirectUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -63,44 +65,78 @@ class AuthController extends AbstractController
      */
     public function indexAction()
     {
-
         // A Service: Set a register link for the not logged in user
         if ($this->controllerContext->getFlashMessageQueue()->isEmpty()) {
 
             // set message including link
             $registerLink = '';
-            if ($this->settings['users']['registrationPid']) {
 
-                /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-                $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+            /** @var ObjectManager $objectManager */
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-                /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
-                $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
+            if ($this->getFrontendUser() instanceof GuestUser) {
+
+                /** @var UriBuilder $uriBuilder */
+                $uriBuilder = $objectManager->get(UriBuilder::class);
                 $registerLink = $uriBuilder->reset()
-                    ->setTargetPageUid(intval($this->settings['users']['registrationPid']))
+                    ->setTargetPageUid(intval($this->settings['users']['logoutPid']))
                     ->setUseCacheHash(false)
                     ->setArguments(
                         array(
-                            'tx_rkwregistration_register' => array(
-                                'controller' => 'Registration',
-                                'action'     => 'new',
+                            'tx_rkwregistration_logoutinternal' => array(
+                                'action'         => 'logout',
+                                'redirectAction' => 'new',
+                                'redirectController' => 'FrontendUser',
+                                'pageUid' => intval($this->settings['users']['registrationPid'])
                             ),
                         )
                     )
                     ->build();
+
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'registrationController.message.login_message_guest',
+                        $this->extensionName,
+                        array($registerLink)
+                    )
+                );
+
+            } else {
+
+                if ($this->settings['users']['registrationPid']) {
+
+                    /** @var UriBuilder $uriBuilder */
+                    $uriBuilder = $objectManager->get(UriBuilder::class);
+                    $registerLink = $uriBuilder->reset()
+                        ->setTargetPageUid(intval($this->settings['users']['registrationPid']))
+                        ->setUseCacheHash(false)
+                        ->setArguments(
+                            array(
+                                'tx_rkwregistration_register' => array(
+                                    'controller' => 'FrontendUser',
+                                    'action'     => 'new',
+                                ),
+                            )
+                        )
+                        ->build();
+                }
+
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'registrationController.message.login_message',
+                        $this->extensionName,
+                        array($registerLink)
+                    )
+                );
             }
 
-            $this->addFlashMessage(
-                LocalizationUtility::translate(
-                    'registrationController.message.login_message',
-                    $this->extensionName,
-                    array($registerLink)
-                )
-            );
         }
 
-
-        // Else: Do nothing and show login form!
+        $this->view->assignMultiple(
+            array(
+                'frontendUser' => $this->getFrontendUser()
+            )
+        );
     }
 
 
@@ -129,7 +165,7 @@ class AuthController extends AbstractController
         // Show welcome message for normal and logged in FrontendUsers
         if ($frontendUser = $this->getFrontendUser()) {
 
-            if ($frontendUser instanceof \RKW\RkwRegistration\Domain\Model\GuestUser) {
+            if ($frontendUser instanceof GuestUser) {
                 $this->addFlashMessage(
                     LocalizationUtility::translate(
                         'authController.message.guest_login_welcome',
@@ -197,10 +233,10 @@ class AuthController extends AbstractController
                     // redirect user
                     if ($this->settings['users']['anonymousRedirectPid']) {
 
-                        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+                        /** @var ObjectManager $objectManager */
                         $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 
-                        /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
+                        /** @var UriBuilder $uriBuilder */
                         $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
 
                         $sysDomain = $this->sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
@@ -340,7 +376,6 @@ class AuthController extends AbstractController
     public function loginAction($username, $password)
     {
 
-
         // @toDo: Möglicherweise eine nicht Domain-Gebundene Validierungs-Klasse einfügen, um folgenden Abfragecode auszulagern?
 
         if (!$username) {
@@ -378,6 +413,9 @@ class AuthController extends AbstractController
             && ($frontendUser instanceof FrontendUser)
         ) {
             // ! LOGIN SUCCESS !
+
+            // before login: Do logout. Somebody could also logged in as GuestUser
+            FrontendUserSessionUtility::logout();
 
             FrontendUserSessionUtility::login($frontendUser);
 
@@ -442,22 +480,26 @@ class AuthController extends AbstractController
     }
 
 
-
     /**
-     * action logout
+     * logout
      *
-     * @return void
+     * @param string $redirectAction Optional redirect parameter
+     * @param string $redirectController Optional redirect parameter
+     * @param string $extensionName Optional redirect parameter
+     * @param array  $arguments Optional redirect parameter
+     * @param int   $pageUid Optional redirect parameter
+     *
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-    public function logoutAction()
+    public function logoutAction($redirectAction = 'logoutRedirect', $redirectController = '', $extensionName = null, $arguments = null, $pageUid = null)
     {
         // do logout here
         FrontendUserSessionUtility::logout();
 
         // Important: This redirect is a workaround for setting the "logoutMessage" via flashMessenger
         // Reason: Deleting the FeUser-Session AND setting a FlashMessage in one action DOES NOT WORK!
-        $this->redirect('logoutRedirect');
+        $this->redirect($redirectAction, $redirectController, $extensionName, $arguments, $pageUid);
     }
 
 
@@ -532,6 +574,24 @@ class AuthController extends AbstractController
             $this->redirect('logout', null, null, null, $this->settings['users']['logoutPid']);
         }
     }
+
+
+
+    /**
+     * logoutGuestWithRedirectAction
+     *
+     * @param $redirectAction
+     * @param $redirectController
+     */
+    public function logoutGuestWithRedirectAction ($redirectAction = 'new', $redirectController = '')
+    {
+        var_dump("Tschalllalal"); exit;
+
+        FrontendUserSessionUtility::logout();
+
+        $this->redirect($redirectAction, $redirectController);
+    }
+
 
 }
 

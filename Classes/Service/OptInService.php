@@ -147,7 +147,7 @@ class OptInService extends AbstractService
     {
         // load register by SHA-token
         /** @var Registration $register */
-        $register = $this->registrationRepository->findOneByUserSha1($userSha1);
+        $register = $this->getRegistrationRepository()->findOneByUserSha1($userSha1);
 
         // not found
         if (!$register) {
@@ -156,7 +156,7 @@ class OptInService extends AbstractService
         }
 
         /** @var FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser());
+        $frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonGuest($register->getUser());
 
         $status = $this->check($register, $tokenYes, $tokenNo);
 
@@ -168,11 +168,11 @@ class OptInService extends AbstractService
             // delete user and registration
             // remove only disabled user!
             if ($frontendUser->getDisable()) {
-                $this->frontendUserRepository->removeHard($frontendUser);
+                $this->getFrontendUserRepository()->removeHard($frontendUser);
             }
 
-            $this->registrationRepository->remove($register);
-            $this->persistenceManager->persistAll();
+            $this->getRegistrationRepository()->remove($register);
+            $this->getPersistenceManager()->persistAll();
 
             // Signal for E-Mails
             $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_DENIAL, array($frontendUser));
@@ -193,7 +193,7 @@ class OptInService extends AbstractService
         if ($status === 1) {
 
             // load fe-user
-            if ($frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser())) {
+            if ($frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonGuest($register->getUser())) {
 
                 if ($frontendUser->getDisable()) {
 
@@ -207,7 +207,7 @@ class OptInService extends AbstractService
                     $registerFrontendUserService->setClearanceAndLifetime(true);
 
                     // Signal for E-Mails
-                    $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_GRANT, array($frontendUser, $plaintextPassword, $register));
+                    $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_GRANT, array($frontendUser, $plaintextPassword, $register));
                     $data = array(
                         'frontendUser'      => $frontendUser,
                         'registration'      => $register,
@@ -218,7 +218,7 @@ class OptInService extends AbstractService
 
             if ($register->getCategory()) {
 
-                $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_GRANT . ucfirst($register->getCategory()), array($frontendUser, $register));
+                $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_GRANT . ucfirst($register->getCategory()), array($frontendUser, $register));
                 $data = array(
                     'frontendUser' => $frontendUser,
                     'registration' => $register,
@@ -231,8 +231,8 @@ class OptInService extends AbstractService
             }
 
             // delete registration
-            $this->registrationRepository->remove($register);
-            $this->persistenceManager->persistAll();
+            $this->getRegistrationRepository()->remove($register);
+            $this->getPersistenceManager()->persistAll();
             $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-in with id "%s" (FE-User-Id=%s, category=%s) was successful.', strtolower($register->getUid()), $frontendUser->getUid(), $register->getCategory()));
 
             return 1;
@@ -408,15 +408,7 @@ class OptInService extends AbstractService
         /** @var RegisterFrontendUserService $registerFrontendUserService */
         $registerFrontendUserService = $objectManager->get(RegisterFrontendUserService::class, $frontendUser);
 
-        // set email as fallback
-        if (!$frontendUser->getUsername()) {
-            $frontendUser->setUsername($frontendUser->getEmail());
-        }
-
         // check username (aka email)
-
-        DebuggerUtility::var_dump($registerFrontendUserService->validateEmail()); exit;
-
         if (!$registerFrontendUserService->validateEmail()) {
             $this->getLogger()->log(LogLevel::ERROR, sprintf('"%s" is not a valid username.', strtolower($frontendUser->getUsername())));
             throw new Exception('No valid username given.', 1407312133);
@@ -424,7 +416,10 @@ class OptInService extends AbstractService
 
         // lowercase username and email!
         $frontendUser->setEmail(strtolower($frontendUser->getEmail()));
-        $frontendUser->setUsername(strtolower($frontendUser->getUsername()));
+        // set email as fallback
+        if (!$frontendUser->getUsername()) {
+            $frontendUser->setUsername(strtolower($frontendUser->getEmail()));
+        }
 
         if ($frontendUser->getTitle()) {
             $frontendUser->setTxRkwregistrationTitle(TitleUtility::extractTxRegistrationTitle($frontendUser->getTitle(), $this->settings));
@@ -479,6 +474,7 @@ class OptInService extends AbstractService
 
             // add user and persist!
             $this->getFrontendUserRepository()->add($frontendUser);
+
             $this->getPersistenceManager()->persistAll();
 
             if ($enable) {

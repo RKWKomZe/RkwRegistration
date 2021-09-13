@@ -59,7 +59,6 @@ class AuthGuestController extends AbstractController
             $this->redirect('loginExternal', 'Auth');
         }
 
-
         // b) NEW USER: if no token is given, a new guest user will be created
         if (!$this->request->hasArgument('token')) {
 
@@ -144,7 +143,7 @@ class AuthGuestController extends AbstractController
         $url = $this->uriBuilder->reset()
             ->setUseCacheHash(false)
             ->setArguments(
-                array('tx_rkwregistration_loginexternal' =>
+                array('tx_rkwregistration_authexternal' =>
                       array(
                           'controller' => 'AuthGuest',
                           'action'     => 'login',

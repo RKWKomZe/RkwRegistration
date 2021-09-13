@@ -6,6 +6,9 @@ use \RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\Pages;
 use RKW\RkwRegistration\Domain\Model\SysDomain;
 use RKW\RkwRegistration\Domain\Repository\SysDomainRepository;
+use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /*
@@ -42,9 +45,9 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
     public static function urlToPageUid($pageUid, $createAbsoluteUri = true, $linkAccessRestrictedPages = true, $useCacheHash = false)
     {
         /** @var ObjectManager $objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
-        $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var UriBuilder $uriBuilder */
+        $uriBuilder = $objectManager->get(UriBuilder::class);
 
         $redirectUrl = $uriBuilder->reset()
             ->setTargetPageUid(intval($pageUid))
@@ -75,9 +78,9 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
         if (is_numeric($url)) {
 
             // build url from pid!
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
-            if ($uriBuilder instanceof \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder) {
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+            $uriBuilder = $objectManager->get(UriBuilder::class);
+            if ($uriBuilder instanceof UriBuilder) {
                 $url = $uriBuilder->reset()
                     ->setTargetPageUid(intval($url))
                     ->setCreateAbsoluteUri(true)
@@ -88,7 +91,7 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
 
 
         // check if settings are available and redirect not disabled
-        self::getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::DEBUG, sprintf('Configured redirect domains: "%s"', $settings['redirectDomains']));
+        self::getLogger()->log(LogLevel::DEBUG, sprintf('Configured redirect domains: "%s"', $settings['redirectDomains']));
         if ($redirectDomains = $settings['redirectDomains']) {
 
             // Is referring url allowed to redirect?
@@ -104,14 +107,14 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
         // take domain if we are not in production environement
         if (getenv('TYPO3_CONTEXT') != 'Production') {
             $checkedUrl = $url;
-            self::getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('URL passed as valid due to TYPO3_CONTEXT settings.', $url));
+            self::getLogger()->log(LogLevel::WARNING, sprintf('URL passed as valid due to TYPO3_CONTEXT settings.', $url));
         }
 
 
         if ($checkedUrl) {
-            self::getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('URL "%s" is valid for redirecting.', $checkedUrl));
+            self::getLogger()->log(LogLevel::INFO, sprintf('URL "%s" is valid for redirecting.', $checkedUrl));
         } else {
-            self::getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::WARNING, sprintf('URL "%s" is not valid for redirecting.', $url));
+            self::getLogger()->log(LogLevel::WARNING, sprintf('URL "%s" is not valid for redirecting.', $url));
         }
 
         // Avoid forced logout for fe-login-extension, when trying to login immediately after a logout
@@ -134,7 +137,6 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
         $match = array();
         if (preg_match('#^http(s)?://([[:alnum:]._-]+)/#', $url, $match)) {
             return $match[2];
-            //===
         }
 
         return null;
@@ -181,8 +183,8 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
             $targetPageUid
             || $settings['users']['guestRedirectPid']
         ) {
-            /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
-            $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
+            /** @var UriBuilder $uriBuilder */
+            $uriBuilder = $objectManager->get(UriBuilder::class);
             $redirectUrl = $uriBuilder->reset()
                 ->setTargetPageUid(intval($settings['users']['guestRedirectPid'] ? $settings['users']['guestRedirectPid'] : $targetPageUid))
                 ->setCreateAbsoluteUri(true)
@@ -218,7 +220,7 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
      */
     protected static function getLogger()
     {
-        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
     }
 
 

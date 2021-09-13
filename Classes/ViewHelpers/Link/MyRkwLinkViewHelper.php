@@ -2,8 +2,14 @@
 
 namespace RKW\RkwRegistration\ViewHelpers\Link;
 
+use RKW\RkwRegistration\Domain\Model\SysDomain;
+use RKW\RkwRegistration\Domain\Repository\SysDomainRepository;
+use RKW\RkwRegistration\Service\DomainLinkService;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -27,7 +33,7 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class MyRkwLinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class MyRkwLinkViewHelper extends AbstractViewHelper
 {
     /**
      * Creates a link with custom baseUrl (not possible with FLUID link VHs)
@@ -39,7 +45,6 @@ class MyRkwLinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewH
      */
     public function render($pageUid, $additionalParams = [])
     {
-
         if (
             $additionalParams
             && is_array($additionalParams)
@@ -51,25 +56,25 @@ class MyRkwLinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewH
 
         $currentBaseUrl = preg_replace('/^http(s)?:\/\/(www\.)?([^\/]+)\/?$/i', '$3', $GLOBALS['TSFE']->tmpl->setup['config.']['baseURL']);
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var \RKW\RkwRegistration\Domain\Repository\SysDomainRepository $sysDomainRepository */
-        $sysDomainRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\SysDomainRepository');
+        /** @var ObjectManager objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var SysDomainRepository $sysDomainRepository */
+        $sysDomainRepository = $objectManager->get(SysDomainRepository::class);
 
         // get object of current sysDomain
         $currentSysDomain = $sysDomainRepository->findByDomainName($currentBaseUrl)->getFirst();
-        if ($currentSysDomain instanceof \RKW\RkwRegistration\Domain\Model\SysDomain) {
+        if ($currentSysDomain instanceof SysDomain) {
             $sysDomain = $sysDomainRepository->findByTxRkwregistrationRelatedSysDomain($currentSysDomain)->getFirst();
 
             // use $sysDomain entry if given domain is available
-            if ($sysDomain instanceof \RKW\RkwRegistration\Domain\Model\SysDomain) {
+            if ($sysDomain instanceof SysDomain) {
                 return $sysDomain->getDomainName() . '/index.php?' . http_build_query($finalParams);
             }
         }
 
         // else: Fallback with standard domain behavior
-        /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
-        $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
+        /** @var UriBuilder $uriBuilder */
+        $uriBuilder = $objectManager->get(UriBuilder::class);
         $redirectUrl = $uriBuilder->reset()
             ->setTargetPageUid($pageUid)
             ->setCreateAbsoluteUri(true)

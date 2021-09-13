@@ -47,11 +47,6 @@ class RegisterFrontendUserService extends AbstractService
     const SIGNAL_AFTER_DELETING_USER = 'afterDeletingUser';
 
     /**
-     * @var array
-     */
-    protected $settings;
-
-    /**
      * FrontendUser
      *
      * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
@@ -75,6 +70,8 @@ class RegisterFrontendUserService extends AbstractService
         if ($this->frontendUser->_isNew()) {
             $this->setBasicData();
         }
+
+        $this->initializeObject();
     }
 
 
@@ -203,27 +200,22 @@ class RegisterFrontendUserService extends AbstractService
      */
     public function validateEmail($email = null): bool
     {
+        $email = $email ? $email : $this->frontendUser->getEmail();
+
         if ($email) {
 
             if ($email instanceof \TYPO3\CMS\Extbase\Domain\Model\FrontendUser) {
                 $email = $email->getEmail();
             }
 
-            DebuggerUtility::var_dump((\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail(strtolower($email)))
-                && (strpos(strtolower($email), '@facebook.com') === false)
-                && (strpos(strtolower($email), '@twitter.com') === false));
-
-
             if (
                 (\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail(strtolower($email)))
                 && (strpos(strtolower($email), '@facebook.com') === false)
                 && (strpos(strtolower($email), '@twitter.com') === false)
             ) {
-                var_dump("Hallo?");
                 return true;
             }
         }
-        var_dump("Hallo222");
         return false;
     }
 

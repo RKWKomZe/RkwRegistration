@@ -97,7 +97,7 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
             /** @var RegisterFrontendUserService $registerFrontendUserService */
             $registerFrontendUserService = $objectManager->get(RegisterFrontendUserService::class, FrontendUserUtility::convertArrayToObject($frontendUserForm));
 
-            if (!$registerFrontendUserService->validateEmail($frontendUserForm->getEmail())) {
+            if (!$registerFrontendUserService->validateEmail()) {
 
                 $this->result->forProperty('email')->addError(
                     new \TYPO3\CMS\Extbase\Error\Error(

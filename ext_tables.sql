@@ -12,7 +12,7 @@ CREATE TABLE tx_rkwregistration_domain_model_registration (
 	token_yes varchar(255) DEFAULT '' NOT NULL,
 	token_no varchar(255) DEFAULT '' NOT NULL,
 	valid_until int(11) unsigned DEFAULT '0' NOT NULL,
-	data longtext NOT NULL,
+	data longtext DEFAULT '' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,
