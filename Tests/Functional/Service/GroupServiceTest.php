@@ -1,11 +1,12 @@
 <?php
-namespace RKW\RkwRegistration\Tests\Functional\Utility;
+namespace RKW\RkwRegistration\Tests\Functional\Service;
 
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-use \RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
+use \RKW\RkwRegistration\Domain\Repository\ServiceRepository;
 use RKW\RkwRegistration\Service\GroupService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -33,6 +34,11 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 class GroupServiceTest extends FunctionalTestCase
 {
     /**
+     * @const
+     */
+    const FIXTURE_PATH = __DIR__ . '/GroupServiceTest/Fixtures';
+
+    /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
@@ -58,9 +64,9 @@ class GroupServiceTest extends FunctionalTestCase
     private $frontendUserGroupRepository = null;
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\RegistrationRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\ServiceRepository
      */
-    private $registrationRepository = null;
+    private $serviceRepository = null;
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManager
@@ -75,7 +81,7 @@ class GroupServiceTest extends FunctionalTestCase
     {
 
         parent::setUp();
-        $this->importDataSet(__DIR__ . '/GroupServiceTest/Fixtures/Database/Global.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Global.xml');
 
         $this->setUpFrontendRootPage(
             1,
@@ -84,7 +90,9 @@ class GroupServiceTest extends FunctionalTestCase
                 'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
-                'EXT:rkw_registration/Tests/Functional/Service/GroupServiceTest/Fixtures/Frontend/Configuration/Rootpage.typoscript',
+                'EXT:rkw_mailer/Configuration/TypoScript/setup.txt',
+                'EXT:rkw_mailer/Configuration/TypoScript/constants.txt',
+                self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
             ]
         );
 
@@ -93,7 +101,7 @@ class GroupServiceTest extends FunctionalTestCase
         // Repository
         $this->frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
         $this->frontendUserGroupRepository = $this->objectManager->get(FrontendUserGroupRepository::class);
-        $this->registrationRepository = $this->objectManager->get(RegistrationRepository::class);
+        $this->serviceRepository = $this->objectManager->get(ServiceRepository::class);
 
         $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromAddress'] = 'mail@default.rkw';
         $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromName'] = 'RKW Default';
@@ -167,7 +175,7 @@ class GroupServiceTest extends FunctionalTestCase
          * Then some basic data will set to the frontendUser (via TypoScript AND frontendUserGroup)
          */
 
-        $this->importDataSet(__DIR__ . '/GroupServiceTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         /** @var GroupService $groupService */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
@@ -179,7 +187,7 @@ class GroupServiceTest extends FunctionalTestCase
         $requiredFields = $groupService->getMandatoryFieldsOfUser($frontendUser);
 
         /*
-          FrontendUSResult:
+          FrontendUserResult:
           array(4) {
               [0] =>
               string(5) "email"
@@ -195,6 +203,165 @@ class GroupServiceTest extends FunctionalTestCase
         static::assertEquals("something", $requiredFields[3]);
     }
 
+
+
+    /**
+     * @test
+     */
+    public function checkTokensConfirm()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is a service-registration (sent via mail to an admin)
+         * When the admin-user want to confirm
+         * Then the service related fe_groups is added to the frontendUser
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\Service $serviceRegistration */
+        $serviceRegistration = $this->serviceRepository->findByIdentifier(1);
+        // add valid until time somewhere in the future
+        $serviceRegistration->setValidUntil(time() + 60);
+
+        // before: The user owns one usergroup
+        static::assertEquals(count($serviceRegistration->getUser()->getUsergroup()), 1);
+
+        // Service
+        /** @var GroupService $groupService */
+        $groupService = $this->objectManager->get(GroupService::class);
+        $result = $groupService->checkTokens($serviceRegistration->getTokenYes(), '', $serviceRegistration->getServiceSha1());
+
+        static::assertEquals(1, $result);
+        // after: The new service related usergroup is added
+        static::assertEquals(count($serviceRegistration->getUser()->getUsergroup()), 2);
+        // service registration dataset is now deleted
+        static::assertNull($serviceRegistration = $this->serviceRepository->findByIdentifier(1));
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function checkTokensConfirmOutdatedServiceRegistration()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is a outdated service-registration (sent via mail to an admin)
+         * When the admin-user want to confirm
+         * Then the service registration is refused and deleted
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\Service $serviceRegistration */
+        $serviceRegistration = $this->serviceRepository->findByIdentifier(1);
+
+        // Service
+        /** @var GroupService $groupService */
+        $groupService = $this->objectManager->get(GroupService::class);
+        $result = $groupService->checkTokens($serviceRegistration->getTokenYes(), '', $serviceRegistration->getServiceSha1());
+
+        static::assertEquals(0, $result);
+        // service registration dataset is now deleted
+        static::assertNull($serviceRegistration = $this->serviceRepository->findByIdentifier(1));
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function checkTokensConfirmNotExistingServiceRegistration()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is a service-registration (sent via mail to an admin)
+         * When the admin-user want to confirm
+         * Then the service related fe_groups is added to the frontendUser
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\Service $serviceRegistration */
+        $serviceRegistration = $this->serviceRepository->findByIdentifier(1);
+
+        // Service
+        /** @var GroupService $groupService */
+        $groupService = $this->objectManager->get(GroupService::class);
+        $result = $groupService->checkTokens($serviceRegistration->getTokenYes(), '', $serviceRegistration->getServiceSha1());
+
+        static::assertEquals(0, $result);
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function checkTokensRefuse()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is a registration (sent via mail to an admin)
+         * When the admin-user want to refuse
+         * Then some basic data will set to the frontendUser (via TypoScript AND frontendUserGroup)
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\Service $serviceRegistration */
+        $serviceRegistration = $this->serviceRepository->findByIdentifier(1);
+        // add valid until time somewhere in the future
+        $serviceRegistration->setValidUntil(time() + 60);
+
+        // before: The user owns one usergroup
+        static::assertEquals(count($serviceRegistration->getUser()->getUsergroup()), 1);
+
+        // Service
+        /** @var GroupService $groupService */
+        $groupService = $this->objectManager->get(GroupService::class);
+        $result = $groupService->checkTokens('', $serviceRegistration->getTokenNo(), $serviceRegistration->getServiceSha1());
+
+        static::assertEquals(2, $result);
+        // after: No group was added
+        static::assertEquals(count($serviceRegistration->getUser()->getUsergroup()), 1);
+        // service registration dataset is now deleted
+        static::assertNull($serviceRegistration = $this->serviceRepository->findByIdentifier(1));
+    }
+
+
+    /**
+     * @test
+     */
+    public function addUserToAllGrantedGroups()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is a service-registration which is enabled by admin
+         * When the "addUserToAllGrantedGroups" function is called
+         * Then one service is added to the user
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
+
+
+        // Service
+        /** @var GroupService $groupService */
+        $groupService = $this->objectManager->get(GroupService::class);
+        $result = $groupService->addUserToAllGrantedGroups($frontendUser);
+
+        static::assertEquals(1, $result);
+    }
 
 
     /**

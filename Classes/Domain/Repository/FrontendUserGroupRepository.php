@@ -2,6 +2,7 @@
 
 namespace RKW\RkwRegistration\Domain\Repository;
 
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /*
@@ -35,9 +36,8 @@ class FrontendUserGroupRepository extends \TYPO3\CMS\Extbase\Persistence\Reposit
      */
     public function initializeObject()
     {
-
-        /** @var $querySettings \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings */
-        $querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Typo3QuerySettings');
+        /** @var $querySettings Typo3QuerySettings */
+        $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
 
         // don't add the pid constraint and enable fields
         $querySettings->setRespectStoragePage(false);
@@ -54,7 +54,6 @@ class FrontendUserGroupRepository extends \TYPO3\CMS\Extbase\Persistence\Reposit
      */
     public function findServices()
     {
-
         //give all services which do not pass the closingDate or openingDate
         $query = $this->createQuery();
         $query->matching(
@@ -63,13 +62,11 @@ class FrontendUserGroupRepository extends \TYPO3\CMS\Extbase\Persistence\Reposit
                     $query->greaterThanOrEqual('txRkwregistrationServiceClosingDate', time()),
                     $query->equals('txRkwregistrationServiceClosingDate', 0)
                 ),
-
                 $query->equals('txRkwregistrationIsService', 1)
             )
         );
 
         return $query->execute();
-        //====
     }
 
 
@@ -98,7 +95,6 @@ class FrontendUserGroupRepository extends \TYPO3\CMS\Extbase\Persistence\Reposit
         $query->setOrderings(array('tstamp' => QueryInterface::ORDER_ASCENDING));
 
         return $query->execute();
-        //===
     }
 
 

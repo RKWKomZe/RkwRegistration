@@ -2,7 +2,9 @@
 
 namespace RKW\RkwRegistration\Domain\Repository;
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /*
@@ -36,9 +38,8 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function initializeObject()
     {
-
-        /** @var $querySettings \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings */
-        $querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Typo3QuerySettings');
+        /** @var $querySettings Typo3QuerySettings */
+        $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
 
         // don't add the pid constraint and enable fields
         $querySettings->setRespectStoragePage(false);
@@ -49,38 +50,32 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Loads registered user from database
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser | NULL
+     * @param FrontendUser $frontendUser
+     * @return FrontendUser | NULL
      */
-    public function findUser(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser)
+    public function findUser(FrontendUser $frontendUser)
     {
-
         if ($frontendUser = $this->findOneByUsername(strtolower($frontendUser->getUsername()))) {
             return $frontendUser;
-            //===
         }
 
         return null;
-        //===
     }
 
 
     /**
      * Checks if user is already registered
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param FrontendUser $frontendUser
      * @return boolean
      */
-    public function isUser(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser)
+    public function isUser(FrontendUser $frontendUser)
     {
-
         if ($this->findUser($frontendUser)) {
             return true;
-            //===
         }
 
         return false;
-        //===
     }
 
 
@@ -88,11 +83,10 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Finds non-anonymous users
      *
      * @param integer $uid
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @return FrontendUser
      */
     public function findByUidNoAnonymous($uid)
     {
-
         $query = $this->createQuery();
         $user = $query->matching(
             $query->logicalAnd(
@@ -103,7 +97,6 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->execute();
 
         return $user->getFirst();
-        //====
     }
 
 
@@ -111,14 +104,13 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Finds users which have the given username OR email-address
      * This is relevant for checking during registration or profile editing
      *
-     * @toDo by MF: This function is (IMO) not fully accurate. It's returns also all active user.
+     * @toDo by MF: This function seems not to be fully accurate. It's returns also an active user.
      *
      * @param string $input
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @return FrontendUser
      */
     public function findOneByEmailOrUsernameInactive($input)
     {
-
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
 
@@ -131,7 +123,6 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->execute();
 
         return $user->getFirst();
-        //====
     }
 
 
@@ -140,21 +131,19 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * This way no one can register twice (only when deleted)
      *
      * @param string $username
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @return FrontendUser
      */
     public function findOneByUsernameInactive($username)
     {
-
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
 
         $user = $query->matching(
-            $query->equals('username', $username)
-        )->setLimit(1)
+                $query->equals('username', $username)
+            )->setLimit(1)
             ->execute();
 
         return $user->getFirst();
-        //====
     }
 
 
@@ -164,7 +153,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @deprecated Will be removed soon. Simply use magic function $guestUserRepository->findByUsername($token) instead
      *
      * @param string $username
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @return FrontendUser
      */
     public function findOneByToken($token)
     {
@@ -190,7 +179,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @deprecated Will be removed soon. Use findByUidInactiveNonGuest instead
      *
      * @param string $uid
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @return FrontendUser
      */
     public function findByUidInactiveNonAnonymous($uid)
     {
@@ -205,7 +194,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * This way we can activate the user then
      *
      * @param string $uid
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @return FrontendUser
      */
     public function findByUidInactiveNonGuest($uid)
     {
@@ -227,7 +216,6 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->execute();
 
         return $user->getFirst();
-        //====
     }
 
 
@@ -242,7 +230,6 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findByTimestamp($timestamp, $excludeEmptyName = true)
     {
-
         $query = $this->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);
         $query->getQuerySettings()->setIgnoreEnableFields(true);
@@ -272,7 +259,6 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->setOrderings(array('tstamp' => QueryInterface::ORDER_ASCENDING));
 
         return $query->execute();
-        //===
     }
 
 
@@ -311,7 +297,6 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         );
 
         return $query->execute();
-        //===
     }
 
 
@@ -326,7 +311,6 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findDeletedOrDisabled($tolerance = 0, $anonymousOnly = false)
     {
-
         GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
 
         $query = $this->createQuery();
@@ -358,7 +342,6 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         );
 
         return $query->execute();
-        //===
     }
 
 
@@ -422,7 +405,6 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findExpiredAndDisabledSinceDays ($daysSinceExpiredOrDisabled = 0, $timebase = 0)
     {
-
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
         $query->getQuerySettings()->setIgnoreEnableFields(true);
@@ -458,7 +440,6 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findDeletedSinceDays ($daysSinceDelete = 0, $timebase = 0)
     {
-
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
         $query->getQuerySettings()->setIncludeDeleted(true);
@@ -488,7 +469,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Finds an object matching the given identifier.
      *
      * @param int $uid The identifier of the object to find
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser The matching object if found, otherwise NULL
+     * @return FrontendUser The matching object if found, otherwise NULL
      * @api used by RKW Soap
      */
     public function findByUidSoap($uid)
@@ -512,10 +493,10 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Delete user from DB (really!)
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param FrontendUser $frontendUser
      * @return void
      */
-    public function removeHard(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser)
+    public function removeHard(FrontendUser $frontendUser)
     {
 
         $GLOBALS['TYPO3_DB']->sql_query('

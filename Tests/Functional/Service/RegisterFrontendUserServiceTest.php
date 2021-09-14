@@ -1,5 +1,5 @@
 <?php
-namespace RKW\RkwRegistration\Tests\Functional\Utility;
+namespace RKW\RkwRegistration\Tests\Functional\Service;
 
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
@@ -37,6 +37,11 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
  */
 class RegisterFrontendUserServiceTest extends FunctionalTestCase
 {
+    /**
+     * @const
+     */
+    const FIXTURE_PATH = __DIR__ . '/RegisterFrontendUserServiceTest/Fixtures';
+
     /**
      * @var string[]
      */
@@ -84,7 +89,7 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
                 'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
-                'EXT:rkw_registration/Tests/Functional/Service/RegisterFrontendUserServiceTest/Fixtures/Frontend/Configuration/Rootpage.typoscript',
+                self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
             ]
         );
 

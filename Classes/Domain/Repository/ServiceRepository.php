@@ -15,6 +15,12 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
+use RKW\RkwRegistration\Domain\Model\Service;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+
 /**
  * ServiceRepository
  *
@@ -33,9 +39,8 @@ class ServiceRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function initializeObject()
     {
-
-        /** @var $querySettings \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings */
-        $querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Typo3QuerySettings');
+        /** @var $querySettings Typo3QuerySettings */
+        $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
 
         // don't add the pid constraint and enable fields
         $querySettings->setRespectStoragePage(false);
@@ -46,12 +51,11 @@ class ServiceRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * function findEnabledByAdminByUser
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @param FrontendUser
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findEnabledByAdminByUser(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser)
+    public function findEnabledByAdminByUser(FrontendUser $frontendUser)
     {
-
         $query = $this->createQuery();
         $services = $query
             ->matching(
@@ -63,7 +67,6 @@ class ServiceRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->execute();
 
         return $services;
-        //===
     }
 
 
@@ -75,7 +78,6 @@ class ServiceRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findExpired()
     {
-
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
 
@@ -86,7 +88,6 @@ class ServiceRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->execute();
 
         return $userServices;
-        //===
     }
 
 
@@ -97,10 +98,7 @@ class ServiceRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function generateRandomSha1()
     {
-
         return sha1(rand());
-        //====
-
     }
 
 
@@ -112,28 +110,24 @@ class ServiceRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function cryptServiceIdSha1($serviceId)
     {
-
         return sha1($serviceId);
-        //====
-
     }
 
 
     /**
      * function newOptIn
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup
+     * @param FrontendUser $frontendUser
+     * @param FrontendUserGroup $frontendUserGroup
      * @param integer $daysForOptIn
-     * @return \RKW\RkwRegistration\Domain\Model\Service
+     * @return Service
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
-    public function newOptIn(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup, $daysForOptIn = 0)
+    public function newOptIn(FrontendUser $frontendUser, FrontendUserGroup $frontendUserGroup, $daysForOptIn = 0)
     {
-
-        /** @var \RKW\RkwRegistration\Domain\Model\Service $service */
-        $service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\Service');
+        /** @var Service $service */
+        $service = GeneralUtility::makeInstance(Service::class);
         $keyForSha1 = $frontendUser->getUid() . $frontendUserGroup->getUid() . time();
 
         $service->setUser($frontendUser);
@@ -152,8 +146,6 @@ class ServiceRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $this->add($service);
 
         return $service;
-        //====
     }
-
 
 }

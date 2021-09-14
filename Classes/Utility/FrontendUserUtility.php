@@ -50,6 +50,7 @@ class FrontendUserUtility
                 }
             }
         }
+
         return $frontendUser;
     }
 

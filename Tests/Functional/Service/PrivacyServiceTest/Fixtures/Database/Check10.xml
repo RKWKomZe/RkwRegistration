@@ -2,7 +2,6 @@
 <dataset>
 
     <fe_users>
-        <usergroup>55</usergroup>
         <uid>1</uid>
         <pid>1</pid>
         <username>spd@test.de</username>
@@ -29,22 +28,15 @@
     </fe_users>
 
 
-    <fe_groups>
-        <uid>1</uid>
-        <pid>1</pid>
-        <title>Some group</title>
-    </fe_groups>
-
-
-    <tx_rkwregistration_domain_model_service>
+    <tx_rkwregistration_domain_model_registration>
         <uid>1</uid>
         <pid>1</pid>
         <user>1</user>
-        <usergroup>1</usergroup>
-        <service_sha1>6c56107adb4c03dfdb074910f5ae3537fba7d8c2</service_sha1>
+        <user_sha1>6c56107adb4c03dfdb074910f5ae3537fba7d8c2</user_sha1>
         <token_yes>e863278172a75d52e66cb4e2d4c37a8a36af9201</token_yes>
         <token_no>13d8286df1cd2a3990347e3b7579a5242ee59b18</token_no>
-        <enabled_by_admin>1</enabled_by_admin>
-    </tx_rkwregistration_domain_model_service>
-
+        <data>
+            TestData
+        </data>
+    </tx_rkwregistration_domain_model_registration>
 </dataset>

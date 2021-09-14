@@ -432,6 +432,9 @@ class OptInService extends AbstractService
         // this may also be the case for logged in users without valid email (e.g. when registered via Facebook or Twitter) !!!
         if ($frontendUserDatabase = $this->frontendUserRepository->findOneByEmailOrUsernameInactive($frontendUser->getUsername())) {
 
+            // re-initialize service with database object
+            $registerFrontendUserService = $objectManager->get(RegisterFrontendUserService::class, $frontendUserDatabase);
+
             // add opt in - but only if additional data is set!
             if ($additionalData) {
 
@@ -459,11 +462,17 @@ class OptInService extends AbstractService
                 // Signal for e.g. E-Mails
                 $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_OPTIN_EXISTING_USER . ucfirst($category), array($frontendUserDatabase, $registration));
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-In for existing user "%s" (id=%s, category=%s) successfully generated.', strtolower($frontendUserDatabase->getUsername()), $frontendUserDatabase->getUid(), $category));
+
+                // hint: This is more important than it looks. This returns a real existing FrontendUser. If you would remove
+                // this line a new created FrontendUser-Instance from above would returned at the end of this function
+                // (which is disabled by default! @see convertArrayToObject)
+                $frontendUser = $frontendUserDatabase;
+
+            } else {
+                $registerFrontendUserService->setClearanceAndLifetime($enable);
+                $frontendUser = $registerFrontendUserService->getFrontendUser();
             }
-            // hint: This is more important than it looks. This returns a real existing FrontendUser. If you would remove
-            // this line a new created FrontendUser-Instance from above would returned at the end of this function
-            // (which is disabled by default! @see convertArrayToObject)
-            $frontendUser = $frontendUserDatabase;
+
 
             // if user does not exist yet, we need some more data to be set!
         } else {

@@ -15,6 +15,11 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\Registration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+
 /**
  * RegistrationRepository
  *
@@ -34,8 +39,8 @@ class RegistrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     public function initializeObject()
     {
 
-        /** @var $querySettings \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings */
-        $querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Typo3QuerySettings');
+        /** @var $querySettings Typo3QuerySettings */
+        $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
 
         // don't add the pid constraint and enable fields
         $querySettings->setRespectStoragePage(false);
@@ -53,7 +58,6 @@ class RegistrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findExpired()
     {
-
         $query = $this->createQuery();
         $userServices = $query
             ->matching(
@@ -62,7 +66,6 @@ class RegistrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->execute();
 
         return $userServices;
-        //===
     }
 
 
@@ -73,29 +76,25 @@ class RegistrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function generateRandomSha1()
     {
-
         return sha1(rand());
-        //====
-
     }
 
 
     /**
      * function newOptIn
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param FrontendUser $frontendUser
      * @param mixed $additionalData
      * @param integer $daysForOptIn
      * @param string $category
-     * @return \RKW\RkwRegistration\Domain\Model\Registration
+     * @return Registration
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
-    public function newOptIn(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, $additionalData = null, $category = null, $daysForOptIn = 0)
+    public function newOptIn(FrontendUser $frontendUser, $additionalData = null, $category = null, $daysForOptIn = 0)
     {
-
-        /** @var \RKW\RkwRegistration\Domain\Model\Registration $registration */
-        $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\Registration');
+        /** @var Registration $registration */
+        $registration = GeneralUtility::makeInstance(Registration::class);
 
         $registration->setCategory($category);
         $registration->setData($additionalData);
@@ -113,7 +112,6 @@ class RegistrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $this->add($registration);
 
         return $registration;
-        //====
     }
 
 }

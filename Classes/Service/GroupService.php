@@ -180,7 +180,7 @@ class GroupService
      *
      * @param string $tokenYes
      * @param string $tokenNo
-     * @param string $userSha1
+     * @param string $serviceSha1
      * @return integer
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
@@ -188,10 +188,11 @@ class GroupService
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function checkTokens($tokenYes, $tokenNo, $userSha1)
+    public function checkTokens($tokenYes, $tokenNo, $serviceSha1)
     {
         // load service by SHA-token
-        $service = $this->getServiceRepository()->findOneByServiceSha1($userSha1);
+        $service = $this->getServiceRepository()->findOneByServiceSha1($serviceSha1);
+
         if (!$service instanceof Service) {
             return 0;
         }
@@ -201,9 +202,8 @@ class GroupService
             (!$service->getValidUntil())
             || ($service->getValidUntil() < time())
         ) {
-
             $this->getServiceRepository()->remove($service);
-
+            $this->getPersistanceManager()->persistAll();
             return 0;
         }
 
@@ -252,8 +252,6 @@ class GroupService
                 $this->getPersistanceManager()->persistAll();
 
                 return 1;
-                //====
-
 
                 // check no-token
             } elseif ($service->getTokenNo() == $tokenNo) {
@@ -267,7 +265,6 @@ class GroupService
                 $this->getPersistanceManager()->persistAll();
 
                 return 2;
-                //===
             }
         }
 

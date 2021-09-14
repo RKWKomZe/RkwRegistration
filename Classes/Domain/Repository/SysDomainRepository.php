@@ -14,6 +14,8 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+
 /**
  * SysDomainRepository
  *
@@ -29,7 +31,7 @@ class SysDomainRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function initializeObject()
     {
-        $this->defaultQuerySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Typo3QuerySettings');
+        $this->defaultQuerySettings = $this->objectManager->get(Typo3QuerySettings::class);
         $this->defaultQuerySettings->setRespectStoragePage(false);
         $this->defaultQuerySettings->setRespectSysLanguage(false);
     }
@@ -45,7 +47,6 @@ class SysDomainRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findByDomainNameAndPid($domainName, $pid)
     {
-
         $query = $this->createQuery();
         $services = $query
             ->matching(
@@ -57,9 +58,7 @@ class SysDomainRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->execute();
 
         return $services;
-        //===
     }
 
-
-
 }
+

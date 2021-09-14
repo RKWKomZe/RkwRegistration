@@ -153,8 +153,6 @@ class AuthFrontendUserService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
             }
         }
         return $user;
-
-
     }
 
 
@@ -245,7 +243,7 @@ class AuthFrontendUserService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
             // with @deprecated function $frontendUserRepository->findOneByToken($token). Is just a fallback vor already registered anonymous user
             if (
                 (strlen($token) == RegisterGuestUserService::GUEST_TOKEN_LENGTH)
-                && ($frontendUser = $frontendUserRepository->findOneByUsername($token))
+                && ($frontendUser = $frontendUserRepository->findOneByToken($token))
             ) {
                 return $frontendUser;
             }
