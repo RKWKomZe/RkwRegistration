@@ -7,6 +7,7 @@ use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Domain\Model\Registration;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\GuestUserRepository;
+use RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
 use RKW\RkwRegistration\Exception;
 use \RKW\RkwBasics\Utility\GeneralUtility;
 use \RKW\RkwRegistration\Utility\PasswordUtility;
@@ -20,6 +21,7 @@ use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
@@ -396,6 +398,7 @@ class OptInService extends AbstractService
      */
     public function register($userData, $enable = false, $additionalData = null, $category = null, Request $request = null)
     {
+
         // if we get an array we just migrate the data to our object!
         $frontendUser = FrontendUserUtility::convertArrayToObject($userData);
 
@@ -404,7 +407,17 @@ class OptInService extends AbstractService
             throw new Exception('No valid object given.', 1434997734);
         }
 
+        // initialize objects
+        // we have to to it explicit here. We can't work with given objects from the "AbstractService" class, because the elements
+        // are not proper defined, if this service is not called through objectManager (a call with "makeInstance" does not
+        // instantiate something except the class itself)
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var PersistenceManager $persistenceManager */
+        $persistenceManager = $objectManager->get(PersistenceManager::class);
+        /** @var Dispatcher $signalSlotDispatcher */
+        $signalSlotDispatcher = $objectManager->get(Dispatcher::class);
+        /** @var RegistrationRepository $registrationRepository */
+        $registrationRepository = $objectManager->get(RegistrationRepository::class);
         /** @var RegisterFrontendUserService $registerFrontendUserService */
         $registerFrontendUserService = $objectManager->get(RegisterFrontendUserService::class, $frontendUser);
 
@@ -430,7 +443,9 @@ class OptInService extends AbstractService
         // check if user already exists!
         // then we generate an opt-in for additional data given
         // this may also be the case for logged in users without valid email (e.g. when registered via Facebook or Twitter) !!!
-        if ($frontendUserDatabase = $this->frontendUserRepository->findOneByEmailOrUsernameInactive($frontendUser->getUsername())) {
+        /** @var FrontendUserRepository $frontendUserRepository */
+        $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
+        if ($frontendUserDatabase = $frontendUserRepository->findOneByEmailOrUsernameInactive($frontendUser->getUsername())) {
 
             // re-initialize service with database object
             $registerFrontendUserService = $objectManager->get(RegisterFrontendUserService::class, $frontendUserDatabase);
@@ -438,13 +453,13 @@ class OptInService extends AbstractService
             // add opt in - but only if additional data is set!
             if ($additionalData) {
 
-                $registration = $this->registrationRepository->newOptIn($frontendUserDatabase, $additionalData, $category, $this->settings['users']['daysForOptIn']);
+                $registration = $registrationRepository->newOptIn($frontendUserDatabase, $additionalData, $category, $this->settings['users']['daysForOptIn']);
 
                 // add privacy for existing user
                 if ($request) {
                     PrivacyService::addPrivacyDataForOptIn($request, $frontendUserDatabase, $registration, ($category ? 'new opt-in for existing user for ' . $category : 'new opt-in for existing user'));
                 }
-                $this->persistenceManager->persistAll();
+                $persistenceManager->persistAll();
 
                 if (
                     ($frontendUser->getEmail() != strtolower($frontendUserDatabase->getEmail()))
@@ -460,14 +475,13 @@ class OptInService extends AbstractService
                 $frontendUserDatabase->setEmail($frontendUser->getEmail());
 
                 // Signal for e.g. E-Mails
-                $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_OPTIN_EXISTING_USER . ucfirst($category), array($frontendUserDatabase, $registration));
+                $signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_OPTIN_EXISTING_USER . ucfirst($category), array($frontendUserDatabase, $registration));
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-In for existing user "%s" (id=%s, category=%s) successfully generated.', strtolower($frontendUserDatabase->getUsername()), $frontendUserDatabase->getUid(), $category));
 
                 // hint: This is more important than it looks. This returns a real existing FrontendUser. If you would remove
                 // this line a new created FrontendUser-Instance from above would returned at the end of this function
                 // (which is disabled by default! @see convertArrayToObject)
                 $frontendUser = $frontendUserDatabase;
-
             } else {
                 $registerFrontendUserService->setClearanceAndLifetime($enable);
                 $frontendUser = $registerFrontendUserService->getFrontendUser();
@@ -480,32 +494,34 @@ class OptInService extends AbstractService
             $registerFrontendUserService->setBasicData();
             $registerFrontendUserService->setClearanceAndLifetime($enable);
             $plaintextPassword = $registerFrontendUserService->setNewPassword();
-
             // add user and persist!
             $this->getFrontendUserRepository()->add($frontendUser);
 
             $this->getPersistenceManager()->persistAll();
 
             if ($enable) {
+
                 // Signal for e.g. E-Mails
-                $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_FINAL_USER . ucfirst($category), array($frontendUser, $plaintextPassword, null));
+                $signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_FINAL_USER . ucfirst($category), array($frontendUser, $plaintextPassword, null));
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully registered and enabled user "%s".', strtolower($frontendUser->getUsername())));
                 // add privacy opt-in for non-existing user
                 if ($request) {
                     PrivacyService::addPrivacyData($request, $frontendUser, $additionalData, ($category ? 'new user without opt-in for ' . $category : 'new user without opt-in'));
                 }
-                $this->persistenceManager->persistAll();
+                $persistenceManager->persistAll();
 
             } else {
+
                 // add registration
-                $registration = $this->registrationRepository->newOptIn($frontendUser, $additionalData, $category, $this->settings['users']['daysForOptIn']);
+                $registration = $registrationRepository->newOptIn($frontendUser, $additionalData, $category, $this->settings['users']['daysForOptIn']);
                 // add privacy opt-in for non-existing user
                 if ($request) {
                     PrivacyService::addPrivacyDataForOptIn($request, $frontendUser, $registration, ($category ? 'new opt-in for non-existing user for ' . $category : 'new opt-in for non-existing user'));
                 }
-                $this->persistenceManager->persistAll();
+                $persistenceManager->persistAll();
                 // Signal for e.g. E-Mails
-                $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_OPTIN_USER . ucfirst($category), array($frontendUser, $registration));
+
+                $signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_OPTIN_USER . ucfirst($category), array($frontendUser, $registration));
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully registered user "%s". Awaiting opt-in.', strtolower($frontendUser->getUsername())));
             }
         }
