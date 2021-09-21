@@ -4,6 +4,9 @@ namespace RKW\RkwRegistration\Tests\Functional\Service;
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
+use RKW\RkwEvents\Domain\Model\Event;
+use RKW\RkwEvents\Domain\Model\EventReservation;
+use RKW\RkwRegistration\Domain\Model\Registration;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
@@ -13,6 +16,7 @@ use RKW\RkwRegistration\Service\PrivacyService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -105,14 +109,14 @@ class PrivacyServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function addPrivacyDataForOptIn ()
+    public function addPrivacyDataForOptInWithoutAnySpecialObject ()
     {
         /**
          * Scenario:
          *
          * Given is an existing registration with a frontendUser
          * When we create an privacy entry
-         * Then a privacy dataset is returned
+         * Then a privacy dataset is returned with registration-table relation
          */
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
@@ -125,10 +129,8 @@ class PrivacyServiceTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
 
         // Get Registration
+        /** @var Registration $registration */
         $registration = $this->registrationRepository->findByIdentifier(1);
-
-        // @toDo: set an object as data to registration
-
 
         // simulate an MVC request
         /** @var Request $request */
@@ -142,8 +144,226 @@ class PrivacyServiceTest extends FunctionalTestCase
         static::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
         // the frontendUser is set
         static::assertEquals($frontendUser->getUid(), $result->getFrontendUser()->getUid());
+        // before final saving: We only have a reference to the registration-table
+        static::assertEquals('tx_rkwregistration_domain_model_registration', $result->getForeignTable());
+    }
 
-        // @toDo: Check the correct table name of given object
+
+    /**
+     * @test
+     */
+    public function addPrivacyDataForOptInWithDisabledUser ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is an existing registration with a DISABLED frontendUser
+         * When we want to create an privacy entry
+         * Then an exception is thrown
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
+
+        // Service
+        /** @var PrivacyService $privacyService */
+        $privacyService = $this->objectManager->get(PrivacyService::class);
+
+        // Get FrontendUser
+        $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
+
+        // Get Registration
+        /** @var Registration $registration */
+        $registration = $this->registrationRepository->findByIdentifier(1);
+
+        // simulate an MVC request
+        /** @var Request $request */
+        $request = $this->objectManager->get(Request::class);
+        $request->setControllerActionName('someAction');
+        $request->setControllerName('SomeController');
+
+        static::expectExceptionCode(0);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $result */
+        $privacyService->addPrivacyDataForOptIn($request, $frontendUser, $registration, 'hello');
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function addPrivacyDataForOptInFinalWithEventReservation ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is an existing registration with a frontendUser
+         * When we finalize an privacy entry
+         * Then a privacy dataset is returned with eventReservation-table relation
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
+
+        // Service
+        /** @var PrivacyService $privacyService */
+        $privacyService = $this->objectManager->get(PrivacyService::class);
+
+        // Get FrontendUser
+        $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
+
+        // Get Registration
+        /** @var Registration $registration */
+        $registration = $this->registrationRepository->findByIdentifier(1);
+
+        // set an object as data to registration
+        /** @var EventReservation $eventReservation */
+        $eventReservation = GeneralUtility::makeInstance(EventReservation::class);
+        $registration->setData($eventReservation);
+
+        // simulate an MVC request
+        /** @var Request $request */
+        $request = $this->objectManager->get(Request::class);
+        $request->setControllerActionName('someAction');
+        $request->setControllerName('SomeController');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $result */
+        $result = $privacyService->addPrivacyDataForOptInFinal($request, $frontendUser, $registration, 'hello');
+
+        static::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
+        // the frontendUser is set
+        static::assertEquals($frontendUser->getUid(), $result->getFrontendUser()->getUid());
+        // after final saving: We only have a reference to the origin data-table (here: event)
+        static::assertEquals('tx_rkwevents_domain_model_eventreservation', $result->getForeignTable());
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function addPrivacyDataForOptInFinalWithoutSpecificData ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is an existing registration with a frontendUser
+         * When we finalize an privacy entry
+         * Then a privacy dataset is returned WITHOUT table relation
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
+
+        // Service
+        /** @var PrivacyService $privacyService */
+        $privacyService = $this->objectManager->get(PrivacyService::class);
+
+        // Get FrontendUser
+        $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
+
+        // Get Registration
+        /** @var Registration $registration */
+        $registration = $this->registrationRepository->findByIdentifier(1);
+
+        // to not set any further data to registration
+
+        // simulate an MVC request
+        /** @var Request $request */
+        $request = $this->objectManager->get(Request::class);
+        $request->setControllerActionName('someAction');
+        $request->setControllerName('SomeController');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $result */
+        $result = $privacyService->addPrivacyDataForOptInFinal($request, $frontendUser, $registration, 'hello');
+
+        static::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
+        // the frontendUser is set
+        static::assertEquals($frontendUser->getUid(), $result->getFrontendUser()->getUid());
+        // after final saving: We only have a reference to the origin data-table (here: event)
+        static::assertEquals(null, $result->getForeignTable());
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function addPrivacyDataForEventReservation ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is an existing frontendUser
+         * When we create an EventReservation
+         * Then a privacy dataset is returned with eventReservation-table relation
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
+
+        // Service
+        /** @var PrivacyService $privacyService */
+        $privacyService = $this->objectManager->get(PrivacyService::class);
+
+        // Get FrontendUser
+        $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
+
+        // set an object as data to registration
+        /** @var EventReservation $eventReservation */
+        $eventReservation = GeneralUtility::makeInstance(EventReservation::class);
+
+        // simulate an MVC request
+        /** @var Request $request */
+        $request = $this->objectManager->get(Request::class);
+        $request->setControllerActionName('someAction');
+        $request->setControllerName('SomeController');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $result */
+        $result = $privacyService->addPrivacyData($request, $frontendUser, $eventReservation, 'hello');
+
+        static::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
+        // the frontendUser is set
+        static::assertEquals($frontendUser->getUid(), $result->getFrontendUser()->getUid());
+        // after final saving: We only have a reference to the origin data-table (here: event)
+        static::assertEquals('tx_rkwevents_domain_model_eventreservation', $result->getForeignTable());
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function addPrivacyDataForEventReservationWithDisabledUser ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is an existing and DISABLED frontendUser
+         * When we create an EventReservation
+         * Then a privacy dataset is returned with eventReservation-table relation
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
+
+        // Service
+        /** @var PrivacyService $privacyService */
+        $privacyService = $this->objectManager->get(PrivacyService::class);
+
+        // Get FrontendUser
+        $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
+
+        // set an object as data to registration
+        /** @var EventReservation $eventReservation */
+        $eventReservation = GeneralUtility::makeInstance(EventReservation::class);
+
+        // simulate an MVC request
+        /** @var Request $request */
+        $request = $this->objectManager->get(Request::class);
+        $request->setControllerActionName('someAction');
+        $request->setControllerName('SomeController');
+
+        static::expectExceptionCode(0);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $result */
+        $privacyService->addPrivacyData($request, $frontendUser, $eventReservation, 'hello');
     }
 
 
