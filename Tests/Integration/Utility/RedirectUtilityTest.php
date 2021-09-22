@@ -35,6 +35,11 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 class RedirectUtilityTest extends FunctionalTestCase
 {
     /**
+     * @const
+     */
+    const FIXTURE_PATH = __DIR__ . '/RedirectUtilityTest/Fixtures';
+
+    /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManager
      */
     private $objectManager = null;
@@ -58,7 +63,7 @@ class RedirectUtilityTest extends FunctionalTestCase
         define('TX_REALURL_AUTOCONF_FILE', 'typo3conf/ext/rkw_mailer/Tests/Integration/ViewHelpers/Frontend/LinkViewHelperTest/Fixtures/RealUrlConfiguration.php');
 
         parent::setUp();
-        $this->importDataSet(__DIR__ . '/RedirectUtilityTest/Fixtures/Database/Global.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Global.xml');
 
         $this->setUpFrontendRootPage(
             1,
@@ -68,7 +73,7 @@ class RedirectUtilityTest extends FunctionalTestCase
                 'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
-                'EXT:rkw_registration/Tests/Integration/Utility/RedirectUtilityTest/Fixtures/Frontend/Configuration/Rootpage.typoscript',
+                self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
             ]
         );
 
@@ -103,7 +108,7 @@ class RedirectUtilityTest extends FunctionalTestCase
          * An URI to the given page is returned
          */
 
-        $this->importDataSet(__DIR__ . '/RedirectUtilityTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         /** @var RedirectUtility $utility */
         $utility = GeneralUtility::makeInstance(RedirectUtility::class);
@@ -273,7 +278,7 @@ class RedirectUtilityTest extends FunctionalTestCase
         // Result: http://var/www/rkw-website-composer/vendor/bin/index.php?id=50'
         // Impact: We can't test several cases :-(
 
-        $this->importDataSet(__DIR__ . '/RedirectUtilityTest/Fixtures/Database/Check20.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
 
         /** @var RedirectUtility $utility */
         $utility = GeneralUtility::makeInstance(RedirectUtility::class);
@@ -307,11 +312,11 @@ class RedirectUtilityTest extends FunctionalTestCase
                 'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
-                'EXT:rkw_registration/Tests/Integration/Utility/RedirectUtilityTest/Fixtures/Frontend/Configuration/RootpageCheck10.typoscript',
+                self::FIXTURE_PATH . '/Frontend/Configuration/RootpageCheck10.typoscript',
             ]
         );
 
-        $this->importDataSet(__DIR__ . '/RedirectUtilityTest/Fixtures/Database/Check20.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
 
         /** @var RedirectUtility $utility */
         $utility = GeneralUtility::makeInstance(RedirectUtility::class);

@@ -2,6 +2,7 @@
 <dataset>
 
     <fe_users>
+        <disable>1</disable>
         <tx_extbase_type>\RKW\RkwRegistration\Domain\Model\GuestUser</tx_extbase_type>
         <uid>1</uid>
         <pid>1</pid>

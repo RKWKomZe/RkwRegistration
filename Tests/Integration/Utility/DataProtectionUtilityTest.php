@@ -38,6 +38,11 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 class DataProtectionUtilityTest extends FunctionalTestCase
 {
     /**
+     * @const
+     */
+    const FIXTURE_PATH = __DIR__ . '/DataProtectionUtilityTest/Fixtures';
+
+    /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
@@ -96,7 +101,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Global.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Global.xml');
 
         $this->setUpFrontendRootPage(
             1,
@@ -105,7 +110,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
                 'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
-                'EXT:rkw_registration/Tests/Integration/Utility/DataProtectionUtilityTest/Fixtures/Frontend/Configuration/Rootpage.typoscript',
+                self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
 
             ]
         );
@@ -146,7 +151,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Then the frontend user which is disabled since more days then configured for deletion is deleted
          * Then the other three frontend users are not deleted
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check120.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check120.xml');
 
         $this->subject->deleteAllExpiredAndDisabled();
         $this->persistenceManager->persistAll();
@@ -185,7 +190,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Then the dataProtectionStatus is set to 1
          * Then the user data is encrypted in separate table
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check30.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check30.xml');
 
         $this->subject->anonymizeAndEncryptAll();
         $this->persistenceManager->persistAll();
@@ -233,7 +238,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Then the shipping address of the privacy data is anonymised
          * Then the shipping address of the privacy data is encrypted
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check40.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check40.xml');
 
         $this->subject->anonymizeAndEncryptAll();
         $this->persistenceManager->persistAll();
@@ -295,7 +300,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Then the shipping address of the frontend user is anonymised
          * Then the shipping address of the frontend user is encrypted
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check50.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check50.xml');
 
         $this->subject->anonymizeAndEncryptAll();
         $this->persistenceManager->persistAll();
@@ -338,7 +343,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Then the shipping address of the frontend user is anonymised
          * Then the shipping address of the frontend user is encrypted
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check60.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check60.xml');
 
         $this->subject->anonymizeAndEncryptAll();
         $this->persistenceManager->persistAll();
@@ -381,7 +386,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Then the shipping address of the frontend user is anonymised
          * Then the shipping address of the frontend user is encrypted
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check70.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check70.xml');
 
         $this->subject->anonymizeAndEncryptAll();
         $this->persistenceManager->persistAll();
@@ -447,7 +452,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * When I anonymize this data
          * Then the data is not anonymized
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
@@ -472,7 +477,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * When I anonymize the frontend user
          * Then the user data is anonymized
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check11.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check11.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
@@ -519,7 +524,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * When I anonymize the shipping address
          * Then an error is thrown
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
@@ -547,7 +552,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * When I anonymize the shipping address
          * Then the shipping address is anonymized
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check20.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
         $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
@@ -608,7 +613,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Then the original object is not encrypted
          * Then the encrypted user data is returned
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
@@ -651,7 +656,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * When I encrypt the shipping address
          * Then an error is thrown
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check20.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
@@ -680,7 +685,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Then the original object is not encrypted
          * Then the encrypted user data is returned
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check20.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
         $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
@@ -726,7 +731,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * When I encrypt the shipping address
          * Then an error is thrown
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check25.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check25.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
@@ -755,7 +760,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Then the original object is not encrypted
          * Then the encrypted user data is returned
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check25.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check25.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\Privacy $privacy */
         $privacy  = $this->privacyRepository->findByUid(1);
@@ -802,7 +807,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * When I decrypt the encryptedData-object
          * Then null is returned
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check80.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check80.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(1);
@@ -828,7 +833,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * When I decrypt the encryptedData-object
          * Then null is returned
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check90.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check90.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(1);
@@ -852,7 +857,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * When I decrypt the encryptedData-object
          * Then null is returned
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check100.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check100.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(1);
@@ -877,7 +882,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          * Then the decrypted object is returned
          * Then all data has been decrypted again
          */
-        $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Check110.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check110.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(1);

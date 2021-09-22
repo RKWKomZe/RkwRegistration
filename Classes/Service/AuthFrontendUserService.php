@@ -223,7 +223,7 @@ class AuthFrontendUserService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
      */
     public function authGuest($token)
     {
-        /** @var GuestUserRepository $frontendUserRepository */
+        /** @var GuestUserRepository $guestUserRepository */
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
         $guestUserRepository = $objectManager->get(GuestUserRepository::class);
 
@@ -243,7 +243,7 @@ class AuthFrontendUserService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
             // with @deprecated function $frontendUserRepository->findOneByToken($token). Is just a fallback vor already registered anonymous user
             if (
                 (strlen($token) == RegisterGuestUserService::GUEST_TOKEN_LENGTH)
-                && ($frontendUser = $frontendUserRepository->findOneByToken($token))
+                && ($frontendUser = $guestUserRepository->findOneByToken($token))
             ) {
                 return $frontendUser;
             }

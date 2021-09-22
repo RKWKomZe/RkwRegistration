@@ -34,6 +34,11 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 class FrontendUserSessionUtilityTest extends FunctionalTestCase
 {
     /**
+     * @const
+     */
+    const FIXTURE_PATH = __DIR__ . '/FrontendUserSessionUtilityTest/Fixtures';
+
+    /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
@@ -54,7 +59,7 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->importDataSet(__DIR__ . '/FrontendUserSessionUtilityTest/Fixtures/Database/Global.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Global.xml');
 
         $this->setUpFrontendRootPage(
             1,
@@ -63,7 +68,7 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
                 'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
-                'EXT:rkw_registration/Tests/Integration/Utility/FrontendUserSessionUtilityTest/Fixtures/Frontend/Configuration/Rootpage.typoscript',
+                self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
             ]
         );
 
@@ -91,7 +96,7 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
          * Then a session is created
          */
 
-        $this->importDataSet(__DIR__ . '/FrontendUserSessionUtilityTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         /** @var FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
@@ -153,7 +158,7 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
          * When he is logged out
          * Then his session is destroyed
          */
-        $this->importDataSet(__DIR__ . '/FrontendUserSessionUtilityTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         /** @var FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
@@ -218,7 +223,7 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
          * When the session is checked
          * Then the function returns true
          */
-        $this->importDataSet(__DIR__ . '/FrontendUserSessionUtilityTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         /** @var FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
@@ -248,7 +253,7 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
          * When the session is checked
          * Then the function returns false
          */
-        $this->importDataSet(__DIR__ . '/FrontendUserSessionUtilityTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         /** @var FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
@@ -277,7 +282,7 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
          * When he is logged in
          * Then the function returns the frontendUser id
          */
-        $this->importDataSet(__DIR__ . '/FrontendUserSessionUtilityTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         /** @var FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
@@ -306,7 +311,7 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
          * When I want to get the ID of this FrontendUser
          * Then the function returns null
          */
-        $this->importDataSet(__DIR__ . '/FrontendUserSessionUtilityTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         /** @var FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);

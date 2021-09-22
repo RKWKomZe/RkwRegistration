@@ -35,6 +35,11 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 class FrontendUserUtilityTest extends FunctionalTestCase
 {
     /**
+     * @const
+     */
+    const FIXTURE_PATH = __DIR__ . '/FrontendUserUtilityTest/Fixtures';
+
+    /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
@@ -49,7 +54,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->importDataSet(__DIR__ . '/FrontendUserUtilityTest/Fixtures/Database/Global.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Global.xml');
 
         $this->setUpFrontendRootPage(
             1,
@@ -58,7 +63,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
                 'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
-                'EXT:rkw_registration/Tests/Integration/Utility/FrontendUserUtilityTest/Fixtures/Frontend/Configuration/Rootpage.typoscript',
+                self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
             ]
         );
     }

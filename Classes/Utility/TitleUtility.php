@@ -48,6 +48,8 @@ class TitleUtility
         $titleRepository = $objectManager->get(TitleRepository::class);
         $txRegistrationTitle = $titleRepository->findOneByName($title);
 
+        // @toDo by MF: Set a max length for title?
+
         if (!$txRegistrationTitle && $title !== '') {
 
             $txRegistrationTitle = GeneralUtility::makeInstance(Title::class);

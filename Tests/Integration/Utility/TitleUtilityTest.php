@@ -4,14 +4,10 @@ namespace RKW\RkwRegistration\Tests\Integration\Utility;
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
-use RKW\RkwRegistration\Utility\RedirectUtility;
-use RKW\RkwRegistration\Utility\RemoteUtility;
-use TYPO3\CMS\Backend\Routing\UriBuilder;
+use RKW\RkwRegistration\Domain\Repository\TitleRepository;
+use RKW\RkwRegistration\Utility\TitleUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -26,24 +22,29 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * The TYPO3 project - inspiring people to share!
  */
 /**
- * RemoteUtilityTest
+ * TitleUtilityTest
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class RemoteUtilityTest extends FunctionalTestCase
+class TitleUtilityTest extends FunctionalTestCase
 {
     /**
      * @const
      */
-    const FIXTURE_PATH = __DIR__ . '/RemoteUtilityTest/Fixtures';
+    const FIXTURE_PATH = __DIR__ . '/TitleUtilityTest/Fixtures';
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManager
      */
     private $objectManager = null;
+
+    /**
+     * @var \RKW\RkwRegistration\Domain\Repository\TitleRepository
+     */
+    private $titleRepository = null;
 
     /**
      * @var string[]
@@ -73,7 +74,11 @@ class RemoteUtilityTest extends FunctionalTestCase
             ]
         );
 
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
+        // Repository
+        $this->titleRepository = $this->objectManager->get(TitleRepository::class);
 
     }
 
@@ -81,20 +86,53 @@ class RemoteUtilityTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getIpReturnsIt ()
+    public function extractTxRegistrationTitleAddsNotExistingTitle ()
     {
         /**
          * Scenario:
          *
-         * When an IP is read out
-         * An IP is returned
+         * Given is a title
+         * When the function is called
+         * Then a new title is created and added to the database
          */
 
-        /** @var RemoteUtility $utility */
-        $utility = GeneralUtility::makeInstance(RemoteUtility::class);
-        $ipAddress = $utility::getIp();
+        $someTitle = 'Master of the Universe';
 
-        static::assertEquals('127.0.0.1', $ipAddress);
+        TitleUtility::extractTxRegistrationTitle($someTitle);
+
+        $result = $this->titleRepository->findByName($someTitle)->getFirst();
+
+        static::assertEquals($someTitle, $result->getName());
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function extractTxRegistrationTitleWithExistingTitle ()
+    {
+        /**
+         * Scenario:
+         *
+         * @existing Title
+         *
+         * Given is an already existing title
+         * When the function is called
+         * Then no new title is created
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
+
+        $alreadyExistingTitle = $this->titleRepository->findByIdentifier(1);
+
+        $countBeforeFunction = $this->titleRepository->findByName($alreadyExistingTitle->getName())->count();
+
+        TitleUtility::extractTxRegistrationTitle($alreadyExistingTitle->getName());
+
+        $countAfterFunction = $this->titleRepository->findByName($alreadyExistingTitle->getName())->count();
+
+        static::assertEquals($countBeforeFunction, $countAfterFunction);
     }
 
 

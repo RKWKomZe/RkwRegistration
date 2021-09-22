@@ -114,8 +114,6 @@ class RegisterGuestUserServiceTest extends FunctionalTestCase
          * Then some basic data are added to the new created GuestUser
          */
 
-        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
-
         // create new GuestUser
         /** @var GuestUser $guestUser */
         $guestUser = GeneralUtility::makeInstance(GuestUser::class);
