@@ -15,6 +15,9 @@ namespace RKW\RkwRegistration\Domain\Model;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+
 /**
  * Registration
  *
@@ -227,22 +230,17 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         if ($this->data) {
             return unserialize($this->data);
         }
-
-        //===
-
         return null;
-        //===
     }
 
     /**
      * Sets the data
      *
-     * @param mixed $data
+     * @param \RKW\RkwEvents\Domain\Model\EventReservation $data
      * @return void
      */
     public function setData($data)
     {
-
         if ($data) {
             $this->data = serialize($data);
         }

@@ -94,8 +94,10 @@ class RegisterFrontendUserService extends AbstractService
      */
     public function setBasicData()
     {
+        $settings = $this->getSettings();
+
         if (!$this->frontendUser->getPid()) {
-            $this->frontendUser->setPid(intval($this->settings['users']['storagePid']));
+            $this->frontendUser->setPid(intval($settings['users']['storagePid']));
         }
 
         if (!$this->frontendUser->getCrdate()) {
@@ -104,9 +106,9 @@ class RegisterFrontendUserService extends AbstractService
 
         // set languageKey
         if (!$this->frontendUser->getTxRkwregistrationLanguageKey()
-            && $this->settings['users']['languageKeyOnRegister']
+            && $settings['users']['languageKeyOnRegister']
         ) {
-            $this->frontendUser->setTxRkwregistrationLanguageKey($this->settings['users']['languageKeyOnRegister']);
+            $this->frontendUser->setTxRkwregistrationLanguageKey($settings['users']['languageKeyOnRegister']);
         }
 
         $this->frontendUser->setTxRkwregistrationRegisterRemoteIp(RemoteUtility::getIp());
@@ -153,6 +155,7 @@ class RegisterFrontendUserService extends AbstractService
                 }
             }
         } else {
+            // this function should never disable an already existing user
             $this->frontendUser->setDisable(1);
 
             // set opt-in lifetime

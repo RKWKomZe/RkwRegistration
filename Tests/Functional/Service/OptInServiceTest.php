@@ -491,7 +491,8 @@ class OptInServiceTest extends FunctionalTestCase
         $result = $this->optInService->register(['email' => $existingFrontendUser->getEmail()]);
 
         static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
-        // still enabled. Is a not unimportant check, because new user would be disabled by default
+
+        // still enabled. It's not an unimportant check, because new user would be disabled by default
         static::assertEquals(0, $result->getDisable());
 
         // still the same UID

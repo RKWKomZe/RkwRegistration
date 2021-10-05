@@ -445,6 +445,7 @@ class OptInService extends AbstractService
         // this may also be the case for logged in users without valid email (e.g. when registered via Facebook or Twitter) !!!
         /** @var FrontendUserRepository $frontendUserRepository */
         $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
+
         if ($frontendUserDatabase = $frontendUserRepository->findOneByEmailOrUsernameInactive($frontendUser->getUsername())) {
 
             // re-initialize service with database object
@@ -478,15 +479,19 @@ class OptInService extends AbstractService
                 $signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_OPTIN_EXISTING_USER . ucfirst($category), array($frontendUserDatabase, $registration));
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-In for existing user "%s" (id=%s, category=%s) successfully generated.', strtolower($frontendUserDatabase->getUsername()), $frontendUserDatabase->getUid(), $category));
 
-                // hint: This is more important than it looks. This returns a real existing FrontendUser. If you would remove
-                // this line a new created FrontendUser-Instance from above would returned at the end of this function
-                // (which is disabled by default! @see convertArrayToObject)
-                $frontendUser = $frontendUserDatabase;
-            } else {
-                $registerFrontendUserService->setClearanceAndLifetime($enable);
-                $frontendUser = $registerFrontendUserService->getFrontendUser();
             }
 
+            // exclude already persistent user which are already enabled
+            if (
+                !$registerFrontendUserService->getFrontendUser()->_isNew()
+                && $registerFrontendUserService->getFrontendUser()->getDisable()
+            ) {
+                $registerFrontendUserService->setClearanceAndLifetime($enable);
+            }
+            // hint: This is more important than it looks. This returns the real existing FrontendUser. If you would remove
+            // this line a new created FrontendUser-Instance from above would returned at the end of this function
+            // (which is disabled by default! @see convertArrayToObject)
+            $frontendUser = $registerFrontendUserService->getFrontendUser();
 
             // if user does not exist yet, we need some more data to be set!
         } else {
@@ -511,7 +516,6 @@ class OptInService extends AbstractService
                 $persistenceManager->persistAll();
 
             } else {
-
                 // add registration
                 $registration = $registrationRepository->newOptIn($frontendUser, $additionalData, $category, $this->settings['users']['daysForOptIn']);
                 // add privacy opt-in for non-existing user

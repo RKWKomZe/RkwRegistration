@@ -80,7 +80,7 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
     {
 
         parent::setUp();
-        $this->importDataSet(__DIR__ . '/RegisterFrontendUserServiceTest/Fixtures/Database/Global.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Global.xml');
 
         $this->setUpFrontendRootPage(
             1,
@@ -134,7 +134,6 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
         $this->objectManager->get(RegisterFrontendUserService::class, $frontendUser);
 
         // AFTER
-
         // frontendUser is not persisted yet
         static::assertNull($frontendUser->getUid());
         // other stats
