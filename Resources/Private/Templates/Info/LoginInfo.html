@@ -7,6 +7,7 @@
     <f:section name="main">
 
         <template class="ajax" id="tx-rkwregistration-login-info-ajax"></template>
+        
         <f:comment><!-- only do an ajax-call if fe-cookie is set. This is to reduce requests to the server--></f:comment>
         <script type="text/javascript">
             var txRkwRegistrationAjaxUrl = "{f:uri.action(action:'loginInfo', absolute:'1', additionalParams:'{rkw_ajax : \'{key: ajaxHelper.key, cid: ajaxHelper.contentUid, idl: \\\'1\\\'}\'}') -> f:format.raw()}";
@@ -20,19 +21,23 @@
                 <f:if condition="{ajaxHelper.isAjaxCall}">
                     <f:if condition="{frontendUser}">
                         <f:then>
-                            <f:if condition="{frontendUser.lastName}">
-                                <script>
-                                    jQuery('#tx-rkwregistration-username').html('<f:format.crop maxCharacters="15" respectWordBoundaries="false">{frontendUser.lastName}</f:format.crop>');
-                                </script>
-                            </f:if>
                             <script>
-                                  jQuery('.tx-rkwregistration-login-class').addClass('is-logged-in');
-                                  jQuery('.tx-rkwregistration-login-text').html('{settings.users.loginText}');
+                                function txRkwRegistrationSetLoginInfo() {
+                                    <f:if condition="{frontendUser.lastName}">
+                                        jQuery('#tx-rkwregistration-username').html('<f:format.crop maxCharacters="15" respectWordBoundaries="false">{frontendUser.lastName}</f:format.crop>');
+                                    </f:if>
+                                    jQuery('.tx-rkwregistration-login-class').addClass('is-logged-in');
+                                    jQuery('.tx-rkwregistration-login-text').html('{settings.users.loginText}');
+                                }
+                                txRkwRegistrationSetLoginInfo();
                             </script>
                         </f:then>
                         <f:else>
                             <script>
-                                jQuery('.tx-rkwregistration-login-class').addClass('is-logged-out');
+                                function txRkwRegistrationSetLoginInfo() {
+                                    jQuery('.tx-rkwregistration-login-class').addClass('is-logged-out');
+                                }
+                                txRkwRegistrationSetLoginInfo();
                             </script>
                         </f:else>
                     </f:if>
