@@ -585,7 +585,6 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
 
             // Signal for e.g. E-Mails or other extensions
             $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_DELETING_USER . ucfirst($category), array($frontendUser));
-
             $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully logged out and deleted user "%s".', strtolower($frontendUser->getUsername())));
 
             return true;
