@@ -1,7 +1,12 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version='1.0' encoding='utf-8' standalone='yes'?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de"  datatype="plaintext" original="messages" date="2014-06-12T13:49:26Z" product-name="rkw_registration">
-		<header/>
+	<file source-language="en" datatype="plaintext" original="messages" product-name="rkw_registration" target-language="de" date="2014-06-12T13:49:26Z">
+		<header>
+      <phase-group>
+        <phase tool-id="lokalize-22.03.70" contact-name="Melanie" phase-name="approval-1" process-name="approval" contact-email="berberich@rkw.de" date="2022-02-11"/>
+      </phase-group>
+      <tool tool-id="lokalize-22.03.70" tool-version="22.03.70" tool-name="Lokalize"/>
+    </header>
 		<body>
 
             <!-- tx_rkwregistration_domain_model_frontenduser -->
@@ -294,9 +299,9 @@
 
 
 
-            <trans-unit id="validator.email_alreadyassigned">
+            <trans-unit id="validator.email_alreadyassigned" approved="yes">
 				<source>Email address is already in use. Please choose another.</source>
-                <target>Hm, offenbar wird die angegebene E-Mail-Adresse bereits von einem anderen registrierten Nutzer verwendet. Bitte wählen Sie eine andere E-Mail-Adresse.</target>
+                <target state="signed-off" phase-name="approval-1">Hm, offenbar wird die angegebene E-Mail-Adresse bereits von einer anderen Person verwendet. Bitte wählen Sie eine andere E-Mail-Adresse.</target>
 			</trans-unit>
 			<trans-unit id="validator.email_invalid">
 				<source>Specified email address is not valid.</source>
@@ -338,9 +343,9 @@
 
 
             <!-- Registration Controller -->
-            <trans-unit id="registrationController.error.user_already_exists">
+            <trans-unit id="registrationController.error.user_already_exists" approved="yes">
 				<source>Email address is already in use. Please choose another.</source>
-                <target>Hm, offenbar wird die angegebene E-Mail-Adresse bereits von einem anderen Nutzer verwendet. Sind Sie vielleicht schon registriert? Dann versuchen Sie es doch mal 'Passwort vergessen'.</target>
+                <target state="signed-off" phase-name="approval-1">Hm, offenbar wird die angegebene E-Mail-Adresse bereits von einer anderen Person verwendet. Sind Sie vielleicht schon registriert? Dann versuchen Sie es doch mal 'Passwort vergessen'.</target>
 			</trans-unit>
             <trans-unit id="registrationController.message.registration_successfull">
                 <source>You have been successfully registered. Your password has been sent to you via e-mail.</source>
@@ -486,17 +491,17 @@
                 <source>Congratulations! You have been successfully added to our service.</source>
                 <target>Das war ja einfach! Wir haben Sie für den gewünschten Service registriert und wünschen Ihnen viel Spaß bei der Benutzung!</target>
             </trans-unit>
-            <trans-unit id="serviceController.message.service_optin_successfull">
+            <trans-unit id="serviceController.message.service_optin_successfull" approved="yes">
                 <source>The user has been successfully added to the requested service.</source>
-                <target>Das hat geklappt! Der Nutzer wurde erfolgreich für den gewünschten Service freigeschaltet. Eine entsprechende Info ist per E-Mail an den Nutzer unterwegs.</target>
+                <target state="signed-off" phase-name="approval-1">Das hat geklappt! Das Nutzendenkonto wurde erfolgreich für den gewünschten Service freigeschaltet. Eine entsprechende Info ist per E-Mail an die Person unterwegs.</target>
             </trans-unit>
-            <trans-unit id="serviceController.message.service_optin_canceled">
+            <trans-unit id="serviceController.message.service_optin_canceled" approved="no">
                 <source>The service opt-in request for the user has been denied.</source>
-                <target>Schade... Der Nutzer wurde erfolgreich abgelehnt und kann den gewünschten Service nun leider nicht nutzen. Eine entsprechende Info ist per E-Mail an den Nutzer unterwegs.</target>
+                <target state="final" phase-name="approval-1">Schade... Das Nutzendenkonto wurde erfolgreich abgelehnt und kann den gewünschten Service nun leider nicht nutzen. Eine entsprechende Info ist per E-Mail an die Person unterwegs.</target>
             </trans-unit>
-            <trans-unit id="serviceController.error.service_optin_error">
+            <trans-unit id="serviceController.error.service_optin_error" approved="no">
                 <source>An error occurred. Please try again.</source>
-                <target>Da ist etwas schief gelaufen. Haben Sie den Nutzer vielleicht schon freigeschaltet oder abgelehnt?</target>
+                <target state="final" phase-name="approval-1">Da ist etwas schief gelaufen. Haben Sie das Nutzendenkonto vielleicht schon freigeschaltet oder abgelehnt?</target>
             </trans-unit>
             <trans-unit id="serviceController.message.service_delete">
                 <source>Successfully deleted service.</source>
@@ -548,9 +553,9 @@
                 <source>Check profile now!</source>
                 <target>Jetzt Profildaten prüfen</target>
             </trans-unit>
-            <trans-unit id="templates_service_list.adminRequestPending">
+            <trans-unit id="templates_service_list.adminRequestPending" approved="no">
                 <source>Admin request pending.</source>
-                <target>Bestätigung durch einen Admin steht noch aus.</target>
+                <target state="final" phase-name="approval-1">Bestätigung durch unser Support Team steht noch aus.</target>
             </trans-unit>
             <trans-unit id="templates_service_list.serviceComingSoon">
                 <source>from:</source>
@@ -791,21 +796,21 @@
                 <source>. This consent can be revoked at any time.</source>
                 <target>gelesen und bin damit einverstanden. Diese Einwilligung kann jederzeit widerrufen werden.</target>
             </trans-unit>
-            <trans-unit id="templates_registration_privacy_registration.firstPart">
+            <trans-unit id="templates_registration_privacy_registration.firstPart" approved="no">
                 <source>Yes, I agree that RKW uses my personal data to create a free user account. I have also read the extended notes in the</source>
-                <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten zur Erzeugung eines kostenlosen Nutzerkontos verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
+                <target state="final" phase-name="approval-1">Ja, ich stimme zu, dass das RKW meine persönlichen Daten zur Erzeugung eines kostenlosen Nutzendenkontos verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
             </trans-unit>
-            <trans-unit id="templates_registration_privacy_events.firstPart">
+            <trans-unit id="templates_registration_privacy_events.firstPart" approved="no">
                 <source>Yes, I agree that RKW uses my personal data and the personal data of the other participants listed below for my/our participation in the event, as well as for event follow-up and to create a free user account. I have also read the extended notes in the</source>
-                <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten und die persönlichen Daten der unten genannten weiteren Teilnehmer für meine/unsere Teilnahme an der Veranstaltung, sowie zur Veranstaltungsnachbereitung und zur Erzeugung eines kostenlosen Nutzerkontos verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
+                <target state="final" phase-name="approval-1">Ja, ich stimme zu, dass das RKW meine persönlichen Daten und die persönlichen Daten der unten genannten weiteren Teilnehmenden für meine/unsere Teilnahme an der Veranstaltung, sowie zur Veranstaltungsnachbereitung und zur Erzeugung eines kostenlosen Nutzendenkontos verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
             </trans-unit>
-            <trans-unit id="templates_registration_privacy_order.firstPart">
+            <trans-unit id="templates_registration_privacy_order.firstPart" approved="no">
                 <source>Yes, I agree that RKW uses my personal data to process my order and to create a free user account. Furthermore, I have read and agree to the extended notes in the</source>
-                <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten für die Abwicklung der Bestellung, sowie zur Erzeugung eines kostenlosen Nutzerkontos verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
+                <target state="final" phase-name="approval-1">Ja, ich stimme zu, dass das RKW meine persönlichen Daten für die Abwicklung der Bestellung, sowie zur Erzeugung eines kostenlosen Nutzendenkontos verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
             </trans-unit>
-            <trans-unit id="templates_registration_privacy_newsletter.firstPart">
+            <trans-unit id="templates_registration_privacy_newsletter.firstPart" approved="no">
                 <source>Yes, I agree that the RKW uses my personal data for the newsletter dispatch, as well as for the production of a free user account. Furthermore I have read the extended hints in the</source>
-                <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten für den Newsletterversand, sowie zur Erzeugung eines kostenlosen Nutzerkontos verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
+                <target state="final" phase-name="approval-1">Ja, ich stimme zu, dass das RKW meine persönlichen Daten für den Newsletterversand, sowie zur Erzeugung eines kostenlosen Nutzendenkontos verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
             </trans-unit>
             <trans-unit id="templates_registration_privacy_survey.firstPart">
                 <source>Yes, I agree that the RKW will use my personal data to contact me. Furthermore, I have read the extended information in the</source>
@@ -857,9 +862,9 @@
                 <source>Your personal login is</source>
                 <target>Ihr persönlicher Login lautet</target>
             </trans-unit>
-            <trans-unit id="templates_email_registerOptInSuccess.username">
+            <trans-unit id="templates_email_registerOptInSuccess.username" approved="no">
                 <source>Username</source>
-                <target>Nutzername</target>
+                <target state="final" phase-name="approval-1">Nutzendenname</target>
             </trans-unit>
             <trans-unit id="templates_email_registerOptInSuccess.password">
                 <source>Password</source>
@@ -901,17 +906,17 @@
                 <source>Hello %s,</source>
                 <target>Hallo %s,</target>
             </trans-unit>
-            <trans-unit id="templates_email_serviceOptInAdminRequest.text1">
+            <trans-unit id="templates_email_serviceOptInAdminRequest.text1" approved="no">
                 <source>the user %s %s wants to be activated for the following services:.</source>
-                <target>der Nutzer %s %s möchte für die folgenden RKW Services freigeschaltet werden:</target>
+                <target state="final" phase-name="approval-1">der oder die Nutzende %s %s möchte für die folgenden RKW Services freigeschaltet werden:</target>
             </trans-unit>
             <trans-unit id="templates_email_serviceOptInAdminRequest.textOptIn">
                 <source>Click here to activate him for the services:</source>
                 <target>Klicken Sie hier, um Ihn für die obenstehenden RKW Services freizuschalten:</target>
             </trans-unit>
-            <trans-unit id="templates_email_serviceOptInAdminRequest.textOptInLinkLabel">
+            <trans-unit id="templates_email_serviceOptInAdminRequest.textOptInLinkLabel" approved="no">
                 <source>Activate User</source>
-                <target>Nutzer freischalten</target>
+                <target state="final" phase-name="approval-1">Nutzendenkonto freischalten</target>
             </trans-unit>
             <trans-unit id="templates_email_serviceOptInAdminRequest.textOptOut">
                 <source>Click here to cancel activation for the services:</source>
