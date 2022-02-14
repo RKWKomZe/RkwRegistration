@@ -26,7 +26,7 @@
             <!-- tx_rkwregistration_domain_model_frontenduser -->
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser">
                 <source>RKW Registration: Frontend-User</source>
-                <target>RKW Registration: Frontend-Nutzer</target>
+                <target>RKW Registration: Frontend-Nutzende</target>
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.socialmedia">
                 <source>Social Media</source>
@@ -80,7 +80,7 @@
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_language_key">
                 <source>Language Key</source>
-                <target>Sprach-Code (z.B. für E-Mails an den Nutzer)</target>
+                <target>Sprach-Code (z.B. für E-Mails an den Nutzenden)</target>
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title">
                 <source>Title</source>
@@ -92,11 +92,11 @@
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser">
 				<source>RKW WePstra: Anonymous User</source>
-				<target>RKW WePstra: Anonymer Nutzer</target>
+				<target>RKW WePstra: Anonymer Nutzenden</target>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_is_anonymous">
 				<source>Anonymous User</source>
-				<target>Anonymer Nutzer</target>
+				<target>Anonymer Nutzender</target>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_privacy">
 				<source>Consent to data protection</source>
@@ -166,7 +166,7 @@
             </trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_privacy.frontend_user">
 				<source>FrontendUser</source>
-				<target>Frontend-Nutzer</target>
+				<target>Frontend-Nutzende</target>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_privacy.registration">
 				<source>Registration</source>
