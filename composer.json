@@ -27,8 +27,8 @@
         "ext-openssl" : "*",
         "typo3/cms-core": "~7.6.0 || ~8.7.0",
         "rkw/rkw-basics": "~8.7.2",
-        "rkw/rkw-mailer": "~8.7.1",
-        "rkw/rkw-ajax": "~8.7.51"
+        "rkw/rkw-mailer": "~8.7.1 || ~9.5.0",
+        "rkw/rkw-ajax": "~8.7.58"
     },
     "autoload": {
         "psr-4": {
