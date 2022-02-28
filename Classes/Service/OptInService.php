@@ -2,6 +2,7 @@
 
 namespace RKW\RkwRegistration\Service;
 
+use RKW\RkwRegistration\DataProtection\PrivacyHandler;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Domain\Model\Registration;
@@ -229,7 +230,7 @@ class OptInService extends AbstractService
 
             // add privacy for frontendUser
             if ($request) {
-                PrivacyService::addPrivacyDataForOptInFinal($request, $frontendUser, $register, ($register->getCategory() ? 'accepted opt-in for ' . $register->getCategory() : 'accepted opt-in'));
+                PrivacyHandler::addPrivacyDataForOptInFinal($request, $frontendUser, $register, ($register->getCategory() ? 'accepted opt-in for ' . $register->getCategory() : 'accepted opt-in'));
             }
 
             // delete registration
@@ -336,7 +337,7 @@ class OptInService extends AbstractService
 
                 // add privacy for user
                 if ($request) {
-                    PrivacyService::addPrivacyDataForOptInFinal($request, $frontendUser, $register, ($category ? 'accepted opt-in for ' . $category : 'accepted opt-in'));
+                    PrivacyHandler::addPrivacyDataForOptInFinal($request, $frontendUser, $register, ($category ? 'accepted opt-in for ' . $category : 'accepted opt-in'));
                 }
 
                 // delete registration
@@ -383,18 +384,18 @@ class OptInService extends AbstractService
      * Registers new FE-User - or sends another opt-in to existing user
      *
      * @param FrontendUser|array $userData A FrontendUser object or an array with equivalent key names to frontendUser properties. E.g. "mail" oder "username"
-     * @param boolean $enable If a new user should be enabled or not
-     * @param mixed $additionalData Could be an array or a whole object. Everything you need in relation of a registration of something
-     * @param string $category To identify a specific context. Normally used to identify an external extension which is using this function
-     * @param Request $request For privacy purpose to identify the given context
+     * @param boolean            $enable If a new user should be enabled or not
+     * @param mixed              $additionalData Could be an array or a whole object. Everything you need in relation of a registration of something
+     * @param null               $category To identify a specific context. Normally used to identify an external extension which is using this function
+     * @param Request|null       $request For privacy purpose to identify the given context
      * @return FrontendUser
      * @throws Exception
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function register($userData, $enable = false, $additionalData = null, $category = null, Request $request = null)
     {
@@ -458,7 +459,7 @@ class OptInService extends AbstractService
 
                 // add privacy for existing user
                 if ($request) {
-                    PrivacyService::addPrivacyDataForOptIn($request, $frontendUserDatabase, $registration, ($category ? 'new opt-in for existing user for ' . $category : 'new opt-in for existing user'));
+                    PrivacyHandler::addPrivacyDataForOptIn($request, $frontendUserDatabase, $registration, ($category ? 'new opt-in for existing user for ' . $category : 'new opt-in for existing user'));
                 }
                 $persistenceManager->persistAll();
 
@@ -511,7 +512,7 @@ class OptInService extends AbstractService
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully registered and enabled user "%s".', strtolower($frontendUser->getUsername())));
                 // add privacy opt-in for non-existing user
                 if ($request) {
-                    PrivacyService::addPrivacyData($request, $frontendUser, $additionalData, ($category ? 'new user without opt-in for ' . $category : 'new user without opt-in'));
+                    PrivacyHandler::addPrivacyData($request, $frontendUser, $additionalData, ($category ? 'new user without opt-in for ' . $category : 'new user without opt-in'));
                 }
                 $persistenceManager->persistAll();
 
@@ -520,7 +521,7 @@ class OptInService extends AbstractService
                 $registration = $registrationRepository->newOptIn($frontendUser, $additionalData, $category, $this->settings['users']['daysForOptIn']);
                 // add privacy opt-in for non-existing user
                 if ($request) {
-                    PrivacyService::addPrivacyDataForOptIn($request, $frontendUser, $registration, ($category ? 'new opt-in for non-existing user for ' . $category : 'new opt-in for non-existing user'));
+                    PrivacyHandler::addPrivacyDataForOptIn($request, $frontendUser, $registration, ($category ? 'new opt-in for non-existing user for ' . $category : 'new opt-in for non-existing user'));
                 }
                 $persistenceManager->persistAll();
                 // Signal for e.g. E-Mails
@@ -654,10 +655,10 @@ class OptInService extends AbstractService
             $settings = $this->getSettings();
 
             if ($frontendUser instanceof GuestUser) {
-                $userGroups = $settings['users']['groupsOnRegisterGuest'];
+                $userGroups = $settings['users']['guest']['groupsOnRegister'];
 
-                if (!$settings['users']['groupsOnRegisterGuest']) {
-                    $this->getLogger()->log(LogLevel::ERROR, sprintf('Login for guest user "%s" failed. Reason: No groupsOnRegisterGuest is defined in TypoScript.', strtolower($frontendUser->getUsername())));
+                if (!$settings['users']['guest']['groupsOnRegister']) {
+                    $this->getLogger()->log(LogLevel::ERROR, sprintf('Login for guest user "%s" failed. Reason: No guest.groupsOnRegister is defined in TypoScript.', strtolower($frontendUser->getUsername())));
                 }
             } else {
                 $userGroups = $settings['users']['groupsOnRegister'];
@@ -864,10 +865,10 @@ class OptInService extends AbstractService
 
         // set lifetime
         if (
-            intval($settings['users']['lifetimeGuest'])
+            intval($settings['users']['guest']['lifetime'])
             || intval($lifetime)
         ) {
-            return time() + ($lifetime ? $lifetime : intval($settings['users']['lifetimeGuest']));
+            return time() + ($lifetime ? $lifetime : intval($settings['users']['guest']['lifetime']));
         }
 
         // default would return 0 - means: there is no endtime

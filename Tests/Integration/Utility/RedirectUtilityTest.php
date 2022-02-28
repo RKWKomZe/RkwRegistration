@@ -60,7 +60,7 @@ class RedirectUtilityTest extends FunctionalTestCase
     protected function setUp()
     {
         // define realUrl-config
-        define('TX_REALURL_AUTOCONF_FILE', 'typo3conf/ext/rkw_mailer/Tests/Integration/ViewHelpers/Frontend/LinkViewHelperTest/Fixtures/RealUrlConfiguration.php');
+        define('TX_REALURL_AUTOCONF_FILE', 'typo3conf/ext/rkw_registration/Tests/Integration/Utility/RedirectUtilityTest/Fixtures/RealUrlConfiguration.php');
 
         parent::setUp();
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Global.xml');
@@ -95,29 +95,6 @@ class RedirectUtilityTest extends FunctionalTestCase
     }
 
 
-    /**
-     * @test
-     */
-    public function urlToPageUidReturnsUriToGivenPage ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given is a page and it's UID
-         * When a link is created
-         * An URI to the given page is returned
-         */
-
-        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
-
-        /** @var RedirectUtility $utility */
-        $utility = GeneralUtility::makeInstance(RedirectUtility::class);
-        $url = $utility::urlToPageUid(100);
-
-        static::assertEquals('http://rkw-kompetenzzentrum.rkw.local/testpage/', $url);
-    }
-
-
 
     /**
      * @test
@@ -131,7 +108,6 @@ class RedirectUtilityTest extends FunctionalTestCase
          * When a link is created
          * An URI to the given page is returned
          */
-
 
         /** @var RedirectUtility $utility */
         $utility = GeneralUtility::makeInstance(RedirectUtility::class);
@@ -241,71 +217,25 @@ class RedirectUtilityTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getCurrentDomainNameReturnsIt ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given is nothing special
-         * When the function is called
-         * The current domain name is returned
-         */
-
-        /** @var RedirectUtility $utility */
-        $utility = GeneralUtility::makeInstance(RedirectUtility::class);
-        $result = $utility::getCurrentDomainName();
-
-        static::assertEquals('rkw-kompetenzzentrum.rkw.local', $result);
-    }
-
-
-
-    /**
-     * @test
-     */
-    public function getGuestRedirectUrlWithSysDomainEntry ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given is a page and it's UID in database
-         * When a link is created
-         * An URI to the given page is returned
-         */
-
-
-        // Problem: If we set the sys_domain entry to "Check20.xml", the link generation does not work:
-        // Result: http://var/www/rkw-website-composer/vendor/bin/index.php?id=50'
-        // Impact: We can't test several cases :-(
-
-        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
-
-        /** @var RedirectUtility $utility */
-        $utility = GeneralUtility::makeInstance(RedirectUtility::class);
-        $url = $utility::getGuestRedirectUrl();
-
-        static::assertEquals('http://rkw-kompetenzzentrum.rkw.local/guestpage/', $url);
-    }
-
-
-
-    /**
-     * @test
-     */
     public function getGuestRedirectUrlWithTypoScriptEntry ()
     {
         /**
          * Scenario:
          *
          * Given is a page and it's UID in database
-         * Given is special TypoScript value "users.guestRedirectPid = 50"
+         * Given is special TypoScript value "users.guestRedirectPid = 50" (FlexForm override)
          * When a link is created
          * An URI to the given page is returned
          */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
+
+        /*
+
+        // Does not work anymore by any reason. The following lines does not override the initial setUp() function
 
         // re-initialize for special TypoScript settings
         $this->setUpFrontendRootPage(
-            1,
+            50,
             [
                 'EXT:realurl/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
@@ -316,10 +246,11 @@ class RedirectUtilityTest extends FunctionalTestCase
             ]
         );
 
-        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
+        */
 
         /** @var RedirectUtility $utility */
-        $utility = GeneralUtility::makeInstance(RedirectUtility::class);
+        $utility = $this->objectManager->get(RedirectUtility::class);
+
         $url = $utility::getGuestRedirectUrl();
 
         static::assertEquals('http://rkw-kompetenzzentrum.rkw.local/guestpage/', $url);

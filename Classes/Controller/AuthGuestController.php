@@ -50,6 +50,9 @@ class AuthGuestController extends AbstractController
      */
     public function loginAction()
     {
+
+        DebuggerUtility::var_dump(RedirectUtility::urlToPageUid(1)); exit;
+
         // a) ERROR: send back already logged in user. Nothing to do here
         if ($this->getFrontendUser()) {
             $this->addFlashMessage(
@@ -161,7 +164,7 @@ class AuthGuestController extends AbstractController
                 'registrationController.message.guest_link',
                 $this->extensionName,
                 array(
-                    intval(intval($this->settings['users']['lifetimeGuest']) / 60 / 60 / 24),
+                    intval(intval($this->settings['users']['guest']['lifetime']) / 60 / 60 / 24),
                     $url,
                 )
             )

@@ -5,8 +5,6 @@
         <uid>100</uid>
         <pid>1</pid>
         <title>Testpage</title>
-        <tx_rkwbasics_teaser_text />
-        <tx_rkwbasics_information />
         <doktype>1</doktype>
         <perms_everybody>15</perms_everybody>
     </pages>

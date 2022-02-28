@@ -40,8 +40,6 @@ plugin.tx_rkwregistration {
         activateTwitterLogin = 0
 
         users {
-            # cat=plugin.tx_rkwregistration//a; type=string; label="Mein RKW" baseUrl (only necessary on different top-domain)
-            #myRkwSysDomain = 57
 
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=Storage Pid
 			storagePid =
@@ -76,11 +74,11 @@ plugin.tx_rkwregistration {
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of privacy & conditions
 			privacyPid =
 
+            # cat=plugin.tx_rkwregistration//a; type=string; label=Anonymize after days
+            anonymizeAfterDays =
+
 			# cat=plugin.tx_rkwregistration//a; type=string; label=Groups a user is added to when registering
 			groupsOnRegister =
-
-			# cat=plugin.tx_rkwregistration//a; type=string; label=Groups a user is added to when registering as guest
-			groupsOnRegisterGuest =
 
 			# cat=plugin.tx_rkwregistration//a; type=string; label=Language-key on registering (default:default)
 			languageKeyOnRegister =
@@ -99,10 +97,17 @@ plugin.tx_rkwregistration {
             lifetimeAnonymous = 7776000
 
             # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered guest users (default = 7776000 = 90 days)
-            lifetimeGuest = 7776000
+            #lifetimeGuest = 7776000
 
             # cat=plugin.tx_rkwregistration//a; type=string; label=Login text
             loginText = Logged in
+
+            guest {
+                # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered guest users (default = 7776000 = 90 days)
+                lifetime = 7776000
+                # cat=plugin.tx_rkwregistration//a; type=string; label=Groups a user is added to when registering as guest
+                groupsOnRegister =
+            }
 
             passwordSettings {
                 # cat=plugin.tx_rkwregistration//a; type=integer; label=Minimum password length (default = 8)

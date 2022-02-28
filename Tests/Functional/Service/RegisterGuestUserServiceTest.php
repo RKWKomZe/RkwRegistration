@@ -3,23 +3,11 @@ namespace RKW\RkwRegistration\Tests\Functional\Service;
 
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
-use RKW\RkwEvents\Domain\Model\Event;
-use RKW\RkwEvents\Domain\Model\EventReservation;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
-use RKW\RkwRegistration\Domain\Model\Registration;
-use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
-use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\GuestUserRepository;
-use RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
-use \RKW\RkwRegistration\Domain\Repository\ServiceRepository;
-use RKW\RkwRegistration\Service\GroupService;
-use RKW\RkwRegistration\Service\PrivacyService;
 use RKW\RkwRegistration\Service\RegisterGuestUserService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.

@@ -19,6 +19,8 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 /**
  * SysDomainRepository
  *
+ * @deprecated We don't want to use this feature anymore
+ *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration

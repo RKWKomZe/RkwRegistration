@@ -13,7 +13,7 @@ use RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
 use \RKW\RkwRegistration\Domain\Repository\ServiceRepository;
 use RKW\RkwRegistration\Service\AuthFrontendUserService;
 use RKW\RkwRegistration\Service\GroupService;
-use RKW\RkwRegistration\Service\PrivacyService;
+use RKW\RkwRegistration\DataProtection\PrivacyHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Object\ObjectManager;

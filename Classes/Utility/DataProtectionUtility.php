@@ -109,7 +109,7 @@ class DataProtectionUtility
 
 
     /**
-     * Anonymizes and encrypts all data of a frontend user that has been deleted x days before
+     * Anonymize and encrypts all data of a frontend user that has been deleted x days before
      *
      * Also includes user-related data if configured
      *

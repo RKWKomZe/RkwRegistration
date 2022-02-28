@@ -226,13 +226,3 @@ CREATE TABLE tx_rkwregistration_domain_model_shippingaddress (
 
 );
 
-
-#
-# Table structure for table 'sys_domain'
-#
-CREATE TABLE sys_domain (
-    tx_rkwregistration_related_sys_domain varchar(255) DEFAULT '' NOT NULL,
-    tx_rkwregistration_page_login varchar(255) DEFAULT '' NOT NULL,
-    tx_rkwregistration_page_logout varchar(255) DEFAULT '' NOT NULL,
-    tx_rkwregistration_page_login_guest varchar(255) DEFAULT '' NOT NULL,
-);

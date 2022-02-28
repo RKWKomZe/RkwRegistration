@@ -143,6 +143,8 @@ class AuthController extends AbstractController
     /**
      * action loginExternal
      *
+     * @deprecated Should now be deprecated (every site get its own login)
+     *
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
@@ -229,21 +231,12 @@ class AuthController extends AbstractController
                     if ($this->settings['users']['anonymousRedirectPid']) {
 
                         /** @var ObjectManager $objectManager */
-                        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-
+                        $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
                         /** @var UriBuilder $uriBuilder */
-                        $uriBuilder = $objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Routing\\UriBuilder');
-
-                        $sysDomain = $this->sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
-                        if (
-                            $sysDomain instanceof SysDomain
-                            && $sysDomain->getTxRkwregistrationPageLoginAnonymous() instanceof Pages
-                        ) {
-                            $targetPageUid = $sysDomain->getTxRkwregistrationPageLoginAnonymous()->getUid();
-                        }
+                        $uriBuilder = $objectManager->get(\TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder::class);
 
                         $redirectUrl = $uriBuilder->reset()
-                            ->setTargetPageUid(intval($this->settings['users']['anonymousRedirectPid'] ? $this->settings['users']['anonymousRedirectPid'] : $targetPageUid))
+                            ->setTargetPageUid(intval($this->settings['users']['anonymousRedirectPid']))
                             ->setCreateAbsoluteUri(true)
                             ->setLinkAccessRestrictedPages(true)
                             ->setUseCacheHash(false)
@@ -415,16 +408,6 @@ class AuthController extends AbstractController
 
             FrontendUserSessionUtility::login($frontendUser);
 
-            // Get SysDomain entry
-            $sysDomain = $this->sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
-
-            if (
-                $sysDomain instanceof SysDomain
-                && $sysDomain->getTxRkwregistrationPageLogin() instanceof Pages
-            ) {
-                $this->redirectToUri(RedirectUtility::urlToPageUid($sysDomain->getTxRkwregistrationPageLogin()->getUid()));
-            }
-
             if ($this->settings['users']['welcomePid']) {
                 $this->redirect('index', 'Registration', null, null, $this->settings['users']['welcomePid']);
             }
@@ -515,15 +498,6 @@ class AuthController extends AbstractController
             )
         );
 
-        // 1. Redirect according to SysDomain entry
-        $sysDomain = $this->sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
-        if (
-            $sysDomain instanceof SysDomain
-            && $sysDomain->getTxRkwregistrationPageLogout() instanceof Pages
-        ) {
-            $this->redirectToUri(RedirectUtility::urlToPageUid($sysDomain->getTxRkwregistrationPageLogout()->getUid()));
-        }
-
         // 2. redirect to login page (including message)
         if ($this->settings['users']['loginPid']) {
             $this->redirect('index', null, null, array('logoutMessage' => 1), $this->settings['users']['loginPid']);
@@ -537,6 +511,8 @@ class AuthController extends AbstractController
     /**
      * action logoutExternal
      * Primarily handles GuestUser. Is forwarding standard FrontendUsers.
+     *
+     * @deprecated Should now be deprecated (every site get its own login)
      *
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException

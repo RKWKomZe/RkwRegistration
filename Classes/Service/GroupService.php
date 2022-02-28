@@ -28,7 +28,7 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 /**
  * Class GroupService
  *
- * This service manage fe_groups, which are a an explicit "Service".
+ * This service manage fe_groups, which are an explicit "Service".
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>

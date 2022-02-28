@@ -104,7 +104,8 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
             }
         }
 
-        // take domain if we are not in production environement
+
+        // take domain if we are not in production environment
         if (getenv('TYPO3_CONTEXT') != 'Production') {
             $checkedUrl = $url;
             self::getLogger()->log(LogLevel::WARNING, sprintf('URL passed as valid due to TYPO3_CONTEXT settings.', $url));
@@ -112,9 +113,9 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
 
 
         if ($checkedUrl) {
-            self::getLogger()->log(LogLevel::INFO, sprintf('URL "%s" is valid for redirecting.', $checkedUrl));
+            self::getLogger()->log(LogLevel::INFO, sprintf('URL "%s" is valid for redirect.', $checkedUrl));
         } else {
-            self::getLogger()->log(LogLevel::WARNING, sprintf('URL "%s" is not valid for redirecting.', $url));
+            self::getLogger()->log(LogLevel::WARNING, sprintf('URL "%s" is not valid for redirect.', $url));
         }
 
         // Avoid forced logout for fe-login-extension, when trying to login immediately after a logout
@@ -146,6 +147,8 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Gives back current Domain
      *
+     * @deprecated Used for fake (sub-)domains. Not longer needed
+     *
      * @return string
      */
     public static function getCurrentDomainName()
@@ -168,24 +171,12 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
         /** @var ObjectManager $objectManager */
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
 
-        $sysDomainRepository = $objectManager->get(SysDomainRepository::class);
-        $sysDomain = $sysDomainRepository->findByDomainName(RedirectUtility::getCurrentDomainName())->getFirst();
-        $targetPageUid = 0;
-        if (
-            $sysDomain instanceof SysDomain
-            && $sysDomain->getTxRkwregistrationPageLoginGuest() instanceof Pages
-        ) {
-            $targetPageUid = $sysDomain->getTxRkwregistrationPageLoginGuest()->getUid();
-        }
+        if ($settings['users']['guestRedirectPid']) {
 
-        if (
-            $targetPageUid
-            || $settings['users']['guestRedirectPid']
-        ) {
             /** @var UriBuilder $uriBuilder */
             $uriBuilder = $objectManager->get(UriBuilder::class);
             $redirectUrl = $uriBuilder->reset()
-                ->setTargetPageUid(intval($settings['users']['guestRedirectPid'] ? $settings['users']['guestRedirectPid'] : $targetPageUid))
+                ->setTargetPageUid(intval($settings['users']['guestRedirectPid']))
                 ->setCreateAbsoluteUri(true)
                 ->setLinkAccessRestrictedPages(true)
                 ->setUseCacheHash(false)

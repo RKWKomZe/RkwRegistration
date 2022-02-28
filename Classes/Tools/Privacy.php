@@ -18,7 +18,7 @@ namespace RKW\RkwRegistration\Tools;
 /**
  * Class Privacy
  *
- * @deprecated This class is deprecated and will be removed soon. Use  RKW\RkwRegistration\Service\PrivacyService instead.
+ * @deprecated This class is deprecated and will be removed soon. Use  RKW\RkwRegistration\DataProtection\Privacy instead.
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
@@ -26,7 +26,7 @@ namespace RKW\RkwRegistration\Tools;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Privacy extends \RKW\RkwRegistration\Service\PrivacyService
+class Privacy extends \RKW\RkwRegistration\DataProtection\PrivacyHandler
 {
     /**
      * FrontendLocalization constructor.

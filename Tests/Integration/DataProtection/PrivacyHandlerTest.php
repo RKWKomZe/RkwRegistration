@@ -1,5 +1,5 @@
 <?php
-namespace RKW\RkwRegistration\Tests\Functional\Service;
+namespace RKW\RkwRegistration\Tests\Integration\DataProtection;
 
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
@@ -12,7 +12,7 @@ use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
 use \RKW\RkwRegistration\Domain\Repository\ServiceRepository;
 use RKW\RkwRegistration\Service\GroupService;
-use RKW\RkwRegistration\Service\PrivacyService;
+use RKW\RkwRegistration\DataProtection\PrivacyHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -31,19 +31,19 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  * The TYPO3 project - inspiring people to share!
  */
 /**
- * PrivacyServiceTest
+ * PrivacyHandlerTest
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class PrivacyServiceTest extends FunctionalTestCase
+class PrivacyHandlerTest extends FunctionalTestCase
 {
     /**
      * @const
      */
-    const FIXTURE_PATH = __DIR__ . '/PrivacyServiceTest/Fixtures';
+    const FIXTURE_PATH = __DIR__ . '/PrivacyHandlerTest/Fixtures';
 
     /**
      * @var string[]
@@ -122,8 +122,8 @@ class PrivacyServiceTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         // Service
-        /** @var PrivacyService $privacyService */
-        $privacyService = $this->objectManager->get(PrivacyService::class);
+        /** @var PrivacyHandler $privacyHandler */
+        $privacyHandler = $this->objectManager->get(PrivacyHandler::class);
 
         // Get FrontendUser
         $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
@@ -139,7 +139,7 @@ class PrivacyServiceTest extends FunctionalTestCase
         $request->setControllerName('SomeController');
 
         /** @var \RKW\RkwRegistration\Domain\Model\Privacy $result */
-        $result = $privacyService->addPrivacyDataForOptIn($request, $frontendUser, $registration, 'hello');
+        $result = $privacyHandler->addPrivacyDataForOptIn($request, $frontendUser, $registration, 'hello');
 
         static::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
         // the frontendUser is set
@@ -165,8 +165,8 @@ class PrivacyServiceTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
 
         // Service
-        /** @var PrivacyService $privacyService */
-        $privacyService = $this->objectManager->get(PrivacyService::class);
+        /** @var PrivacyHandler $Privacy */
+        $Privacy = $this->objectManager->get(PrivacyHandler::class);
 
         // Get FrontendUser
         $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
@@ -184,7 +184,7 @@ class PrivacyServiceTest extends FunctionalTestCase
         static::expectExceptionCode(0);
 
         /** @var \RKW\RkwRegistration\Domain\Model\Privacy $result */
-        $privacyService->addPrivacyDataForOptIn($request, $frontendUser, $registration, 'hello');
+        $Privacy->addPrivacyDataForOptIn($request, $frontendUser, $registration, 'hello');
     }
 
 
@@ -205,8 +205,8 @@ class PrivacyServiceTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         // Service
-        /** @var PrivacyService $privacyService */
-        $privacyService = $this->objectManager->get(PrivacyService::class);
+        /** @var PrivacyHandler $privacyHandler */
+        $privacyHandler = $this->objectManager->get(PrivacyHandler::class);
 
         // Get FrontendUser
         $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
@@ -227,7 +227,7 @@ class PrivacyServiceTest extends FunctionalTestCase
         $request->setControllerName('SomeController');
 
         /** @var \RKW\RkwRegistration\Domain\Model\Privacy $result */
-        $result = $privacyService->addPrivacyDataForOptInFinal($request, $frontendUser, $registration, 'hello');
+        $result = $privacyHandler->addPrivacyDataForOptInFinal($request, $frontendUser, $registration, 'hello');
 
         static::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
         // the frontendUser is set
@@ -254,8 +254,8 @@ class PrivacyServiceTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         // Service
-        /** @var PrivacyService $privacyService */
-        $privacyService = $this->objectManager->get(PrivacyService::class);
+        /** @var PrivacyHandler $privacyHandler */
+        $privacyHandler = $this->objectManager->get(PrivacyHandler::class);
 
         // Get FrontendUser
         $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
@@ -273,7 +273,7 @@ class PrivacyServiceTest extends FunctionalTestCase
         $request->setControllerName('SomeController');
 
         /** @var \RKW\RkwRegistration\Domain\Model\Privacy $result */
-        $result = $privacyService->addPrivacyDataForOptInFinal($request, $frontendUser, $registration, 'hello');
+        $result = $privacyHandler->addPrivacyDataForOptInFinal($request, $frontendUser, $registration, 'hello');
 
         static::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
         // the frontendUser is set
@@ -300,8 +300,8 @@ class PrivacyServiceTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         // Service
-        /** @var PrivacyService $privacyService */
-        $privacyService = $this->objectManager->get(PrivacyService::class);
+        /** @var PrivacyHandler $privacyHandler */
+        $privacyHandler = $this->objectManager->get(PrivacyHandler::class);
 
         // Get FrontendUser
         $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
@@ -317,7 +317,7 @@ class PrivacyServiceTest extends FunctionalTestCase
         $request->setControllerName('SomeController');
 
         /** @var \RKW\RkwRegistration\Domain\Model\Privacy $result */
-        $result = $privacyService->addPrivacyData($request, $frontendUser, $eventReservation, 'hello');
+        $result = $privacyHandler->addPrivacyData($request, $frontendUser, $eventReservation, 'hello');
 
         static::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
         // the frontendUser is set
@@ -344,8 +344,8 @@ class PrivacyServiceTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
 
         // Service
-        /** @var PrivacyService $privacyService */
-        $privacyService = $this->objectManager->get(PrivacyService::class);
+        /** @var PrivacyHandler $Privacy */
+        $Privacy = $this->objectManager->get(PrivacyHandler::class);
 
         // Get FrontendUser
         $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
@@ -363,7 +363,7 @@ class PrivacyServiceTest extends FunctionalTestCase
         static::expectExceptionCode(0);
 
         /** @var \RKW\RkwRegistration\Domain\Model\Privacy $result */
-        $privacyService->addPrivacyData($request, $frontendUser, $eventReservation, 'hello');
+        $Privacy->addPrivacyData($request, $frontendUser, $eventReservation, 'hello');
     }
 
 

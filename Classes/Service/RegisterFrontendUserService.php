@@ -150,8 +150,8 @@ class RegisterFrontendUserService extends AbstractService
             // override if it's a GuestUser
             if ($this->frontendUser instanceof GuestUser) {
                 // set guestUser lifetime
-                if (intval($this->settings['users']['lifetimeGuest'])) {
-                    $this->frontendUser->setEndtime(time() + intval($this->settings['users']['lifetimeGuest']));
+                if (intval($this->settings['users']['guest']['lifetime'])) {
+                    $this->frontendUser->setEndtime(time() + intval($this->settings['users']['guest']['lifetime']));
                 }
             }
         } else {
@@ -261,10 +261,10 @@ class RegisterFrontendUserService extends AbstractService
             $settings = $this->getSettings();
 
             if ($this->frontendUser instanceof GuestUser) {
-                $userGroups = $settings['users']['groupsOnRegisterGuest'];
+                $userGroups = $settings['users']['guest']['groupsOnRegister'];
 
-                if (!$settings['users']['groupsOnRegisterGuest']) {
-                    $this->getLogger()->log(LogLevel::ERROR, sprintf('GuestUser "%s" will not be useable. Reason: Setting groupsOnRegisterGuest is not defined in TypoScript.', strtolower($this->frontendUser->getUsername())));
+                if (!$settings['users']['guest']['groupsOnRegister']) {
+                    $this->getLogger()->log(LogLevel::ERROR, sprintf('GuestUser "%s" will not be useable. Reason: Setting guest.groupsOnRegister is not defined in TypoScript.', strtolower($this->frontendUser->getUsername())));
                 }
             } else {
                 $userGroups = $settings['users']['groupsOnRegister'];

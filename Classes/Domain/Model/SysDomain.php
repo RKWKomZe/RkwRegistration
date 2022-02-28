@@ -18,6 +18,8 @@ namespace RKW\RkwRegistration\Domain\Model;
 /**
  * Class SysDomain
  *
+ * @deprecated We don't want to use this feature anymore
+ *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration

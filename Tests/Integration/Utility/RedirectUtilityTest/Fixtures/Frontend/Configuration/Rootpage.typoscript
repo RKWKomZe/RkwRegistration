@@ -5,6 +5,8 @@ plugin.tx_rkwregistration  {
     }
 
     settings {
+        users.allowGuestLogin = 1
+        users.guestRedirectPid = 50
     }
 }
 

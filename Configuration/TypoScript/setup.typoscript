@@ -230,17 +230,18 @@ plugin.tx_rkwregistration {
 			storagePid = {$plugin.tx_rkwregistration.settings.users.storagePid}
             # @toDo @deprecated
             lifetimeAnonymous = {$plugin.tx_rkwregistration.settings.users.lifetimeAnonymous}
-            lifetimeGuest = {$plugin.tx_rkwregistration.settings.users.lifetimeGuest}
+            #lifetimeGuest = {$plugin.tx_rkwregistration.settings.users.lifetimeGuest}
             lifetime = {$plugin.tx_rkwregistration.settings.users.lifetime}
             loginText = {$plugin.tx_rkwregistration.settings.users.loginText}
 
             anonymizeAfterDays = {$plugin.tx_rkwregistration.settings.users.anonymizeAfterDays}
 
 			groupsOnRegister = {$plugin.tx_rkwregistration.settings.users.groupsOnRegister}
-			groupsOnRegisterGuest = {$plugin.tx_rkwregistration.settings.users.groupsOnRegisterGuest}
+
 			languageKeyOnRegister = {$plugin.tx_rkwregistration.settings.users.languageKeyOnRegister}
 
             daysForOptIn = {$plugin.tx_rkwregistration.settings.users.daysForOptIn}
+
             maxLoginErrors = {$plugin.tx_rkwregistration.settings.users.maxLoginErrors}
 
 			# values must be comma-separated
@@ -251,6 +252,11 @@ plugin.tx_rkwregistration {
 				minLength = {$plugin.tx_rkwregistration.settings.users.passwordSettings.minLength}
 				alphaNum = {$plugin.tx_rkwregistration.settings.users.passwordSettings.alphaNum}
 			}
+
+            guest {
+                lifetime = {$plugin.tx_rkwregistration.settings.users.guest.lifetime}
+                groupsOnRegister = {$plugin.tx_rkwregistration.settings.users.guest.groupsOnRegister}
+            }
 
 		}
 

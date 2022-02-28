@@ -52,8 +52,7 @@ class PasswordUtilityTest extends FunctionalTestCase
      */
     protected $coreExtensionsToLoad = [
         'saltedpasswords',
-        'extensionmanager',
-        'lang'
+        'extensionmanager'
     ];
 
     /**

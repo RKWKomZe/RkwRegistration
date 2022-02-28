@@ -1,6 +1,6 @@
 <?php
 
-namespace RKW\RkwRegistration\Service;
+namespace RKW\RkwRegistration\DataProtection;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -28,11 +28,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
- * Class PrivacyService
- *
- * @toDo: Services SHOULD NOT be singletons
- * @toDo: Services MUST be used as objects, they are never static
- * (https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/CodingGuidelines/CglPhp/PhpArchitecture/ModelingCrossCuttingConcerns/Services.html)
+ * Class Privacy
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
@@ -40,7 +36,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class PrivacyService implements \TYPO3\CMS\Core\SingletonInterface
+class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
 {
 
     /**
@@ -52,12 +48,12 @@ class PrivacyService implements \TYPO3\CMS\Core\SingletonInterface
      *    RKW\RkwRegistration\Domain\Model\Registration it will be automatically identified and set below in $this->setDataObject
      * 2. After successful optIn the 5th param is used to create the relationship between the two created privacy-datasets
      *
-     * @param Privacy                                   $privacy
-     * @param Request                                   $request
-     * @param FrontendUser                              $frontendUser
-     * @param Registration|AbstractEntity|ObjectStorage $referenceObject
-     * @param string                                    $comment
-     * @param bool                                      $isOptInFinal
+     * @param Privacy           $privacy
+     * @param Request           $request
+     * @param FrontendUser|null $frontendUser
+     * @param null              $referenceObject
+     * @param string            $comment
+     * @param bool              $isOptInFinal
      * @return void
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
@@ -147,8 +143,8 @@ class PrivacyService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * setReferenceObjectInfo
      *
-     * @param Privacy                                                      $privacy
-     * @param AbstractEntity|ObjectStorage $referenceObject
+     * @param Privacy                       $privacy
+     * @param AbstractEntity|ObjectStorage  $referenceObject
      * @return void
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      */
@@ -235,13 +231,14 @@ class PrivacyService implements \TYPO3\CMS\Core\SingletonInterface
      * addPrivacyDataForOptInFinal
      * set the $registration-object if you want to complete an optIn
      *
-     * @param Request $request
-     * @param FrontendUser $frontendUser
-     * @param Registration $registration
-     * @param string $comment
+     * @param Request           $request
+     * @param FrontendUser      $frontendUser
+     * @param Registration|null $registration
+     * @param string            $comment
      * @return Privacy
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      * @api
      */
     public static function addPrivacyDataForOptInFinal(
