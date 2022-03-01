@@ -22,7 +22,7 @@ use \RKW\RkwRegistration\Utility\PasswordUtility;
 /**
  * Class Registration
  *
- * @deprecated This class is deprecated and will be removed soon. Use  RKW\RkwRegistration\Service\OptInService instead.
+ * @deprecated This class is deprecated and will be removed soon. Use  KW\RkwRegistration\Register\OptInRegister instead.
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
@@ -30,11 +30,11 @@ use \RKW\RkwRegistration\Utility\PasswordUtility;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Registration extends \RKW\RkwRegistration\Service\OptInService
+class Registration extends \RKW\RkwRegistration\Register\OptInRegister
 {
 
     /**
-     * FrontendLocalization constructor.
+     * Registration constructor.
      */
     public function __construct()
     {

@@ -4,12 +4,8 @@ namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
-use RKW\RkwRegistration\Domain\Model\Pages;
-use RKW\RkwRegistration\Domain\Model\SysDomain;
-use RKW\RkwRegistration\Service\AuthService as Authentication;
 use RKW\RkwRegistration\Service\AuthFrontendUserService;
-use RKW\RkwRegistration\Service\OptInService;
-use RKW\RkwRegistration\Utility\RedirectUtility;
+use RKW\RkwRegistration\Register\OptInRegister;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -265,8 +261,8 @@ class AuthController extends AbstractController
 
                 // ! CREATE NEW ANONYMOUS USER !
 
-                /** @var OptInService $registration */
-                $registration = GeneralUtility::makeInstance(OptInService::class);
+                /** @var OptInRegister $registration */
+                $registration = GeneralUtility::makeInstance(OptInRegister::class);
 
                 // register anonymous user and login
                 $anonymousUser = $registration->registerAnonymous();

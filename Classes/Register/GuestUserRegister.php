@@ -1,6 +1,6 @@
 <?php
 
-namespace RKW\RkwRegistration\Service;
+namespace RKW\RkwRegistration\Register;
 
 use \RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
@@ -29,14 +29,14 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 
 /**
- * RegisterGuestUserService
+ * GuestUserRegister
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class RegisterGuestUserService extends RegisterFrontendUserService
+class GuestUserRegister extends FrontendUserRegister
 {
     /**
      * Signal name for use in ext_localconf.php

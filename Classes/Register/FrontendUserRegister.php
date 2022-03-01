@@ -1,12 +1,13 @@
 <?php
 
-namespace RKW\RkwRegistration\Service;
+namespace RKW\RkwRegistration\Register;
 
 use \RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use RKW\RkwRegistration\Register\AbstractRegister;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use \RKW\RkwRegistration\Utility\PasswordUtility;
 use RKW\RkwRegistration\Utility\RemoteUtility;
@@ -30,14 +31,14 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 
 /**
- * RegisterFrontendUserService
+ * FrontendUserRegister
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class RegisterFrontendUserService extends AbstractService
+class FrontendUserRegister extends AbstractRegister
 {
     /**
      * Signal name for use in ext_localconf.php
@@ -249,7 +250,7 @@ class RegisterFrontendUserService extends AbstractService
     /**
      * setUsersGroupsOnRegister
      *
-     * Hint: Handles FrontendUser AND GuestUser. Split GuestUser part into RegisterGuestUserService?
+     * Hint: Handles FrontendUser AND GuestUser. Split GuestUser part into GuestUserRegister?
      *
      * @param string $userGroups
      * @return void

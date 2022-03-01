@@ -1,11 +1,11 @@
 <?php
-namespace RKW\RkwRegistration\Tests\Functional\Service;
+namespace RKW\RkwRegistration\Tests\Functional\Register;
 
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Domain\Repository\GuestUserRepository;
-use RKW\RkwRegistration\Service\RegisterGuestUserService;
+use RKW\RkwRegistration\Register\GuestUserRegister;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -22,19 +22,19 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  * The TYPO3 project - inspiring people to share!
  */
 /**
- * RegisterGuestUserServiceTest
+ * GuestUserRegisterTest
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class RegisterGuestUserServiceTest extends FunctionalTestCase
+class GuestUserRegisterTest extends FunctionalTestCase
 {
     /**
      * @const
      */
-    const FIXTURE_PATH = __DIR__ . '/RegisterGuestUserServiceTest/Fixtures';
+    const FIXTURE_PATH = __DIR__ . '/GuestUserRegisterTest/Fixtures';
 
     /**
      * @var string[]
@@ -98,7 +98,7 @@ class RegisterGuestUserServiceTest extends FunctionalTestCase
          * Scenario:
          *
          * Given is a new created GuestUser
-         * When the RegisterGuestUserService is instantiated
+         * When the GuestUserRegister is instantiated
          * Then some basic data are added to the new created GuestUser
          */
 
@@ -109,14 +109,14 @@ class RegisterGuestUserServiceTest extends FunctionalTestCase
         static::assertEmpty($guestUser->getPassword());
 
         // Service
-        /** @var RegisterGuestUserService $registerGuestUserService */
-        $this->objectManager->get(RegisterGuestUserService::class, $guestUser);
+        /** @var GuestUserRegister $register */
+        $this->objectManager->get(GuestUserRegister::class, $guestUser);
 
         static::assertNotEmpty($guestUser->getUsername());
         static::assertNotEmpty($guestUser->getPassword());
 
         // in fact this is testing the protected function "createGuestToken"
-        static::assertEquals(strlen($guestUser->getUsername()), RegisterGuestUserService::GUEST_TOKEN_LENGTH);
+        static::assertEquals(strlen($guestUser->getUsername()), GuestUserRegister::GUEST_TOKEN_LENGTH);
     }
 
 
@@ -130,7 +130,7 @@ class RegisterGuestUserServiceTest extends FunctionalTestCase
          * Scenario:
          *
          * Given is an existing GuestUser
-         * When the RegisterGuestUserService is instantiated
+         * When the GuestUserRegister is instantiated
          * Then the user is set to the service class
          */
 
@@ -142,8 +142,8 @@ class RegisterGuestUserServiceTest extends FunctionalTestCase
         $passwordBefore = $guestUser->getPassword();
 
         // Service
-        /** @var RegisterGuestUserService $registerGuestUserService */
-        $this->objectManager->get(RegisterGuestUserService::class, $guestUser);
+        /** @var GuestUserRegister $register */
+        $this->objectManager->get(GuestUserRegister::class, $guestUser);
 
         static::assertEquals($usernameBefore, $guestUser->getUsername());
         static::assertEquals($passwordBefore, $guestUser->getPassword());

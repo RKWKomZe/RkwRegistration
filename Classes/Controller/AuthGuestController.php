@@ -5,7 +5,7 @@ namespace RKW\RkwRegistration\Controller;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Service\AuthFrontendUserService;
 use RKW\RkwRegistration\Service\AuthService as Authentication;
-use RKW\RkwRegistration\Service\RegisterGuestUserService;
+use RKW\RkwRegistration\Register\GuestUserRegister;
 use RKW\RkwRegistration\Utility\RedirectUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
@@ -71,11 +71,11 @@ class AuthGuestController extends AbstractController
             /** @var GuestUser $guestUser */
             $guestUser = GeneralUtility::makeInstance(GuestUser::class);
 
-            /** @var RegisterGuestUserService $registerGuestUserService */
-            $registerGuestUserService = GeneralUtility::makeInstance(RegisterGuestUserService::class, $guestUser);
-            $registerGuestUserService->setClearanceAndLifetime(true);
-            $registerGuestUserService->setUserGroupsOnRegister();
-            $registerGuestUserService->persistAll();
+            /** @var GuestUserRegister $guestUserRegister */
+            $guestUserRegister = GeneralUtility::makeInstance(GuestUserRegister::class, $guestUser);
+            $guestUserRegister->setClearanceAndLifetime(true);
+            $guestUserRegister->setUserGroupsOnRegister();
+            $guestUserRegister->persistAll();
 
             FrontendUserSessionUtility::login($guestUser);
 

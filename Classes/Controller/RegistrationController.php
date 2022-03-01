@@ -17,7 +17,7 @@ namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Repository\TitleRepository;
-use RKW\RkwRegistration\Service\OptInService;
+use RKW\RkwRegistration\Register\OptInRegister;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -112,9 +112,9 @@ class RegistrationController extends AbstractController
         $tokenNo = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_no') ? $this->request->getArgument('token_no') : ''));
         $userSha1 = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('user'));
 
-        /** @var OptInService $optInService */
-        $optInService = GeneralUtility::makeInstance(OptInService::class);
-        $check = $optInService->process($tokenYes, $tokenNo, $userSha1, $this->request);
+        /** @var OptInRegister $optInRegister */
+        $optInRegister = GeneralUtility::makeInstance(OptInRegister::class);
+        $check = $optInRegister->process($tokenYes, $tokenNo, $userSha1, $this->request);
 
         if ($check == 1) {
 

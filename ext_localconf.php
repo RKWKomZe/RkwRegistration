@@ -200,22 +200,22 @@ call_user_func(
          */
         $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Service\\OptInService',
-            \RKW\RkwRegistration\Service\OptInService::SIGNAL_AFTER_CREATING_OPTIN_USER,
+            'RKW\\RkwRegistration\\Register\\OptInRegister',
+            \RKW\RkwRegistration\Register\OptInRegister::SIGNAL_AFTER_CREATING_OPTIN_USER,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleCreateUserEvent'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Service\\OptInService',
-            \RKW\RkwRegistration\Service\OptInService::SIGNAL_AFTER_CREATING_FINAL_USER,
+            'RKW\\RkwRegistration\\Register\\OptInRegister',
+            \RKW\RkwRegistration\Register\OptInRegister::SIGNAL_AFTER_CREATING_FINAL_USER,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleRegisterUserEvent'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Service\\OptInService',
-            \RKW\RkwRegistration\Service\OptInService::SIGNAL_AFTER_USER_REGISTER_GRANT,
+            'RKW\\RkwRegistration\\Register\\OptInRegister',
+            \RKW\RkwRegistration\Register\OptInRegister::SIGNAL_AFTER_USER_REGISTER_GRANT,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleRegisterUserEvent'
         );
@@ -235,15 +235,15 @@ call_user_func(
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Service\\GroupService',
-            \RKW\RkwRegistration\Service\GroupService::SIGNAL_AFTER_ADMIN_SERVICE_GRANT,
+            'RKW\\RkwRegistration\\Register\\GroupRegister',
+            \RKW\RkwRegistration\Register\GroupRegister::SIGNAL_AFTER_ADMIN_SERVICE_GRANT,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleAdminServiceGrantEvent'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Service\\GroupService',
-            \RKW\RkwRegistration\Service\GroupService::SIGNAL_AFTER_ADMIN_SERVICE_DENIAL,
+            'RKW\\RkwRegistration\\Register\\GroupRegister',
+            \RKW\RkwRegistration\Register\GroupRegister::SIGNAL_AFTER_ADMIN_SERVICE_DENIAL,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleAdminServiceDenialEvent'
         );

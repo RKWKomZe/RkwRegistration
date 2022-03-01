@@ -17,9 +17,9 @@ namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Repository\TitleRepository;
-use RKW\RkwRegistration\Service\GroupService;
-use RKW\RkwRegistration\Service\OptInService;
-use RKW\RkwRegistration\Service\RegisterFrontendUserService;
+use RKW\RkwRegistration\Register\GroupRegister;
+use RKW\RkwRegistration\Register\OptInRegister;
+use RKW\RkwRegistration\Register\FrontendUserRegister;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Utility\TitleUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
@@ -94,9 +94,9 @@ class FrontendUserController extends AbstractController
      */
     public function createAction(FrontendUser $newFrontendUser)
     {
-        /** @var OptInService $optInService */
-        $optInService = $this->objectManager->get(OptInService::class);
-        $optInService->register($newFrontendUser, false, null, null, $this->request);
+        /** @var OptInRegister $optInRegister */
+        $optInRegister = $this->objectManager->get(OptInRegister::class);
+        $optInRegister->register($newFrontendUser, false, null, null, $this->request);
 
         $this->addFlashMessage(
             LocalizationUtility::translate(
@@ -164,7 +164,7 @@ class FrontendUserController extends AbstractController
 
         // all mandatory fields should be checked here.
         // therefore we can finally add the user to all relevant groups now
-        $serviceClass = GeneralUtility::makeInstance(GroupService::class);
+        $serviceClass = GeneralUtility::makeInstance(GroupRegister::class);
         $serviceClass->addUserToAllGrantedGroups($frontendUser);
 
         if ($frontendUser->getTxRkwregistrationTitle()) {
@@ -223,9 +223,9 @@ class FrontendUserController extends AbstractController
             return;
         }
 
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = GeneralUtility::makeInstance(RegisterFrontendUserService::class, $frontendUser);
-        $registerFrontendUserService->delete();
+        /** @var FrontendUserRegister $frontendUserRegister */
+        $frontendUserService = GeneralUtility::makeInstance(frontendUserRegister::class, $frontendUser);
+        $frontendUserService->delete();
 
         $this->addFlashMessage(
             LocalizationUtility::translate(

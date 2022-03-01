@@ -1,5 +1,5 @@
 <?php
-namespace RKW\RkwRegistration\Tests\Functional\Service;
+namespace RKW\RkwRegistration\Tests\Functional\Register;
 
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
@@ -8,7 +8,7 @@ use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use \RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use RKW\RkwRegistration\Service\OptInService;
+use RKW\RkwRegistration\Register\OptInRegister;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -23,19 +23,19 @@ use RKW\RkwRegistration\Service\OptInService;
  * The TYPO3 project - inspiring people to share!
  */
 /**
- * OptInServiceTest
+ * OptInRegisterTest
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class OptInServiceTest extends FunctionalTestCase
+class OptInRegisterTest extends FunctionalTestCase
 {
     /**
      * @const
      */
-    const FIXTURE_PATH = __DIR__ . '/OptInServiceTest/Fixtures';
+    const FIXTURE_PATH = __DIR__ . '/OptInRegisterTest/Fixtures';
 
     /**
      * @var string[]
@@ -63,9 +63,9 @@ class OptInServiceTest extends FunctionalTestCase
     private $registrationRepository = null;
 
     /**
-     * @var \RKW\RkwRegistration\Service\OptInService
+     * @var \RKW\RkwRegistration\Register\OptInRegister
      */
-    private $optInService = null;
+    private $optInRegister = null;
 
 
     /**
@@ -97,7 +97,7 @@ class OptInServiceTest extends FunctionalTestCase
         $this->frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
         $this->registrationRepository = $objectManager->get(RegistrationRepository::class);
         // Service
-        $this->optInService = $objectManager->get(OptInService::class);
+        $this->optInRegister = $objectManager->get(OptInRegister::class);
 
         $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromAddress'] = 'mail@default.rkw';
         $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromName'] = 'RKW Default';
@@ -133,7 +133,7 @@ class OptInServiceTest extends FunctionalTestCase
 
         static::assertTrue($frontendUser->getDisable() === 0);
 
-        $result = $this->optInService->process($register->getTokenYes(), '', $register->getUserSha1());
+        $result = $this->optInRegister->process($register->getTokenYes(), '', $register->getUserSha1());
 
         static::assertTrue($result === 1);
         static::assertTrue($frontendUser->getDisable() === 0);
@@ -174,7 +174,7 @@ class OptInServiceTest extends FunctionalTestCase
 
         static::assertTrue($frontendUser->getDisable() === 1);
 
-        $result = $this->optInService->process($register->getTokenYes(), '', $register->getUserSha1());
+        $result = $this->optInRegister->process($register->getTokenYes(), '', $register->getUserSha1());
 
         static::assertTrue($result === 1);
         static::assertTrue($frontendUser->getDisable() === 0);
@@ -214,7 +214,7 @@ class OptInServiceTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser());
 
-        $result = $this->optInService->process('', $register->getTokenNo(), $register->getUserSha1());
+        $result = $this->optInRegister->process('', $register->getTokenNo(), $register->getUserSha1());
 
         static::assertTrue($result === 2);
         // but the database entry is completely deleted (because disabled users are removed when using token "No")
@@ -251,7 +251,7 @@ class OptInServiceTest extends FunctionalTestCase
 
         static::assertTrue($frontendUser->getDisable() === 1);
 
-        $result = $this->optInService->process('', $register->getTokenNo(), $register->getUserSha1());
+        $result = $this->optInRegister->process('', $register->getTokenNo(), $register->getUserSha1());
 
         static::assertTrue($result === 2);
         // the given dataset is still disabled
@@ -290,7 +290,7 @@ class OptInServiceTest extends FunctionalTestCase
 
         static::assertTrue($frontendUser->getDisable() === 1);
 
-        $result = $this->optInService->process('thisTokenIsBullshit', '', $register->getUserSha1());
+        $result = $this->optInRegister->process('thisTokenIsBullshit', '', $register->getUserSha1());
 
         static::assertTrue($result === 0);
         // the given dataset is still disabled
@@ -329,8 +329,7 @@ class OptInServiceTest extends FunctionalTestCase
 
         static::assertTrue($frontendUser->getDisable() === 1);
 
-        /** @var OptInService $service */
-        $result = $this->optInService->process('', 'thisTokenIsBullshit', $register->getUserSha1());
+        $result = $this->optInRegister->process('', 'thisTokenIsBullshit', $register->getUserSha1());
 
         static::assertTrue($result === 0);
         // the given dataset is still disabled
@@ -367,7 +366,7 @@ class OptInServiceTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser());
 
-        $result = $this->optInService->process('', 'thisTokenIsBullshit', $register->getUserSha1());
+        $result = $this->optInRegister->process('', 'thisTokenIsBullshit', $register->getUserSha1());
 
         static::assertTrue($result === 400);
         static::assertNull($this->frontendUserRepository->findByUidInactiveNonGuest($register->getUser()));
@@ -389,7 +388,7 @@ class OptInServiceTest extends FunctionalTestCase
          * Then the function gives back a not found value ("500")
          */
 
-        $result = $this->optInService->process('something', '', 'whatEver :)');
+        $result = $this->optInRegister->process('something', '', 'whatEver :)');
 
         static::assertTrue($result === 500);
     }
@@ -417,7 +416,7 @@ class OptInServiceTest extends FunctionalTestCase
         static::assertNull($this->frontendUserRepository->findByEmail($userData['email'])->getFirst());
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
-        $result = $this->optInService->register($userData);
+        $result = $this->optInRegister->register($userData);
 
         static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
         static::assertEquals($userData['email'], $result->getUsername());
@@ -451,7 +450,7 @@ class OptInServiceTest extends FunctionalTestCase
         static::assertNull($this->frontendUserRepository->findByEmail($userData['email'])->getFirst());
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
-        $result = $this->optInService->register($userData, true);
+        $result = $this->optInRegister->register($userData, true);
 
         static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
         static::assertEquals($userData['email'], $result->getUsername());
@@ -488,7 +487,7 @@ class OptInServiceTest extends FunctionalTestCase
         static::assertEquals(0, $existingFrontendUser->getDisable());
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
-        $result = $this->optInService->register(['email' => $existingFrontendUser->getEmail()]);
+        $result = $this->optInRegister->register(['email' => $existingFrontendUser->getEmail()]);
 
         static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
 
@@ -524,7 +523,7 @@ class OptInServiceTest extends FunctionalTestCase
         static::assertEquals(1, $existingFrontendUser->getDisable());
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
-        $result = $this->optInService->register(['email' => $existingFrontendUser->getEmail()]);
+        $result = $this->optInRegister->register(['email' => $existingFrontendUser->getEmail()]);
 
         static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
         // still disabled. Is a not unimportant check, because new user would be disabled by default
@@ -559,7 +558,7 @@ class OptInServiceTest extends FunctionalTestCase
         static::assertEquals(1, $existingFrontendUser->getDisable());
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
-        $result = $this->optInService->register(['email' => $existingFrontendUser->getEmail()], true);
+        $result = $this->optInRegister->register(['email' => $existingFrontendUser->getEmail()], true);
 
         static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
         // now enabled
@@ -600,7 +599,7 @@ class OptInServiceTest extends FunctionalTestCase
         $categoryName = 'testCategory';
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
-        $result = $this->optInService->register(['email' => $existingFrontendUser->getEmail()], true, $additionalData, $categoryName);
+        $result = $this->optInRegister->register(['email' => $existingFrontendUser->getEmail()], true, $additionalData, $categoryName);
 
         static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
 
@@ -642,7 +641,7 @@ class OptInServiceTest extends FunctionalTestCase
         $categoryName = 'testCategory';
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
-        $result = $this->optInService->register($userData, false, $additionalData, $categoryName);
+        $result = $this->optInRegister->register($userData, false, $additionalData, $categoryName);
         static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
         static::assertEquals(1, $result->getDisable());
         // now persisted (user got a uid)
@@ -688,7 +687,7 @@ class OptInServiceTest extends FunctionalTestCase
         $categoryName = 'testCategory';
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
-        $result = $this->optInService->register(['email' => $existingFrontendUser->getEmail()], true, $additionalData, $categoryName);
+        $result = $this->optInRegister->register(['email' => $existingFrontendUser->getEmail()], true, $additionalData, $categoryName);
 
         static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
 

@@ -1,13 +1,15 @@
 <?php
-namespace RKW\RkwRegistration\Tests\Functional\Service;
+namespace RKW\RkwRegistration\Tests\Functional\Register;
 
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use \RKW\RkwRegistration\Domain\Repository\ServiceRepository;
-use RKW\RkwRegistration\Service\GroupService;
+use RKW\RkwRegistration\Register\GroupRegister;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -24,19 +26,19 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  * The TYPO3 project - inspiring people to share!
  */
 /**
- * GroupServiceTest
+ * GroupRegisterTest
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class GroupServiceTest extends FunctionalTestCase
+class GroupRegisterTest extends FunctionalTestCase
 {
     /**
      * @const
      */
-    const FIXTURE_PATH = __DIR__ . '/GroupServiceTest/Fixtures';
+    const FIXTURE_PATH = __DIR__ . '/GroupRegisterTest/Fixtures';
 
     /**
      * @var string[]
@@ -125,10 +127,10 @@ class GroupServiceTest extends FunctionalTestCase
          */
 
         // Service
-        /** @var GroupService $groupService */
-        $groupService = $this->objectManager->get(GroupService::class);
+        /** @var GroupRegister $register */
+        $register = $this->objectManager->get(GroupRegister::class);
 
-        $requiredFields = $groupService->getMandatoryFieldsOfUser();
+        $requiredFields = $register->getMandatoryFieldsOfUser();
 
         static::assertNotEmpty($requiredFields);
     }
@@ -148,22 +150,22 @@ class GroupServiceTest extends FunctionalTestCase
          * Then some basic data will set to the frontendUser (via frontendUserGroup)
          */
 
-        /** @var GroupService $groupService */
+        /** @var FrontendUserGroup $frontendUserGroup */
         $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(55);
 
         // Service
-        /** @var GroupService $groupService */
-        $groupService = $this->objectManager->get(GroupService::class);
+        /** @var GroupRegister $register */
+        $register = $this->objectManager->get(GroupRegister::class);
 
-        $requiredFields = $groupService->getMandatoryFieldsOfUser(null, $frontendUserGroup);
+        $requiredFields = $register->getMandatoryFieldsOfUser(null, $frontendUserGroup);
 
         static::assertEquals("something", $requiredFields[0]);
     }
 
 
-
     /**
      * @test
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function getMandatoryFieldsOfUserFromUserGroupOfFrontendUser()
     {
@@ -177,14 +179,14 @@ class GroupServiceTest extends FunctionalTestCase
 
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
-        /** @var GroupService $groupService */
+        /** @var FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
 
         // Service
-        /** @var GroupService $groupService */
-        $groupService = $this->objectManager->get(GroupService::class);
+        /** @var GroupRegister $register */
+        $register = $this->objectManager->get(GroupRegister::class);
 
-        $requiredFields = $groupService->getMandatoryFieldsOfUser($frontendUser);
+        $requiredFields = $register->getMandatoryFieldsOfUser($frontendUser);
 
         /*
           FrontendUserResult:
@@ -229,9 +231,9 @@ class GroupServiceTest extends FunctionalTestCase
         static::assertEquals(count($serviceRegistration->getUser()->getUsergroup()), 1);
 
         // Service
-        /** @var GroupService $groupService */
-        $groupService = $this->objectManager->get(GroupService::class);
-        $result = $groupService->checkTokens($serviceRegistration->getTokenYes(), '', $serviceRegistration->getServiceSha1());
+        /** @var GroupRegister $register */
+        $register = $this->objectManager->get(GroupRegister::class);
+        $result = $register->checkTokens($serviceRegistration->getTokenYes(), '', $serviceRegistration->getServiceSha1());
 
         static::assertEquals(1, $result);
         // after: The new service related usergroup is added
@@ -261,9 +263,9 @@ class GroupServiceTest extends FunctionalTestCase
         $serviceRegistration = $this->serviceRepository->findByIdentifier(1);
 
         // Service
-        /** @var GroupService $groupService */
-        $groupService = $this->objectManager->get(GroupService::class);
-        $result = $groupService->checkTokens($serviceRegistration->getTokenYes(), '', $serviceRegistration->getServiceSha1());
+        /** @var GroupRegister $register */
+        $register = $this->objectManager->get(GroupRegister::class);
+        $result = $register->checkTokens($serviceRegistration->getTokenYes(), '', $serviceRegistration->getServiceSha1());
 
         static::assertEquals(0, $result);
         // service registration dataset is now deleted
@@ -291,9 +293,9 @@ class GroupServiceTest extends FunctionalTestCase
         $serviceRegistration = $this->serviceRepository->findByIdentifier(1);
 
         // Service
-        /** @var GroupService $groupService */
-        $groupService = $this->objectManager->get(GroupService::class);
-        $result = $groupService->checkTokens($serviceRegistration->getTokenYes(), '', $serviceRegistration->getServiceSha1());
+        /** @var GroupRegister $register */
+        $register = $this->objectManager->get(GroupRegister::class);
+        $result = $register->checkTokens($serviceRegistration->getTokenYes(), '', $serviceRegistration->getServiceSha1());
 
         static::assertEquals(0, $result);
     }
@@ -324,9 +326,9 @@ class GroupServiceTest extends FunctionalTestCase
         static::assertEquals(count($serviceRegistration->getUser()->getUsergroup()), 1);
 
         // Service
-        /** @var GroupService $groupService */
-        $groupService = $this->objectManager->get(GroupService::class);
-        $result = $groupService->checkTokens('', $serviceRegistration->getTokenNo(), $serviceRegistration->getServiceSha1());
+        /** @var GroupRegister $register */
+        $register = $this->objectManager->get(GroupRegister::class);
+        $result = $register->checkTokens('', $serviceRegistration->getTokenNo(), $serviceRegistration->getServiceSha1());
 
         static::assertEquals(2, $result);
         // after: No group was added
@@ -356,9 +358,9 @@ class GroupServiceTest extends FunctionalTestCase
 
 
         // Service
-        /** @var GroupService $groupService */
-        $groupService = $this->objectManager->get(GroupService::class);
-        $result = $groupService->addUserToAllGrantedGroups($frontendUser);
+        /** @var GroupRegister $register */
+        $register = $this->objectManager->get(GroupRegister::class);
+        $result = $register->addUserToAllGrantedGroups($frontendUser);
 
         static::assertEquals(1, $result);
     }

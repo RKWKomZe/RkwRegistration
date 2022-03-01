@@ -29,7 +29,7 @@ namespace RKW\RkwRegistration\Tools;
 class Privacy extends \RKW\RkwRegistration\DataProtection\PrivacyHandler
 {
     /**
-     * FrontendLocalization constructor.
+     * Privacy constructor.
      */
     public function __construct()
     {

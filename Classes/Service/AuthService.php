@@ -36,7 +36,7 @@ class AuthService implements \TYPO3\CMS\Core\SingletonInterface
      * Length of token for anonymous users
      *
      * @const integer
-     * @see \RKW\RkwRegistration\Service\OptInService::ANONYMOUS_TOKEN_LENGTH
+     * @see \RKW\RkwRegistration\Register\OptInRegister::ANONYMOUS_TOKEN_LENGTH
      */
     const ANONYMOUS_TOKEN_LENGTH = 20;
 

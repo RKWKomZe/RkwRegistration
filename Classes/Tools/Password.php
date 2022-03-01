@@ -30,7 +30,7 @@ class Password extends \RKW\RkwRegistration\Utility\PasswordUtility
 {
 
     /**
-     * FrontendLocalization constructor.
+     * Password constructor.
      */
     public function __construct()
     {

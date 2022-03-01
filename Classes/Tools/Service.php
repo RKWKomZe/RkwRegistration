@@ -2,7 +2,6 @@
 
 namespace RKW\RkwRegistration\Tools;
 
-use \RKW\RkwBasics\Utility\GeneralUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -20,7 +19,7 @@ use \RKW\RkwBasics\Utility\GeneralUtility;
 /**
  * Class Service
  *
- * @deprecated This class is deprecated and will be removed soon. Use  RKW\RkwRegistration\Service\GroupService instead.
+ * @deprecated This class is deprecated and will be removed soon. Use  RKW\RkwRegistration\Register\GroupRegister instead.
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
@@ -28,10 +27,10 @@ use \RKW\RkwBasics\Utility\GeneralUtility;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Service extends \RKW\RkwRegistration\Service\GroupService
+class Service extends \RKW\RkwRegistration\Register\GroupRegister
 {
     /**
-     * FrontendLocalization constructor.
+     * Service constructor.
      */
     public function __construct()
     {

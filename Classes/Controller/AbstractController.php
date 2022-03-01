@@ -16,8 +16,8 @@ namespace RKW\RkwRegistration\Controller;
  */
 
 use RKW\RkwRegistration\Domain\Model\GuestUser;
-use RKW\RkwRegistration\Service\OptInService;
-use RKW\RkwRegistration\Service\RegisterFrontendUserService;
+use RKW\RkwRegistration\Register\OptInRegister;
+use RKW\RkwRegistration\Register\FrontendUserRegister;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
@@ -215,9 +215,9 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
         // if not redirect to edit form
         if ($this->getFrontendUser()) {
 
-            /** @var RegisterFrontendUserService $registerFrontendUserService */
-            $registerFrontendUserService = GeneralUtility::makeInstance(RegisterFrontendUserService::class, $this->getFrontendUser());
-            if (!$registerFrontendUserService->validateEmail()) {
+            /** @var frontendUserRegister $frontendUserRegister */
+            $frontendUserRegister = GeneralUtility::makeInstance(FrontendUserRegister::class, $this->getFrontendUser());
+            if (!$frontendUserRegister->validateEmail()) {
                 $this->addFlashMessage(
                     LocalizationUtility::translate(
                         'abstractController.message.enter_valid_email', 'rkw_registration'

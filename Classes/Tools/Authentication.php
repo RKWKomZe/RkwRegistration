@@ -33,7 +33,7 @@ class Authentication extends \RKW\RkwRegistration\Service\AuthService
 {
 
     /**
-     * FrontendLocalization constructor.
+     * Authentication constructor.
      */
     public function __construct()
     {

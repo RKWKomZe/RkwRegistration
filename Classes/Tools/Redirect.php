@@ -31,7 +31,7 @@ class Redirect extends \RKW\RkwRegistration\Utility\RedirectUtility
 {
 
     /**
-     * FrontendLocalization constructor.
+     * Redirect constructor.
      */
     public function __construct()
     {

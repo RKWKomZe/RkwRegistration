@@ -16,7 +16,7 @@ namespace RKW\RkwRegistration\Controller;
  */
 
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
-use RKW\RkwRegistration\Service\GroupService;
+use RKW\RkwRegistration\Register\GroupRegister;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
@@ -176,7 +176,7 @@ class ServiceController extends AbstractController
         $this->hasUserValidLoginRedirect();
 
         // Get the mandatory fields for the given group?
-        $serviceClass = GeneralUtility::makeInstance(GroupService::class);
+        $serviceClass = GeneralUtility::makeInstance(GroupRegister::class);
         $mandatoryFields = $serviceClass->getMandatoryFieldsOfUser($this->getFrontendUser(), $frontendUserGroup);
 
         // get the admins of the given group (if any)
@@ -244,7 +244,7 @@ class ServiceController extends AbstractController
         $tokenNo = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_no') ? $this->request->getArgument('token_no') : ''));
         $serviceSha1 = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('service'));
 
-        $service = GeneralUtility::makeInstance(GroupService::class);
+        $service = GeneralUtility::makeInstance(GroupRegister::class);
         $check = $service->checkTokens($tokenYes, $tokenNo, $serviceSha1);
 
         if ($check == 1) {

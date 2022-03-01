@@ -1,5 +1,5 @@
 <?php
-namespace RKW\RkwRegistration\Tests\Functional\Service;
+namespace RKW\RkwRegistration\Tests\Functional\Register;
 
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
@@ -9,7 +9,7 @@ use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use \RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
-use RKW\RkwRegistration\Service\RegisterFrontendUserService;
+use RKW\RkwRegistration\Register\FrontendUserRegister;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -28,19 +28,19 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
  * The TYPO3 project - inspiring people to share!
  */
 /**
- * RegisterFrontendUserService
+ * FrontendUserRegisterTest
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class RegisterFrontendUserServiceTest extends FunctionalTestCase
+class FrontendUserRegisterTest extends FunctionalTestCase
 {
     /**
      * @const
      */
-    const FIXTURE_PATH = __DIR__ . '/RegisterFrontendUserServiceTest/Fixtures';
+    const FIXTURE_PATH = __DIR__ . '/FrontendUserRegisterTest/Fixtures';
 
     /**
      * @var string[]
@@ -131,7 +131,7 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
         static::assertEmpty($frontendUser->getTxRkwregistrationRegisterRemoteIp());
 
         // Service
-        $this->objectManager->get(RegisterFrontendUserService::class, $frontendUser);
+        $this->objectManager->get(FrontendUserRegister::class, $frontendUser);
 
         // AFTER
         // frontendUser is not persisted yet
@@ -159,7 +159,7 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
          * Then missing basic data will set to the frontendUser
          */
 
-        $this->importDataSet(__DIR__ . '/RegisterFrontendUserServiceTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(__DIR__ . '/FrontendUserRegisterTest/Fixtures/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
@@ -172,9 +172,9 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
         static::assertEmpty($frontendUser->getTxRkwregistrationRegisterRemoteIp());
 
         // Service
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $this->objectManager->get(RegisterFrontendUserService::class, $frontendUser);
-        $registerFrontendUserService->setBasicData();
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class, $frontendUser);
+        $register->setBasicData();
 
         // AFTER
 
@@ -214,9 +214,9 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
 
 
         // Service
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $this->objectManager->get(RegisterFrontendUserService::class, $frontendUser);
-        $registerFrontendUserService->setClearanceAndLifetime();
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class, $frontendUser);
+        $register->setClearanceAndLifetime();
 
         // AFTER
         static::assertNotNull($frontendUser->getEndtime());
@@ -240,7 +240,7 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
          * Then the frontendUser is enabled
          */
 
-        $this->importDataSet(__DIR__ . '/RegisterFrontendUserServiceTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(__DIR__ . '/FrontendUserRegisterTest/Fixtures/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
@@ -251,9 +251,9 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
 
 
         // Service
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $this->objectManager->get(RegisterFrontendUserService::class, $frontendUser);
-        $registerFrontendUserService->setClearanceAndLifetime();
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class, $frontendUser);
+        $register->setClearanceAndLifetime();
 
         // AFTER
         static::assertNotNull($frontendUser->getEndtime());
@@ -277,7 +277,7 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
          * Then the frontendUser is enabled
          */
 
-        $this->importDataSet(__DIR__ . '/RegisterFrontendUserServiceTest/Fixtures/Database/Check20.xml');
+        $this->importDataSet(__DIR__ . '/FrontendUserRegisterTest/Fixtures/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest(1);
@@ -287,9 +287,9 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
 
 
         // Service
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $this->objectManager->get(RegisterFrontendUserService::class, $frontendUser);
-        $registerFrontendUserService->setClearanceAndLifetime(true);
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class, $frontendUser);
+        $register->setClearanceAndLifetime(true);
 
         // AFTER
         // now disabled!
@@ -311,7 +311,7 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
          * Then the frontendUser is deleted
          */
 
-        $this->importDataSet(__DIR__ . '/RegisterFrontendUserServiceTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(__DIR__ . '/FrontendUserRegisterTest/Fixtures/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
@@ -320,9 +320,9 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
         static::assertEquals(0, $frontendUser->getDeleted());
 
         // Service
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $this->objectManager->get(RegisterFrontendUserService::class, $frontendUser);
-        $registerFrontendUserService->delete();
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class, $frontendUser);
+        $register->delete();
 
         // AFTER
         // now removed!
@@ -345,7 +345,7 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
          * Then the frontendUser is NOT deleted
          */
 
-        $this->importDataSet(__DIR__ . '/RegisterFrontendUserServiceTest/Fixtures/Database/Check20.xml');
+        $this->importDataSet(__DIR__ . '/FrontendUserRegisterTest/Fixtures/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest(1);
@@ -354,9 +354,9 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
         static::assertEquals(0, $frontendUser->getDeleted());
 
         // Service
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $this->objectManager->get(RegisterFrontendUserService::class, $frontendUser);
-        $registerFrontendUserService->delete();
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class, $frontendUser);
+        $register->delete();
 
         // AFTER
         // now removed!
@@ -382,9 +382,9 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
         $email = 'test@test.de';
 
         // Service
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $this->objectManager->get(RegisterFrontendUserService::class);
-        $result = $registerFrontendUserService->validateEmail($email);
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class);
+        $result = $register->validateEmail($email);
 
         static::assertTrue($result);
     }
@@ -408,9 +408,9 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
         $email = 'test@test';
 
         // Service
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $this->objectManager->get(RegisterFrontendUserService::class);
-        $result = $registerFrontendUserService->validateEmail($email);
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class);
+        $result = $register->validateEmail($email);
 
         static::assertFalse($result);
     }
@@ -432,9 +432,9 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
          */
 
         // Service
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $this->objectManager->get(RegisterFrontendUserService::class);
-        $result = $registerFrontendUserService->validateEmail();
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class);
+        $result = $register->validateEmail();
 
         static::assertFalse($result);
     }
@@ -455,15 +455,15 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
          * Then the function returns false
          */
 
-        $this->importDataSet(__DIR__ . '/RegisterFrontendUserServiceTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(__DIR__ . '/FrontendUserRegisterTest/Fixtures/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
 
         // Service
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $this->objectManager->get(RegisterFrontendUserService::class);
-        $result = $registerFrontendUserService->uniqueEmail($frontendUser);
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class);
+        $result = $register->uniqueEmail($frontendUser);
 
         static::assertFalse($result);
     }
@@ -487,9 +487,9 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
         $email = 'test@test.de';
 
         // Service
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $this->objectManager->get(RegisterFrontendUserService::class);
-        $result = $registerFrontendUserService->uniqueEmail($email);
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class);
+        $result = $register->uniqueEmail($email);
 
         static::assertTrue($result);
     }
@@ -505,18 +505,18 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
         /**
          * Scenario:
          *
-         * Given is a new created frontendUser (will be created in RegisterFrontendUserService constructor)
+         * Given is a new created frontendUser (will be created in FrontendUserRegister constructor)
          * When the setUserGroupsOnRegister function is called
          * Then the function returns the frontendUser with frontendUserGroups which are set in TypoScript
          */
 
         // Service
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $this->objectManager->get(RegisterFrontendUserService::class);
-        $registerFrontendUserService->setUserGroupsOnRegister();
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class);
+        $register->setUserGroupsOnRegister();
 
         /** @var FrontendUser $newFrontendUser */
-        $newFrontendUser = $registerFrontendUserService->getFrontendUser();
+        $newFrontendUser = $register->getFrontendUser();
 
         // first feGroup has ID 55; the second feGroup has ID 56
         $i = 0;
@@ -545,15 +545,15 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
          * Then the function will set the in TypoScript defined user groups to that user
          */
 
-        $this->importDataSet(__DIR__ . '/RegisterFrontendUserServiceTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(__DIR__ . '/FrontendUserRegisterTest/Fixtures/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
 
         // Service
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $this->objectManager->get(RegisterFrontendUserService::class, $frontendUser);
-        $registerFrontendUserService->setUserGroupsOnRegister();
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class, $frontendUser);
+        $register->setUserGroupsOnRegister();
 
         // first feGroup has ID 55; the second feGroup has ID 56
         $i = 0;
@@ -582,15 +582,15 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
          * Then the function will set the in TypoScript defined user groups to that user
          */
 
-        $this->importDataSet(__DIR__ . '/RegisterFrontendUserServiceTest/Fixtures/Database/Check20.xml');
+        $this->importDataSet(__DIR__ . '/FrontendUserRegisterTest/Fixtures/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest(1);
 
         // Service
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $this->objectManager->get(RegisterFrontendUserService::class, $frontendUser);
-        $registerFrontendUserService->setUserGroupsOnRegister();
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class, $frontendUser);
+        $register->setUserGroupsOnRegister();
 
         // first feGroup has ID 55; the second feGroup has ID 56
         $i = 0;
@@ -623,9 +623,9 @@ class RegisterFrontendUserServiceTest extends FunctionalTestCase
         $guestUser = $this->objectManager->get(GuestUser::class);
 
         // Service
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $this->objectManager->get(RegisterFrontendUserService::class, $guestUser);
-        $registerFrontendUserService->setUserGroupsOnRegister();
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class, $guestUser);
+        $register->setUserGroupsOnRegister();
 
         static::assertInstanceOf(GuestUser::class, $guestUser);
 

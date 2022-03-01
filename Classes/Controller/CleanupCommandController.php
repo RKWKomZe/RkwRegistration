@@ -52,12 +52,12 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
 
 
     /**
-     * frontendUserRepository
+     * dataProtectionRepository
      *
-     * @var \RKW\RkwRegistration\Utility\DataProtectionUtility
+     * @var \RKW\RkwRegistration\DataProtection\DataProtectionHandler
      * @inject
      */
-    protected $dataProtectionUtility;
+    protected $dataProtectionHandler;
 
 
     /**
@@ -120,7 +120,7 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
     {
 
         try {
-            $this->dataProtectionUtility->deleteAllExpiredAndDisabled($deleteExpiredAndDisabledAfterDays);
+            $this->dataProtectionHandler->deleteAllExpiredAndDisabled($deleteExpiredAndDisabledAfterDays);
             $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully deleted expired or disabled fe-users.'));
 
         } catch (\Exception $e) {
@@ -146,8 +146,8 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
 
         try {
 
-            $this->dataProtectionUtility->setEncryptionKey($encryptionKey);
-            $this->dataProtectionUtility->anonymizeAndEncryptAll($anonymizeDeletedAfterDays);
+            $this->dataProtectionHandler->setEncryptionKey($encryptionKey);
+            $this->dataProtectionHandler->anonymizeAndEncryptAll($anonymizeDeletedAfterDays);
             $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully anonymized data of fe-users.'));
 
         } catch (\Exception $e) {

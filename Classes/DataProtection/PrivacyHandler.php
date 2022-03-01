@@ -187,7 +187,7 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * addPrivacyDataForOptIn
      * normally automatically used by the RkwRegistration while creating optIn if you are using
-     * \RKW\RkwRegistration\Service\OptInService->register You have just to use ->setPrivacyDataBeforeOptIn and
+     * \RKW\RkwRegistration\Register\OptInRegister->register You have just to use ->setPrivacyDataBeforeOptIn and
      * ->setPrivacyDataFinal (with registration-object) to complete the procedure
      *
      * @param Request $request

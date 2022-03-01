@@ -1,6 +1,6 @@
 <?php
 
-namespace RKW\RkwRegistration\Service;
+namespace RKW\RkwRegistration\Register;
 
 use \RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
@@ -26,7 +26,7 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
  */
 
 /**
- * Class GroupService
+ * Class GroupRegister
  *
  * This service manage fe_groups, which are an explicit "Service".
  *
@@ -36,7 +36,7 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class GroupService
+class GroupRegister
 {
     /**
      * Signal name for use in ext_localconf.php

@@ -1,6 +1,6 @@
 <?php
 
-namespace RKW\RkwRegistration\Service;
+namespace RKW\RkwRegistration\Register;
 
 use \RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
@@ -24,17 +24,14 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
  */
 
 /**
- * Class AbstractService
- *
- * @toDo: Services SHOULD NOT be singletons
- * @toDo: Services MUST be used as objects, they are never static
+ * Class AbstractRegistration
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-abstract class AbstractService
+abstract class AbstractRegister
 {
 
     /**

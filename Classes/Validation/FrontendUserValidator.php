@@ -16,8 +16,8 @@ namespace RKW\RkwRegistration\Validation;
  */
 
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-use RKW\RkwRegistration\Service\GroupService;
-use RKW\RkwRegistration\Service\RegisterFrontendUserService;
+use RKW\RkwRegistration\Register\GroupRegister;
+use RKW\RkwRegistration\Register\FrontendUserRegister;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
@@ -66,8 +66,8 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
         $isValid = true;
 
         // get required fields of user
-        /** @var GroupService $register */
-        $register = GeneralUtility::makeInstance(GroupService::class);
+        /** @var GroupRegister $register */
+        $register = GeneralUtility::makeInstance(GroupRegister::class);
         $requiredFields = $register->getMandatoryFieldsOfUser($frontendUserForm);
 
         // user may not be able to use the email address of another person
@@ -97,10 +97,10 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
         if (in_array('email', $requiredFields)) {
 
             $objectManager = \RKW\RkwBasics\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-            /** @var RegisterFrontendUserService $registerFrontendUserService */
-            $registerFrontendUserService = $objectManager->get(RegisterFrontendUserService::class, FrontendUserUtility::convertArrayToObject($frontendUserForm));
+            /** @var FrontendUserRegister $frontendUserRegister */
+            $frontendUserRegister = $objectManager->get(FrontendUserRegister::class, FrontendUserUtility::convertArrayToObject($frontendUserForm));
 
-            if (!$registerFrontendUserService->validateEmail()) {
+            if (!$frontendUserRegister->validateEmail()) {
 
                 $this->result->forProperty('email')->addError(
                     new \TYPO3\CMS\Extbase\Error\Error(
@@ -115,7 +115,7 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
 
             // do only check this for new registration (do NOT check this, if a logged user want to update his user data)
             if (
-                !$registerFrontendUserService->uniqueEmail($frontendUserForm->getEmail())
+                !$frontendUserRegister->uniqueEmail($frontendUserForm->getEmail())
                 && !FrontendUserSessionUtility::isUserLoggedIn()
             ) {
                 $this->result->forProperty('email')->addError(

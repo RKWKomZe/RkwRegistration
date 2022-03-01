@@ -1,6 +1,6 @@
 <?php
 
-namespace RKW\RkwRegistration\Service;
+namespace RKW\RkwRegistration\Register;
 
 use RKW\RkwRegistration\DataProtection\PrivacyHandler;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
@@ -11,6 +11,7 @@ use RKW\RkwRegistration\Domain\Repository\GuestUserRepository;
 use RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
 use RKW\RkwRegistration\Exception;
 use \RKW\RkwBasics\Utility\GeneralUtility;
+use RKW\RkwRegistration\Register\AbstractRegister;
 use \RKW\RkwRegistration\Utility\PasswordUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use \RKW\RkwRegistration\Utility\RemoteUtility;
@@ -39,11 +40,7 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 
 /**
- * Class OptInService
- *
- * @toDo: Services SHOULD NOT be singletons
- * @toDo: Services MUST be used as objects, they are never static
- * (https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/CodingGuidelines/CglPhp/PhpArchitecture/ModelingCrossCuttingConcerns/Services.html)
+ * Class OptInRegister
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
@@ -51,7 +48,7 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class OptInService extends AbstractService
+class OptInRegister extends AbstractRegister
 {
 
     /**
@@ -96,7 +93,7 @@ class OptInService extends AbstractService
 
     /**
      * Signal name for use in ext_localconf.php
-     * @deprecated Will be removed soon. Use signal in RegisterFrontendUserService instead
+     * @deprecated Will be removed soon. Use signal in FrontendUserRegister instead
      * @const string
      */
     const SIGNAL_AFTER_DELETING_USER = 'afterDeletingUser';
@@ -104,7 +101,7 @@ class OptInService extends AbstractService
     /**
      * Signal name for use in ext_localconf.php
      *
-     * @deprecated Will be removed soon. Use signal in RegisterGuestUserService instead
+     * @deprecated Will be removed soon. Use signal in GuestUserRegister instead
      * @const string
      */
     const SIGNAL_AFTER_REGISTER_GUEST = 'afterRegisterGuest';
@@ -112,7 +109,7 @@ class OptInService extends AbstractService
     /**
      * Length of token for guest users
      *
-     * @deprecated Will be removed soon. Use constant in RegisterGuestUserService instead
+     * @deprecated Will be removed soon. Use constant in GuestUserRegister instead
      * @const integer
      * @see \RKW\RkwRegistration\Service\AuthService::GUEST_TOKEN_LENGTH
      */
@@ -205,9 +202,9 @@ class OptInService extends AbstractService
                     $frontendUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
 
                     $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-                    /** @var RegisterFrontendUserService $registerFrontendUserService */
-                    $registerFrontendUserService = $objectManager->get(RegisterFrontendUserService::class, $frontendUser);
-                    $registerFrontendUserService->setClearanceAndLifetime(true);
+                    /** @var FrontendUserRegister $frontendUserRegister */
+                    $frontendUserService = $objectManager->get(FrontendUserRegister::class, $frontendUser);
+                    $frontendUserService->setClearanceAndLifetime(true);
 
                     // Signal for E-Mails
                     $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_GRANT, array($frontendUser, $plaintextPassword, $register));
@@ -254,7 +251,7 @@ class OptInService extends AbstractService
     /**
      * Checks given tokens from E-mail
      *
-     * @deprecated This function will be removed soon. Use OptInService->process instead
+     * @deprecated This function will be removed soon. Use OptInRegister->process instead
      *
      * @param string $tokenYes
      * @param string $tokenNo
@@ -277,7 +274,6 @@ class OptInService extends AbstractService
             $this->getLogger()->log(LogLevel::ERROR, sprintf('No opt-in found for given SHA1-key.'));
 
             return 0;
-            //====
         }
 
         // is token already invalid?
@@ -291,7 +287,6 @@ class OptInService extends AbstractService
             $this->getLogger()->log(LogLevel::WARNING, sprintf('Opt-in with id "%s" is not valid any more.', strtolower($register->getUid())));
 
             return 0;
-            //====
         }
 
 
@@ -306,10 +301,10 @@ class OptInService extends AbstractService
 
                     if ($frontendUser->getDisable()) {
 
-                        /** @var RegisterFrontendUserService $registerFrontendUserService */
-                        $registerFrontendUserService = GeneralUtility::makeInstance(RegisterFrontendUserService::class, $frontendUser);
-                        $registerFrontendUserService->setClearanceAndLifetime(true);
-                        $plaintextPassword = $registerFrontendUserService->setNewPassword();
+                        /** @var FrontendUserRegister $frontendUserRegister */
+                        $frontendUserService = GeneralUtility::makeInstance(FrontendUserRegister::class, $frontendUser);
+                        $frontendUserService->setClearanceAndLifetime(true);
+                        $plaintextPassword = $frontendUserService->setNewPassword();
 
                         // @toDo: add to Repo?
                         // @toDo: persist?
@@ -419,11 +414,11 @@ class OptInService extends AbstractService
         $signalSlotDispatcher = $objectManager->get(Dispatcher::class);
         /** @var RegistrationRepository $registrationRepository */
         $registrationRepository = $objectManager->get(RegistrationRepository::class);
-        /** @var RegisterFrontendUserService $registerFrontendUserService */
-        $registerFrontendUserService = $objectManager->get(RegisterFrontendUserService::class, $frontendUser);
+        /** @var FrontendUserRegister $frontendUserRegister */
+        $frontendUserRegister = $objectManager->get(FrontendUserRegister::class, $frontendUser);
 
         // check username (aka email)
-        if (!$registerFrontendUserService->validateEmail()) {
+        if (!$frontendUserRegister->validateEmail()) {
             $this->getLogger()->log(LogLevel::ERROR, sprintf('"%s" is not a valid username.', strtolower($frontendUser->getUsername())));
             throw new Exception('No valid username given.', 1407312133);
         }
@@ -450,7 +445,7 @@ class OptInService extends AbstractService
         if ($frontendUserDatabase = $frontendUserRepository->findOneByEmailOrUsernameInactive($frontendUser->getUsername())) {
 
             // re-initialize service with database object
-            $registerFrontendUserService = $objectManager->get(RegisterFrontendUserService::class, $frontendUserDatabase);
+            $frontendUserRegister = $objectManager->get(FrontendUserRegister::class, $frontendUserDatabase);
 
             // add opt in - but only if additional data is set!
             if ($additionalData) {
@@ -465,7 +460,7 @@ class OptInService extends AbstractService
 
                 if (
                     ($frontendUser->getEmail() != strtolower($frontendUserDatabase->getEmail()))
-                    && (!$registerFrontendUserService->uniqueEmail($frontendUserDatabase))
+                    && (!$frontendUserRegister->uniqueEmail($frontendUserDatabase))
                 ) {
 
                     $this->getLogger()->log(LogLevel::ERROR, sprintf('E-mail "%s" is already used by another user.', strtolower($frontendUser->getEmail())));
@@ -484,22 +479,22 @@ class OptInService extends AbstractService
 
             // exclude already persistent user which are already enabled
             if (
-                !$registerFrontendUserService->getFrontendUser()->_isNew()
-                && $registerFrontendUserService->getFrontendUser()->getDisable()
+                !$frontendUserRegister->getFrontendUser()->_isNew()
+                && $frontendUserRegister->getFrontendUser()->getDisable()
             ) {
-                $registerFrontendUserService->setClearanceAndLifetime($enable);
+                $frontendUserRegister->setClearanceAndLifetime($enable);
             }
             // hint: This is more important than it looks. This returns the real existing FrontendUser. If you would remove
             // this line a new created FrontendUser-Instance from above would returned at the end of this function
             // (which is disabled by default! @see convertArrayToObject)
-            $frontendUser = $registerFrontendUserService->getFrontendUser();
+            $frontendUser = $frontendUserRegister->getFrontendUser();
 
             // if user does not exist yet, we need some more data to be set!
         } else {
 
-            $registerFrontendUserService->setBasicData();
-            $registerFrontendUserService->setClearanceAndLifetime($enable);
-            $plaintextPassword = $registerFrontendUserService->setNewPassword();
+            $frontendUserRegister->setBasicData();
+            $frontendUserRegister->setClearanceAndLifetime($enable);
+            $plaintextPassword = $frontendUserRegister->setNewPassword();
             // add user and persist!
             $this->getFrontendUserRepository()->add($frontendUser);
 
@@ -553,7 +548,7 @@ class OptInService extends AbstractService
     /**
      * Creates a new guest FE-user
      *
-     * @deprecated Use RegisterGuestUserService->register instead
+     * @deprecated Use GuestUserRegister->register instead
      *
      * @param int $lifetime Individual lifetime of the guest user. For default value see settings.users.lifetimeGuest
      * @param string $category
@@ -605,7 +600,7 @@ class OptInService extends AbstractService
     /**
      * Removes existing account of FE-user
      *
-     * @deprecated Will be removed soon. Use Service/RegisterFrontendUserService->delete instead
+     * @deprecated Will be removed soon. Use Register/FrontendUserRegister->delete instead
      *
      * @param FrontendUser $frontendUser
      * @param string $category
@@ -642,7 +637,7 @@ class OptInService extends AbstractService
     /**
      * setUsersGroupsOnRegister
      *
-     * @deprecated Use Service/RegisterFrontendUserService->setUserGroupsOnRegister instead
+     * @deprecated Use Register/FrontendUserRegister->setUserGroupsOnRegister instead
      *
      * @param FrontendUser $frontendUser
      * @param string $userGroups
@@ -680,7 +675,7 @@ class OptInService extends AbstractService
     /**
      * Checks if FE-User has valid email
      *
-     * @deprecated Will be removed soon. Use Service/RegisterFrontendUserService->validEmail instead
+     * @deprecated Will be removed soon. Use Register/FrontendUserRegister->validEmail instead
      *
      * @param string | \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $email
      * @return boolean
@@ -710,7 +705,7 @@ class OptInService extends AbstractService
     /**
      * Checks if FE-User has valid email
      *
-     * @deprecated Will be removed soon. Use Service/RegisterFrontendUserService->validEmailUnique instead
+     * @deprecated Will be removed soon. Use Register/FrontendUserRegister->validEmailUnique instead
      *
      * @param string | \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $email
      * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser
@@ -748,7 +743,7 @@ class OptInService extends AbstractService
     /**
      * Checks if FE-User has a a valid username
      *
-     * @deprecated Will be removed soon. Use Service/RegisterFrontendUserService->validUsername instead
+     * @deprecated Will be removed soon. Use Register/FrontendUserRegister->validUsername instead
      *
      * @param string | \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $email
      * @return boolean
@@ -805,7 +800,7 @@ class OptInService extends AbstractService
     /**
      * creates a valid token for a guest user
      *
-     * @deprecated Use RegisterGuestUserService->createToken instead
+     * @deprecated Use GuestUserRegister->createToken instead
      *
      * @return string
      */
@@ -829,7 +824,7 @@ class OptInService extends AbstractService
     /**
      * converts an feUser array to an object
      *
-     * @deprecated Will be removed soon. Use Service/RegisterFrontendUserService->convertFrontendUserArrayToObject instead
+     * @deprecated Will be removed soon. Use Register/FrontendUserRegister->convertFrontendUserArrayToObject instead
      * validUsername
      * array $userData
      * @return FrontendUser
@@ -854,7 +849,7 @@ class OptInService extends AbstractService
     /**
      * returns the lifetime of the guest user
      *
-     * @deprecated Will be removed soon. Use Service/RegisterGuestUserService->setClearanceAndLifetime instead
+     * @deprecated Will be removed soon. Use Register/GuestUserRegister->setClearanceAndLifetime instead
      *
      * @return string
      */

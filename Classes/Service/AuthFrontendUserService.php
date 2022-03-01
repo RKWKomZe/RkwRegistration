@@ -6,6 +6,7 @@ use \RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\GuestUserRepository;
+use RKW\RkwRegistration\Register\GuestUserRegister;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -229,7 +230,7 @@ class AuthFrontendUserService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
 
         // check if given token exists and has the expected length!
         if (
-            (strlen($token) == RegisterGuestUserService::GUEST_TOKEN_LENGTH)
+            (strlen($token) == GuestUserRegister::GUEST_TOKEN_LENGTH)
             && ($guestUser = $guestUserRepository->findByUsername($token)->getFirst())
         ) {
             $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully authenticated guest user with token "%s".', trim($token)));
@@ -242,7 +243,7 @@ class AuthFrontendUserService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
             // Fallback: THIS AREA WILL BE REMOVED SOON!
             // with @deprecated function $frontendUserRepository->findOneByToken($token). Is just a fallback vor already registered anonymous user
             if (
-                (strlen($token) == RegisterGuestUserService::GUEST_TOKEN_LENGTH)
+                (strlen($token) == GuestUserRegister::GUEST_TOKEN_LENGTH)
                 && ($frontendUser = $guestUserRepository->findOneByToken($token))
             ) {
                 return $frontendUser;

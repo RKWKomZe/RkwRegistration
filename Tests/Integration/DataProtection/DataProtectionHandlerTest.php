@@ -1,11 +1,11 @@
 <?php
-namespace RKW\RkwRegistration\Tests\Integration\Utility;
+namespace RKW\RkwRegistration\Tests\Integration\DataProtection;
 
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
+use RKW\RkwRegistration\DataProtection\DataProtectionHandler;
 use RKW\RkwRegistration\Domain\Model\Privacy;
-use RKW\RkwRegistration\Utility\DataProtectionUtility;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\BackendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository;
@@ -28,19 +28,19 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
  * The TYPO3 project - inspiring people to share!
  */
 /**
- * DataProtectionUtility
+ * DataProtectionHandlerTest
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class DataProtectionUtilityTest extends FunctionalTestCase
+class DataProtectionHandlerTest extends FunctionalTestCase
 {
     /**
      * @const
      */
-    const FIXTURE_PATH = __DIR__ . '/DataProtectionUtilityTest/Fixtures';
+    const FIXTURE_PATH = __DIR__ . '/DataProtectionHandlerTest/Fixtures';
 
     /**
      * @var string[]
@@ -55,7 +55,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
     protected $coreExtensionsToLoad = [];
 
     /**
-     * @var \RKW\RkwRegistration\Utility\DataProtectionUtility
+     * @var \RKW\RkwRegistration\DataProtection\DataProtectionHandler
      */
     private $subject = null;
 
@@ -118,7 +118,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
 
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->subject = $this->objectManager->get(DataProtectionUtility::class);
+        $this->subject = $this->objectManager->get(DataProtectionHandler::class);
         $this->frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
         $this->backendUserRepository = $this->objectManager->get(BackendUserRepository::class);
         $this->shippingAddressRepository = $this->objectManager->get(ShippingAddressRepository::class);
