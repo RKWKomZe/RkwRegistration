@@ -120,7 +120,7 @@ class ServiceController extends AbstractController
 
         // services where the user is waiting for the release
         $serviceInquiries = $this->serviceRepository->findByUser($this->getFrontendUser());
-        $serviceInquiriesAdmin = $this->serviceRepository->findEnabledByAdminByUser($this->getFrontendUser());
+        $serviceInquiriesAdmin = $this->serviceRepository->findConfirmedByUser($this->getFrontendUser());
 
         $this->view->assignMultiple(
             array(

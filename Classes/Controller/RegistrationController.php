@@ -73,7 +73,7 @@ class RegistrationController extends AbstractController
         $this->redirectIfUserHasMissingData();
 
         // check if there are new services where the user has fill out mandatory fields
-        $services = $this->serviceRepository->findEnabledByAdminByUser($this->getFrontendUser());
+        $services = $this->serviceRepository->findConfirmedByUser($this->getFrontendUser());
 
         $this->view->assignMultiple(
             array(

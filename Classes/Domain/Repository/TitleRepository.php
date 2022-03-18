@@ -53,14 +53,17 @@ class TitleRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param boolean $returnArray
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array
      */
-    public function findAllOfType($showTitleBefore = true, $showTitleAfter = false, $returnArray = false)
-    {
+    public function findAllOfType(
+        bool $showTitleBefore = true, 
+        bool $showTitleAfter = false, 
+        bool $returnArray = false
+    ) {
         $query = $this->createQuery();
         $result = $query
             ->matching(
                 $query->logicalAnd(
                     $query->logicalOr(
-                        $query->equals('isTitleAfter', $showTitleBefore ? false : true),
+                        $query->equals('isTitleAfter', !$showTitleBefore),
                         $query->equals('isTitleAfter', $showTitleAfter)
                     ),
                     $query->equals('isChecked', true)

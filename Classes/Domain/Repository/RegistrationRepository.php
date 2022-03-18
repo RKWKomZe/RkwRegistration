@@ -19,6 +19,7 @@ use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\Registration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * RegistrationRepository
@@ -56,44 +57,35 @@ class RegistrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findExpired()
+    public function findExpired(): QueryResultInterface
     {
         $query = $this->createQuery();
-        $userServices = $query
+        return $query
             ->matching(
                 $query->lessThan('validUntil', time())
             )
             ->execute();
-
-        return $userServices;
     }
 
-
-    /**
-     * function generateRandomSha1
-     *
-     * @return string
-     */
-    public function generateRandomSha1()
-    {
-        return sha1(rand());
-    }
-
+    
 
     /**
      * function newOptIn
      *
-     * @param FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @param mixed $additionalData
      * @param integer $daysForOptIn
      * @param string $category
-     * @return Registration
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @return \RKW\RkwRegistration\Domain\Model\Registration
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
-    public function newOptIn(FrontendUser $frontendUser, $additionalData = null, $category = null, $daysForOptIn = 0)
+    public function newOptIn(
+        FrontendUser $frontendUser, 
+        $additionalData = null, 
+        string $category = '', 
+        int $daysForOptIn = 0)
     {
-        /** @var Registration $registration */
+        /** @var \RKW\RkwRegistration\Domain\Model\Registration $registration */
         $registration = GeneralUtility::makeInstance(Registration::class);
 
         $registration->setCategory($category);
@@ -107,11 +99,22 @@ class RegistrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         if (!$daysForOptIn) {
             $daysForOptIn = 7;
         }
-        $registration->setValidUntil(strtotime("+" . intval($daysForOptIn) . " day", time()));
-
+        
+        $registration->setValidUntil(strtotime("+" . $daysForOptIn . " day", time()));
         $this->add($registration);
 
         return $registration;
+    }
+    
+    
+    /**
+     * generateRandomSha1
+     *
+     * @return string
+     */
+    protected function generateRandomSha1(): string
+    {
+        return sha1(rand());
     }
 
 }

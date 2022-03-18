@@ -32,18 +32,18 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
     /**
      * Validation of password
      *
-     * @var array $passwordArray
+     * @param array $passwordArray
      * @return boolean
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function isValid($passwordArray)
+    public function isValid($passwordArray): bool
     {
 
         $settings = GeneralUtility::getTyposcriptConfiguration('Rkwregistration');
         $configuration = $settings['users']['passwordSettings'];
 
-        $minLength = ($configuration['minLength'] ? $configuration['minLength'] : 8);
-        $alphaNum = ($configuration['alphaNum'] ? true : false);
+        $minLength = ($configuration['minLength'] ?: 8);
+        $alphaNum = (bool) $configuration['alphaNum'];
 
         // are the passwords set?
         if (

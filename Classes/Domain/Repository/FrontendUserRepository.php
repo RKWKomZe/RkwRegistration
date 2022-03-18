@@ -84,9 +84,12 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @param integer $uid
      * @return FrontendUser
+     * @deprecated This method is deprecated and will be removed soon. 
      */
     public function findByUidNoAnonymous($uid)
     {
+        GeneralUtility::logDeprecatedFunction();
+        
         $query = $this->createQuery();
         $user = $query->matching(
             $query->logicalAnd(
@@ -105,6 +108,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * This is relevant for checking during registration or profile editing
      *
      * @toDo by MF: This function seems not to be fully accurate. It's returns also an active user.
+     * @toDo Die Funktion ist vermutlich nur schlecht benannt. Siehe Ihre Verwendung hier: UniqueEmailValidator.php
      *
      * @param string $input
      * @return FrontendUser
@@ -151,13 +155,13 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Finds anonymous users
      *
      * @deprecated Will be removed soon. Simply use magic function $guestUserRepository->findByUsername($token) instead
-     *
      * @param string $username
      * @return FrontendUser
      */
     public function findOneByToken($token)
     {
-
+        GeneralUtility::logDeprecatedFunction();
+        
         $query = $this->createQuery();
 
         $user = $query->matching(
@@ -183,7 +187,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findByUidInactiveNonAnonymous($uid)
     {
-        GeneralUtility::deprecationLog(__CLASS__ . ' will be removed soon. Do not use it any more.');
+        GeneralUtility::logDeprecatedFunction();
         return $this->findByUidInactiveNonGuest($uid);
     }
 

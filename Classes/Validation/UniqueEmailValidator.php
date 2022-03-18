@@ -40,7 +40,7 @@ class UniqueEmailValidator extends AbstractValidator
      * @var \RKW\RkwRegistration\Domain\Model\FrontendUser $givenFrontendUser
      * @return boolean
      */
-    public function isValid($givenFrontendUser)
+    public function isValid($givenFrontendUser): bool
     {
 
         // check if given E-Mail is valid at all
@@ -50,7 +50,10 @@ class UniqueEmailValidator extends AbstractValidator
         ) {
 
             // user may not be able to accept the email address of another person
+            /** @var ObjectManager $objectManager */
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            
+            /** @var FrontendUserRepository $frontendUserRepository */
             $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
 
             // check email is still available

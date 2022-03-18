@@ -154,7 +154,7 @@ class GroupRegister
                 /** @var ServiceRepository $serviceRepository */
                 $serviceRepository = $objectManager->get(ServiceRepository::class);
 
-                $serviceInquiries = $serviceRepository->findEnabledByAdminByUser($frontendUser);
+                $serviceInquiries = $serviceRepository->findConfirmedByUser($frontendUser);
                 foreach ($serviceInquiries as $serviceInquiry) {
 
                     if ($groups = $serviceInquiry->getUsergroup()) {
@@ -289,7 +289,7 @@ class GroupRegister
     {
         // find all services which have been granted by admin
         $cnt = 0;
-        if ($services = $this->getServiceRepository()->findEnabledByAdminByUser($frontendUser)) {
+        if ($services = $this->getServiceRepository()->findConfirmedByUser($frontendUser)) {
 
             // go through all found services...
             foreach ($services as $service) {

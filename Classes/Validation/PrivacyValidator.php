@@ -36,7 +36,7 @@ class PrivacyValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractV
      * - The function "forProperty" will not work proper
      * - This validator will only return the message (no field highlighting)
      *
-     * @var array $entity
+     * @param array $entity
      * @return boolean
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */

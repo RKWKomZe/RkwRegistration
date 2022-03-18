@@ -20,6 +20,7 @@ use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Domain\Model\Service;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * ServiceRepository
@@ -49,15 +50,15 @@ class ServiceRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
 
     /**
-     * function findEnabledByAdminByUser
+     * function findConfirmedByUser
      *
-     * @param FrontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findEnabledByAdminByUser(FrontendUser $frontendUser)
+    public function findConfirmedByUser(FrontendUser $frontendUser): QueryResultInterface
     {
         $query = $this->createQuery();
-        $services = $query
+        return $query
             ->matching(
                 $query->logicalAnd(
                     $query->equals('user', $frontendUser),
@@ -66,7 +67,6 @@ class ServiceRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             )
             ->execute();
 
-        return $services;
     }
 
 
@@ -76,57 +76,34 @@ class ServiceRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findExpired()
+    public function findExpired(): QueryResultInterface
     {
         $query = $this->createQuery();
-        $query->getQuerySettings()->setRespectStoragePage(false);
-
-        $userServices = $query
+        return $query
             ->matching(
                 $query->lessThan('validUntil', time())
             )
             ->execute();
-
-        return $userServices;
     }
 
-
-    /**
-     * function generateRandomSha1
-     *
-     * @return string
-     */
-    public function generateRandomSha1()
-    {
-        return sha1(rand());
-    }
-
-
-    /**
-     * function cryptServiceIdSha1
-     *
-     * @param int $serviceId
-     * @return string
-     */
-    public function cryptServiceIdSha1($serviceId)
-    {
-        return sha1($serviceId);
-    }
 
 
     /**
      * function newOptIn
      *
-     * @param FrontendUser $frontendUser
-     * @param FrontendUserGroup $frontendUserGroup
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup
      * @param integer $daysForOptIn
-     * @return Service
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @return \RKW\RkwRegistration\Domain\Model\Service
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
-    public function newOptIn(FrontendUser $frontendUser, FrontendUserGroup $frontendUserGroup, $daysForOptIn = 0)
-    {
-        /** @var Service $service */
+    public function newOptIn(
+        FrontendUser $frontendUser, 
+        FrontendUserGroup $frontendUserGroup, 
+        int $daysForOptIn = 0
+    ) {
+        
+        /** @var \RKW\RkwRegistration\Domain\Model\Service $service */
         $service = GeneralUtility::makeInstance(Service::class);
         $keyForSha1 = $frontendUser->getUid() . $frontendUserGroup->getUid() . time();
 
@@ -141,11 +118,34 @@ class ServiceRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         if (!$daysForOptIn) {
             $daysForOptIn = 14;
         }
-        $service->setValidUntil(strtotime("+" . intval($daysForOptIn) . " day", time()));
-
+        
+        $service->setValidUntil(strtotime("+" . $daysForOptIn . " day", time()));
         $this->add($service);
 
         return $service;
+    }
+
+
+    /**
+     * function generateRandomSha1
+     *
+     * @return string
+     */
+    public function generateRandomSha1(): string
+    {
+        return sha1(rand());
+    }
+
+
+    /**
+     * function cryptServiceIdSha1
+     *
+     * @param int $serviceId
+     * @return string
+     */
+    public function cryptServiceIdSha1(int $serviceId): string
+    {
+        return sha1($serviceId);
     }
 
 }
