@@ -150,7 +150,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-    protected function hasUserValidEmailRedirect(): void
+    protected function redirectIfUserHasNoValidEmail(): void
     {
         // check if user has an email-address!
         // if not redirect to edit form
@@ -193,7 +193,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @return void
      */
-    protected function hasUserValidLoginRedirect(): void
+    protected function redirectIfUserNotLoggedIn(): void
     {
         if (!$this->getFrontendUser()) {
             $this->redirectToLogin();
@@ -208,7 +208,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-    protected function hasUserBasicFieldsRedirect(): void
+    protected function redirectIfUserHasMissingData(): void
     {
         // check if user has an email-address!
         // if not redirect to edit form

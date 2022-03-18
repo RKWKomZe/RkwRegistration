@@ -32,7 +32,7 @@ class InfoController extends AbstractController
      *
      * @return void
      */
-    public function loginInfoAction()
+    public function loginInfoAction(): void
     {
          $this->view->assignMultiple(
             [

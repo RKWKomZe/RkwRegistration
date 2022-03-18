@@ -19,7 +19,6 @@ use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Register\GroupRegister;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -104,13 +103,13 @@ class ServiceController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-    public function listAction()
+    public function listAction(): void
     {
         // for logged in users only!
-        $this->hasUserValidLoginRedirect();
+        $this->redirectIfUserNotLoggedIn();
 
         // check email!
-        $this->hasUserValidEmailRedirect();
+        $this->redirectIfUserHasNoValidEmail();
 
         // available services
         $frontendUserGroups = $this->frontendUserGroupRepository->findServices();
@@ -141,10 +140,10 @@ class ServiceController extends AbstractController
      * @param FrontendUserGroup $frontendUserGroup
      * @return void
      */
-    public function showAction(FrontendUserGroup $frontendUserGroup)
+    public function showAction(FrontendUserGroup $frontendUserGroup): void
     {
         // for logged in users only!
-        $this->hasUserValidLoginRedirect();
+        $this->redirectIfUserNotLoggedIn();
 
         $this->view->assignMultiple(
             array(
@@ -169,11 +168,12 @@ class ServiceController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function createAction(FrontendUserGroup $frontendUserGroup)
+    public function createAction(FrontendUserGroup $frontendUserGroup): void
     {
         // for logged in users only!
-        $this->hasUserValidLoginRedirect();
+        $this->redirectIfUserNotLoggedIn();
 
         // Get the mandatory fields for the given group?
         $serviceClass = GeneralUtility::makeInstance(GroupRegister::class);
@@ -191,7 +191,11 @@ class ServiceController extends AbstractController
         ) {
 
             // create new opt-in for service
-            $newOptIn = $this->serviceRepository->newOptIn($this->getFrontendUser(), $frontendUserGroup, $this->settings['services']['daysForOptIn']);
+            $newOptIn = $this->serviceRepository->newOptIn(
+                $this->getFrontendUser(), 
+                $frontendUserGroup, 
+                $this->settings['services']['daysForOptIn']
+            );
 
             // per default take admin permission for granted
             $newOptIn->setEnabledByAdmin(1);
@@ -204,12 +208,23 @@ class ServiceController extends AbstractController
 
                 // dispatcher for e.g. E-Mail
                 foreach ($admins as $admin) {
-                    $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_ADMIN_SERVICE_REQUEST, array($admin, $this->getFrontendUser(), $frontendUserGroup, $newOptIn, intval($this->settings['services']['adminOptInPid'])));
+                    $this->signalSlotDispatcher->dispatch(
+                        __CLASS__, 
+                        self::SIGNAL_ADMIN_SERVICE_REQUEST, 
+                        [
+                            $admin, 
+                            $this->getFrontendUser(), 
+                            $frontendUserGroup, 
+                            $newOptIn, 
+                            intval($this->settings['services']['adminOptInPid'])
+                        ]
+                    );
                 }
 
                 $this->addFlashMessage(
                     LocalizationUtility::translate(
-                        'serviceController.message.apply_admin_request', 'rkw_registration'
+                        'serviceController.message.apply_admin_request' ,
+                        $this->extensionName
                     )
                 );
 
@@ -224,7 +239,8 @@ class ServiceController extends AbstractController
 
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'serviceController.message.apply_successfull', 'rkw_registration'
+                'serviceController.message.apply_successfull',
+                $this->extensionName
             )
         );
 
@@ -238,7 +254,7 @@ class ServiceController extends AbstractController
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
      */
-    public function optInAction()
+    public function optInAction(): void
     {
         $tokenYes = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_yes') ? $this->request->getArgument('token_yes') : ''));
         $tokenNo = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_no') ? $this->request->getArgument('token_no') : ''));
@@ -251,7 +267,8 @@ class ServiceController extends AbstractController
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'serviceController.message.service_optin_successfull', 'rkw_registration'
+                    'serviceController.message.service_optin_successfull',
+                    $this->extensionName
                 )
             );
 
@@ -259,7 +276,8 @@ class ServiceController extends AbstractController
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'serviceController.message.service_optin_canceled', 'rkw_registration'
+                    'serviceController.message.service_optin_canceled',
+                    $this->extensionName
                 )
             );
 
@@ -268,7 +286,8 @@ class ServiceController extends AbstractController
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'serviceController.error.service_optin_error', 'rkw_registration'
+                    'serviceController.error.service_optin_error',
+                    $this->extensionName
                 ),
                 '',
                 AbstractMessage::ERROR
@@ -289,22 +308,30 @@ class ServiceController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      */
-    public function deleteAction(FrontendUserGroup $frontendUserGroup)
+    public function deleteAction(FrontendUserGroup $frontendUserGroup): void
     {
         // for logged in users only!
-        $this->hasUserValidLoginRedirect();
+        $this->redirectIfUserNotLoggedIn();
 
         // remove group from user
         $this->getFrontendUser()->removeUsergroup($frontendUserGroup);
         $this->frontendUserRepository->update($this->getFrontendUser());
 
         // dispatch event
-        $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_SERVICE_DELETE, array($this->getFrontendUser(), $frontendUserGroup));
+        $this->signalSlotDispatcher->dispatch(
+            __CLASS__, 
+            self::SIGNAL_SERVICE_DELETE, 
+            [
+                $this->getFrontendUser(), 
+                $frontendUserGroup
+            ]
+        );
 
 
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'serviceController.message.service_delete', 'rkw_registration'
+                'serviceController.message.service_delete',
+                $this->extensionName
             )
         );
 

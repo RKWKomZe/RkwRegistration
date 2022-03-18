@@ -15,15 +15,10 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Domain\Repository\TitleRepository;
 use RKW\RkwRegistration\Register\OptInRegister;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 
 /**
  * Class RegistrationController
@@ -66,16 +61,16 @@ class RegistrationController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         // only for logged in users!
-        $this->hasUserValidLoginRedirect();
+        $this->redirectIfUserNotLoggedIn();
 
         // check email!
-        $this->hasUserValidEmailRedirect();
+        $this->redirectIfUserHasNoValidEmail();
 
         // check basic mandatory fields
-        $this->hasUserBasicFieldsRedirect();
+        $this->redirectIfUserHasMissingData();
 
         // check if there are new services where the user has fill out mandatory fields
         $services = $this->serviceRepository->findEnabledByAdminByUser($this->getFrontendUser());
@@ -106,7 +101,7 @@ class RegistrationController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      */
-    public function optInAction()
+    public function optInAction(): void
     {
         $tokenYes = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_yes') ? $this->request->getArgument('token_yes') : ''));
         $tokenNo = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_no') ? $this->request->getArgument('token_no') : ''));
@@ -120,19 +115,27 @@ class RegistrationController extends AbstractController
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'registrationController.message.registration_successfull', $this->extensionName
+                    'registrationController.message.registration_successfull', 
+                    $this->extensionName
                 )
             );
 
             if ($this->settings['users']['loginPid']) {
-                $this->redirect('index', 'Auth', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
+                $this->redirect(
+                    'index', 
+                    'Auth', 
+                    null, 
+                    ['noRedirect' => 1], 
+                    $this->settings['users']['loginPid']
+                );
             }
 
         } elseif ($check == 2) {
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'registrationController.message.registration_canceled', $this->extensionName
+                    'registrationController.message.registration_canceled', 
+                    $this->extensionName
                 )
             );
 
@@ -140,18 +143,20 @@ class RegistrationController extends AbstractController
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'registrationController.error.registration_error', $this->extensionName
+                    'registrationController.error.registration_error', 
+                    $this->extensionName
                 ),
                 '',
                 AbstractMessage::ERROR
             );
         }
 
-        $this->redirect('index', 'Auth', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
+        $this->redirect(
+            'index', 
+            'Auth', 
+            null, 
+            ['noRedirect' => 1], 
+            $this->settings['users']['loginPid']
+        );
     }
-
-
-
-
-
 }

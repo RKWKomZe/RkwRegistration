@@ -16,16 +16,12 @@ namespace RKW\RkwRegistration\Controller;
  */
 
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Domain\Repository\TitleRepository;
 use RKW\RkwRegistration\Register\GroupRegister;
 use RKW\RkwRegistration\Register\OptInRegister;
 use RKW\RkwRegistration\Register\FrontendUserRegister;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Utility\TitleUtility;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -38,6 +34,15 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class FrontendUserController extends AbstractController
 {
+
+    /**
+     * TitleRepository
+     *
+     * @var \RKW\RkwRegistration\Domain\Repository\TitleRepository
+     * @inject
+     */
+    protected $titleRepository;
+    
     /**
      * action register
      * RKW own register action
@@ -48,24 +53,25 @@ class FrontendUserController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-    public function newAction(FrontendUser $newFrontendUser = null)
+    public function newAction(FrontendUser $newFrontendUser = null): void
     {
         // not for already logged in users!
         if (FrontendUserSessionUtility::getFrontendUserId()) {
 
             if ($this->settings['users']['welcomePid']) {
-                $this->redirect('index', 'Auth', null, null, $this->settings['users']['welcomePid']);
+                $this->redirect(
+                    'index', 
+                    'Auth', 
+                    null, 
+                    null, 
+                    $this->settings['users']['welcomePid']
+                );
             }
 
             $this->redirect('index');
         }
-
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var TitleRepository $titleRepository */
-        $titleRepository = $objectManager->get(TitleRepository::class);
-
-        $titles = $titleRepository->findAllOfType(true, false, false);
+        
+        $titles = $this->titleRepository->findAllOfType(true, false, false);
 
         $this->view->assignMultiple(
             array(
@@ -82,30 +88,47 @@ class FrontendUserController extends AbstractController
      * created a rkw user
      *
      * @param FrontendUser $newFrontendUser
-     * @validate $newFrontendUser \RKW\RkwRegistration\Validation\FrontendUserValidator, \RKW\RkwRegistration\Validation\TermsValidator, \RKW\RkwRegistration\Validation\PrivacyValidator
      * @return void
      * @throws \RKW\RkwRegistration\Exception
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @validate $newFrontendUser \RKW\RkwRegistration\Validation\FrontendUserValidator
+     * @validate \RKW\RkwRegistration\Validation\TermsValidator 
+     * @validate \RKW\RkwRegistration\Validation\PrivacyValidator
      */
-    public function createAction(FrontendUser $newFrontendUser)
+    public function createAction(FrontendUser $newFrontendUser): void
     {
         /** @var OptInRegister $optInRegister */
         $optInRegister = $this->objectManager->get(OptInRegister::class);
-        $optInRegister->register($newFrontendUser, false, null, null, $this->request);
+        $optInRegister->register(
+            $newFrontendUser, 
+            false, 
+            null, 
+            null, 
+            $this->request
+        );
 
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'registrationController.message.registration_watch_for_email', $this->extensionName
+                'registrationController.message.registration_watch_for_email', 
+                $this->extensionName
             )
         );
 
         if ($this->settings['users']['loginPid']) {
-            $this->redirect('index', 'Auth', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
+            $this->redirect(
+                'index', 
+                'Auth', 
+                null, 
+                ['noRedirect' => 1], 
+                $this->settings['users']['loginPid']
+            );
         }
 
         $this->redirect('new');
@@ -120,31 +143,23 @@ class FrontendUserController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-    public function editAction()
+    public function editAction(): void
     {
-        $registeredUser = null;
-        if (!$registeredUser = $this->getFrontendUser()) {
 
-            $this->redirectToLogin();
+        // for logged in users only!
+        $this->redirectIfUserNotLoggedIn();
 
-            return;
-        }
-
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var TitleRepository $titleRepository */
-        $titleRepository = $objectManager->get(TitleRepository::class);
-
-        $titles = $titleRepository->findAllOfType(true, false, false);
+        $titles = $this->titleRepository->findAllOfType(true, false, false);
 
         $this->view->assignMultiple(
             array(
-                'frontendUser' => $registeredUser,
+                'frontendUser' => $this->getFrontendUser(),
                 'welcomePid'   => intval($this->settings['users']['welcomePid']),
                 'titles' => $titles
             )
         );
     }
+    
 
     /**
      * action update
@@ -157,18 +172,23 @@ class FrontendUserController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      */
-    public function updateAction(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser)
+    public function updateAction(FrontendUser $frontendUser): void
     {
+        
         // for logged in users only!
-        $this->hasUserValidLoginRedirect();
+        $this->redirectIfUserNotLoggedIn();
 
         // all mandatory fields should be checked here.
-        // therefore we can finally add the user to all relevant groups now
+        // therefor we can finally add the user to all relevant groups now
         $serviceClass = GeneralUtility::makeInstance(GroupRegister::class);
         $serviceClass->addUserToAllGrantedGroups($frontendUser);
 
         if ($frontendUser->getTxRkwregistrationTitle()) {
-            $frontendUser->setTxRkwregistrationTitle(TitleUtility::extractTxRegistrationTitle($frontendUser->getTxRkwregistrationTitle()->getName()));
+            $frontendUser->setTxRkwregistrationTitle(
+                TitleUtility::extractTxRegistrationTitle(
+                    $frontendUser->getTxRkwregistrationTitle()->getName()
+                )
+            );
         }
 
         $this->frontendUserRepository->update($frontendUser);
@@ -179,21 +199,30 @@ class FrontendUserController extends AbstractController
         );
 
         if ($this->settings['users']['welcomePid']) {
-            $this->redirect('index', 'Registration', null, null, $this->settings['users']['welcomePid']);
+            $this->redirect(
+                'index', 
+                'Registration', 
+                null, 
+                null, 
+                $this->settings['users']['welcomePid']
+            );
         }
 
         $this->redirect('edit');
     }
 
+
     /**
      * action show
      *
      * @return void
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-    public function showAction()
+    public function showAction(): void
     {
         // for logged in users only!
-        $this->hasUserValidLoginRedirect();
+        $this->redirectIfUserNotLoggedIn();
 
         $this->view->assignMultiple(
             array(
@@ -213,33 +242,38 @@ class FrontendUserController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      */
-    public function deleteAction()
+    public function deleteAction(): void
     {
 
-        $frontendUser = null;
-        if (!$frontendUser = $this->getFrontendUser()) {
-            $this->redirectToLogin();
-
-            return;
-        }
+        // for logged in users only!
+        $this->redirectIfUserNotLoggedIn();
 
         /** @var FrontendUserRegister $frontendUserRegister */
-        $frontendUserService = GeneralUtility::makeInstance(frontendUserRegister::class, $frontendUser);
+        $frontendUserService = GeneralUtility::makeInstance(
+            frontendUserRegister::class,
+            $this->getFrontendUser()
+        );
         $frontendUserService->delete();
 
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'registrationController.message.delete_successfull', $this->extensionName
+                'registrationController.message.delete_successfull', 
+                $this->extensionName
             )
         );
 
         if ($this->settings['users']['loginPid']) {
-            $this->redirect('index', 'Auth', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
+            $this->redirect(
+                'index', 
+                'Auth', 
+                null, 
+                ['noRedirect' => 1], 
+                $this->settings['users']['loginPid']
+            );
         }
 
         $this->redirect('index', 'Auth');
 
-        return;
     }
 
 }

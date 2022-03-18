@@ -32,6 +32,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class PasswordController extends AbstractController
 {
+    
     /**
      * Signal name for use in ext_localconf.php
      *
@@ -39,15 +40,18 @@ class PasswordController extends AbstractController
      */
     const SIGNAL_AFTER_USER_PASSWORD_RESET = 'afterUserPasswordReset';
 
+
     /**
      * action edit
      *
      * @return void
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-    public function editAction()
+    public function editAction(): void
     {
         // for logged in users only!
-        $this->hasUserValidLoginRedirect();
+        $this->redirectIfUserNotLoggedIn();
 
         $this->view->assignMultiple(
             array(
@@ -69,44 +73,39 @@ class PasswordController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function updateAction($passwordOld, $passwordNew)
+    public function updateAction(string $passwordOld, array $passwordNew): void
     {
-        // check if user is logged in
-        $frontendUser = null;
-        if (!$frontendUser = $this->getFrontendUser()) {
-            $this->redirectToLogin();
-
-            return;
-            //===
-        }
+        // for logged in users only!
+        $this->redirectIfUserNotLoggedIn();
 
         if (!$passwordOld) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'registrationController.error.password_empty', $this->extensionName
+                    'registrationController.error.password_empty', 
+                    $this->extensionName
                 ),
                 '',
                 AbstractMessage::ERROR
             );
 
             $this->redirect('editPassword');
-
             return;
-            //===
         }
 
         // check if password is valid
         /** @var AuthFrontendUserService $authentication */
         $authentication = GeneralUtility::makeInstance(AuthFrontendUserService::class);
         if (
-            ($username = $frontendUser->getUsername())
+            ($frontendUser = $this->getFrontendUser())
+            && ($username = $frontendUser->getUsername())
             && ($registeredUser = $authentication->validateUser($username, $passwordOld))
             && ($registeredUser instanceof FrontendUser)
         ) {
+
             // set password to the given one
             $frontendUser->setPassword(PasswordUtility::saltPassword($passwordNew['first']));
-
             $this->frontendUserRepository->update($registeredUser);
 
             $this->addFlashMessage(
@@ -117,14 +116,17 @@ class PasswordController extends AbstractController
 
             // redirect
             if ($this->settings['users']['welcomePid']) {
-                $this->redirect('index', 'Registration', null, null, $this->settings['users']['welcomePid']);
+                $this->redirect(
+                    'index', 
+                    'Registration', 
+                    null, 
+                    null, 
+                    $this->settings['users']['welcomePid']
+                );
             }
 
             $this->redirect('index', 'Registration');
-
             return;
-            //===
-
         }
 
         $this->addFlashMessage(
@@ -145,7 +147,7 @@ class PasswordController extends AbstractController
      *
      * @return void
      */
-    public function newAction()
+    public function newAction(): void
     {
         // nothing to do here
     }
@@ -163,7 +165,7 @@ class PasswordController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      */
-    public function createAction($username)
+    public function createAction(string $username): void
     {
 
         if (!$username) {
@@ -176,7 +178,6 @@ class PasswordController extends AbstractController
             );
 
             $this->redirect('new');
-
             return;
         }
 
@@ -184,13 +185,16 @@ class PasswordController extends AbstractController
         if ($registeredUser = $this->frontendUserRepository->findOneByUsername(strtolower($username))) {
 
             // reset password
-        //    $plaintextPassword = PasswordUtility::generate($registeredUser);
             $plaintextPassword = PasswordUtility::generatePassword();
             $registeredUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
             $this->frontendUserRepository->update($registeredUser);
 
             // dispatcher for e.g. E-Mail
-            $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_PASSWORD_RESET, array($registeredUser, $plaintextPassword));
+            $this->signalSlotDispatcher->dispatch(
+                __CLASS__, 
+                self::SIGNAL_AFTER_USER_PASSWORD_RESET, 
+                [$registeredUser, $plaintextPassword]
+            );
         }
 
         // Either user exists or not: Send user back with message
@@ -200,7 +204,12 @@ class PasswordController extends AbstractController
             )
         );
 
-        $this->redirect('index', 'Auth', null, array('noRedirect' => 1));
+        $this->redirect(
+            'index', 
+            'Auth', 
+            null, 
+            ['noRedirect' => 1]
+        );
     }
 
 

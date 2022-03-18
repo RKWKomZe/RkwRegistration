@@ -17,6 +17,8 @@ namespace RKW\RkwRegistration\Controller;
 
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class CleanupCommandController
@@ -136,7 +138,10 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
 
         try {
             $this->dataProtectionHandler->deleteAllExpiredAndDisabled($deleteExpiredAndDisabledAfterDays);
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully deleted expired or disabled fe-users.'));
+            $this->getLogger()->log(
+                LogLevel::INFO, 
+                sprintf('Successfully deleted expired or disabled fe-users.')
+            );
 
         } catch (\Exception $e) {
             $this->getLogger()->log(
@@ -195,7 +200,7 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
     {
 
         if (!$this->logger instanceof Logger) {
-            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
         }
 
         return $this->logger;

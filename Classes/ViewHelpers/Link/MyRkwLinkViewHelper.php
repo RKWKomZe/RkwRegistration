@@ -45,6 +45,7 @@ class MyRkwLinkViewHelper extends AbstractViewHelper
      */
     public function render($pageUid, $additionalParams = [])
     {
+        /*
         if (
             $additionalParams
             && is_array($additionalParams)
@@ -56,9 +57,9 @@ class MyRkwLinkViewHelper extends AbstractViewHelper
 
         $currentBaseUrl = preg_replace('/^http(s)?:\/\/(www\.)?([^\/]+)\/?$/i', '$3', $GLOBALS['TSFE']->tmpl->setup['config.']['baseURL']);
 
-        /** @var ObjectManager objectManager */
+        /** @var ObjectManager objectManager 
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var SysDomainRepository $sysDomainRepository */
+        /** @var SysDomainRepository $sysDomainRepository 
         $sysDomainRepository = $objectManager->get(SysDomainRepository::class);
 
         // get object of current sysDomain
@@ -71,6 +72,8 @@ class MyRkwLinkViewHelper extends AbstractViewHelper
                 return $sysDomain->getDomainName() . '/index.php?' . http_build_query($finalParams);
             }
         }
+*/
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
 
         // else: Fallback with standard domain behavior
         /** @var UriBuilder $uriBuilder */
