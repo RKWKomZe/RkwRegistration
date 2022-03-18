@@ -208,7 +208,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 $query->logicalOr(
                     $query->equals('txRkwregistrationIsAnonymous', 0),
                     $query->logicalNot(
-                        $query->equals('tx_extbase_type', '\RKW\RkwRegistration\Domain\Model\GuestUser'),
+                        $query->equals('tx_extbase_type', '\RKW\RkwRegistration\Domain\Model\GuestUser')
                     )
                 )
             )

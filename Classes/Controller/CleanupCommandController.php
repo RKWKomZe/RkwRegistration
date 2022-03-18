@@ -15,6 +15,9 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Log\LogLevel;
+
 /**
  * Class CleanupCommandController
  *
@@ -87,10 +90,22 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
                 $cnt++;
             }
 
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully removed %s expired registration- and service-requests completely from the database.', $cnt));
+            $this->getLogger()->log(
+                LogLevel::INFO, 
+                sprintf(
+                    'Successfully removed %s expired registration- and service-requests completely from the database.', 
+                    $cnt
+                )
+            );
 
         } catch (\Exception $e) {
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('An error occurred while trying to remove expired registration- and service-requests completely from the database. Message: %s', str_replace(array("\n", "\r"), '', $e->getMessage())));
+            $this->getLogger()->log(
+                LogLevel::ERROR, 
+                sprintf(
+                    'An error occurred. Message: %s', 
+                    str_replace(["\n", "\r"], '', $e->getMessage())
+                )
+            );
         }
     }
 
@@ -124,7 +139,13 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
             $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully deleted expired or disabled fe-users.'));
 
         } catch (\Exception $e) {
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('An error occurred: %s', $e->getMessage()));
+            $this->getLogger()->log(
+                LogLevel::ERROR,
+                sprintf(
+                    'An error occurred. Message: %s',
+                    str_replace(["\n", "\r"], '', $e->getMessage())
+                )
+            );
         }
     }
 
@@ -148,10 +169,19 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
 
             $this->dataProtectionHandler->setEncryptionKey($encryptionKey);
             $this->dataProtectionHandler->anonymizeAndEncryptAll($anonymizeDeletedAfterDays);
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::INFO, sprintf('Successfully anonymized data of fe-users.'));
+            $this->getLogger()->log(
+                LogLevel::INFO, 
+                sprintf('Successfully anonymized data of fe-users.')
+            );
 
         } catch (\Exception $e) {
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('An error occurred: %s', $e->getMessage()));
+            $this->getLogger()->log(
+                LogLevel::ERROR,
+                sprintf(
+                    'An error occurred. Message: %s',
+                    str_replace(["\n", "\r"], '', $e->getMessage())
+                )
+            );
         }
     }
 
@@ -164,7 +194,7 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
     protected function getLogger(): \TYPO3\CMS\Core\Log\Logger
     {
 
-        if (!$this->logger instanceof \TYPO3\CMS\Core\Log\Logger) {
+        if (!$this->logger instanceof Logger) {
             $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
         }
 

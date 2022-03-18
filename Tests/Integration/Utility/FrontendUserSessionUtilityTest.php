@@ -321,7 +321,7 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
 
         $result = $utility->getFrontendUserId();
 
-        static::assertNull($result);
+        static::assertEquals(0, $result);
     }
 
 

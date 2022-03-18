@@ -45,11 +45,10 @@ class AuthGuestController extends AbstractController
      * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function loginAction()
+    public function loginAction(): void
     {
 
         // a) ERROR: send back already logged in user. Nothing to do here
@@ -78,7 +77,6 @@ class AuthGuestController extends AbstractController
             $guestUserRegister->persistAll();
 
             FrontendUserSessionUtility::login($guestUser);
-
             $this->redirect('loginHint');
         }
 
@@ -126,8 +124,7 @@ class AuthGuestController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-
-    public function loginHintAction()
+    public function loginHintAction(): void
     {
         // if user has session AND is of type GuestUser
         if (!$this->getFrontendUser() instanceof GuestUser) {
