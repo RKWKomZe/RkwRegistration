@@ -508,6 +508,9 @@ class AuthController extends AbstractController
      */
     public function logoutExternalAction()
     {
+
+        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+        
         // simply logout anonymous users and show hint
         if ($this->getFrontendUser() instanceof GuestUser) {
 

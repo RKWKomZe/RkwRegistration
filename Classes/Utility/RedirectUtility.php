@@ -3,9 +3,6 @@
 namespace RKW\RkwRegistration\Utility;
 
 use \RKW\RkwBasics\Utility\GeneralUtility;
-use RKW\RkwRegistration\Domain\Model\Pages;
-use RKW\RkwRegistration\Domain\Model\SysDomain;
-use RKW\RkwRegistration\Domain\Repository\SysDomainRepository;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;

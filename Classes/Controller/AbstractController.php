@@ -338,6 +338,4 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
         return null;
     }
 
-
-
 }

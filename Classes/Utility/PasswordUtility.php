@@ -16,6 +16,7 @@ namespace RKW\RkwRegistration\Utility;
  */
 
 use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
@@ -61,22 +62,22 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
      * Generates a salted password for the user
      *
      * @deprecated This function will be removed soon. Use generatePassword and saltPassword instead
-     *
      * @param FrontendUser $frontendUser
      * @param string $plaintextPassword
      * @return string
      */
-    public static function generate(FrontendUser $frontendUser, $plaintextPassword = null): ?string
-    {
+    public static function generate(
+        FrontendUser $frontendUser, 
+        string $plaintextPassword = ''
+    ): string {
+
+        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
         if (!$plaintextPassword) {
             $plaintextPassword = self::generatePassword();
         }
 
-        $saltedPassword = $plaintextPassword;
-        if (self::saltPassword($plaintextPassword)) {
-            $saltedPassword = self::saltPassword($plaintextPassword);
-        }
-
+        $saltedPassword = self::saltPassword($plaintextPassword);
         $frontendUser->setPassword($saltedPassword);
 
         return $plaintextPassword;
@@ -87,15 +88,19 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Generates a password
      *
-     * @see saltPassword for decryption
+     * @see saltPassword for description
      * @param integer $length
      * @param bool $addNonAlphanumeric
      * @return string
      */
-    public static function generatePassword($length = self::PASSWORD_DEFAULT_LENGTH, $addNonAlphanumeric = false): string
-    {
+    public static function generatePassword(
+        int $length = self::PASSWORD_DEFAULT_LENGTH, 
+        bool $addNonAlphanumeric = false
+    ): string {
+        
         // check for minimum length
         $length = $length > self::PASSWORD_MIN_LENGTH ? $length : self::PASSWORD_MIN_LENGTH;
+        
         // check for maximum length
         $length = $length < self::PASSWORD_MAX_LENGTH ? $length : self::PASSWORD_MAX_LENGTH;
 
@@ -120,7 +125,7 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
      * @param string $plaintextPassword
      * @return string
      */
-    public static function saltPassword($plaintextPassword): string
+    public static function saltPassword(string $plaintextPassword): string
     {
         // fallback: If something went wrong, at least something should be set
         $saltedPassword = $plaintextPassword;
@@ -132,15 +137,20 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
             if (is_object($objSalt)) {
                 $saltedPassword = $objSalt->getHashedPassword($plaintextPassword);
             } else {
-                self::getLogger()->log(LogLevel::ERROR, sprintf('The password cannot be encrypted. SaltFactory is not an object!'));
+                self::getLogger()->log(
+                    LogLevel::ERROR, 
+                    'The password cannot be encrypted. SaltFactory is not an object!'
+                );
             }
         } else {
-            self::getLogger()->log(LogLevel::WARNING, sprintf('The password cannot be encrypted. Apparently there are problems with the system extension saltedpasswords'));
+            self::getLogger()->log(
+                LogLevel::WARNING, 
+                'The password cannot be encrypted. Apparently there are problems with the system extension saltedpasswords.'
+            );
         }
 
         return $saltedPassword;
     }
-
 
 
     /**
@@ -150,7 +160,7 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
      */
     protected static function getLogger()
     {
-        return GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+        return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
     }
 
 

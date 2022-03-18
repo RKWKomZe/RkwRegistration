@@ -40,7 +40,7 @@ class ZipValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValid
      * @param integer $value
      * @return void
      */
-    public function isValid($value)
+    public function isValid($value): void
     {
         if (!$value
             || strlen(trim($value)) != 5

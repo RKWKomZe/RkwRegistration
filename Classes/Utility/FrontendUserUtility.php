@@ -30,6 +30,7 @@ use RKW\RkwRegistration\Domain\Model\FrontendUser;
  */
 class FrontendUserUtility
 {
+    
     /**
      * converts an feUser array to an object
      * Hint: By default a new created FrontendUser is DISABLED = 1 !
@@ -37,7 +38,7 @@ class FrontendUserUtility
      * array $userData
      * @return FrontendUser
      */
-    public static function convertArrayToObject($userData)
+    public static function convertArrayToObject(array $userData)
     {
         $frontendUser = $userData;
         if (is_array($userData)) {

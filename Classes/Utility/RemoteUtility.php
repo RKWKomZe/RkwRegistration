@@ -15,6 +15,8 @@ namespace RKW\RkwRegistration\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Class RemoteUtility
  *
@@ -25,22 +27,23 @@ namespace RKW\RkwRegistration\Utility;
  */
 class RemoteUtility
 {
+    
     /**
      * Returns the users ip
      *
      * @return string
      */
-    public static function getIp()
+    public static function getIp(): string
     {
         // set users server ip-address
-        $remoteAddr = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+        $remoteAddress = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
         if ($_SERVER['HTTP_X_FORWARDED_FOR']) {
-            $ips = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            $ips = GeneralUtility::trimExplode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
             if ($ips[0]) {
-                $remoteAddr = filter_var($ips[0], FILTER_VALIDATE_IP);
+                $remoteAddress = filter_var($ips[0], FILTER_VALIDATE_IP);
             }
         }
 
-        return $remoteAddr;
+        return $remoteAddress;
     }
 }

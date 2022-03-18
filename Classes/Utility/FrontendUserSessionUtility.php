@@ -4,9 +4,9 @@ namespace RKW\RkwRegistration\Utility;
 
 use RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Exception;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use \TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 
 /*
@@ -47,7 +47,7 @@ class FrontendUserSessionUtility
      * @return void
      * @throws Exception
      */
-    public static function login(FrontendUser $frontendUser)
+    public static function login(FrontendUser $frontendUser): void
     {
 
         if (!$frontendUser->getUid()) {
@@ -88,7 +88,7 @@ class FrontendUserSessionUtility
      *
      * @return void
      */
-    public static function logout()
+    public static function logout(): void
     {
         $GLOBALS['TSFE']->fe_user->removeSessionData();
         $GLOBALS['TSFE']->fe_user->logoff();
@@ -106,7 +106,7 @@ class FrontendUserSessionUtility
     /**
      * Checks if user is logged in
      *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser
+     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser|null $frontendUser
      * @return boolean
      */
     public static function isUserLoggedIn(FrontendUser $frontendUser = null): bool
@@ -123,10 +123,13 @@ class FrontendUserSessionUtility
             ) {
                 // the given frontendUser is logged in
                 return true;
-            } else {
+            }
+            /** 
+            @toDo: does that really make sense?
+            else {
                 // somebody is logged in
                 return true;
-            }
+            } */
         }
 
         // nobody is logged in
@@ -156,37 +159,11 @@ class FrontendUserSessionUtility
 
 
     /**
-     * converts an feUser array to an object
-     *
-     * @toDo: This function could be also a static part of a FrontendUserUtility
-     *
-     * array $userData
-     * @return FrontendUser
-     */
-    public function convertFrontendUserArrayToObject($userData)
-    {
-        $frontendUser = $userData;
-        if (is_array($userData)) {
-            /** @var FrontendUser $frontendUser */
-            $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(FrontendUser::class);
-            foreach ($userData as $key => $value) {
-                $setter = 'set' . ucfirst(GeneralUtility::camelize($key));
-                if (method_exists($frontendUser, $setter)) {
-                    $frontendUser->$setter($value);
-                }
-            }
-        }
-        return $frontendUser;
-    }
-
-
-
-    /**
      * Returns logger instance
      *
      * @return \TYPO3\CMS\Core\Log\Logger
      */
-    public static function getLogger()
+    public static function getLogger(): Logger
     {
         return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
     }
