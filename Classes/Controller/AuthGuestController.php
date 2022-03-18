@@ -36,6 +36,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class AuthGuestController extends AbstractController
 {
+    
     /**
      * action login
      * if the current user is not logged in, create one. Unless a token is given, than re-login guest
@@ -51,13 +52,12 @@ class AuthGuestController extends AbstractController
     public function loginAction()
     {
 
-        DebuggerUtility::var_dump(RedirectUtility::urlToPageUid(1)); exit;
-
         // a) ERROR: send back already logged in user. Nothing to do here
         if ($this->getFrontendUser()) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'registrationController.error.anonymous_login_impossible', $this->extensionName
+                    'registrationController.error.anonymous_login_impossible', 
+                    $this->extensionName
                 ),
                 '',
                 AbstractMessage::ERROR

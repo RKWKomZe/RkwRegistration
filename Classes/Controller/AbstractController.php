@@ -14,14 +14,14 @@ namespace RKW\RkwRegistration\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
-use RKW\RkwRegistration\Register\OptInRegister;
 use RKW\RkwRegistration\Register\FrontendUserRegister;
-use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -33,7 +33,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
+abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
 {
     /**
      * ID of logged in FrontendUser
@@ -45,7 +45,7 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
     /**
      * logged in FrontendUser
      *
-     * @var FrontendUser
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
      */
     protected $frontendUser;
 
@@ -107,55 +107,16 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      *
      * @see \TYPO3\CMS\Extbase\Mvc\Controller\ActionController::getErrorFlashMessage()
      */
-    protected function getErrorFlashMessage()
+    protected function getErrorFlashMessage(): bool
     {
         return false;
     }
-
-    /**
-     * Returns logger instance
-     *
-     * @return \TYPO3\CMS\Core\Log\Logger
-     */
-    protected function getLogger()
-    {
-
-        if (!$this->logger instanceof \TYPO3\CMS\Core\Log\Logger) {
-            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
-        }
-
-        return $this->logger;
-    }
-
-
-    /**
-     * Id of logged User
-     *
-     * @deprecated Will be removed soon. Use FrontendUserSessionUtility::getFrontendUserId() instead
-     *
-     * @return integer|NULL
-     */
-    protected function getFrontendUserId()
-    {
-        // is $GLOBALS set?
-        if (
-            ($GLOBALS['TSFE'])
-            && ($GLOBALS['TSFE']->loginUser)
-            && ($GLOBALS['TSFE']->fe_user->user['uid'])
-        ) {
-            return intval($GLOBALS['TSFE']->fe_user->user['uid']);
-        }
-
-        return null;
-    }
-
+    
 
     /**
      * Returns current logged in user object
-     *
-     * Hint: Handles GuestUser and normal FrontendUser. Should we split it up?
-     *
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|GuestUser|NULL
+     * 
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|NULL
      */
     protected function getFrontendUser()
     {
@@ -166,9 +127,10 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
             $guestUser = $this->guestUserRepository->findByUid(FrontendUserSessionUtility::getFrontendUserId());
 
             if ($guestUser instanceof GuestUser) {
-
                 $this->frontendUser = $guestUser;
+                
             } else {
+                
                 // Or standard user?
                 $frontendUser = $this->frontendUserRepository->findByUid(FrontendUserSessionUtility::getFrontendUserId());
                 if ($frontendUser instanceof FrontendUser) {
@@ -179,28 +141,7 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
 
         return $this->frontendUser;
     }
-
-    /**
-     * Returns current logged in user object
-     *
-     * @deprecated Will be removed soon. Use AbstractController::getFrontendUser() instead and check with instanceof \RKW\RkwRegistration\Domain\Model\GuestUser
-     *
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|NULL
-     */
-    protected function getFrontendUserAnonymous()
-    {
-
-        if (!$this->frontendUser) {
-
-            $frontendUser = $this->frontendUserRepository->findByUid(FrontendUserSessionUtility::getFrontendUserId());
-            if ($frontendUser instanceof FrontendUser) {
-                $this->frontendUser = $frontendUser;
-            }
-        }
-
-        return $this->frontendUser;
-    }
-
+    
 
     /**
      * Checks if user has valid email-address and redirects to profile page (if defined)
@@ -209,23 +150,34 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-    protected function hasUserValidEmailRedirect()
+    protected function hasUserValidEmailRedirect(): void
     {
-        // check if user has a email-address!
+        // check if user has an email-address!
         // if not redirect to edit form
         if ($this->getFrontendUser()) {
 
             /** @var frontendUserRegister $frontendUserRegister */
-            $frontendUserRegister = GeneralUtility::makeInstance(FrontendUserRegister::class, $this->getFrontendUser());
+            $frontendUserRegister = GeneralUtility::makeInstance(
+                FrontendUserRegister::class, 
+                $this->getFrontendUser()
+            );
+            
             if (!$frontendUserRegister->validateEmail()) {
                 $this->addFlashMessage(
                     LocalizationUtility::translate(
-                        'abstractController.message.enter_valid_email', 'rkw_registration'
+                        'abstractController.message.enter_valid_email', 
+                        'rkw_registration'
                     )
                 );
 
                 if ($this->settings['users']['editUserPid']) {
-                    $this->redirect('editUser', 'Registration', null, array('noRedirect' => 1), $this->settings['users']['editUserPid']);
+                    $this->redirect(
+                        'editUser', 
+                        'Registration', 
+                        null, 
+                        ['noRedirect' => 1], 
+                        $this->settings['users']['editUserPid']
+                    );
                 }
 
                 $this->redirect('index');
@@ -237,14 +189,15 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
     /**
      * Checks if user is logged in and redirects to login (if defined)
      *
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @return void
      */
-    protected function hasUserValidLoginRedirect()
+    protected function hasUserValidLoginRedirect(): void
     {
         if (!$this->getFrontendUser()) {
             $this->redirectToLogin();
         }
-        return;
     }
 
 
@@ -255,16 +208,23 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-    protected function hasUserBasicFieldsRedirect()
+    protected function hasUserBasicFieldsRedirect(): void
     {
-        // check if user has a email-address!
+        // check if user has an email-address!
         // if not redirect to edit form
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         if ($frontendUser = $this->getFrontendUser()) {
 
             $requiredFields = array();
             if ($this->settings['users']['requiredFormFields']) {
-                $requiredFields = explode(',', str_replace(' ', '', $this->settings['users']['requiredFormFields']));
+                $requiredFields = explode(
+                    ',', 
+                    str_replace(
+                        ' ', 
+                        '', 
+                        $this->settings['users']['requiredFormFields']
+                    )
+                );
             }
 
             foreach ($requiredFields as $field) {
@@ -273,12 +233,19 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
 
                     $this->addFlashMessage(
                         LocalizationUtility::translate(
-                            'abstractController.message.enter_mandatory_fields', 'rkw_registration'
+                            'abstractController.message.enter_mandatory_fields', 
+                            'rkw_registration'
                         )
                     );
 
                     if ($this->settings['users']['editUserPid']) {
-                        $this->redirect('edit', 'FrontendUser', null, array('noRedirect' => 1), $this->settings['users']['editUserPid']);
+                        $this->redirect(
+                            'edit', 
+                            'FrontendUser', 
+                            null,
+                            ['noRedirect' => 1], 
+                            $this->settings['users']['editUserPid']
+                        );
                     }
 
                     $this->redirect('index');
@@ -291,26 +258,86 @@ class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
     /**
      * Redirects to login page (if defined)
      *
+     * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-    protected function redirectToLogin()
+    protected function redirectToLogin(): void
     {
 
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'abstractController.error.user_not_logged_in', 'rkw_registration'
+                'abstractController.error.user_not_logged_in', 
+                'rkw_registration'
             ),
             '',
-            \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+            AbstractMessage::ERROR
         );
 
         if ($this->settings['users']['loginPid']) {
-            $this->redirect('index', 'Auth', null, array('noRedirect' => 1), $this->settings['users']['loginPid']);
+            $this->redirect(
+                'index', 
+                'Auth', 
+                null, 
+                ['noRedirect' => 1], 
+                $this->settings['users']['loginPid']
+            );
         }
 
         $this->redirect('index');
     }
+
+    
+
+    /**
+     * Returns logger instance
+     *
+     * @return \TYPO3\CMS\Core\Log\Logger
+     */
+    protected function getLogger(): Logger
+    {
+
+        if (!$this->logger instanceof Logger) {
+            $this->logger = GeneralUtility::makeInstance(LogManager::class)
+                ->getLogger(__CLASS__);
+        }
+
+        return $this->logger;
+    }
+
+    
+
+    /**
+     * Id of logged User
+     *
+     * @deprecated Will be removed soon. Use FrontendUserSessionUtility::getFrontendUserId() instead
+     * @return integer
+     */
+    protected function getFrontendUserId(): int
+    {
+        GeneralUtility::logDeprecatedFunction();
+        return FrontendUserSessionUtility::getFrontendUserId();
+    }
+
+
+    /**
+     * Returns current logged in user object
+     *
+     * @deprecated Will be removed soon. Use AbstractController::getFrontendUser() instead and check with instanceof \RKW\RkwRegistration\Domain\Model\GuestUser
+     * @return \RKW\RkwRegistration\Domain\Model\GuestUser|NULL
+     */
+    protected function getFrontendUserAnonymous()
+    {
+        GeneralUtility::logDeprecatedFunction();
+
+        $frontendUser = $this->getFrontendUser();
+        if ($frontendUser instanceof GuestUser) {
+            return $frontendUser;
+        }
+
+        return null;
+    }
+
 
 
 }
