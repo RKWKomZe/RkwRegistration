@@ -175,7 +175,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
                         'editUser', 
                         'Registration', 
                         null, 
-                        ['noRedirect' => 1], 
+                        [],
                         $this->settings['users']['editUserPid']
                     );
                 }
@@ -243,7 +243,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
                             'edit', 
                             'FrontendUser', 
                             null,
-                            ['noRedirect' => 1], 
+                            [],
                             $this->settings['users']['editUserPid']
                         );
                     }
@@ -279,7 +279,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
                 'index', 
                 'Auth', 
                 null, 
-                ['noRedirect' => 1], 
+                [],
                 $this->settings['users']['loginPid']
             );
         }

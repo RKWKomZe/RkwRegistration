@@ -208,7 +208,7 @@ class PasswordController extends AbstractController
             'index', 
             'Auth', 
             null, 
-            ['noRedirect' => 1]
+            []
         );
     }
 

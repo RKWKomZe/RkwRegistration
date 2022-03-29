@@ -125,7 +125,7 @@ class RegistrationController extends AbstractController
                     'index', 
                     'Auth', 
                     null, 
-                    ['noRedirect' => 1], 
+                    [],
                     $this->settings['users']['loginPid']
                 );
             }
@@ -155,7 +155,7 @@ class RegistrationController extends AbstractController
             'index', 
             'Auth', 
             null, 
-            ['noRedirect' => 1], 
+            [],
             $this->settings['users']['loginPid']
         );
     }

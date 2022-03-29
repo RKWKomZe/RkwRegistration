@@ -126,7 +126,7 @@ class FrontendUserController extends AbstractController
                 'index', 
                 'Auth', 
                 null, 
-                ['noRedirect' => 1], 
+                [],
                 $this->settings['users']['loginPid']
             );
         }
@@ -267,7 +267,7 @@ class FrontendUserController extends AbstractController
                 'index', 
                 'Auth', 
                 null, 
-                ['noRedirect' => 1], 
+                [],
                 $this->settings['users']['loginPid']
             );
         }
