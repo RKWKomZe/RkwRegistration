@@ -255,9 +255,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
             && ($txRkwregistrationTitle->getName() !== '')
         ){
             /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
             /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
-            $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
+            $titleRepository = $objectManager->get(\RKW\RkwRegistration\Domain\Repository\TitleRepository::class);
 
             if ($existingTitle = $titleRepository->findOneByName($txRkwregistrationTitle->getName())) {
                 $this->txRkwregistrationTitle = $existingTitle;
@@ -280,17 +280,14 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 
             if ($this->getTxRkwregistrationTitle()->getIsTitleAfter() == $titleAfter) {
                 return $this->getTxRkwregistrationTitle()->getName();
-                //===
             }
         }
 
         if (!is_numeric($this->getTitle())) {
             return $this->getTitle();
-            //===
         }
 
         return '';
-        //===
     }
 
     /**
@@ -413,7 +410,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getUsergroup()
     {
         return $this->usergroup;
-        //===
     }
 
 
@@ -439,7 +435,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     {
 
         return $this->crdate;
-        //===
     }
 
     /**
@@ -463,7 +458,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getTstamp()
     {
         return $this->tstamp;
-        //===
     }
 
 
@@ -488,7 +482,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getStarttime()
     {
         return $this->starttime;
-        //===
     }
 
 
@@ -513,7 +506,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getEndtime()
     {
         return $this->endtime;
-        //===
     }
 
 
@@ -539,7 +531,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getTxRkwregistrationMobile()
     {
         return $this->txRkwregistrationMobile;
-        //===
     }
 
 
@@ -565,7 +556,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getTxRkwregistrationGender()
     {
         return $this->txRkwregistrationGender;
-        //===
     }
 
     /**
@@ -580,15 +570,13 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
             return \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
                 'tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.' . $this->getTxRkwregistrationGender(),
                 'rkw_registration',
-                array(),
+                [],
                 $this->getTxRkwregistrationLanguageKey()
             );
-            //===
 
         }
 
         return '';
-        //===
     }
 
 
@@ -614,7 +602,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getTxRkwregistrationRegisteredBy()
     {
         return $this->txRkwregistrationRegisteredBy;
-        //===
     }
 
 
@@ -639,7 +626,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getTxRkwregistrationRegisterRemoteIp()
     {
         return $this->txRkwregistrationRegisterRemoteIp;
-        //===
     }
 
     /**
@@ -676,7 +662,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getTxRkwregistrationLoginErrorCount()
     {
         return $this->txRkwregistrationLoginErrorCount;
-        //===
     }
 
 
@@ -702,7 +687,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getTxRkwregistrationLanguageKey()
     {
         return $this->txRkwregistrationLanguageKey;
-        //===
     }
 
 
@@ -728,7 +712,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getTxRkwregistrationFacebookUrl()
     {
         return $this->txRkwregistrationFacebookUrl;
-        //===
     }
 
 
@@ -753,7 +736,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getTxRkwregistrationTwitterUrl()
     {
         return $this->txRkwregistrationTwitterUrl;
-        //===
     }
 
 
@@ -779,7 +761,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getTxRkwregistrationXingUrl()
     {
         return $this->txRkwregistrationXingUrl;
-        //===
     }
 
 
@@ -804,7 +785,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getDisable()
     {
         return $this->disable;
-        //===
     }
 
 
@@ -830,7 +810,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getDeleted()
     {
         return $this->deleted;
-        //===
     }
 
 
@@ -855,7 +834,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getTxRkwregistrationTwitterId()
     {
         return $this->txRkwregistrationTwitterId;
-        //===
     }
 
 
@@ -880,7 +858,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getTxRkwregistrationFacebookId()
     {
         return $this->txRkwregistrationFacebookId;
-        //===
     }
 
     /**

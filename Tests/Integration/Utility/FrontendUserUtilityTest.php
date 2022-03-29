@@ -2,6 +2,7 @@
 namespace RKW\RkwRegistration\Tests\Integration\Utility;
 
 
+use Exception;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
 use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
@@ -49,7 +50,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
 
     /**
      * Setup
-     * @throws \Exception
+     * @throws Exception
      */
     protected function setUp()
     {

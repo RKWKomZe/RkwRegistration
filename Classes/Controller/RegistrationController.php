@@ -76,14 +76,14 @@ class RegistrationController extends AbstractController
         $services = $this->serviceRepository->findConfirmedByUser($this->getFrontendUser());
 
         $this->view->assignMultiple(
-            array(
+            [
                 'services'        => $services,
                 'frontendUser'    => $this->getFrontendUser(),
                 'editUserPid'     => intval($this->settings['users']['editUserPid']),
                 'deleteUserPid'   => intval($this->settings['users']['deleteUserPid']),
                 'editPasswordPid' => intval($this->settings['users']['editPasswordPid']),
                 'logoutPid'       => intval($this->settings['users']['logoutPid']),
-            )
+            ]
         );
     }
 

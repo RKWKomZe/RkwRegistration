@@ -62,14 +62,14 @@ class AuthController extends AbstractController
                     ->setTargetPageUid(intval($this->settings['users']['logoutPid']))
                     ->setUseCacheHash(false)
                     ->setArguments(
-                        array(
-                            'tx_rkwregistration_logoutinternal' => array(
+                        [
+                            'tx_rkwregistration_logoutinternal' => [
                                 'action'         => 'logout',
                                 'redirectAction' => 'new',
                                 'redirectController' => 'FrontendUser',
                                 'pageUid' => intval($this->settings['users']['registrationPid'])
-                            ),
-                        )
+                            ],
+                        ]
                     )
                     ->build();
 
@@ -77,7 +77,7 @@ class AuthController extends AbstractController
                     LocalizationUtility::translate(
                         'registrationController.message.login_message_guest',
                         $this->extensionName,
-                        array($registerLink)
+                        [$registerLink]
                     )
                 );
 
@@ -91,12 +91,12 @@ class AuthController extends AbstractController
                         ->setTargetPageUid(intval($this->settings['users']['registrationPid']))
                         ->setUseCacheHash(false)
                         ->setArguments(
-                            array(
-                                'tx_rkwregistration_register' => array(
+                            [
+                                'tx_rkwregistration_register' => [
                                     'controller' => 'FrontendUser',
                                     'action'     => 'new',
-                                ),
-                            )
+                                ],
+                            ]
                         )
                         ->build();
                 }
@@ -105,7 +105,7 @@ class AuthController extends AbstractController
                     LocalizationUtility::translate(
                         'registrationController.message.login_message',
                         $this->extensionName,
-                        array($registerLink)
+                        [$registerLink]
                     )
                 );
             }
@@ -113,9 +113,9 @@ class AuthController extends AbstractController
         }
 
         $this->view->assignMultiple(
-            array(
+            [
                 'frontendUser' => $this->getFrontendUser()
-            )
+            ]
         );
     }
 
@@ -197,7 +197,7 @@ class AuthController extends AbstractController
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'registrationController.error.login_blocked', $this->extensionName,
-                    array(($this->settings['users']['maxLoginErrors'] ? intval($this->settings['users']['maxLoginErrors']) : 10))
+                    [($this->settings['users']['maxLoginErrors'] ? intval($this->settings['users']['maxLoginErrors']) : 10)]
                 ),
                 '',
                 AbstractMessage::ERROR
@@ -330,16 +330,16 @@ class AuthController extends AbstractController
                     LocalizationUtility::translate(
                         'authController.message.login_welcome',
                         $this->extensionName,
-                        array($frontendUser->getUsername())
+                        [$frontendUser->getUsername()]
                     )
                 );
             }
         }
 
         $this->view->assignMultiple(
-            array(
+            [
                 'frontendUser' => $this->getFrontendUser(),
-            )
+            ]
         );
     }
 
@@ -471,13 +471,13 @@ class AuthController extends AbstractController
         $url = $this->uriBuilder->reset()
             ->setUseCacheHash(false)
             ->setArguments(
-                array('tx_rkwregistration_register' =>
-                          array(
-                              'controller' => 'Registration',
-                              'action'     => 'loginAnonymous',
-                              'token'      => $this->getFrontendUserAnonymous()->getUsername(),
-                          ),
-                )
+                ['tx_rkwregistration_register' =>
+                      [
+                          'controller' => 'Registration',
+                          'action'     => 'loginAnonymous',
+                          'token'      => $this->getFrontendUserAnonymous()->getUsername(),
+                      ],
+                ]
             )
             ->setCreateAbsoluteUri(true)
             ->build();
@@ -487,10 +487,10 @@ class AuthController extends AbstractController
             LocalizationUtility::translate(
                 'registrationController.message.anonymous_link',
                 $this->extensionName,
-                array(
+                [
                     intval(intval($this->settings['users']['lifetimeAnonymous']) / 60 / 60 / 24),
                     $url,
-                )
+                ]
             )
         );
 

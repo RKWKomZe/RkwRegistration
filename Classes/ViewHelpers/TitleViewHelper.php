@@ -42,10 +42,10 @@ class TitleViewHelper extends AbstractViewHelper
     {
 
         return static::renderStatic(
-            array(
+            [
                 'title'      => $title,
                 'titleAfter' => $titleAfter,
-            ),
+            ],
             $this->buildRenderChildrenClosure(),
             $this->renderingContext
         );

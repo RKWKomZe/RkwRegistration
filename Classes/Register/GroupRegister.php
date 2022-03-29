@@ -114,7 +114,7 @@ class GroupRegister
     {
         // get mandatory fields from TypoScript
         $settings = $this->getSettings();
-        $requiredFields = array();
+        $requiredFields = [];
 
         // 1. get mandatory fields of given user-group
         if ($frontendUserGroup) {
@@ -224,7 +224,7 @@ class GroupRegister
                 $service->setValidUntil(0);
 
                 // check if there are mandatory fields for the service
-                $mandatoryFields = array();
+                $mandatoryFields = [];
                 foreach ($frontendUserGroups as $frontendUserGroup) {
                     if ($frontendUserGroup instanceof FrontendUserGroup) {
                         $mandatoryFields = array_merge($mandatoryFields, $this->getMandatoryFieldsOfUser($frontendUser, $frontendUserGroup));
@@ -247,7 +247,11 @@ class GroupRegister
                 }
 
                 // Signal for E-Mails
-                $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_ADMIN_SERVICE_GRANT, array($frontendUser, $service));
+                $this->getSignalSlotDispatcher()->dispatch(
+                    __CLASS__,
+                    self::SIGNAL_AFTER_ADMIN_SERVICE_GRANT,
+                    [$frontendUser, $service]
+                );
 
                 $this->getPersistanceManager()->persistAll();
 
@@ -260,7 +264,11 @@ class GroupRegister
                 $this->getServiceRepository()->remove($service);
 
                 // Signal for E-Mails
-                $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_ADMIN_SERVICE_DENIAL, array($frontendUser, $service));
+                $this->getSignalSlotDispatcher()->dispatch(
+                    __CLASS__,
+                    self::SIGNAL_AFTER_ADMIN_SERVICE_DENIAL,
+                    [$frontendUser, $service]
+                );
 
                 $this->getPersistanceManager()->persistAll();
 
@@ -400,7 +408,7 @@ class GroupRegister
         }
 
         if (!$this->settings) {
-            return array();
+            return [];
         }
 
         return $this->settings;

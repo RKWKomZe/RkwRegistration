@@ -42,11 +42,11 @@ class UserFullNameViewHelper extends AbstractViewHelper
     {
 
         return static::renderStatic(
-            array(
+            [
                 'frontendUser'     => $frontendUser,
                 'includeFirstName' => $includeFirstName,
                 'includeGender'    => $includeGender,
-            ),
+            ],
             $this->buildRenderChildrenClosure(),
             $this->renderingContext
         );
@@ -69,7 +69,7 @@ class UserFullNameViewHelper extends AbstractViewHelper
         $includeFirstName = $arguments['includeFirstName'];
         $includeGender = $arguments['includeGender'];
 
-        $fullName = array();
+        $fullName = [];
         if ($frontendUser->getLastName()) {
 
             if (

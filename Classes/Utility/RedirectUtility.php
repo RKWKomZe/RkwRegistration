@@ -131,27 +131,12 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
      */
     public static function getDomainFromUrl($url)
     {
-        $match = array();
+        $match = [];
         if (preg_match('#^http(s)?://([[:alnum:]._-]+)/#', $url, $match)) {
             return $match[2];
         }
 
         return null;
-    }
-
-
-
-    /**
-     * Gives back current Domain
-     *
-     * @deprecated Used for fake (sub-)domains. Not longer needed
-     *
-     * @return string
-     */
-    public static function getCurrentDomainName()
-    {
-        // @toDo: Does "->getDomainNameForPid" also work in our dynamic MyRkw-Domain setting?
-        return $GLOBALS['TSFE']->getDomainNameForPid(intval($GLOBALS['TSFE']->page['uid']));
     }
 
 
@@ -208,6 +193,21 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
     protected static function getLogger()
     {
         return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+    }
+
+
+
+    /**
+     * Gives back current Domain
+     *
+     * @deprecated Used for fake (sub-)domains. Not longer needed
+     *
+     * @return string
+     */
+    public static function getCurrentDomainName()
+    {
+        // @toDo: Does "->getDomainNameForPid" also work in our dynamic MyRkw-Domain setting?
+        return $GLOBALS['TSFE']->getDomainNameForPid(intval($GLOBALS['TSFE']->page['uid']));
     }
 
 

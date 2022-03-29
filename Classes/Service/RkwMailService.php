@@ -104,20 +104,23 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
                 );
 
             // send new user an email with token
-            $mailService->setTo($frontendUser, array(
-                'marker' => array(
-                    'linkTokenYes' => $uriTokenYes,
-                    'linkTokenNo' => $uriTokenNo,
-                    'frontendUser'    => $frontendUser,
+            $mailService->setTo(
+                $frontendUser,
+                [
+                    'marker' => [
+                        'linkTokenYes' => $uriTokenYes,
+                        'linkTokenNo' => $uriTokenNo,
+                        'frontendUser'    => $frontendUser,
 
-                    // old
-                    #'tokenYes'        => $registration->getTokenYes(),
-                    #'tokenNo'         => $registration->getTokenNo(),
-                    #'userSha1'        => $registration->getUserSha1(),
-                    #'registrationPid' => intval($settingsDefault['users']['registrationPid']),
-                    #'pageUid'         => intval($GLOBALS['TSFE']->id),
-                ),
-            ));
+                        // old
+                        #'tokenYes'        => $registration->getTokenYes(),
+                        #'tokenNo'         => $registration->getTokenNo(),
+                        #'userSha1'        => $registration->getUserSha1(),
+                        #'registrationPid' => intval($settingsDefault['users']['registrationPid']),
+                        #'pageUid'         => intval($GLOBALS['TSFE']->id),
+                    ],
+                ]
+            );
 
             $mailService->getQueueMail()->setSubject(
                 \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
@@ -177,17 +180,20 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
                 ->build();
 
             // send new user an email with token
-            $mailService->setTo($frontendUser, array(
-                'marker' => array(
-                    'plaintextPasswordForMail'  => $plaintextPassword,
-                    'frontendUser'              => $frontendUser,
-                    'pageUid'                   => intval($GLOBALS['TSFE']->id),
-                    'loginLink'                 => $uriLogin
+            $mailService->setTo(
+                $frontendUser,
+                [
+                    'marker' => [
+                        'plaintextPasswordForMail'  => $plaintextPassword,
+                        'frontendUser'              => $frontendUser,
+                        'pageUid'                   => intval($GLOBALS['TSFE']->id),
+                        'loginLink'                 => $uriLogin
 
-                    // old
-                    #'loginPid'                 => intval($settingsDefault['users']['loginPid']),
-                ),
-            ));
+                        // old
+                        #'loginPid'                 => intval($settingsDefault['users']['loginPid']),
+                    ]
+                ]
+            );
 
             $mailService->getQueueMail()->setSubject(
                 \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
@@ -233,14 +239,17 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
             // send new user an email with token
-            $mailService->setTo($frontendUser, array(
-                'marker' => array(
-                    'plaintextPasswordForMail' => $plaintextPassword,
-                    'frontendUser'             => $frontendUser,
-                    'pageUid'                  => intval($GLOBALS['TSFE']->id),
-                    'loginPid'                 => intval($settingsDefault['users']['loginPid']),
-                ),
-            ));
+            $mailService->setTo(
+                $frontendUser,
+                [
+                    'marker' => [
+                        'plaintextPasswordForMail' => $plaintextPassword,
+                        'frontendUser'             => $frontendUser,
+                        'pageUid'                  => intval($GLOBALS['TSFE']->id),
+                        'loginPid'                 => intval($settingsDefault['users']['loginPid']),
+                    ],
+                ]
+            );
 
             $mailService->getQueueMail()->setSubject(
                 \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
@@ -287,18 +296,21 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
             // send new user an email with token
-            $mailService->setTo($admin, array(
-                'marker' => array(
-                    'tokenYes'          => $serviceOptIn->getTokenYes(),
-                    'tokenNo'           => $serviceOptIn->getTokenNo(),
-                    'serviceSha1'       => $serviceOptIn->getServiceSha1(),
-                    'service'           => $serviceOptIn,
-                    'frontendUser'      => $frontendUser,
-                    'frontendUserGroup' => $frontendUserGroup,
-                    'backendUser'       => $admin,
-                    'pageUid'           => intval($pid),
-                ),
-            ));
+            $mailService->setTo(
+                $admin,
+                [
+                    'marker' => [
+                        'tokenYes'          => $serviceOptIn->getTokenYes(),
+                        'tokenNo'           => $serviceOptIn->getTokenNo(),
+                        'serviceSha1'       => $serviceOptIn->getServiceSha1(),
+                        'service'           => $serviceOptIn,
+                        'frontendUser'      => $frontendUser,
+                        'frontendUserGroup' => $frontendUserGroup,
+                        'backendUser'       => $admin,
+                        'pageUid'           => intval($pid),
+                    ],
+                ]
+            );
 
             $mailService->getQueueMail()->setSubject(
                 \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
@@ -343,14 +355,17 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
             // send new user an email with token
-            $mailService->setTo($frontendUser, array(
-                'marker' => array(
-                    'service'      => $service,
-                    'frontendUser' => $frontendUser,
-                    'pageUid'      => intval($GLOBALS['TSFE']->id),
-                    'loginPid'     => intval($settingsDefault['users']['loginPid']),
-                ),
-            ));
+            $mailService->setTo(
+                $frontendUser,
+                [
+                    'marker' => [
+                        'service'      => $service,
+                        'frontendUser' => $frontendUser,
+                        'pageUid'      => intval($GLOBALS['TSFE']->id),
+                        'loginPid'     => intval($settingsDefault['users']['loginPid']),
+                    ],
+                ]
+            );
 
             $mailService->getQueueMail()->setSubject(
                 \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
@@ -396,13 +411,16 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
             // send new user an email with token
-            $mailService->setTo($frontendUser, array(
-                'marker' => array(
-                    'service'      => $service,
-                    'frontendUser' => $frontendUser,
-                    'pageUid'      => intval($GLOBALS['TSFE']->id),
-                ),
-            ));
+            $mailService->setTo(
+                $frontendUser,
+                [
+                    'marker' => [
+                        'service'      => $service,
+                        'frontendUser' => $frontendUser,
+                        'pageUid'      => intval($GLOBALS['TSFE']->id),
+                    ]
+                ]
+            );
 
             $mailService->getQueueMail()->setSubject(
                 \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(

@@ -11,171 +11,171 @@ call_user_func(
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'Register',
-            array(
+            [
                 'FrontendUser' => 'new, create',
                 'Registration' => 'optIn',
                 'Service' => 'list, show, create, delete, optIn',
-            ),
+            ],
             // non-cacheable actions
-            array(
+            [
                 'FrontendUser' => 'new, create',
                 'Registration' => 'optIn',
                 'Service' => 'list, show, create, delete, optIn',
-            )
+            ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'Welcome',
-            array(
+            [
                 'Registration' => 'index',
                 //'FrontendUser' => 'edit, update',
-            ),
+            ],
             // non-cacheable actions
-            array(
+            [
                 'Registration' => 'index',
                 //'FrontendUser' => 'edit, update',
-            )
+            ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'AuthInternal',
-            array(
+            [
                 'Auth' => 'index, login, logoutExternal, loginAnonymous, loginHintAnonymous',
                 'Password' => 'new, create',
                 //'Registration' => 'new, create, optIn, index',
                 //'Password' => 'new, create',
-            ),
+            ],
             // non-cacheable actions
-            array(
+            [
                 'Auth' => 'index, login, logoutExternal, loginAnonymous, loginHintAnonymous',
                 'Password' => 'new, create',
                 //'Registration' => 'new, create, optIn, index',
                 //'Password' => 'new, create',
-            )
+            ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'AuthExternal',
-            array(
+            [
                 'Auth' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous',
                 'AuthGuest' => 'login, loginHint',
-            ),
+            ],
             // non-cacheable actions
-            array(
+            [
                 'Auth' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous',
                 'AuthGuest' => 'login, loginHint',
-            )
+            ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'LogoutInternal',
-            array(
+            [
                 'Auth' => 'logout, logoutRedirect',
-            ),
+            ],
             // non-cacheable actions
-            array(
+            [
                 'Auth' => 'logout, logoutRedirect',
-            )
+            ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'LogoutExternal',
-            array(
+            [
                 'Auth' => 'logoutExternal',
-            ),
+            ],
             // non-cacheable actions
-            array(
+            [
                 'Auth' => 'logoutExternal',
-            )
+            ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'Password',
-            array(
+            [
                 'Password' => 'edit, update',
-            ),
+            ],
             // non-cacheable actions
-            array(
+            [
                 'Password' => 'edit, update',
-            )
+            ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'FrontendUserEdit',
-            array(
+            [
                 'FrontendUser' => 'edit, update',
-            ),
+            ],
             // non-cacheable actions
-            array(
+            [
                 'FrontendUser' => 'edit, update',
-            )
+            ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'FrontendUserDelete',
-            array(
+            [
                 'FrontendUser' => 'show, delete',
-            ),
+            ],
             // non-cacheable actions
-            array(
+            [
                 'FrontendUser' => 'show, delete',
-            )
+            ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'Service',
-            array(
+            [
                 'Service' => 'list, show, create, delete, index',
-            ),
+            ],
             // non-cacheable actions
-            array(
+            [
                 'Service' => 'list, show, create, delete, index',
-            )
+            ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'ServiceOptIn',
-            array(
+            [
                 'Service' => 'optIn, index',
-            ),
+            ],
             // non-cacheable actions
-            array(
+            [
                 'Service' => 'optIn, index',
-            )
+            ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'RkwregistrationAjax',
-            array(
+            [
                 'Ajax' => 'loginInfoInit, loginInfo'
-            ),
+            ],
             // non-cacheable actions
-            array(
+            [
                 'Ajax' => 'loginInfo'
-            )
+            ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'RkwregistrationInfo',
-            array(
+            [
                 'Info' => 'loginInfo'
-            ),
+            ],
             // non-cacheable actions
-            array(
+            [
                 'Info' => 'loginInfo'
-            )
+            ]
         );
 
         //=================================================================
@@ -251,18 +251,18 @@ call_user_func(
         //=================================================================
         // Register Logger
         //=================================================================
-        $GLOBALS['TYPO3_CONF_VARS']['LOG']['RKW']['RkwRegistration']['writerConfiguration'] = array(
+        $GLOBALS['TYPO3_CONF_VARS']['LOG']['RKW']['RkwRegistration']['writerConfiguration'] = [
 
             // configuration for WARNING severity, including all
             // levels with higher severity (ERROR, CRITICAL, EMERGENCY)
-            \TYPO3\CMS\Core\Log\LogLevel::INFO => array(
+            \TYPO3\CMS\Core\Log\LogLevel::INFO => [
                 // add a FileWriter
-                'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => array(
+                'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => [
                     // configuration for the writer
                     'logFile' => 'typo3temp/var/logs/tx_rkwregistration.log'
-                )
-            ),
-        );
+                ]
+            ],
+        ];
 
 
         //=================================================================
@@ -278,7 +278,7 @@ call_user_func(
             $extKey,
             'auth',
             RKW\RkwRegistration\Service\AuthFrontendUserService::class,
-            array(
+            [
                 'title' => 'Authentication Service for fe_users',
                 'description' => 'Authentication Service for fe_users',
                 //'subtype' => 'authUserFE,getGroupsFE,getUserFE,processLoginDataFE',
@@ -289,7 +289,7 @@ call_user_func(
                 'os' => '',
                 'exec' => '',
                 'className' => RKW\RkwRegistration\Service\AuthFrontendUserService::class
-            )
+            ]
         );
 
         # It is possible to force TYPO3 CMS to go through the authentication process for every request no matter any existing session.

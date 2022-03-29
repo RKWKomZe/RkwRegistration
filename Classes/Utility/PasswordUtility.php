@@ -59,33 +59,6 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
 
 
     /**
-     * Generates a salted password for the user
-     *
-     * @deprecated This function will be removed soon. Use generatePassword and saltPassword instead
-     * @param FrontendUser $frontendUser
-     * @param string $plaintextPassword
-     * @return string
-     */
-    public static function generate(
-        FrontendUser $frontendUser, 
-        string $plaintextPassword = ''
-    ): string {
-
-        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
-
-        if (!$plaintextPassword) {
-            $plaintextPassword = self::generatePassword();
-        }
-
-        $saltedPassword = self::saltPassword($plaintextPassword);
-        $frontendUser->setPassword($saltedPassword);
-
-        return $plaintextPassword;
-    }
-
-
-
-    /**
      * Generates a password
      *
      * @see saltPassword for description
@@ -161,6 +134,33 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
     protected static function getLogger()
     {
         return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+    }
+
+
+
+    /**
+     * Generates a salted password for the user
+     *
+     * @deprecated This function will be removed soon. Use generatePassword and saltPassword instead
+     * @param FrontendUser $frontendUser
+     * @param string $plaintextPassword
+     * @return string
+     */
+    public static function generate(
+        FrontendUser $frontendUser,
+        string $plaintextPassword = ''
+    ): string {
+
+        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+
+        if (!$plaintextPassword) {
+            $plaintextPassword = self::generatePassword();
+        }
+
+        $saltedPassword = self::saltPassword($plaintextPassword);
+        $frontendUser->setPassword($saltedPassword);
+
+        return $plaintextPassword;
     }
 
 

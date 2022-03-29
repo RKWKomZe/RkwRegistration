@@ -144,13 +144,13 @@ class AuthGuestController extends AbstractController
         $url = $this->uriBuilder->reset()
             ->setUseCacheHash(false)
             ->setArguments(
-                array('tx_rkwregistration_authexternal' =>
-                      array(
+                ['tx_rkwregistration_authexternal' =>
+                      [
                           'controller' => 'AuthGuest',
                           'action'     => 'login',
                           'token'      => $this->getFrontendUser()->getUsername(),
-                      ),
-                )
+                      ],
+                ]
             )
             ->setCreateAbsoluteUri(true)
             ->build();
@@ -160,10 +160,10 @@ class AuthGuestController extends AbstractController
             LocalizationUtility::translate(
                 'registrationController.message.guest_link',
                 $this->extensionName,
-                array(
+                [
                     intval(intval($this->settings['users']['guest']['lifetime']) / 60 / 60 / 24),
                     $url,
-                )
+                ]
             )
         );
 

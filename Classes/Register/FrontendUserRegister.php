@@ -187,7 +187,11 @@ class FrontendUserRegister extends AbstractRegister
         $this->getPersistenceManager()->persistAll();
 
         // Signal for e.g. E-Mails or other extensions
-        $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_DELETING_USER . ucfirst($category), array($this->frontendUser));
+        $this->getSignalSlotDispatcher()->dispatch(
+            __CLASS__,
+            self::SIGNAL_AFTER_DELETING_USER . ucfirst($category),
+            [$this->frontendUser]
+        );
         $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully logged out and deleted user "%s".', strtolower($this->frontendUser->getUsername())));
 
         return true;
@@ -316,7 +320,7 @@ class FrontendUserRegister extends AbstractRegister
         }
 
         if (!$this->settings) {
-            return array();
+            return [];
         }
 
         return $this->settings;

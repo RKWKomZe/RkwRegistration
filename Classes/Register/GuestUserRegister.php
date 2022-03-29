@@ -90,6 +90,26 @@ class GuestUserRegister extends FrontendUserRegister
     }
 
 
+    /**
+     * persistAll
+     *
+     * Triggers also a signalSlot
+     *
+     * @param string $category
+     * @return void
+     */
+    public function persistAll($category = null)
+    {
+        $this->persistenceManager->persistAll();
+
+        $this->getSignalSlotDispatcher()->dispatch(
+            __CLASS__,
+            self::SIGNAL_AFTER_REGISTER_GUEST . ucfirst($category),
+            [$this->guestUser]
+        );
+    }
+
+
 
     /**
      * creates a valid token for a guest user
@@ -109,23 +129,6 @@ class GuestUserRegister extends FrontendUserRegister
         } while (count($guestUserRepository->findByUsername($token)));
 
         return $token;
-    }
-
-
-
-    /**
-     * persistAll
-     *
-     * Triggers also a signalSlot
-     *
-     * @param string $category
-     * @return void
-     */
-    public function persistAll($category = null)
-    {
-        $this->persistenceManager->persistAll();
-
-        $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_REGISTER_GUEST . ucfirst($category), array($this->guestUser));
     }
 
 

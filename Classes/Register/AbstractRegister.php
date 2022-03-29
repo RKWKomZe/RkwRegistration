@@ -187,7 +187,7 @@ abstract class AbstractRegister
         }
 
         if (!$this->settings) {
-            return array();
+            return [];
         }
         return $this->settings;
     }

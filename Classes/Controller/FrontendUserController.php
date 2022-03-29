@@ -74,11 +74,11 @@ class FrontendUserController extends AbstractController
         $titles = $this->titleRepository->findAllOfType(true, false, false);
 
         $this->view->assignMultiple(
-            array(
+            [
                 'newFrontendUser'   => $newFrontendUser,
                 'termsPid'          => intval($this->settings['users']['termsPid']),
                 'titles'            => $titles
-            )
+            ]
         );
     }
 
@@ -152,11 +152,11 @@ class FrontendUserController extends AbstractController
         $titles = $this->titleRepository->findAllOfType(true, false, false);
 
         $this->view->assignMultiple(
-            array(
+            [
                 'frontendUser' => $this->getFrontendUser(),
                 'welcomePid'   => intval($this->settings['users']['welcomePid']),
                 'titles' => $titles
-            )
+            ]
         );
     }
     
@@ -225,9 +225,9 @@ class FrontendUserController extends AbstractController
         $this->redirectIfUserNotLoggedIn();
 
         $this->view->assignMultiple(
-            array(
+            [
                 'welcomePid' => intval($this->settings['users']['welcomePid']),
-            )
+            ]
         );
     }
 

@@ -215,7 +215,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         if ($frontendUser = $this->getFrontendUser()) {
 
-            $requiredFields = array();
+            $requiredFields = [];
             if ($this->settings['users']['requiredFormFields']) {
                 $requiredFields = explode(
                     ',', 

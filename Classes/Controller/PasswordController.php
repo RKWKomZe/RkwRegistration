@@ -54,9 +54,9 @@ class PasswordController extends AbstractController
         $this->redirectIfUserNotLoggedIn();
 
         $this->view->assignMultiple(
-            array(
+            [
                 'welcomePid' => intval($this->settings['users']['welcomePid']),
-            )
+            ]
         );
     }
 

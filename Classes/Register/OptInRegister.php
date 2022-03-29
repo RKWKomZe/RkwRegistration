@@ -143,7 +143,7 @@ class OptInRegister extends AbstractRegister
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      */
-    public function process($tokenYes, $tokenNo, $userSha1, Request $request = null, &$data = array())
+    public function process($tokenYes, $tokenNo, $userSha1, Request $request = null, &$data = [])
     {
         // load register by SHA-token
         /** @var Registration $register */
@@ -175,10 +175,15 @@ class OptInRegister extends AbstractRegister
             $this->getPersistenceManager()->persistAll();
 
             // Signal for E-Mails
-            $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_DENIAL, array($frontendUser));
-            $data = array(
-                'frontendUser' => $frontendUser,
+            $this->signalSlotDispatcher->dispatch(
+                __CLASS__,
+                self::SIGNAL_AFTER_USER_REGISTER_DENIAL,
+                [$frontendUser]
             );
+
+            $data = [
+                'frontendUser' => $frontendUser,
+            ];
 
             if ($status === 2) {
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-in with id "%s" (FE-User-Id=%s, category=%s) was successfully canceled.', strtolower($register->getUid()), $frontendUser->getUid(), $category));
@@ -207,22 +212,31 @@ class OptInRegister extends AbstractRegister
                     $frontendUserService->setClearanceAndLifetime(true);
 
                     // Signal for E-Mails
-                    $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_GRANT, array($frontendUser, $plaintextPassword, $register));
-                    $data = array(
+                    $this->getSignalSlotDispatcher()->dispatch(
+                        __CLASS__,
+                        self::SIGNAL_AFTER_USER_REGISTER_GRANT,
+                        [$frontendUser, $plaintextPassword, $register]
+                    );
+
+                    $data = [
                         'frontendUser'      => $frontendUser,
                         'registration'      => $register,
                         'plaintextPassword' => $plaintextPassword,
-                    );
+                    ];
                 }
             }
 
             if ($register->getCategory()) {
 
-                $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_GRANT . ucfirst($register->getCategory()), array($frontendUser, $register));
-                $data = array(
+                $this->getSignalSlotDispatcher()->dispatch(
+                    __CLASS__,
+                    self::SIGNAL_AFTER_USER_REGISTER_GRANT . ucfirst($register->getCategory()),
+                    [$frontendUser, $register]
+                );
+                $data = [
                     'frontendUser' => $frontendUser,
                     'registration' => $register,
-                );
+                ];
             }
 
             // add privacy for frontendUser
@@ -246,133 +260,6 @@ class OptInRegister extends AbstractRegister
         return 0;
     }
 
-
-
-    /**
-     * Checks given tokens from E-mail
-     *
-     * @deprecated This function will be removed soon. Use OptInRegister->process instead
-     *
-     * @param string $tokenYes
-     * @param string $tokenNo
-     * @param string $userSha1
-     * @param Request $request
-     * @param array $data Data as reference
-     * @return integer
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     */
-    public function checkTokens($tokenYes, $tokenNo, $userSha1, Request $request = null, &$data = array())
-    {
-        // load register by SHA-token
-        /** @var Registration $register */
-        $register = $this->getRegistrationRepository()->findOneByUserSha1($userSha1);
-        if (!$register) {
-            $this->getLogger()->log(LogLevel::ERROR, sprintf('No opt-in found for given SHA1-key.'));
-
-            return 0;
-        }
-
-        // is token already invalid?
-        if (
-            (!$register->getValidUntil())
-            || ($register->getValidUntil() < time())
-        ) {
-
-            $this->getRegistrationRepository()->remove($register);
-            $this->getPersistenceManager()->persistAll();
-            $this->getLogger()->log(LogLevel::WARNING, sprintf('Opt-in with id "%s" is not valid any more.', strtolower($register->getUid())));
-
-            return 0;
-        }
-
-
-        // load fe-user
-        if ($frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonGuest($register->getUser())) {
-
-            // check yes-token
-            $category = $register->getCategory();
-            if ($register->getTokenYes() == $tokenYes) {
-
-                if ($frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonGuest($register->getUser())) {
-
-                    if ($frontendUser->getDisable()) {
-
-                        /** @var FrontendUserRegister $frontendUserRegister */
-                        $frontendUserService = GeneralUtility::makeInstance(FrontendUserRegister::class, $frontendUser);
-                        $frontendUserService->setClearanceAndLifetime(true);
-                        $plaintextPassword = $frontendUserService->setNewPassword();
-
-                        // @toDo: add to Repo?
-                        // @toDo: persist?
-
-                        // Signal for E-Mails
-                        $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_GRANT, array($frontendUser, $plaintextPassword, $register));
-                        $data = array(
-                            'frontendUser'      => $frontendUser,
-                            'registration'      => $register,
-                            'plaintextPassword' => $plaintextPassword,
-                        );
-                    }
-
-                }
-
-                // Signal for E-Mails
-                if ($category) {
-
-                    $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_GRANT . ucfirst($category), array($frontendUser, $register));
-                    $data = array(
-                        'frontendUser' => $frontendUser,
-                        'registration' => $register,
-                    );
-                }
-
-                // add privacy for user
-                if ($request) {
-                    PrivacyHandler::addPrivacyDataForOptInFinal($request, $frontendUser, $register, ($category ? 'accepted opt-in for ' . $category : 'accepted opt-in'));
-                }
-
-                // delete registration
-                $this->getRegistrationRepository()->remove($register);
-                $this->getPersistenceManager()->persistAll();
-                $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-in with id "%s" (FE-User-Id=%s, category=%s) was successful.', strtolower($register->getUid()), $frontendUser->getUid(), $category));
-
-                return 1;
-
-                // check no-token
-            } elseif ($register->getTokenNo() == $tokenNo) {
-
-                // delete user and registration
-                // remove only disabled user!
-                if ($frontendUser->getDisable()) {
-                    $this->getFrontendUserRepository()->removeHard($frontendUser);
-                }
-                $this->getRegistrationRepository()->remove($register);
-                $this->getPersistenceManager()->persistAll();
-
-                // Signal for E-Mails
-                $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_USER_REGISTER_DENIAL, array($frontendUser));
-                $data = array(
-                    'frontendUser' => $frontendUser,
-                );
-
-                $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-in with id "%s" (FE-User-Id=%s, category=%s) was successfully canceled.', strtolower($register->getUid()), $frontendUser->getUid(), $category));
-
-                return 2;
-            }
-        }
-
-        // token mismatch or something strange happened - kill that beast!!!
-        // $this->getRegistrationRepository()->remove($register);
-        // $this->getPersistenceManager()->persistAll();
-
-        $this->getLogger()->log(LogLevel::ERROR, sprintf('Something went wrong when trying to register via opt-in with id "%s".', strtolower($register->getUid())));
-
-        return 0;
-    }
 
 
     /**
@@ -472,7 +359,11 @@ class OptInRegister extends AbstractRegister
                 $frontendUserDatabase->setEmail($frontendUser->getEmail());
 
                 // Signal for e.g. E-Mails
-                $signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_OPTIN_EXISTING_USER . ucfirst($category), array($frontendUserDatabase, $registration));
+                $signalSlotDispatcher->dispatch(
+                    __CLASS__,
+                    self::SIGNAL_AFTER_CREATING_OPTIN_EXISTING_USER . ucfirst($category),
+                    [$frontendUserDatabase, $registration]
+                );
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-In for existing user "%s" (id=%s, category=%s) successfully generated.', strtolower($frontendUserDatabase->getUsername()), $frontendUserDatabase->getUid(), $category));
 
             }
@@ -503,7 +394,11 @@ class OptInRegister extends AbstractRegister
             if ($enable) {
 
                 // Signal for e.g. E-Mails
-                $signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_FINAL_USER . ucfirst($category), array($frontendUser, $plaintextPassword, null));
+                $signalSlotDispatcher->dispatch(
+                    __CLASS__,
+                    self::SIGNAL_AFTER_CREATING_FINAL_USER . ucfirst($category),
+                    [$frontendUser, $plaintextPassword, null]
+                );
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully registered and enabled user "%s".', strtolower($frontendUser->getUsername())));
                 // add privacy opt-in for non-existing user
                 if ($request) {
@@ -521,12 +416,62 @@ class OptInRegister extends AbstractRegister
                 $persistenceManager->persistAll();
                 // Signal for e.g. E-Mails
 
-                $signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_AFTER_CREATING_OPTIN_USER . ucfirst($category), array($frontendUser, $registration));
+                $signalSlotDispatcher->dispatch(
+                    __CLASS__,
+                    self::SIGNAL_AFTER_CREATING_OPTIN_USER . ucfirst($category),
+                    [$frontendUser, $registration]
+                );
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully registered user "%s". Awaiting opt-in.', strtolower($frontendUser->getUsername())));
             }
         }
 
         return $frontendUser;
+    }
+
+
+    /**
+     * Checks given tokens from E-mail
+     *
+     * @param Registration $register
+     * @param string $tokenYes
+     * @param string $tokenNo
+     * @return integer The status. 0 = unexpected error, 1 = token yes, 2 = token no, 400 = expired
+     */
+    protected function check(Registration $register, $tokenYes, $tokenNo): int
+    {
+        // is token already invalid?
+        if (
+            !$register->getValidUntil()
+            || ($register->getValidUntil() < time())
+        ) {
+            return 400;
+        }
+
+        if ($register->getTokenYes() == $tokenYes) {
+            return 1;
+        }
+
+        if ($register->getTokenNo() == $tokenNo) {
+            return 2;
+        }
+
+        $this->getLogger()->log(LogLevel::WARNING, sprintf('Something unexpected went wrong while checking an registration.'));
+        return 0;
+    }
+
+
+    /**
+     * Returns logger instance
+     *
+     * @return Logger
+     */
+    protected function getLogger()
+    {
+        if (!$this->logger instanceof Logger) {
+            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+        }
+
+        return $this->logger;
     }
 
 
@@ -591,7 +536,11 @@ class OptInRegister extends AbstractRegister
         $persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(PersistenceManager::class);
         $persistenceManager->persistAll();
 
-        $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_REGISTER_GUEST . ucfirst($category), array($guestUser));
+        $this->getSignalSlotDispatcher()->dispatch(
+            __CLASS__,
+            self::SIGNAL_AFTER_REGISTER_GUEST . ucfirst($category),
+            [$guestUser]
+        );
 
         return $guestUser;
     }
@@ -619,7 +568,11 @@ class OptInRegister extends AbstractRegister
             $this->getPersistenceManager()->persistAll();
 
             // Signal for e.g. E-Mails or other extensions
-            $this->getSignalSlotDispatcher()->dispatch(__CLASS__, self::SIGNAL_AFTER_DELETING_USER . ucfirst($category), array($frontendUser));
+            $this->getSignalSlotDispatcher()->dispatch(
+                __CLASS__,
+                self::SIGNAL_AFTER_DELETING_USER . ucfirst($category),
+                [$frontendUser]
+            );
 
             $this->getLogger()->log(LogLevel::INFO, sprintf('Successfully logged out and deleted user "%s".', strtolower($frontendUser->getUsername())));
 
@@ -766,38 +719,6 @@ class OptInRegister extends AbstractRegister
 
 
     /**
-     * Checks given tokens from E-mail
-     *
-     * @param Registration $register
-     * @param string $tokenYes
-     * @param string $tokenNo
-     * @return integer The status. 0 = unexpected error, 1 = token yes, 2 = token no, 400 = expired
-     */
-    protected function check(Registration $register, $tokenYes, $tokenNo): int
-    {
-        // is token already invalid?
-        if (
-            !$register->getValidUntil()
-            || ($register->getValidUntil() < time())
-        ) {
-            return 400;
-        }
-
-        if ($register->getTokenYes() == $tokenYes) {
-            return 1;
-        }
-
-        if ($register->getTokenNo() == $tokenNo) {
-            return 2;
-        }
-
-        $this->getLogger()->log(LogLevel::WARNING, sprintf('Something unexpected went wrong while checking an registration.'));
-        return 0;
-    }
-
-
-
-    /**
      * creates a valid token for a guest user
      *
      * @deprecated Use GuestUserRegister->createToken instead
@@ -871,19 +792,143 @@ class OptInRegister extends AbstractRegister
     }
 
 
-
     /**
-     * Returns logger instance
+     * Checks given tokens from E-mail
      *
-     * @return Logger
+     * @deprecated This function will be removed soon. Use OptInRegister->process instead
+     *
+     * @param string $tokenYes
+     * @param string $tokenNo
+     * @param string $userSha1
+     * @param Request $request
+     * @param array $data Data as reference
+     * @return integer
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    protected function getLogger()
+    public function checkTokens($tokenYes, $tokenNo, $userSha1, Request $request = null, &$data = [])
     {
-        if (!$this->logger instanceof Logger) {
-            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+        // load register by SHA-token
+        /** @var Registration $register */
+        $register = $this->getRegistrationRepository()->findOneByUserSha1($userSha1);
+        if (!$register) {
+            $this->getLogger()->log(LogLevel::ERROR, sprintf('No opt-in found for given SHA1-key.'));
+
+            return 0;
         }
 
-        return $this->logger;
+        // is token already invalid?
+        if (
+            (!$register->getValidUntil())
+            || ($register->getValidUntil() < time())
+        ) {
+
+            $this->getRegistrationRepository()->remove($register);
+            $this->getPersistenceManager()->persistAll();
+            $this->getLogger()->log(LogLevel::WARNING, sprintf('Opt-in with id "%s" is not valid any more.', strtolower($register->getUid())));
+
+            return 0;
+        }
+
+
+        // load fe-user
+        if ($frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonGuest($register->getUser())) {
+
+            // check yes-token
+            $category = $register->getCategory();
+            if ($register->getTokenYes() == $tokenYes) {
+
+                if ($frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonGuest($register->getUser())) {
+
+                    if ($frontendUser->getDisable()) {
+
+                        /** @var FrontendUserRegister $frontendUserRegister */
+                        $frontendUserService = GeneralUtility::makeInstance(FrontendUserRegister::class, $frontendUser);
+                        $frontendUserService->setClearanceAndLifetime(true);
+                        $plaintextPassword = $frontendUserService->setNewPassword();
+
+                        // @toDo: add to Repo?
+                        // @toDo: persist?
+
+                        // Signal for E-Mails
+                        $this->getSignalSlotDispatcher()->dispatch(
+                            __CLASS__,
+                            self::SIGNAL_AFTER_USER_REGISTER_GRANT,
+                            [$frontendUser, $plaintextPassword, $register]
+                        );
+                        $data = [
+                            'frontendUser'      => $frontendUser,
+                            'registration'      => $register,
+                            'plaintextPassword' => $plaintextPassword,
+                        ];
+                    }
+
+                }
+
+                // Signal for E-Mails
+                if ($category) {
+
+                    $this->getSignalSlotDispatcher()->dispatch(
+                        __CLASS__,
+                        self::SIGNAL_AFTER_USER_REGISTER_GRANT . ucfirst($category),
+                        [$frontendUser, $register]
+                    );
+                    $data = [
+                        'frontendUser' => $frontendUser,
+                        'registration' => $register,
+                    ];
+                }
+
+                // add privacy for user
+                if ($request) {
+                    PrivacyHandler::addPrivacyDataForOptInFinal($request, $frontendUser, $register, ($category ? 'accepted opt-in for ' . $category : 'accepted opt-in'));
+                }
+
+                // delete registration
+                $this->getRegistrationRepository()->remove($register);
+                $this->getPersistenceManager()->persistAll();
+                $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-in with id "%s" (FE-User-Id=%s, category=%s) was successful.', strtolower($register->getUid()), $frontendUser->getUid(), $category));
+
+                return 1;
+
+                // check no-token
+            } elseif ($register->getTokenNo() == $tokenNo) {
+
+                // delete user and registration
+                // remove only disabled user!
+                if ($frontendUser->getDisable()) {
+                    $this->getFrontendUserRepository()->removeHard($frontendUser);
+                }
+                $this->getRegistrationRepository()->remove($register);
+                $this->getPersistenceManager()->persistAll();
+
+                // Signal for E-Mails
+                $this->getSignalSlotDispatcher()->dispatch(
+                    __CLASS__,
+                    self::SIGNAL_AFTER_USER_REGISTER_DENIAL,
+                    [$frontendUser]
+                );
+                $data = [
+                    'frontendUser' => $frontendUser,
+                ];
+
+                $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-in with id "%s" (FE-User-Id=%s, category=%s) was successfully canceled.', strtolower($register->getUid()), $frontendUser->getUid(), $category));
+
+                return 2;
+            }
+        }
+
+        // token mismatch or something strange happened - kill that beast!!!
+        // $this->getRegistrationRepository()->remove($register);
+        // $this->getPersistenceManager()->persistAll();
+
+        $this->getLogger()->log(LogLevel::ERROR, sprintf('Something went wrong when trying to register via opt-in with id "%s".', strtolower($register->getUid())));
+
+        return 0;
     }
+
 
 }

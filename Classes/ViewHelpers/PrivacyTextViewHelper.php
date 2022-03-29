@@ -66,10 +66,10 @@ class PrivacyTextViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 
         $template->setTemplate('Registration/Privacy');
         $template->assignMultiple(
-            array(
+            [
                 'privacyPid'  => $privacyPid,
                 'textVersion' => $textVersion,
-            )
+            ]
         );
 
         return $template->render();

@@ -218,9 +218,9 @@ class AuthService implements \TYPO3\CMS\Core\SingletonInterface
         }
 
 
-        $userArray = array(
+        $userArray = [
             'uid' => $frontendUser->getUid()
-        );
+        ];
 
         /** @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $GLOBALS['TSFE']*/
         /** @var \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication $GLOBALS['TSFE']->fe_user */
@@ -306,7 +306,7 @@ class AuthService implements \TYPO3\CMS\Core\SingletonInterface
     public function getDomain($url)
     {
 
-        $match = array();
+        $match = [];
         if (preg_match('#^http(s)?://([[:alnum:]._-]+)/#', $url, $match)) {
             return $match[2];
         }
@@ -377,7 +377,7 @@ class AuthService implements \TYPO3\CMS\Core\SingletonInterface
 
 
         if (!$this->settings) {
-            return array();
+            return [];
         }
 
         return $this->settings;

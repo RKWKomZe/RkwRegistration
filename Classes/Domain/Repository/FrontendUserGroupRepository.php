@@ -92,7 +92,7 @@ class FrontendUserGroupRepository extends \TYPO3\CMS\Extbase\Persistence\Reposit
             )
         );
 
-        $query->setOrderings(array('tstamp' => QueryInterface::ORDER_ASCENDING));
+        $query->setOrderings(['tstamp' => QueryInterface::ORDER_ASCENDING]);
 
         return $query->execute();
     }

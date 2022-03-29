@@ -238,9 +238,9 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->getQuerySettings()->setIncludeDeleted(true);
         $query->getQuerySettings()->setIgnoreEnableFields(true);
 
-        $constrains = array(
+        $constrains = [
             $query->greaterThanOrEqual('tstamp', intval($timestamp)),
-        );
+        ];
 
         // exclude feUsers without first- and last-name
         if ($excludeEmptyName) {
@@ -260,7 +260,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             )
         );
 
-        $query->setOrderings(array('tstamp' => QueryInterface::ORDER_ASCENDING));
+        $query->setOrderings(['tstamp' => QueryInterface::ORDER_ASCENDING]);
 
         return $query->execute();
     }
@@ -287,10 +287,10 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $timestamp = intval($tolerance);
         }
 
-        $constraints = array(
+        $constraints = [
             $query->greaterThan('endtime', 0),
             $query->lessThan('endtime', $timestamp),
-        );
+        ];
 
         if ($anonymousOnly) {
             $constraints[] = $query->equals('txRkwregistrationIsAnonymous', 1);
@@ -326,7 +326,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $timestamp = intval($tolerance);
         }
 
-        $constraints = array(
+        $constraints = [
             $query->logicalOr(
                 $query->equals('deleted', 1),
                 $query->equals('disable', 1)
@@ -335,7 +335,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 $query->greaterThan('tstamp', 0),
                 $query->lessThan('tstamp', $timestamp)
             ),
-        );
+        ];
 
         if ($anonymousOnly) {
             $constraints[] = $query->equals('txRkwregistrationIsAnonymous', 1);
@@ -371,7 +371,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $timestamp = intval($tolerance);
         }
 
-        $constraints = array(
+        $constraints = [
             $query->logicalOr(
                 $query->logicalAnd(
                     $query->greaterThan('endtime', 0),
@@ -385,7 +385,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     )
                 )
             ),
-        );
+        ];
 
         if ($anonymousOnly) {
             $constraints[] = $query->equals('txRkwregistrationIsAnonymous', 1);

@@ -123,13 +123,13 @@ class ServiceController extends AbstractController
         $serviceInquiriesAdmin = $this->serviceRepository->findConfirmedByUser($this->getFrontendUser());
 
         $this->view->assignMultiple(
-            array(
+            [
                 'frontendUserGroups'    => $frontendUserGroups,
                 'groupsOfFrontendUser'  => $groupsOfFrontendUser,
                 'serviceInquiries'      => $serviceInquiries,
                 'serviceInquiriesAdmin' => $serviceInquiriesAdmin,
                 'editUserPid'           => intval($this->settings['users']['editUserPid']),
-            )
+            ]
         );
     }
 
@@ -146,9 +146,9 @@ class ServiceController extends AbstractController
         $this->redirectIfUserNotLoggedIn();
 
         $this->view->assignMultiple(
-            array(
+            [
                 'frontendUserGroup' => $frontendUserGroup,
-            )
+            ]
         );
     }
 

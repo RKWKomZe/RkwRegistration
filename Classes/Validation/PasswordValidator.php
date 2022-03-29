@@ -85,7 +85,7 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
                     \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
                         'validator.password_too_short',
                         'rkw_registration',
-                        array($minLength)
+                        [$minLength]
                     ), 1435066509
                 )
             );
