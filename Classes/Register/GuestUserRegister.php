@@ -10,7 +10,7 @@ use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\GuestUserRepository;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use \RKW\RkwRegistration\Utility\PasswordUtility;
-use RKW\RkwRegistration\Utility\RemoteUtility;
+use RKW\RkwRegistration\Utility\ClientUtility;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;

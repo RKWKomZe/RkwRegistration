@@ -74,16 +74,17 @@ class RegistrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @param mixed $additionalData
-     * @param integer $daysForOptIn
      * @param string $category
+     * @param integer $daysForOptIn
      * @return \RKW\RkwRegistration\Domain\Model\Registration
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
     public function newOptIn(
-        FrontendUser $frontendUser, 
+        FrontendUser $frontendUser,
+        int $daysForOptIn,
         $additionalData = null, 
-        string $category = '', 
-        int $daysForOptIn = 0)
+        string $category = ''
+        )
     {
         /** @var \RKW\RkwRegistration\Domain\Model\Registration $registration */
         $registration = GeneralUtility::makeInstance(Registration::class);
@@ -95,11 +96,6 @@ class RegistrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $registration->setTokenYes($this->generateRandomSha1());
         $registration->setTokenNo($this->generateRandomSha1());
 
-        // token valid for seven days
-        if (!$daysForOptIn) {
-            $daysForOptIn = 7;
-        }
-        
         $registration->setValidUntil(strtotime("+" . $daysForOptIn . " day", time()));
         $this->add($registration);
 

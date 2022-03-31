@@ -10,7 +10,7 @@ use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Register\AbstractRegister;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use \RKW\RkwRegistration\Utility\PasswordUtility;
-use RKW\RkwRegistration\Utility\RemoteUtility;
+use RKW\RkwRegistration\Utility\ClientUtility;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
@@ -112,7 +112,7 @@ class FrontendUserRegister extends AbstractRegister
             $this->frontendUser->setTxRkwregistrationLanguageKey($settings['users']['languageKeyOnRegister']);
         }
 
-        $this->frontendUser->setTxRkwregistrationRegisterRemoteIp(RemoteUtility::getIp());
+        $this->frontendUser->setTxRkwregistrationRegisterRemoteIp(ClientUtility::getIp());
 
         // set user groups
         if (!$this->frontendUser->getUsergroup()->count()) {
@@ -269,13 +269,14 @@ class FrontendUserRegister extends AbstractRegister
                 $userGroups = $settings['users']['guest']['groupsOnRegister'];
 
                 if (!$settings['users']['guest']['groupsOnRegister']) {
-                    $this->getLogger()->log(LogLevel::ERROR, sprintf('GuestUser "%s" will not be useable. Reason: Setting guest.groupsOnRegister is not defined in TypoScript.', strtolower($this->frontendUser->getUsername())));
+                    $this->getLogger()->log(LogLevel::ERROR, sprintf('GuestUser "%s" will not be useable. Reason: Setting users.guest.groupsOnRegister is not defined in TypoScript.', strtolower($this->frontendUser->getUsername())));
+
                 }
             } else {
                 $userGroups = $settings['users']['groupsOnRegister'];
 
                 if (!$settings['users']['groupsOnRegister']) {
-                    $this->getLogger()->log(LogLevel::ERROR, sprintf('FrontendUser "%s" will not be useable. Reason: Setting groupsOnRegister is not defined in TypoScript.', strtolower($this->frontendUser->getUsername())));
+                    $this->getLogger()->log(LogLevel::ERROR, sprintf('FrontendUser "%s" will not be useable. Reason: Setting users.groupsOnRegister is not defined in TypoScript.', strtolower($this->frontendUser->getUsername())));
                 }
             }
         }

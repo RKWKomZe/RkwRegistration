@@ -27,32 +27,22 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class CustomLinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class UriBuilderLinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 {
     /**
      * Creates a link with custom baseUrl (not possible with FLUID link VHs)
      *
-     * @param integer $sysDomainUid
      * @param integer $pageUid
      * @param array $additionalParams A one dimensional associative array with key & value pair to add as GET param
      *
      * @return string
      */
-    public function render($sysDomainUid, $pageUid, $additionalParams = [])
+    public function render($pageUid, $additionalParams = [])
     {
         $finalParams = array_merge(['id' => $pageUid], $additionalParams);
 
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager objectManager */
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var \RKW\RkwRegistration\Domain\Repository\SysDomainRepository $sysDomainRepository */
-        $sysDomainRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\SysDomainRepository');
-        $sysDomain = $sysDomainRepository->findByIdentifier($sysDomainUid);
-
-        // use $sysDomain entry if given domain is available
-        if ($sysDomain instanceof \RKW\RkwRegistration\Domain\Model\SysDomain) {
-            return $sysDomain->getDomainName() . '/index.php?' . http_build_query($finalParams);
-            //===
-        }
 
         // else: Fallback with standard domain behavior
         /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
@@ -62,6 +52,7 @@ class CustomLinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
             ->setCreateAbsoluteUri(true)
             ->setLinkAccessRestrictedPages(true)
             ->setUseCacheHash(false)
+            ->setArguments($additionalParams)
             ->build();
 
         return $redirectUrl;

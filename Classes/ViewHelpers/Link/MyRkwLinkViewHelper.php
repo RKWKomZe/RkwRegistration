@@ -27,6 +27,8 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 /**
  * Class MyRkwLinkViewHelper
  *
+ * @deprecated
+ *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @date 2021
@@ -45,37 +47,7 @@ class MyRkwLinkViewHelper extends AbstractViewHelper
      */
     public function render($pageUid, $additionalParams = [])
     {
-        /*
-        if (
-            $additionalParams
-            && is_array($additionalParams)
-        ) {
-            $finalParams = array_merge(['id' => $pageUid], $additionalParams);
-        } else {
-            $finalParams = ['id' => $pageUid];
-        }
-
-        $currentBaseUrl = preg_replace('/^http(s)?:\/\/(www\.)?([^\/]+)\/?$/i', '$3', $GLOBALS['TSFE']->tmpl->setup['config.']['baseURL']);
-
-        /** @var ObjectManager objectManager 
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var SysDomainRepository $sysDomainRepository 
-        $sysDomainRepository = $objectManager->get(SysDomainRepository::class);
-
-        // get object of current sysDomain
-        $currentSysDomain = $sysDomainRepository->findByDomainName($currentBaseUrl)->getFirst();
-        if ($currentSysDomain instanceof SysDomain) {
-            $sysDomain = $sysDomainRepository->findByTxRkwregistrationRelatedSysDomain($currentSysDomain)->getFirst();
-
-            // use $sysDomain entry if given domain is available
-            if ($sysDomain instanceof SysDomain) {
-                return $sysDomain->getDomainName() . '/index.php?' . http_build_query($finalParams);
-            }
-        }
-*/
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-
-        // else: Fallback with standard domain behavior
         /** @var UriBuilder $uriBuilder */
         $uriBuilder = $objectManager->get(UriBuilder::class);
         $redirectUrl = $uriBuilder->reset()

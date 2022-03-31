@@ -35,7 +35,7 @@ class FrontendUserUtility
      * converts an feUser array to an object
      * Hint: By default a new created FrontendUser is DISABLED = 1 !
      *
-     * array $userData
+     * @param array $userData
      * @return FrontendUser
      */
     public static function convertArrayToObject(array $userData)

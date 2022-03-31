@@ -456,11 +456,11 @@
             </trans-unit>
             <trans-unit id="registrationController.error.invalid_anonymous_token">
                 <source>The given token is not valid (any more). Please use a new one or contact support.</source>
-                <target>Der Login- Link ist leider ungültig oder abgelaufen. Bitte verwenden Sie einen neuen anonymen Zugang oder registrieren Sie sich kostenlos.</target>
+                <target>Der Login-Link ist leider ungültig oder abgelaufen. Bitte verwenden Sie einen neuen Gastzugang oder registrieren Sie sich kostenlos.</target>
             </trans-unit>
             <trans-unit id="registrationController.error.anonymous_login_impossible">
                 <source>Anonymous login was not possible. If you are already logged in, please log out before using an anonymous login token. </source>
-                <target>Der anonyme Login war nicht möglich. Wenn Sie bereits eingeloggt sind, loggen Sie sich bitte aus, bevor Sie einen Login-Link verwenden.</target>
+                <target>Der Login als Gast war nicht möglich. Wenn Sie bereits eingeloggt sind, loggen Sie sich bitte aus, bevor Sie einen Login-Link verwenden.</target>
             </trans-unit>
             <trans-unit id="registrationController.message.guest_link">
                 <source><![CDATA[Copy and save the following link. It is valid for %s days.<br><br> %s]]></source>
@@ -672,7 +672,7 @@
                 <source>Create account</source>
                 <target>Kostenlosen "Mein RKW"-Account anlegen</target>
             </trans-unit>
-            <trans-unit id="templates_registration_loginShowExternal.anonymousLabel">
+            <trans-unit id="templates_registration_loginShowExternal.guestLabel">
                 <source>Continue without account</source>
                 <target>Ohne Account weitermachen</target>
             </trans-unit>
@@ -692,7 +692,7 @@
                 <source>Logout</source>
                 <target>Ausloggen</target>
             </trans-unit>
-            <trans-unit id="templates_registration_loginShowExternal.anonymous">
+            <trans-unit id="templates_registration_loginShowExternal.guest">
                 <source>Start as guest</source>
                 <target>Als Gast einloggen</target>
             </trans-unit>

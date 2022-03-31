@@ -4,6 +4,7 @@ namespace RKW\RkwRegistration\Domain\Repository;
 
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
@@ -41,8 +42,13 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         /** @var $querySettings Typo3QuerySettings */
         $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
 
-        // don't add the pid constraint and enable fields
-        $querySettings->setRespectStoragePage(false);
+        $version = VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
+        // for backward compatibility with old system with all fe_users in one storage PID
+        if ($version < 9000000) {
+            // don't add the pid constraint and enable fields
+            $querySettings->setRespectStoragePage(false);
+        }
+
         $this->setDefaultQuerySettings($querySettings);
     }
 

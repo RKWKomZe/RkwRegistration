@@ -14,7 +14,7 @@ use \RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Register\AbstractRegister;
 use \RKW\RkwRegistration\Utility\PasswordUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
-use \RKW\RkwRegistration\Utility\RemoteUtility;
+use \RKW\RkwRegistration\Utility\ClientUtility;
 use RKW\RkwRegistration\Utility\TitleUtility;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use TYPO3\CMS\Core\Log\Logger;
@@ -268,7 +268,7 @@ class OptInRegister extends AbstractRegister
      * @param FrontendUser|array $userData A FrontendUser object or an array with equivalent key names to frontendUser properties. E.g. "mail" oder "username"
      * @param boolean            $enable If a new user should be enabled or not
      * @param mixed              $additionalData Could be an array or a whole object. Everything you need in relation of a registration of something
-     * @param null               $category To identify a specific context. Normally used to identify an external extension which is using this function
+     * @param string             $category To identify a specific context. Normally used to identify an external extension which is using this function
      * @param Request|null       $request For privacy purpose to identify the given context
      * @return FrontendUser
      * @throws Exception
@@ -279,7 +279,7 @@ class OptInRegister extends AbstractRegister
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      */
-    public function register($userData, $enable = false, $additionalData = null, $category = null, Request $request = null)
+    public function register($userData, $enable = false, $additionalData = null, $category = '', Request $request = null)
     {
 
         // if we get an array we just migrate the data to our object!
@@ -337,7 +337,7 @@ class OptInRegister extends AbstractRegister
             // add opt in - but only if additional data is set!
             if ($additionalData) {
 
-                $registration = $registrationRepository->newOptIn($frontendUserDatabase, $additionalData, $category, $this->settings['users']['daysForOptIn']);
+                $registration = $registrationRepository->newOptIn($frontendUserDatabase, $this->settings['users']['daysForOptIn'], $additionalData, $category);
 
                 // add privacy for existing user
                 if ($request) {
@@ -408,7 +408,7 @@ class OptInRegister extends AbstractRegister
 
             } else {
                 // add registration
-                $registration = $registrationRepository->newOptIn($frontendUser, $additionalData, $category, $this->settings['users']['daysForOptIn']);
+                $registration = $registrationRepository->newOptIn($frontendUser, $this->settings['users']['daysForOptIn'], $additionalData, $category);
                 // add privacy opt-in for non-existing user
                 if ($request) {
                     PrivacyHandler::addPrivacyDataForOptIn($request, $frontendUser, $registration, ($category ? 'new opt-in for non-existing user for ' . $category : 'new opt-in for non-existing user'));
@@ -519,7 +519,7 @@ class OptInRegister extends AbstractRegister
         $guestUser->setDisable(0);
         $guestUser->setPid(intval($settings['users']['storagePid']));
         $guestUser->setCrdate(time());
-        $guestUser->setTxRkwregistrationRegisterRemoteIp(RemoteUtility::getIp());
+        $guestUser->setTxRkwregistrationRegisterRemoteIp(ClientUtility::getIp());
         $guestUser->setEndtime($this->getGuestLifetime());
         $guestUser->setTxRkwregistrationLanguageKey($settings['users']['languageKeyOnRegister'] ? $settings['users']['languageKeyOnRegister'] : '');
 

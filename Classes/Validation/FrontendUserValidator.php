@@ -22,6 +22,7 @@ use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Error\Error;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -81,8 +82,8 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
             if ($frontendUser) {
                 if ($frontendUser->getUid() != $frontendUserForm->getUid()) {
                     $this->result->forProperty('email')->addError(
-                        new \TYPO3\CMS\Extbase\Error\Error(
-                            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                        new Error(
+                            LocalizationUtility::translate(
                                 'validator.email_alreadyassigned',
                                 'rkw_registration'
                             ), 1406119134
@@ -98,13 +99,13 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
 
             $objectManager = \RKW\RkwBasics\Utility\GeneralUtility::makeInstance(ObjectManager::class);
             /** @var FrontendUserRegister $frontendUserRegister */
-            $frontendUserRegister = $objectManager->get(FrontendUserRegister::class, FrontendUserUtility::convertArrayToObject($frontendUserForm));
+            $frontendUserRegister = $objectManager->get(FrontendUserRegister::class, $frontendUserForm);
 
             if (!$frontendUserRegister->validateEmail()) {
 
                 $this->result->forProperty('email')->addError(
-                    new \TYPO3\CMS\Extbase\Error\Error(
-                        \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                    new Error(
+                        LocalizationUtility::translate(
                             'validator.email_invalid',
                             'rkw_registration'
                         ), 1414589184
@@ -119,8 +120,8 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
                 && !FrontendUserSessionUtility::isUserLoggedIn()
             ) {
                 $this->result->forProperty('email')->addError(
-                    new \TYPO3\CMS\Extbase\Error\Error(
-                        \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                    new Error(
+                        LocalizationUtility::translate(
                             'registrationController.error.username_exists',
                             'rkw_registration'
                         ), 1628688993
@@ -138,10 +139,12 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
                 || (strlen(trim($frontendUserForm->getZip())) != 5)
             ) {
                 $this->result->forProperty('zip')->addError(
-                    $this->translateErrorMessage(
-                        'validator.zip.incorrect',
-                        'rkwRegistration'
-                    ), 1462806656
+                    new Error(
+                        $this->translateErrorMessage(
+                            'validator.zip.incorrect',
+                            'rkwRegistration'
+                        ), 1462806656
+                    )
                 );
                 $isValid = false;
             }
@@ -163,8 +166,8 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
                 if (empty($value)) {
 
                     $this->result->forProperty($property)->addError(
-                        new \TYPO3\CMS\Extbase\Error\Error(
-                            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                        new Error(
+                            LocalizationUtility::translate(
                                 'validator_field_notfilled',
                                 'rkw_registration'
                             ), 1414595322

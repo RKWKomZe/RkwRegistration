@@ -4,14 +4,8 @@ namespace RKW\RkwRegistration\Tests\Integration\Utility;
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
-use RKW\RkwRegistration\Utility\RedirectUtility;
-use RKW\RkwRegistration\Utility\RemoteUtility;
-use TYPO3\CMS\Backend\Routing\UriBuilder;
+use RKW\RkwRegistration\Utility\ClientUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -26,24 +20,19 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * The TYPO3 project - inspiring people to share!
  */
 /**
- * RemoteUtilityTest
+ * ClientUtilityTest
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class RemoteUtilityTest extends FunctionalTestCase
+class ClientUtilityTest extends FunctionalTestCase
 {
     /**
      * @const
      */
-    const FIXTURE_PATH = __DIR__ . '/RemoteUtilityTest/Fixtures';
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
-     */
-    private $objectManager = null;
+    const FIXTURE_PATH = __DIR__ . '/ClientUtilityTest/Fixtures';
 
     /**
      * @var string[]
@@ -90,8 +79,8 @@ class RemoteUtilityTest extends FunctionalTestCase
          * An IP is returned
          */
 
-        /** @var RemoteUtility $utility */
-        $utility = GeneralUtility::makeInstance(RemoteUtility::class);
+        /** @var ClientUtility $utility */
+        $utility = GeneralUtility::makeInstance(ClientUtility::class);
         $ipAddress = $utility::getIp();
 
         static::assertEquals('127.0.0.1', $ipAddress);

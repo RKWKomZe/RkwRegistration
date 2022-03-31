@@ -31,31 +31,36 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
 {
-
     /**
-     * @param integer   $pageUid
-     * @param bool      $createAbsoluteUri
-     * @param bool      $linkAccessRestrictedPages
-     * @param false     $useCacheHash
-     * @return string
+     * Gives back guest redirect url
+     *
+     * @return string|bool
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public static function urlToPageUid($pageUid, $createAbsoluteUri = true, $linkAccessRestrictedPages = true, $useCacheHash = false)
+    public static function getGuestRedirectUrl()
     {
+        $settings = self::getSettings();
+
         /** @var ObjectManager $objectManager */
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var UriBuilder $uriBuilder */
-        $uriBuilder = $objectManager->get(UriBuilder::class);
 
-        $redirectUrl = $uriBuilder->reset()
-            ->setTargetPageUid(intval($pageUid))
-            ->setCreateAbsoluteUri($createAbsoluteUri)
-            ->setLinkAccessRestrictedPages($linkAccessRestrictedPages)
-            ->setUseCacheHash($useCacheHash)
-            ->buildFrontendUri();
+        if ($settings['users']['guestRedirectPid']) {
 
-        return self::checkRedirectUrl($redirectUrl);
+            /** @var UriBuilder $uriBuilder */
+            $uriBuilder = $objectManager->get(UriBuilder::class);
+            $redirectUrl = $uriBuilder->reset()
+                ->setTargetPageUid(intval($settings['users']['guestRedirectPid']))
+                ->setCreateAbsoluteUri(true)
+                ->setLinkAccessRestrictedPages(true)
+                ->setUseCacheHash(false)
+                ->buildFrontendUri();
+
+            return self::checkRedirectUrl($redirectUrl);
+        }
+
+        // if there is no redirect set
+        return false;
     }
-
 
 
     /**
@@ -63,6 +68,7 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
      *
      * @param string|integer $url
      * @return string
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @see \TYPO3\CMS\Felogin\Controller\FrontendLoginController
      */
     public static function checkRedirectUrl($url)
@@ -140,38 +146,6 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
     }
 
 
-    /**
-     * Gives back guest redirect url
-     *
-     * @return string|bool
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     */
-    public static function getGuestRedirectUrl()
-    {
-        $settings = self::getSettings();
-
-        /** @var ObjectManager $objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-
-        if ($settings['users']['guestRedirectPid']) {
-
-            /** @var UriBuilder $uriBuilder */
-            $uriBuilder = $objectManager->get(UriBuilder::class);
-            $redirectUrl = $uriBuilder->reset()
-                ->setTargetPageUid(intval($settings['users']['guestRedirectPid']))
-                ->setCreateAbsoluteUri(true)
-                ->setLinkAccessRestrictedPages(true)
-                ->setUseCacheHash(false)
-                ->buildFrontendUri();
-
-            return self::checkRedirectUrl($redirectUrl);
-        }
-
-        // if there is no redirect set
-        return false;
-    }
-
-
 
     /**
      * Returns TYPO3 settings
@@ -208,6 +182,35 @@ class RedirectUtility implements \TYPO3\CMS\Core\SingletonInterface
     {
         // @toDo: Does "->getDomainNameForPid" also work in our dynamic MyRkw-Domain setting?
         return $GLOBALS['TSFE']->getDomainNameForPid(intval($GLOBALS['TSFE']->page['uid']));
+    }
+
+
+
+    /**
+     *
+     * @deprecated Seems to be no longer used
+     *
+     * @param integer   $pageUid
+     * @param bool      $createAbsoluteUri
+     * @param bool      $linkAccessRestrictedPages
+     * @param false     $useCacheHash
+     * @return string
+     */
+    public static function urlToPageUid($pageUid, $createAbsoluteUri = true, $linkAccessRestrictedPages = true, $useCacheHash = false)
+    {
+        /** @var ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var UriBuilder $uriBuilder */
+        $uriBuilder = $objectManager->get(UriBuilder::class);
+
+        $redirectUrl = $uriBuilder->reset()
+            ->setTargetPageUid(intval($pageUid))
+            ->setCreateAbsoluteUri($createAbsoluteUri)
+            ->setLinkAccessRestrictedPages($linkAccessRestrictedPages)
+            ->setUseCacheHash($useCacheHash)
+            ->buildFrontendUri();
+
+        return self::checkRedirectUrl($redirectUrl);
     }
 
 

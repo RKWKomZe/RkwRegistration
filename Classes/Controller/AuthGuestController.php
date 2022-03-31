@@ -8,6 +8,7 @@ use RKW\RkwRegistration\Service\AuthService as Authentication;
 use RKW\RkwRegistration\Register\GuestUserRegister;
 use RKW\RkwRegistration\Utility\RedirectUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use Snowflake\Varnish\Hooks\Frontend;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
@@ -50,9 +51,8 @@ class AuthGuestController extends AbstractController
      */
     public function loginAction(): void
     {
-
         // a) ERROR: send back already logged in user. Nothing to do here
-        if ($this->getFrontendUser()) {
+        if (FrontendUserSessionUtility::isUserLoggedIn()) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'registrationController.error.anonymous_login_impossible', 
@@ -77,6 +77,7 @@ class AuthGuestController extends AbstractController
             $guestUserRegister->persistAll();
 
             FrontendUserSessionUtility::login($guestUser);
+
             $this->redirect('loginHint');
         }
 

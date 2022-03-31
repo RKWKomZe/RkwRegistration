@@ -314,9 +314,6 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
          */
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
-        /** @var FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
-
         /** @var FrontendUserSessionUtility $utility */
         $utility = GeneralUtility::makeInstance(FrontendUserSessionUtility::class);
 

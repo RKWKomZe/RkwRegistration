@@ -525,7 +525,7 @@
             <trans-unit id="templates_registration_loginShowExternal.registerLabel">
                 <source>Create account</source>
             </trans-unit>
-            <trans-unit id="templates_registration_loginShowExternal.anonymousLabel">
+            <trans-unit id="templates_registration_loginShowExternal.guestLabel">
                 <source>Continue without account</source>
             </trans-unit>
             <trans-unit id="templates_registration_loginShowExternal.orLabel">
@@ -540,7 +540,7 @@
             <trans-unit id="templates_registration_loginShowExternal.logout">
                 <source>Logout</source>
             </trans-unit>
-            <trans-unit id="templates_registration_loginShowExternal.anonymous">
+            <trans-unit id="templates_registration_loginShowExternal.guest">
                 <source>Start as guest</source>
             </trans-unit>
             <trans-unit id="templates_registration_loginShowExternal.login2">

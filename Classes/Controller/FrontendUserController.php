@@ -99,8 +99,8 @@ class FrontendUserController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @validate $newFrontendUser \RKW\RkwRegistration\Validation\FrontendUserValidator
-     * @validate \RKW\RkwRegistration\Validation\TermsValidator 
-     * @validate \RKW\RkwRegistration\Validation\PrivacyValidator
+     * @validate $newFrontendUser \RKW\RkwRegistration\Validation\TermsValidator
+     * @validate $newFrontendUser \RKW\RkwRegistration\Validation\PrivacyValidator
      */
     public function createAction(FrontendUser $newFrontendUser): void
     {

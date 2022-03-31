@@ -84,7 +84,7 @@ plugin.tx_rkwregistration {
 			languageKeyOnRegister =
 
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=How many days a user has to opt in via email
-			daysForOptIn =
+			daysForOptIn = 7
 
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=How many times a user can try to login before his user is disabled
 			maxLoginErrors =
