@@ -6,6 +6,7 @@ use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Service\AuthFrontendUserService;
 use RKW\RkwRegistration\Utility\PasswordUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -40,6 +41,26 @@ class PasswordController extends AbstractController
      */
     const SIGNAL_AFTER_USER_PASSWORD_RESET = 'afterUserPasswordReset';
 
+    /**
+     * initialize
+     */
+    public function initializeAction()
+    {
+        // intercept disabled user (e.g. after input too often the wrong password)
+        if ($this->getFrontendUser()->getDisable()) {
+
+            // This redirect with message is necessary because we've no flash message possibilities at this point
+            // we also can't add an FlashMessage object, because it's not persistent and would be completely added to the URL
+            $this->redirect(
+                'index',
+                'Auth',
+                null,
+                ['flashMessageToInject' => LocalizationUtility::translate('passwordController.message.error.locked_account', $this->extensionName)],
+                $this->settings['users']['loginPid']
+            );
+        }
+    }
+
 
     /**
      * action edit
@@ -64,7 +85,6 @@ class PasswordController extends AbstractController
     /**
      * action update password
      *
-     * @param string $passwordOld
      * @param array  $passwordNew
      * @validate $passwordNew \RKW\RkwRegistration\Validation\PasswordValidator
      * @return void
@@ -75,38 +95,16 @@ class PasswordController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function updateAction(string $passwordOld, array $passwordNew): void
+    public function updateAction(array $passwordNew): void
     {
         // for logged in users only!
         $this->redirectIfUserNotLoggedIn();
 
-        if (!$passwordOld) {
-            $this->addFlashMessage(
-                LocalizationUtility::translate(
-                    'registrationController.error.password_empty', 
-                    $this->extensionName
-                ),
-                '',
-                AbstractMessage::ERROR
-            );
-
-            $this->redirect('editPassword');
-            return;
-        }
-
-        // check if password is valid
-        /** @var AuthFrontendUserService $authentication */
-        $authentication = GeneralUtility::makeInstance(AuthFrontendUserService::class);
-        if (
-            ($frontendUser = $this->getFrontendUser())
-            && ($username = $frontendUser->getUsername())
-            && ($registeredUser = $authentication->validateUser($username, $passwordOld))
-            && ($registeredUser instanceof FrontendUser)
-        ) {
+        if ($this->getFrontendUser() instanceof FrontendUser) {
 
             // set password to the given one
-            $frontendUser->setPassword(PasswordUtility::saltPassword($passwordNew['first']));
-            $this->frontendUserRepository->update($registeredUser);
+            $this->getFrontendUser()->setPassword(PasswordUtility::saltPassword($passwordNew['first']));
+            $this->frontendUserRepository->update($this->getFrontendUser());
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
@@ -120,7 +118,7 @@ class PasswordController extends AbstractController
                     'index', 
                     'Registration', 
                     null, 
-                    null, 
+                    null,
                     $this->settings['users']['welcomePid']
                 );
             }
@@ -129,6 +127,8 @@ class PasswordController extends AbstractController
             return;
         }
 
+        // SOMETHING WENT WRONG
+        // @toDo: change text to something went wrong
         $this->addFlashMessage(
             LocalizationUtility::translate(
                 'registrationController.error.password_not_updated', $this->extensionName
@@ -137,7 +137,7 @@ class PasswordController extends AbstractController
             AbstractMessage::ERROR
         );
 
-        $this->redirect('editPassword');
+        $this->redirect('edit');
 
     }
 
@@ -167,7 +167,6 @@ class PasswordController extends AbstractController
      */
     public function createAction(string $username): void
     {
-
         if (!$username) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
@@ -206,9 +205,7 @@ class PasswordController extends AbstractController
 
         $this->redirect(
             'index', 
-            'Auth', 
-            null, 
-            []
+            'Auth'
         );
     }
 

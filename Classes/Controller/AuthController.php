@@ -8,6 +8,7 @@ use RKW\RkwRegistration\Service\AuthFrontendUserService;
 use RKW\RkwRegistration\Register\OptInRegister;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -42,10 +43,13 @@ class AuthController extends AbstractController
     /**
      * action index - contains all login forms
      *
+     * @param string $flashMessageToInject
      * @return void
      */
-    public function indexAction(): void
+    public function indexAction(string $flashMessageToInject = ''): void
     {
+        parent::indexAction($flashMessageToInject);
+
         // A Service: Set a register link for the not logged in user
         if ($this->controllerContext->getFlashMessageQueue()->isEmpty()) {
 

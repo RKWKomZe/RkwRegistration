@@ -207,7 +207,10 @@ class OptInRegister extends AbstractRegister
                     $frontendUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
 
                     $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-                    /** @var FrontendUserRegister $frontendUserRegister */
+                    /** @var FrontendUserRegister $frontendUserService */
+
+                    // @toDo: GIBT ES EINEN FEHLER, DER IM CONSTRUCTOR (->setBasicData) DIE USERGROUP NICHT SETZT??? PRÜFEN!!!
+
                     $frontendUserService = $objectManager->get(FrontendUserRegister::class, $frontendUser);
                     $frontendUserService->setClearanceAndLifetime(true);
 
@@ -279,7 +282,7 @@ class OptInRegister extends AbstractRegister
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      */
-    public function register($userData, $enable = false, $additionalData = null, $category = '', Request $request = null)
+    public function register($userData, $enable = false, $additionalData = null, string $category = '', Request $request = null)
     {
 
         // if we get an array we just migrate the data to our object!

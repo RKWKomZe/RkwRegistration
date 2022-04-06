@@ -7,6 +7,7 @@ use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use RKW\RkwRegistration\Domain\Repository\ServiceRepository;
 use RKW\RkwRegistration\Register\AbstractRegister;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use \RKW\RkwRegistration\Utility\PasswordUtility;
@@ -143,7 +144,10 @@ class FrontendUserRegister extends AbstractRegister
         if ($enable) {
             $this->frontendUser->setDisable(0);
 
-            // set frontendUser lifetime
+            // set normal lifetime
+            $this->frontendUser->setEndtime(0);
+
+            // override if there is set a specific frontendUser lifetime
             if (intval($this->settings['users']['lifetime'])) {
                 $this->frontendUser->setEndtime(time() + intval($this->settings['users']['lifetime']));
             }
@@ -304,6 +308,50 @@ class FrontendUserRegister extends AbstractRegister
         $this->frontendUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
 
         return $plaintextPassword;
+    }
+
+
+    /**
+     * function getMandatoryFieldsOfUser
+     * gives the required fields back that needs to fill out a user in the light of its service affiliation
+     *
+     * @return array
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function getMandatoryFieldsOfUser()
+    {
+        // get mandatory fields from TypoScript
+        $settings = $this->getSettings();
+        $requiredFields = [];
+
+        // get default mandatory fields
+        if ($settings['users']['requiredFormFields']) {
+            $requiredFields = explode(',', str_replace(' ', '', $settings['users']['requiredFormFields']));
+        }
+
+        // add specific mandatory fields which based on service groups
+        if ($this->frontendUser instanceof FrontendUser) {
+
+            /** @var ObjectManager $objectManager */
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+            /** @var \RKW\RkwRegistration\Register\GroupRegister $groupRegister */
+            $groupRegister = $objectManager->get(GroupRegister::class);
+            /** @var ServiceRepository $serviceRepository */
+            $serviceRepository = $objectManager->get(ServiceRepository::class);
+
+            // get mandatory fields by fe_groups the user is registered for
+            $requiredFields = array_merge($requiredFields, $groupRegister->getMandatoryFieldsOfGroupList($this->frontendUser->getUsergroup()->toArray()));
+
+            // get mandatory fields by fe_groups the user is still waiting to be registered but admin has already granted him access
+            $serviceInquiryList = $serviceRepository->findConfirmedByUser($this->frontendUser);
+            foreach ($serviceInquiryList as $serviceInquiry) {
+                if ($groups = $serviceInquiry->getUsergroup()) {
+                    $requiredFields = array_merge($requiredFields, $groupRegister->getMandatoryFieldsOfGroupList($serviceInquiry->getUsergroup()->toArray()));
+                }
+            }
+        }
+
+        return $requiredFields;
     }
 
 

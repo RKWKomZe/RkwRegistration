@@ -198,9 +198,8 @@ plugin.tx_rkwregistration {
 
 	persistence {
 		storagePid = {$plugin.tx_rkwregistration.persistence.storagePid}
-
-
 	}
+
 	features {
 		# uncomment the following line to enable the new Property Mapper.
 		# rewrittenPropertyMapper = 1
@@ -245,7 +244,7 @@ plugin.tx_rkwregistration {
             maxLoginErrors = {$plugin.tx_rkwregistration.settings.users.maxLoginErrors}
 
 			# values must be comma-separated
-			requiredFormFields = email, firstName, lastName
+			requiredFormFields = {$plugin.tx_rkwregistration.settings.users.requiredFormFields}
 
             # security settings for password changes by the user
 			passwordSettings {

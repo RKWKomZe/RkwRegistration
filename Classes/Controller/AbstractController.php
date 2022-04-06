@@ -21,6 +21,7 @@ use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -94,13 +95,21 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
      * action index
      * This is the default action
      *
+     * @param string $flashMessageToInject
      * @return void
      */
-    public function indexAction()
+    public function indexAction(string $flashMessageToInject = '')
     {
-        // nothing to do here - is only a fallback
-    }
+        if ($flashMessageToInject) {
+            $this->addFlashMessage(
+                $flashMessageToInject,
+                '',
+                AbstractMessage::ERROR
+            );
+        }
 
+        // nothing else to do here - is only a fallback
+    }
 
     /**
      * Remove ErrorFlashMessage

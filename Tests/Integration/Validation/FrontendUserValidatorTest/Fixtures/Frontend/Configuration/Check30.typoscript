@@ -1,0 +1,15 @@
+plugin.tx_rkwregistration  {
+    persistence {
+        storagePid = 1
+    }
+
+    settings {
+        users {
+            // check for zip field to make it possible to validate it
+            requiredFormFields = zip
+        }
+    }
+}
+
+// for cronjob
+module.tx_rkwregistration < plugin.tx_rkwregistration

@@ -10,6 +10,7 @@ use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\ServiceRepository;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /*
@@ -101,72 +102,22 @@ class GroupRegister
     protected $settings;
 
 
+
     /**
-     * function getMandatoryFieldsOfUser
+     * getMandatoryFieldsOfGroup
      * gives the required fields back that needs to fill out a user in the light of its service affiliation
      *
-     * @param FrontendUser $frontendUser
      * @param FrontendUserGroup $frontendUserGroup
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function getMandatoryFieldsOfUser(FrontendUser $frontendUser = null, FrontendUserGroup $frontendUserGroup = null)
+    public function getMandatoryFieldsOfGroup(FrontendUserGroup $frontendUserGroup)
     {
-        // get mandatory fields from TypoScript
-        $settings = $this->getSettings();
         $requiredFields = [];
 
-        // 1. get mandatory fields of given user-group
         if ($frontendUserGroup) {
-
             if ($groupMandatoryFields = $frontendUserGroup->getTxRkwregistrationServiceMandatoryFields()) {
                 $requiredFields = explode(',', str_replace(' ', '', $groupMandatoryFields));
-            }
-
-            // 2. else try to get all relevant data from database and TypoScript
-        } else {
-
-            //=======================================
-            // get default mandatory fields
-            if ($settings['users']['requiredFormFields']) {
-                $requiredFields = explode(',', str_replace(' ', '', $settings['users']['requiredFormFields']));
-            }
-
-
-            if ($frontendUser instanceof FrontendUser) {
-
-                //=======================================
-                // get mandatory fields by fe_groups the user is registered for
-                $groupsOfUser = $frontendUser->getUsergroup();
-                foreach ($groupsOfUser as $group) {
-                    if ($group instanceof FrontendUserGroup) {
-                        if ($groupMandatoryFields = $group->getTxRkwregistrationServiceMandatoryFields()) {
-                            $requiredFields = array_merge($requiredFields, explode(',', str_replace(' ', '', $groupMandatoryFields)));
-                        }
-                    }
-                }
-
-                //=======================================
-                // get mandatory fields by fe_groups the user is still waiting to be registered but admin has already granted him access
-                /** @var ObjectManager $objectManager */
-                $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-
-                /** @var ServiceRepository $serviceRepository */
-                $serviceRepository = $objectManager->get(ServiceRepository::class);
-
-                $serviceInquiries = $serviceRepository->findConfirmedByUser($frontendUser);
-                foreach ($serviceInquiries as $serviceInquiry) {
-
-                    if ($groups = $serviceInquiry->getUsergroup()) {
-                        foreach ($groups as $group) {
-                            if ($group instanceof FrontendUserGroup) {
-                                if ($groupMandatoryFields = $group->getTxRkwregistrationServiceMandatoryFields()) {
-                                    $requiredFields = array_merge($requiredFields, explode(',', str_replace(' ', '', $groupMandatoryFields)));
-                                }
-                            }
-                        }
-                    }
-                }
             }
         }
 
@@ -176,6 +127,29 @@ class GroupRegister
 
 
     /**
+     * getMandatoryFieldsOfGroupList
+     * gives the required fields back that needs to fill out a user in the light of its service affiliation
+     *
+     * @param array $groupList
+     * @return array
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function getMandatoryFieldsOfGroupList(array $groupList)
+    {
+        $requiredFields = [];
+
+        foreach ($groupList as $group) {
+            if ($group instanceof FrontendUserGroup) {
+                $requiredFields = array_merge($requiredFields, $this->getMandatoryFieldsOfGroup($group));
+            }
+        }
+
+        return $requiredFields;
+    }
+
+
+
+     /**
      * Checks given tokens from E-mail
      *
      * @param string $tokenYes
@@ -412,6 +386,82 @@ class GroupRegister
         }
 
         return $this->settings;
+    }
+
+
+
+    /**
+     * function getMandatoryFieldsOfUser
+     * gives the required fields back that needs to fill out a user in the light of its service affiliation
+     *
+     * @deprecated Function is split in FrontendUserRegister->getMandatoryFieldsOfUser and $this->getMandatoryFieldsForUserOfSpecificGroup
+     *
+     * @param FrontendUser|null      $frontendUser
+     * @param FrontendUserGroup|null $frontendUserGroup
+     * @return array
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function getMandatoryFieldsOfUser(FrontendUser $frontendUser = null, FrontendUserGroup $frontendUserGroup = null)
+    {
+        // get mandatory fields from TypoScript
+        $settings = $this->getSettings();
+        $requiredFields = [];
+
+        // 1. get mandatory fields of given user-group
+        if ($frontendUserGroup) {
+
+            if ($groupMandatoryFields = $frontendUserGroup->getTxRkwregistrationServiceMandatoryFields()) {
+                $requiredFields = explode(',', str_replace(' ', '', $groupMandatoryFields));
+            }
+
+            // 2. else try to get all relevant data from database and TypoScript
+        } else {
+
+            //=======================================
+            // get default mandatory fields
+            if ($settings['users']['requiredFormFields']) {
+                $requiredFields = explode(',', str_replace(' ', '', $settings['users']['requiredFormFields']));
+            }
+
+
+            if ($frontendUser instanceof FrontendUser) {
+
+                //=======================================
+                // get mandatory fields by fe_groups the user is registered for
+                $groupsOfUser = $frontendUser->getUsergroup();
+                foreach ($groupsOfUser as $group) {
+                    if ($group instanceof FrontendUserGroup) {
+                        if ($groupMandatoryFields = $group->getTxRkwregistrationServiceMandatoryFields()) {
+                            $requiredFields = array_merge($requiredFields, explode(',', str_replace(' ', '', $groupMandatoryFields)));
+                        }
+                    }
+                }
+
+                //=======================================
+                // get mandatory fields by fe_groups the user is still waiting to be registered but admin has already granted him access
+                /** @var ObjectManager $objectManager */
+                $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+
+                /** @var ServiceRepository $serviceRepository */
+                $serviceRepository = $objectManager->get(ServiceRepository::class);
+
+                $serviceInquiries = $serviceRepository->findConfirmedByUser($frontendUser);
+                foreach ($serviceInquiries as $serviceInquiry) {
+
+                    if ($groups = $serviceInquiry->getUsergroup()) {
+                        foreach ($groups as $group) {
+                            if ($group instanceof FrontendUserGroup) {
+                                if ($groupMandatoryFields = $group->getTxRkwregistrationServiceMandatoryFields()) {
+                                    $requiredFields = array_merge($requiredFields, explode(',', str_replace(' ', '', $groupMandatoryFields)));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $requiredFields;
     }
 
 

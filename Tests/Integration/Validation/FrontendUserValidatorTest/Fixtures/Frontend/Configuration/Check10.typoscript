@@ -1,0 +1,15 @@
+plugin.tx_rkwregistration  {
+    persistence {
+        storagePid = 1
+    }
+
+    settings {
+        users {
+            // remove required fields for "clean" email address testing
+            requiredFormFields >
+        }
+    }
+}
+
+// for cronjob
+module.tx_rkwregistration < plugin.tx_rkwregistration

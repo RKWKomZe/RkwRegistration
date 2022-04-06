@@ -285,7 +285,6 @@ class FrontendUserRegisterTest extends FunctionalTestCase
         // BEFORE
         static::assertEquals(1, $frontendUser->getDisable());
 
-
         // Service
         /** @var FrontendUserRegister $register */
         $register = $this->objectManager->get(FrontendUserRegister::class, $frontendUser);
@@ -633,7 +632,73 @@ class FrontendUserRegisterTest extends FunctionalTestCase
             static::assertInstanceOf(FrontendUserGroup::class, $group);
             static::assertEquals(56, $group->getUid());
         }
+    }
 
+
+    /**
+     * @test
+     */
+    public function getMandatoryFieldsOfUserFromTypoScript ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is only the service
+         * When we want to get mandatory fields (for some frontendUser)
+         * Then some basic data will set to the frontendUser (via TypoScript)
+         */
+
+        // Service
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class);
+
+        $requiredFields = $register->getMandatoryFieldsOfUser();
+
+        static::assertNotEmpty($requiredFields);
+    }
+
+
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function getMandatoryFieldsOfUserFromUserGroupOfFrontendUser()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is only the service
+         * When we want to get mandatory fields (for some frontendUser)
+         * Then some basic data will set to the frontendUser (via TypoScript AND frontendUserGroup)
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check30.xml');
+
+        /** @var FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        // Service
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class, $frontendUser);
+
+        $requiredFields = $register->getMandatoryFieldsOfUser();
+
+        /*
+          FrontendUserResult:
+          array(4) {
+              [0] =>
+              string(5) "email"
+              [1] =>
+              string(9) "firstName"
+              [2] =>
+              string(8) "lastName"
+              [3] =>
+              string(9) "something"
+            }
+         */
+
+        static::assertEquals("something", $requiredFields[3]);
     }
 
 

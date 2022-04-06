@@ -38,7 +38,6 @@ class IsMandatoryFieldViewHelper extends AbstractViewHelper
      */
     public function render($fieldName, $frontendUser = null)
     {
-
         /** @var GroupRegister $register */
         $register = GeneralUtility::makeInstance(GroupRegister::class);
         $requiredFields = $register->getMandatoryFieldsOfUser($frontendUser);

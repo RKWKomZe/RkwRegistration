@@ -17,6 +17,7 @@ namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Register\OptInRegister;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -57,12 +58,15 @@ class RegistrationController extends AbstractController
     /**
      * action index
      *
+     * @param string $flashMessageToInject
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-    public function indexAction(): void
+    public function indexAction(string $flashMessageToInject = ''): void
     {
+        parent::indexAction($flashMessageToInject);
+
         // only for logged in users!
         $this->redirectIfUserNotLoggedIn();
 

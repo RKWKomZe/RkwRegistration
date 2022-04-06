@@ -20,8 +20,8 @@ use RKW\RkwRegistration\Domain\Model\FrontendUser;
 
 /**
  * Class FrontendUserUtility
- * Handles everything to a FeUser session (e.g. login and logout).
- * Hint: For authentication take a look to \RKW\RkwRegistration\Service\AuthFrontendUserService
+ *
+ * handles everything to a FrontendUser
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
@@ -35,10 +35,10 @@ class FrontendUserUtility
      * converts an feUser array to an object
      * Hint: By default a new created FrontendUser is DISABLED = 1 !
      *
-     * @param array $userData
+     * @param array|object $userData
      * @return FrontendUser
      */
-    public static function convertArrayToObject(array $userData)
+    public static function convertArrayToObject($userData)
     {
         $frontendUser = $userData;
         if (is_array($userData)) {
@@ -53,6 +53,32 @@ class FrontendUserUtility
         }
 
         return $frontendUser;
+    }
+
+
+    /**
+     * remainingLoginAttempts
+     *
+     * @param FrontendUser $frontendUser
+     * @return int
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public static function remainingLoginAttempts(FrontendUser $frontendUser): int
+    {
+        $settings = self::getSettings();
+        return intval($settings['users']['maxLoginErrors']) - $frontendUser->getTxRkwregistrationLoginErrorCount();
+    }
+
+
+    /**
+     * Returns TYPO3 settings
+     *
+     * @return array
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    protected static function getSettings()
+    {
+        return GeneralUtility::getTyposcriptConfiguration('Rkwregistration');
     }
 
 }

@@ -65,62 +65,17 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             /** @var MailService $mailService */
             $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
-
-            // create OptIn links now and not inside the fluid template, which will be used by the RkwMailer
-            // Reason: Only via this way we get suitable links to the current active dynamic domain
-
-            /** @var ObjectManager objectManager*/
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-            /** @var UriBuilder $uriBuilder */
-            $uriBuilder = $objectManager->get(UriBuilder::class);
-            $uriTokenYes = $uriBuilder->reset()
-                ->setTargetPageUid(intval($settingsDefault['users']['registrationPid']))
-                ->setCreateAbsoluteUri(true)
-                ->setUseCacheHash(false)
-                ->uriFor(
-                    'optIn',
-                    [
-                        'token_yes' => $registration->getTokenYes(),
-                        'user' => $registration->getUserSha1()
-                    ],
-                    'Registration',
-                    'RkwRegistration',
-                    'Register'
-                );
-
-            $uriTokenNo = $uriBuilder->reset()
-                ->setTargetPageUid(intval($settingsDefault['users']['registrationPid']))
-                ->setCreateAbsoluteUri(true)
-                ->setUseCacheHash(false)
-                ->uriFor(
-                    'optIn',
-                    [
-                        'token_no' => $registration->getTokenNo(),
-                        'user' => $registration->getUserSha1()
-                    ],
-                    'Registration',
-                    'RkwRegistration',
-                    'Register'
-                );
-
             // send new user an email with token
-            $mailService->setTo(
-                $frontendUser,
-                [
-                    'marker' => [
-                        'linkTokenYes' => $uriTokenYes,
-                        'linkTokenNo' => $uriTokenNo,
-                        'frontendUser'    => $frontendUser,
-
-                        // old
-                        #'tokenYes'        => $registration->getTokenYes(),
-                        #'tokenNo'         => $registration->getTokenNo(),
-                        #'userSha1'        => $registration->getUserSha1(),
-                        #'registrationPid' => intval($settingsDefault['users']['registrationPid']),
-                        #'pageUid'         => intval($GLOBALS['TSFE']->id),
-                    ],
-                ]
-            );
+            $mailService->setTo($frontendUser, array(
+                'marker' => array(
+                    'tokenYes'        => $registration->getTokenYes(),
+                    'tokenNo'         => $registration->getTokenNo(),
+                    'userSha1'        => $registration->getUserSha1(),
+                    'frontendUser'    => $frontendUser,
+                    'registrationPid' => intval($settingsDefault['users']['registrationPid']),
+                    'pageUid'         => intval($GLOBALS['TSFE']->id),
+                ),
+            ));
 
             $mailService->getQueueMail()->setSubject(
                 \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(

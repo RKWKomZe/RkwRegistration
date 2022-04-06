@@ -110,7 +110,7 @@ class FrontendUserController extends AbstractController
             $newFrontendUser, 
             false, 
             null, 
-            null, 
+            '',
             $this->request
         );
 

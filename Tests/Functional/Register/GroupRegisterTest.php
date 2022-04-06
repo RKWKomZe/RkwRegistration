@@ -112,35 +112,10 @@ class GroupRegisterTest extends FunctionalTestCase
     }
 
 
-
     /**
      * @test
      */
-    public function getMandatoryFieldsOfUserFromTypoScript ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given is only the service
-         * When we want to get mandatory fields (for some frontendUser)
-         * Then some basic data will set to the frontendUser (via TypoScript)
-         */
-
-        // Service
-        /** @var GroupRegister $register */
-        $register = $this->objectManager->get(GroupRegister::class);
-
-        $requiredFields = $register->getMandatoryFieldsOfUser();
-
-        static::assertNotEmpty($requiredFields);
-    }
-
-
-
-    /**
-     * @test
-     */
-    public function getMandatoryFieldsOfUserFromUserGroup()
+    public function getMandatoryFieldsOfGroupFromUserGroup()
     {
         /**
          * Scenario:
@@ -157,54 +132,10 @@ class GroupRegisterTest extends FunctionalTestCase
         /** @var GroupRegister $register */
         $register = $this->objectManager->get(GroupRegister::class);
 
-        $requiredFields = $register->getMandatoryFieldsOfUser(null, $frontendUserGroup);
+        $requiredFields = $register->getMandatoryFieldsOfGroup($frontendUserGroup);
 
         static::assertEquals("something", $requiredFields[0]);
     }
-
-
-    /**
-     * @test
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     */
-    public function getMandatoryFieldsOfUserFromUserGroupOfFrontendUser()
-    {
-        /**
-         * Scenario:
-         *
-         * Given is only the service
-         * When we want to get mandatory fields (for some frontendUser)
-         * Then some basic data will set to the frontendUser (via TypoScript AND frontendUserGroup)
-         */
-
-        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
-
-        /** @var FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
-
-        // Service
-        /** @var GroupRegister $register */
-        $register = $this->objectManager->get(GroupRegister::class);
-
-        $requiredFields = $register->getMandatoryFieldsOfUser($frontendUser);
-
-        /*
-          FrontendUserResult:
-          array(4) {
-              [0] =>
-              string(5) "email"
-              [1] =>
-              string(9) "firstName"
-              [2] =>
-              string(8) "lastName"
-              [3] =>
-              string(9) "something"
-            }
-         */
-
-        static::assertEquals("something", $requiredFields[3]);
-    }
-
 
 
     /**

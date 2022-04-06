@@ -314,13 +314,25 @@
                 <source>Your Password should contain numbers and letters.</source>
                 <target>Weil etwas komplizierter sehr viel sicherer ist: Ihr Passwort sollte Buchstaben und Zahlen enthalten.</target>
             </trans-unit>
+            <trans-unit id="validator.old_password_not_set">
+                <source>Please enter your old and the new password accordingly.</source>
+                <target>Bitte geben Sie Ihr bisheriges Passwort ein.</target>
+            </trans-unit>
             <trans-unit id="validator.passwords_not_all_set">
-                <source>Please enter your old and the new password accordingly. Please make sure to repeat the new password once.</source>
-                <target>Bitte geben Sie Ihr bisheriges Passwort und das gewünschte neue Passwort zwei Mal ein.</target>
+                <source>Please make sure to repeat the new password once.</source>
+                <target>Bitte geben Sie das gewünschte neue Passwort zwei Mal ein.</target>
             </trans-unit>
             <trans-unit id="validator.passwords_not_identical">
                 <source>New password and password repeat are not identical. Please check again.</source>
                 <target>Hm, leider stimmen die beiden Versionen des neuen Passworts nicht ganz überein. Bitte schauen Sie doch noch mal drüber.</target>
+            </trans-unit>
+            <trans-unit id="validator.password_old_wrong">
+                <source>Password could not be updated. Maybe you did not enter your current password right.</source>
+                <target>Hat sich bei der Eingabe Ihres bisherigen Passworts vielleicht ein Fehler eingeschlichen?</target>
+            </trans-unit>
+            <trans-unit id="validator.remaining_attempts">
+                <source>You have %s remaining attempts before your account will be disabled.</source>
+                <target>Hinweis: Sie haben noch %s Versuch(e), bevor ihr Nutzerkonto aus Sicherheitsgründen gesperrt wird.</target>
             </trans-unit>
             <trans-unit id="validator.zip.incorrect">
 				<source>ZIP is not correct.</source>
@@ -414,6 +426,10 @@
                 <source>Entered password was wrong. Please try again.</source>
                 <target>Da ist was schief gelaufen! Hat sich bei der Eingabe Ihres bisherigen Passworts vielleicht ein Fehler eingeschlichen?</target>
             </trans-unit>
+            <trans-unit id="registrationController.error.something_went_wrong">
+                <source>Something went wrong.</source>
+                <target><![CDATA[Upps, da ist wohl etwas schief gelaufen! Wenden Sie sich im Zweifel an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            </trans-unit>
             <trans-unit id="registrationController.message.delete_successfull">
                 <source>Your account has been successfully deleted.</source>
                 <target>Schade, dass Sie uns verlassen. Ihr Profil wurde erfolgreich gelöscht, wir würden uns aber natürlich freuen, wenn Sie uns trotzdem hin und wieder besuchen.</target>
@@ -480,6 +496,12 @@
             <trans-unit id="authController.message.guest_login_welcome">
                 <source>Welcome! You are logged in as guest.</source>
                 <target>Herzlich willkommen! Sie sind als Gast angemeldet.</target>
+            </trans-unit>
+
+            <!-- Password Controller -->
+            <trans-unit id="passwordController.message.error.locked_account">
+                <source>You account is locked.</source>
+                 <target><![CDATA[Ihr Zugang wurde aufgrund wiederholt falscher Passworteingabe aus Sicherheitsgründen gesperrt. Bitte wenden Sie sich an den <a href="mailto:service@rkw.de">Support</a>.]]></target>
             </trans-unit>
 
             <!-- Service Controller -->

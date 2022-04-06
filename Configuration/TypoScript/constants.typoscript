@@ -27,7 +27,8 @@ plugin.tx_rkwregistration {
 		# cat=plugin.tx_rkwregistration//a; type=boolean; label=Include jQueryUi?
 		includeJQueryUi = 0
 
-        # cat=plugin.tx_rkwregistration//a; type=string; label=Comma-separated list of allowd domains for redirect after login
+        # cat=plugin.tx_rkwregistration//a; type=string; label=Comma-separated list of allowed domains for redirect after login
+        # @toDo: By MF 2022-04-06: Is that deprecated now?
         redirectDomains =
 
         # cat=plugin.tx_rkwregistration//a; type=integer; label=Defines how long the generated token for cross domain logins is valid (in seconds, default = 60sec)
@@ -87,7 +88,7 @@ plugin.tx_rkwregistration {
 			daysForOptIn = 7
 
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=How many times a user can try to login before his user is disabled
-			maxLoginErrors =
+            maxLoginErrors = 10
 
             # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered users (default = 0 = unlimited)
             lifetime =
@@ -102,12 +103,9 @@ plugin.tx_rkwregistration {
             # cat=plugin.tx_rkwregistration//a; type=string; label=Login text
             loginText = Logged in
 
-            guest {
-                # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered guest users (default = 7776000 = 90 days)
-                lifetime = 7776000
-                # cat=plugin.tx_rkwregistration//a; type=string; label=Groups a user is added to when registering as guest
-                groupsOnRegister =
-            }
+            # cat=plugin.tx_rkwregistration//a; type=string; label=Register mandatory fields
+            # values must be comma-separated
+            requiredFormFields = email, firstName, lastName
 
             passwordSettings {
                 # cat=plugin.tx_rkwregistration//a; type=integer; label=Minimum password length (default = 8)
@@ -115,6 +113,13 @@ plugin.tx_rkwregistration {
 
                 # cat=plugin.tx_rkwregistration//a; type=boolean; label=Password must contain letters and numbers (default = false)
                 alphaNum = true
+            }
+
+            guest {
+                # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered guest users (default = 7776000 = 90 days)
+                lifetime = 7776000
+                # cat=plugin.tx_rkwregistration//a; type=string; label=Groups a user is added to when registering as guest
+                groupsOnRegister =
             }
 
         }

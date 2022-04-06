@@ -1,0 +1,14 @@
+plugin.tx_rkwregistration  {
+    persistence {
+        storagePid = 1
+    }
+
+    settings {
+        users {
+            requiredFormFields = email, firstName, lastName
+        }
+    }
+}
+
+// for cronjob
+module.tx_rkwregistration < plugin.tx_rkwregistration

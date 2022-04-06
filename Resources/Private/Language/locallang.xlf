@@ -254,11 +254,20 @@
             <trans-unit id="validator.password_missing_signs">
                 <source>Your Password should contain numbers and letters.</source>
             </trans-unit>
+            <trans-unit id="validator.old_password_not_set">
+                <source>Please enter your old and the new password accordingly.</source>
+            </trans-unit>
             <trans-unit id="validator.passwords_not_all_set">
                 <source>Please enter your old and the new password accordingly. Please make sure to repeat the new password once.</source>
             </trans-unit>
             <trans-unit id="validator.passwords_not_identical">
                 <source>New password and password repeat are not identical. Please check again.</source>
+            </trans-unit>
+            <trans-unit id="validator.password_old_wrong">
+                <source>Password could not be updated. Maybe you did not enter your current password right.</source>
+            </trans-unit>
+            <trans-unit id="validator.remaining_attempts">
+                <source>You have %s remaining attempts before your account will be disabled.</source>
             </trans-unit>
             <trans-unit id="validator.zip.incorrect">
 				<source>ZIP is not correct.</source>
@@ -330,6 +339,9 @@
             <trans-unit id="registrationController.error.delete_wrong_password">
                 <source>Entered password was wrong. Please try again.</source>
             </trans-unit>
+            <trans-unit id="registrationController.error.something_went_wrong">
+                <source>Something went wrong.</source>
+            </trans-unit>
             <trans-unit id="registrationController.message.delete_successfull">
                 <source>Your account has been successfully deleted.</source>
             </trans-unit>
@@ -382,6 +394,10 @@
                 <source>Welcome! You are logged in as guest.</source>
             </trans-unit>
 
+            <!-- Password Controller -->
+            <trans-unit id="passwordController.message.error.locked_account">
+                <source>You account is locked.</source>
+            </trans-unit>
 
 
             <!-- Service Controller -->

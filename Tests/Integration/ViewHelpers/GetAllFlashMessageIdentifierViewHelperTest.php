@@ -34,6 +34,11 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 class GetAllFlashMessageIdentifierViewHelperTest extends FunctionalTestCase
 {
     /**
+     * @const
+     */
+    const FIXTURE_PATH = __DIR__ . '/GetAllFlashMessageIdentifierViewHelperTest/Fixtures';
+
+    /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
@@ -57,7 +62,7 @@ class GetAllFlashMessageIdentifierViewHelperTest extends FunctionalTestCase
             [
                 'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_registration/Tests/Integration/ViewHelpers/Frontend/GetAllFlashMessageIdentifierViewHelperTest/Fixtures/Frontend/Configuration/Rootpage.typoscript',
+                self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
             ]
         );
 

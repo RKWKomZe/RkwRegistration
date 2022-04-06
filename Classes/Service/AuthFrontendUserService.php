@@ -6,7 +6,9 @@ use \RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\GuestUserRepository;
+use RKW\RkwRegistration\Exception;
 use RKW\RkwRegistration\Register\GuestUserRegister;
+use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -169,7 +171,7 @@ class AuthFrontendUserService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
      *                     Other auth services will still be asked.
      *             <= 0:   Authentication failed, no more checking needed
      *                     by other auth services.
-     * @throws \RKW\RkwRegistration\Exception
+     * @throws Exception
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
@@ -263,25 +265,24 @@ class AuthFrontendUserService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
      * @param string $username
      * @param string $password
      * @return FrontendUser | integer
-     * @throws \RKW\RkwRegistration\Exception
+     * @throws Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function validateUser($username, $password)
     {
-
         $settings = $this->getSettings();
         $this->authStatusResult = 1;
 
         if (!$username) {
             $this->getLogger()->log(LogLevel::ERROR, sprintf('No valid username given.'));
-            throw new \RKW\RkwRegistration\Exception('No valid username given.', 1435035135);
+            throw new Exception('No valid username given.', 1435035135);
         }
 
         if (!$password) {
             $this->getLogger()->log(LogLevel::ERROR, sprintf('No valid password given.'));
-            throw new \RKW\RkwRegistration\Exception('No valid password given.', 1435035166);
+            throw new Exception('No valid password given.', 1435035166);
         }
 
         if (
@@ -328,13 +329,15 @@ class AuthFrontendUserService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
             $user->incrementTxRkwregistrationLoginErrorCount();
 
             // check max error counter
+            /*
             $maxLoginErrors = 10;
             if (intval($settings['users']['maxLoginErrors']) > 0) {
                 $maxLoginErrors = intval($settings['users']['maxLoginErrors']);
             }
+            */
 
             // disable user if maxLoginErrors is reached
-            if ($user->getTxRkwregistrationLoginErrorCount() >= $maxLoginErrors) {
+            if ($user->getTxRkwregistrationLoginErrorCount() >= intval($settings['users']['maxLoginErrors'])) {
                 $user->setDisable(1);
                 $this->authStatusResult = 2;
                 $this->getLogger()->log(LogLevel::WARNING, sprintf('Disabled user "%s", because of too many authentication failures.', strtolower(trim($username))));
