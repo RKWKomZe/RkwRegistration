@@ -8,6 +8,7 @@
         <h2><f:translate key="templates_registration_loginShow.headline" /></h2>
 
         <f:render partial="FlashMessages" arguments="{_all}" />
+        <f:render partial="FormErrors" arguments="{for:frontendUser}" />
 
         <f:render partial="Auth/Login" arguments="{_all}" />
 

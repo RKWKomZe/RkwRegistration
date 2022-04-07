@@ -251,6 +251,9 @@
             <trans-unit id="validator.password_too_short">
                 <source>Password is too short. Your password should at least consist of %s signs.</source>
             </trans-unit>
+            <trans-unit id="validator.password_too_long">
+                <source>Password is too long. Your password should maximum consist of %s signs.</source>
+            </trans-unit>
             <trans-unit id="validator.password_missing_signs">
                 <source>Your Password should contain numbers and letters.</source>
             </trans-unit>

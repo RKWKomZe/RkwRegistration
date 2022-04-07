@@ -129,8 +129,8 @@ class AuthController extends AbstractController
     /**
      * action login
      *
-     * @param string $username
-     * @param string $password
+     * @param array $login
+     * @validate $login \RKW\RkwRegistration\Validation\LoginValidator
      * @return void
      * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
@@ -139,37 +139,11 @@ class AuthController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function loginAction(string $username, string $password): void
+    public function loginAction(array $login): void
     {
-
-        // @toDo: Möglicherweise eine nicht Domain-Gebundene Validierungs-Klasse einfügen, um folgenden Abfragecode auszulagern?
-        // siehe "PrivacyValidator" bzw. auch "TermsValidator"
-
-        if (!$username) {
-            $this->addFlashMessage(
-                LocalizationUtility::translate(
-                    'registrationController.error.login_no_username', $this->extensionName
-                ),
-                '',
-                AbstractMessage::ERROR
-            );
-            $this->redirect('index');
-        }
-
-        if (!$password) {
-            $this->addFlashMessage(
-                LocalizationUtility::translate(
-                    'registrationController.error.login_no_password', $this->extensionName
-                ),
-                '',
-                AbstractMessage::ERROR
-            );
-            $this->redirect('index');
-        }
-
         /** @var AuthFrontendUserService $authService */
         $authService = GeneralUtility::makeInstance(AuthFrontendUserService::class);
-        $authService->setLoginData($username, $password);
+        $authService->setLoginData($login['username'], $login['password']);
         $frontendUserArray = $authService->getUser();
         
         // do it: check given user data
@@ -177,7 +151,7 @@ class AuthController extends AbstractController
 
         if (
             $authResult === 200
-            && ($frontendUser = $this->frontendUserRepository->findOneByUsername(strtolower(trim($username))))
+            && ($frontendUser = $this->frontendUserRepository->findOneByUsername(strtolower(trim($login['username']))))
             && ($frontendUser instanceof FrontendUser)
         ) {
 
@@ -256,7 +230,8 @@ class AuthController extends AbstractController
         string $extensionName = null,
         array $arguments = null, 
         int $pageUid = null
-    ) : void {
+    ) : void
+    {
         
         // do logout here
         FrontendUserSessionUtility::logout();

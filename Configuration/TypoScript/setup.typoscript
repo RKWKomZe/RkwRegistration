@@ -249,6 +249,7 @@ plugin.tx_rkwregistration {
             # security settings for password changes by the user
 			passwordSettings {
 				minLength = {$plugin.tx_rkwregistration.settings.users.passwordSettings.minLength}
+                maxLength = {$plugin.tx_rkwregistration.settings.users.passwordSettings.maxLength}
 				alphaNum = {$plugin.tx_rkwregistration.settings.users.passwordSettings.alphaNum}
 			}
 

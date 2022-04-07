@@ -59,6 +59,12 @@ class UniqueEmailValidator extends AbstractValidator
             // check email is still available
             if ($frontendUser = $frontendUserRepository->findOneByEmailOrUsernameInactive($email)) {
 
+
+                // @toDo by MF:
+                // Ist das wirklich logisch, hier bei identischer UID durchzuwinken? Oder sollte man alternativ den eingeloggten
+                // FrontendUser aus der Session holen und abgleichen?
+                
+
                 // for registered User
                 if ($frontendUser->getUid() != $givenFrontendUser->getUid()
                     || !$givenFrontendUser->getUid()

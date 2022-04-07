@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
+    <pages>
+        <uid>1</uid>
+        <pid>0</pid>
+        <title>Rootpage</title>
+        <doktype>1</doktype>
+        <perms_everybody>15</perms_everybody>
+    </pages>
 
     <fe_users>
-        <usergroup>55</usergroup>
         <uid>1</uid>
         <pid>1</pid>
-        <username>spd@test.de</username>
+        <username>lauterbach@spd.de</username>
         <email>lauterbach@spd.de</email>
         <first_name>Karl</first_name>
         <last_name>Lauterbach</last_name>
@@ -27,25 +33,5 @@
         <tx_rkwregistration_facebook_id>12345</tx_rkwregistration_facebook_id>
         <tx_rkwregistration_twitter_id>12345</tx_rkwregistration_twitter_id>
     </fe_users>
-
-
-    <fe_groups>
-        <uid>1</uid>
-        <pid>1</pid>
-        <title>Some group</title>
-        <tx_rkwregistration_service_mandatory_fields>something</tx_rkwregistration_service_mandatory_fields>
-    </fe_groups>
-
-
-    <tx_rkwregistration_domain_model_service>
-        <uid>1</uid>
-        <pid>1</pid>
-        <user>1</user>
-        <usergroup>1</usergroup>
-        <service_sha1>6c56107adb4c03dfdb074910f5ae3537fba7d8c2</service_sha1>
-        <token_yes>e863278172a75d52e66cb4e2d4c37a8a36af9201</token_yes>
-        <token_no>13d8286df1cd2a3990347e3b7579a5242ee59b18</token_no>
-        <enabled_by_admin>1</enabled_by_admin>
-    </tx_rkwregistration_domain_model_service>
 
 </dataset>

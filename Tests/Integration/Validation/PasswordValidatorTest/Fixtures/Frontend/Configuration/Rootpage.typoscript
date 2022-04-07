@@ -8,6 +8,7 @@ plugin.tx_rkwregistration  {
             requiredFormFields = email, firstName, lastName
             passwordSettings {
                 minLength = 8
+                maxLength = 100
                 alphaNum = true
             }
         }

@@ -197,16 +197,23 @@ class GroupRegister
                 $service->setServiceSha1(null);
                 $service->setValidUntil(0);
 
+
                 // check if there are mandatory fields for the service
                 $mandatoryFields = [];
                 foreach ($frontendUserGroups as $frontendUserGroup) {
                     if ($frontendUserGroup instanceof FrontendUserGroup) {
-                        $mandatoryFields = array_merge($mandatoryFields, $this->getMandatoryFieldsOfUser($frontendUser, $frontendUserGroup));
+                        $mandatoryFields = array_merge($mandatoryFields, $this->getMandatoryFieldsOfGroup($frontendUserGroup));
                     }
                 }
 
                 // if there are mandatory fields, update service request in database
                 if (count($mandatoryFields) > 0) {
+
+                    // @toDo by MF: Wann genau soll man hier rein? Wenn eine Gruppe grundsätzlich Pflichtfelder hat?
+                    // ---> Ooooder eigentlich nur, wenn eine Gruppe Pflichtfelder hat, die ein Nutzer noch nicht ausgefüllt hat?!
+                    // -> UNKLAR!!!
+
+                    // @toDo by MF: Should we log this? This is a "hidden" sub-routine I've debugged to, to understand what happen
                     $this->getServiceRepository()->update($service);
 
                     // if there is none, we finally add the user to the fe-groups and remove the service request

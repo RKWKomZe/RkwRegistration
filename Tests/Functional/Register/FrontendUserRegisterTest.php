@@ -694,7 +694,7 @@ class FrontendUserRegisterTest extends FunctionalTestCase
               [2] =>
               string(8) "lastName"
               [3] =>
-              string(9) "something"
+              string(9) "something"    // <-- Coming from the user related group!
             }
          */
 

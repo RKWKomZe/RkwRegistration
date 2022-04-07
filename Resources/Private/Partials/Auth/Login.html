@@ -8,13 +8,13 @@
                     <label class="form-label" for="username">
                         <f:translate key="tx_rkwregistration_domain_model_frontenduser.username" />
                     </label>
-                    <f:form.textfield id="username" name="username" value="{username}" type="email" additionalAttributes="{autocomplete:'email'}"/>
+                    <f:form.textfield id="username" name="login[username]" value="{login.username}" type="email" additionalAttributes="{autocomplete:'email'}"/>
                 </div>
                 <div class="form__field width100">
                     <label class="form-label" for="password" >
                         <f:translate key="tx_rkwregistration_domain_model_frontenduser.password" />
                     </label>
-                    <f:form.password id="password" name="password" />
+                    <f:form.password id="password" name="login[password]" />
                 </div>
                 <button type="submit" class="btn btn--primary btn--small">
                     <span><f:translate key="partials_registration_login.labelLogin" /></span>

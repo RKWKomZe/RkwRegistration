@@ -140,8 +140,8 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
      */
     protected function checkLength()
     {
+        // min length
         $minLength = ($this->passwordSettings['minLength'] ?: 8);
-
         if (strlen($this->passwordArray['first']) < intval($minLength)) {
             $this->result->addError(
                 new Error(
@@ -152,7 +152,22 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
                     ), 1435066509
                 )
             );
+            $this->isValid = false;
+        }
 
+        // max length
+        $maxLength = ($this->passwordSettings['maxLength'] ?: 100);
+
+        if (strlen($this->passwordArray['first']) > intval($maxLength)) {
+            $this->result->addError(
+                new Error(
+                    LocalizationUtility::translate(
+                        'validator.password_too_long',
+                        'rkw_registration',
+                        [$maxLength]
+                    ), 1649316598
+                )
+            );
             $this->isValid = false;
         }
     }

@@ -310,6 +310,10 @@
                 <source>Password is too short. Your password should at least consist of %s signs.</source>
                 <target>Sicher ist sicher: Ihr Passwort sollte mindestens %s Zeichen lang sein.</target>
             </trans-unit>
+            <trans-unit id="validator.password_too_long">
+                <source>Password is too long. Your password should maximum consist of %s signs.</source>
+                <target>Zuviel des Guten: Ihr Passwort sollte höchstens %s Zeichen lang sein.</target>
+            </trans-unit>
             <trans-unit id="validator.password_missing_signs">
                 <source>Your Password should contain numbers and letters.</source>
                 <target>Weil etwas komplizierter sehr viel sicherer ist: Ihr Passwort sollte Buchstaben und Zahlen enthalten.</target>

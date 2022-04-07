@@ -28,14 +28,11 @@
         <tx_rkwregistration_twitter_id>12345</tx_rkwregistration_twitter_id>
     </fe_users>
 
-
     <fe_groups>
         <uid>1</uid>
         <pid>1</pid>
         <title>Some group</title>
-        <tx_rkwregistration_service_mandatory_fields>something</tx_rkwregistration_service_mandatory_fields>
     </fe_groups>
-
 
     <tx_rkwregistration_domain_model_service>
         <uid>1</uid>
@@ -47,5 +44,6 @@
         <token_no>13d8286df1cd2a3990347e3b7579a5242ee59b18</token_no>
         <enabled_by_admin>1</enabled_by_admin>
     </tx_rkwregistration_domain_model_service>
+
 
 </dataset>
