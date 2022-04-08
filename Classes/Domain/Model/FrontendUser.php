@@ -106,11 +106,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     protected $txRkwregistrationLanguageKey = '';
 
     /**
-     * @var integer
-     */
-    protected $txRkwregistrationRegisteredBy = 0;
-
-    /**
      * @var string
      */
     protected $txRkwregistrationFacebookUrl = '';
@@ -578,32 +573,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 
         return '';
     }
-
-
-    /**
-     * Sets the registeredBy value
-     *
-     * @param integer $registeredBy
-     * @return void
-     * @api
-     */
-    public function setTxRkwregistrationRegisteredBy($registeredBy)
-    {
-        $this->txRkwregistrationRegisteredBy = $registeredBy;
-    }
-
-
-    /**
-     * Returns the registeredBy value
-     *
-     * @return integer
-     * @api
-     */
-    public function getTxRkwregistrationRegisteredBy()
-    {
-        return $this->txRkwregistrationRegisteredBy;
-    }
-
 
     /**
      * Sets the registerRemoteIp value

@@ -363,6 +363,105 @@ class FrontendUserRegisterTest extends FunctionalTestCase
     }
 
 
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     */
+    public function deleteNotPersistentUser ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is a not existing frontendUser
+         * When the remove function is called
+         * Then the not persistent frontendUser is marked as deleted
+         */
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->objectManager->get(FrontendUser::class);
+        $frontendUser->setEmail('someNewFrontendUser@gmx.de');
+        $frontendUser->setUsername('someNewFrontendUser@gmx.de');
+
+        // BEFORE
+        static::assertEquals(0, $frontendUser->getDeleted());
+
+        // Service
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class, $frontendUser);
+        $register->delete();
+
+        // AFTER
+        static::assertEquals(1, $frontendUser->getDeleted());
+    }
+
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     */
+    public function deleteNotPersistentUserArrayWithFakeData ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is an array with frontendUser data
+         * When the remove function is called
+         * Then a new frontendUser is created and marked as deleted
+         */
+
+        $dataArray = [
+            'email' => 'someNewFrontendUser@gmx.de',
+            'username' => 'someNewFrontendUser@gmx.de'
+        ];
+
+        // Service
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class, $dataArray);
+        $register->delete();
+
+        // AFTER
+        static::assertEquals(1, $register->getFrontendUser()->getDeleted());
+
+        // Attention: This is NOT the user from the given array; its a completely new created one
+        static::assertEquals('someNewFrontendUser@gmx.de', $dataArray['email']);
+        static::assertNotEquals($register->getFrontendUser()->getEmail(), $dataArray['email']);
+    }
+
+
+    /**
+     * @test
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     */
+    public function deleteNotPersistentUserArrayWithExistingEmail ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is an array with frontendUser data which are existing in the database
+         * When the remove function is called
+         * Then a new frontendUser is created and marked as deleted
+         */
+
+        $this->importDataSet(__DIR__ . '/FrontendUserRegisterTest/Fixtures/Database/Check10.xml');
+
+        $dataArray = [
+            'email' => 'lauterbach@spd.de',
+            'username' => 'lauterbach@spd.de'
+        ];
+
+        // Service
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class, $dataArray);
+        $register->delete();
+
+        // AFTER
+        static::assertEquals(1, $register->getFrontendUser()->getDeleted());
+
+        // Attention: This is NOT the user from the given array; its a completely new created one
+        static::assertNotEquals($register->getFrontendUser()->getEmail(), $dataArray['email']);
+    }
+
+
 
     /**
      * @test

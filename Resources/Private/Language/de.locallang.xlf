@@ -60,22 +60,6 @@
 				<source>Website</source>
                 <target>Website</target>
 			</trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by">
-                <source>Registered By</source>
-                <target>Registriert</target>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.rkw">
-                <source>RKW</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.facebook">
-                <source>Facebook</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.twitter">
-                <source>Twitter</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.xing">
-                <source>Xing</source>
-            </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_mobile">
                 <source>Mobile</source>
                 <target>Handy</target>
@@ -424,7 +408,7 @@
             </trans-unit>
             <trans-unit id="registrationController.error.password_not_updated">
                 <source>Password could not be updated. Maybe you did not enter your current password right.</source>
-                <target>Da ist etwas schief gelaufen! Das Passwort konnte nicht geändert werden. Hat sich bei der Eingabe Ihres bisherigen Passworts vielleicht ein Fehler eingeschlichen?</target>
+                <target><![CDATA[Da ist etwas schief gelaufen! Das Passwort konnte nicht geändert werden. Wenden Sie sich bitte an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.delete_wrong_password">
                 <source>Entered password was wrong. Please try again.</source>

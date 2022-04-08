@@ -64,7 +64,6 @@ CREATE TABLE fe_users (
 
 	tx_rkwregistration_xing_url varchar(255) DEFAULT '' NOT NULL,
 
-    tx_rkwregistration_registered_by tinyint(4) DEFAULT '0' NOT NULL,
 	tx_rkwregistration_register_remote_ip varchar(255) DEFAULT '' NOT NULL,
 	tx_rkwregistration_language_key varchar(255) DEFAULT 'default' NOT NULL,
 

@@ -47,21 +47,6 @@
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.www">
 				<source>Website</source>
 			</trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by">
-                <source>Registered By</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.rkw">
-                <source>RKW</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.facebook">
-                <source>Facebook</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.twitter">
-                <source>Twitter</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.xing">
-                <source>Xing</source>
-            </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_mobile">
                 <source>Mobile</source>
             </trans-unit>

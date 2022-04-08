@@ -55,7 +55,12 @@ class PasswordController extends AbstractController
                 'index',
                 'Auth',
                 null,
-                ['flashMessageToInject' => LocalizationUtility::translate('passwordController.message.error.locked_account', $this->extensionName)],
+                [
+                    'flashMessageToInject' => LocalizationUtility::translate(
+                        'passwordController.message.error.locked_account',
+                        $this->extensionName
+                    )
+                ],
                 $this->settings['users']['loginPid']
             );
         }
@@ -128,7 +133,6 @@ class PasswordController extends AbstractController
         }
 
         // SOMETHING WENT WRONG
-        // @toDo: change text to something went wrong
         $this->addFlashMessage(
             LocalizationUtility::translate(
                 'registrationController.error.password_not_updated', $this->extensionName

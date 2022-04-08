@@ -216,11 +216,11 @@ class AuthController extends AbstractController
      * Important: This action with redirect is a workaround for setting the "logoutMessage" via flashMessenger
      * Reason: Deleting the FeUser-Session AND setting a FlashMessage in one action DOES NOT WORK! (this kills the message..)
      *
-     * @param string $redirectAction Optional redirect parameter
-     * @param string $redirectController Optional redirect parameter
-     * @param string $extensionName Optional redirect parameter
-     * @param array  $arguments Optional redirect parameter
-     * @param int   $pageUid Optional redirect parameter
+     * @param string      $redirectAction Optional redirect parameter
+     * @param string|null $redirectController Optional redirect parameter
+     * @param string|null $extensionName Optional redirect parameter
+     * @param array|null  $arguments Optional redirect parameter
+     * @param int|null    $pageUid Optional redirect parameter
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
@@ -283,6 +283,9 @@ class AuthController extends AbstractController
      */
     public function loginExternalAction()
     {
+
+        GeneralUtility::logDeprecatedFunction();
+
         // if user is a GUEST, make a redirect
         // @toDo: WHY?
         /*
@@ -338,7 +341,7 @@ class AuthController extends AbstractController
     public function loginAnonymousAction()
     {
 
-        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+        GeneralUtility::logDeprecatedFunction();
 
         if (!$this->getFrontendUser()) {
 
@@ -432,7 +435,7 @@ class AuthController extends AbstractController
     public function loginHintAnonymousAction()
     {
 
-        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+        GeneralUtility::logDeprecatedFunction();
 
         if (!$this->getFrontendUserAnonymous()) {
 
@@ -489,7 +492,7 @@ class AuthController extends AbstractController
     public function logoutExternalAction()
     {
 
-        \TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
+        GeneralUtility::logDeprecatedFunction();
         
         // simply logout anonymous users and show hint
         if ($this->getFrontendUser() instanceof GuestUser) {

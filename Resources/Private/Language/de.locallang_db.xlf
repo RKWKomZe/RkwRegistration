@@ -31,10 +31,6 @@
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.socialmedia">
                 <source>Social Media</source>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by">
-				<source>Registered By</source>
-                <target>Registriert über</target>
-            </trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_mobile">
 				<source>Mobile</source>
                 <target>Handy</target>

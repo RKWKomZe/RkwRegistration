@@ -29,21 +29,6 @@
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.socialmedia">
                 <source>Social Media</source>
             </trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by">
-				<source>Registered By</source>
-			</trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.rkw">
-                <source>RKW</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.facebook">
-                <source>Facebook</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.twitter">
-                <source>Twitter</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.xing">
-                <source>Xing</source>
-            </trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_mobile">
 				<source>Mobile</source>
 			</trans-unit>
@@ -73,9 +58,6 @@
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_xing_url">
 				<source>XING URL</source>
-			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by">
-				<source>Registered By</source>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_register_remote_ip">
 				<source>Register Remote Ip</source>

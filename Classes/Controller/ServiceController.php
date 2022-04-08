@@ -256,9 +256,21 @@ class ServiceController extends AbstractController
      */
     public function optInAction(): void
     {
-        $tokenYes = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_yes') ? $this->request->getArgument('token_yes') : ''));
-        $tokenNo = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_no') ? $this->request->getArgument('token_no') : ''));
-        $serviceSha1 = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('service'));
+        $tokenYes = preg_replace(
+            '/[^a-zA-Z0-9]/',
+            '',
+            ($this->request->hasArgument('token_yes') ? $this->request->getArgument('token_yes') : '')
+        );
+        $tokenNo = preg_replace(
+            '/[^a-zA-Z0-9]/',
+            '',
+            ($this->request->hasArgument('token_no') ? $this->request->getArgument('token_no') : '')
+        );
+        $serviceSha1 = preg_replace(
+            '/[^a-zA-Z0-9]/',
+            '',
+            $this->request->getArgument('service')
+        );
 
         $service = GeneralUtility::makeInstance(GroupRegister::class);
         $check = $service->checkTokens($tokenYes, $tokenNo, $serviceSha1);

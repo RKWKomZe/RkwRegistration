@@ -248,9 +248,9 @@ class FrontendUserController extends AbstractController
         // for logged in users only!
         $this->redirectIfUserNotLoggedIn();
 
-        /** @var FrontendUserRegister $frontendUserRegister */
+        /** @var FrontendUserRegister $frontendUserService */
         $frontendUserService = GeneralUtility::makeInstance(
-            frontendUserRegister::class,
+            FrontendUserRegister::class,
             $this->getFrontendUser()
         );
         $frontendUserService->delete();
