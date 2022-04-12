@@ -245,7 +245,7 @@ class FrontendUserRegister extends AbstractRegister
             $email = $email->getEmail();
         }
 
-        $dbFrontendUser = $this->frontendUserRepository->findOneByEmailOrUsernameInactive(strtolower($email));
+        $dbFrontendUser = $this->frontendUserRepository->findOneByEmailOrUsernameAlsoInactive(strtolower($email));
 
         if (!$dbFrontendUser) {
             return true;

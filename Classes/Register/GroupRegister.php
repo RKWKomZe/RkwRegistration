@@ -152,6 +152,10 @@ class GroupRegister
      /**
      * Checks given tokens from E-mail
      *
+     * 0 = error
+     * 1 = success token (created)
+     * 2 = remove token (deleted)
+     *
      * @param string $tokenYes
      * @param string $tokenNo
      * @param string $serviceSha1
@@ -162,7 +166,7 @@ class GroupRegister
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function checkTokens($tokenYes, $tokenNo, $serviceSha1)
+    public function checkTokens(string $tokenYes, string $tokenNo, string $serviceSha1): int
     {
         // load service by SHA-token
         $service = $this->getServiceRepository()->findOneByServiceSha1($serviceSha1);
@@ -183,7 +187,7 @@ class GroupRegister
 
         // load fe-user
         if (
-            ($frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonGuest($service->getUser()))
+            ($frontendUser = $this->getFrontendUserRepository()->findByUidAlsoInactiveNonGuest($service->getUser()))
             && ($frontendUserGroups = $service->getUsergroup())
         ) {
 

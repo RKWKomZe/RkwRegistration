@@ -156,7 +156,7 @@ class OptInRegister extends AbstractRegister
         }
 
         /** @var FrontendUser $frontendUser */
-        $frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonGuest($register->getUser());
+        $frontendUser = $this->getFrontendUserRepository()->findByUidAlsoInactiveNonGuest($register->getUser());
 
         $status = $this->check($register, $tokenYes, $tokenNo);
 
@@ -168,6 +168,7 @@ class OptInRegister extends AbstractRegister
             // delete user and registration
             // remove only disabled user!
             if ($frontendUser->getDisable()) {
+                $frontendUser->setDeleted(1);
                 $this->getFrontendUserRepository()->removeHard($frontendUser);
             }
 
@@ -198,7 +199,7 @@ class OptInRegister extends AbstractRegister
         if ($status === 1) {
 
             // load fe-user
-            if ($frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonGuest($register->getUser())) {
+            if ($frontendUser = $this->getFrontendUserRepository()->findByUidAlsoInactiveNonGuest($register->getUser())) {
 
                 if ($frontendUser->getDisable()) {
 
@@ -332,7 +333,7 @@ class OptInRegister extends AbstractRegister
         /** @var FrontendUserRepository $frontendUserRepository */
         $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
 
-        if ($frontendUserDatabase = $frontendUserRepository->findOneByEmailOrUsernameInactive($frontendUser->getUsername())) {
+        if ($frontendUserDatabase = $frontendUserRepository->findOneByEmailOrUsernameAlsoInactive($frontendUser->getUsername())) {
 
             // re-initialize service with database object
             $frontendUserRegister = $objectManager->get(FrontendUserRegister::class, $frontendUserDatabase);
@@ -676,7 +677,7 @@ class OptInRegister extends AbstractRegister
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
         /** @var FrontendUserRepository $frontendUserRepository */
         $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
-        $dbFrontendUser = $frontendUserRepository->findOneByEmailOrUsernameInactive(strtolower($email));
+        $dbFrontendUser = $frontendUserRepository->findOneByEmailOrUsernameAlsoInactive(strtolower($email));
 
         if (
             (\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail(strtolower($email)))
@@ -838,13 +839,13 @@ class OptInRegister extends AbstractRegister
 
 
         // load fe-user
-        if ($frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonGuest($register->getUser())) {
+        if ($frontendUser = $this->getFrontendUserRepository()->findByUidAlsoInactiveNonGuest($register->getUser())) {
 
             // check yes-token
             $category = $register->getCategory();
             if ($register->getTokenYes() == $tokenYes) {
 
-                if ($frontendUser = $this->getFrontendUserRepository()->findByUidInactiveNonGuest($register->getUser())) {
+                if ($frontendUser = $this->getFrontendUserRepository()->findByUidAlsoInactiveNonGuest($register->getUser())) {
 
                     if ($frontendUser->getDisable()) {
 

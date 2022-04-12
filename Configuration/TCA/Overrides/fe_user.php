@@ -155,6 +155,7 @@ $tempCols = [
         ],
     ],
 
+    // @toDo: DEPRECATED! Only needed for backward compatibility
 	'tx_rkwregistration_is_anonymous' => [
 		'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_is_anonymous',
 		'exclude' => 0,

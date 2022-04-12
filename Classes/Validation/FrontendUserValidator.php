@@ -122,7 +122,7 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
             /** @var FrontendUserRepository $frontendUserRepository */
             $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
-            $frontendUser = $frontendUserRepository->findOneByEmailOrUsernameInactive($this->frontendUserFormData->getEmail());
+            $frontendUser = $frontendUserRepository->findOneByEmailOrUsernameAlsoInactive($this->frontendUserFormData->getEmail());
 
             if ($frontendUser) {
                 if ($frontendUser->getUid() != $this->frontendUserFormData->getUid()) {

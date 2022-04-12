@@ -280,7 +280,7 @@ class FrontendUserRegisterTest extends FunctionalTestCase
         $this->importDataSet(__DIR__ . '/FrontendUserRegisterTest/Fixtures/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest(1);
+        $frontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest(1);
 
         // BEFORE
         static::assertEquals(1, $frontendUser->getDisable());
@@ -347,7 +347,7 @@ class FrontendUserRegisterTest extends FunctionalTestCase
         $this->importDataSet(__DIR__ . '/FrontendUserRegisterTest/Fixtures/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest(1);
+        $frontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest(1);
 
         // BEFORE
         static::assertEquals(0, $frontendUser->getDeleted());
@@ -498,9 +498,9 @@ class FrontendUserRegisterTest extends FunctionalTestCase
         /**
          * Scenario:
          *
-         * Given is an valid email address
+         * Given is an invalid email address
          * When the validEmail function is called
-         * Then the functions returns true
+         * Then the functions returns false
          */
 
         $email = 'test@test';
@@ -524,9 +524,9 @@ class FrontendUserRegisterTest extends FunctionalTestCase
         /**
          * Scenario:
          *
-         * Given is an valid email address
+         * Given is no email address
          * When the validEmail function is called
-         * Then the functions returns true
+         * Then the functions returns false
          */
 
         // Service
@@ -538,10 +538,34 @@ class FrontendUserRegisterTest extends FunctionalTestCase
     }
 
 
+    /**
+     * @test
+     */
+    public function validateEmailWithSpecialCharactersEmailReturnsFalse ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is an invalid email address consisting of special characters
+         * When the validEmail function is called
+         * Then the functions returns false
+         */
+
+        $email = '!"§@$%&./()';
+
+        // Service
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class);
+        $result = $register->validateEmail($email);
+
+        static::assertFalse($result);
+    }
+
+
 
     /**
      * @test
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException|\Nimut\TestingFramework\Exception\Exception
      */
     public function uniqueEmailChecksExistingEmail ()
     {
@@ -570,19 +594,44 @@ class FrontendUserRegisterTest extends FunctionalTestCase
 
     /**
      * @test
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
     public function uniqueEmailChecksValidAndNotExistingEmail ()
     {
         /**
          * Scenario:
          *
-         * Given is an existing Email address
+         * Given is a not email address
          * When the validEmailUnique function is called (with parameter type string)
          * Then the function returns true
          */
 
         $email = 'test@test.de';
+
+        // Service
+        /** @var FrontendUserRegister $register */
+        $register = $this->objectManager->get(FrontendUserRegister::class);
+        $result = $register->uniqueEmail($email);
+
+        static::assertTrue($result);
+    }
+
+
+    /**
+     * @test
+     */
+    public function uniqueEmailChecksInvalidAndNotExistingEmail ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is a no existing email address
+         * When the validEmailUnique function is called (with parameter type string)
+         * Then the function returns true
+         */
+
+        // @toDo: Is this okay, because the function does their thing. Or should we have to validate the email address itself?
+
+        $email = 'test@test';
 
         // Service
         /** @var FrontendUserRegister $register */
@@ -683,7 +732,7 @@ class FrontendUserRegisterTest extends FunctionalTestCase
         $this->importDataSet(__DIR__ . '/FrontendUserRegisterTest/Fixtures/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUidInactiveNonGuest(1);
+        $frontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest(1);
 
         // Service
         /** @var FrontendUserRegister $register */

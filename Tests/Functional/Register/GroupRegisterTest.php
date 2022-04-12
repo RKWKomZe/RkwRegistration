@@ -6,6 +6,7 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
+use RKW\RkwRegistration\Domain\Model\Service;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use \RKW\RkwRegistration\Domain\Repository\ServiceRepository;
@@ -213,15 +214,19 @@ class GroupRegisterTest extends FunctionalTestCase
         /**
          * Scenario:
          *
-         * Given is a service-registration (sent via mail to an admin)
+         * Given is a not existing service-registration (maybe deleted, after email with tokens was send)
          * When the admin-user want to confirm
-         * Then the service related fe_groups is added to the frontendUser
+         * Then the token check fails
          */
 
-        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
-
         /** @var \RKW\RkwRegistration\Domain\Model\Service $serviceRegistration */
-        $serviceRegistration = $this->serviceRepository->findByIdentifier(1);
+        $serviceRegistration = $this->objectManager->get(Service::class);
+
+        $serviceRegistration->setTokenYes('abcdefghi2a75d52e66cb4e2d4c37a8a36af9201');
+        $serviceRegistration->setServiceSha1('123456789b4c03dfdb074910f5ae3537fba7d8c2');
+
+        // simulate a still valid registration
+        $serviceRegistration->setValidUntil(time() + 60);
 
         // Service
         /** @var GroupRegister $register */
@@ -229,6 +234,7 @@ class GroupRegisterTest extends FunctionalTestCase
         $result = $register->checkTokens($serviceRegistration->getTokenYes(), '', $serviceRegistration->getServiceSha1());
 
         static::assertEquals(0, $result);
+
     }
 
 
@@ -294,6 +300,32 @@ class GroupRegisterTest extends FunctionalTestCase
         $result = $register->addUserToAllGrantedGroups($frontendUser);
 
         static::assertEquals(1, $result);
+    }
+
+
+    /**
+     * @test
+     */
+    public function addUserToAllGrantedGroupsWithNotPersistentFrontendUser()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is a service-registration which is enabled by admin
+         * Given is a not persistent frontendUser
+         * When the "addUserToAllGrantedGroups" function is called
+         * Then false is returned
+         */
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->objectManager->get(FrontendUser::class);
+
+        // Service
+        /** @var GroupRegister $register */
+        $register = $this->objectManager->get(GroupRegister::class);
+        $result = $register->addUserToAllGrantedGroups($frontendUser);
+
+        static::assertFalse($result);
     }
 
 

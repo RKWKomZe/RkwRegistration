@@ -111,7 +111,7 @@ class AuthFrontendUserServiceTest extends FunctionalTestCase
         /** @var AuthFrontendUserService $authFrontendUserService */
         $authFrontendUserService = $this->objectManager->get(AuthFrontendUserService::class);
         // the secret is NOT important at this point: This is NOT the auth function. But needed because it's a mandatory value
-        $authFrontendUserService->setLoginData('spd@test.de', 'secret');
+        $authFrontendUserService->setLoginData('lauterbach@spd.de', 'secret');
         $result = $authFrontendUserService->getUser();
 
         static::assertArrayHasKey('uid', $result);
@@ -193,7 +193,7 @@ class AuthFrontendUserServiceTest extends FunctionalTestCase
         /** @var AuthFrontendUserService $authFrontendUserService */
         $authFrontendUserService = $this->objectManager->get(AuthFrontendUserService::class);
         // the secret is NOT important at this point: This is NOT the auth function. But needed because it's a mandatory value
-        $authFrontendUserService->setLoginData('spd@test.de', 'secret');
+        $authFrontendUserService->setLoginData('lauterbach@spd.de', 'secret');
         $frontendUserArray = $authFrontendUserService->getUser();
         $result = $authFrontendUserService->authUser($frontendUserArray);
 
@@ -281,6 +281,39 @@ class AuthFrontendUserServiceTest extends FunctionalTestCase
         $result = $authFrontendUserService->authGuest('lfrb0u4ih3k7azqv8yc2');
 
         // false = fail
+        static::assertFalse($result);
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function authGuestWithExistingFrontendUserEmailAddressReturnsFalse ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is the email address of an existing FrontendUser
+         * When we want to auth as guestUser with that email address
+         * Then false is returned
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
+
+        $emailAddress = 'lauterbach@spd.de';
+
+        // shows that the user really exists
+        $frontendUser = $this->frontendUserRepository->findByEmail($emailAddress)->getFirst();
+        static::assertInstanceOf('RKW\RkwRegistration\Domain\Model\FrontendUser', $frontendUser);
+
+        // Service
+        /** @var AuthFrontendUserService $authFrontendUserService */
+        $authFrontendUserService = $this->objectManager->get(AuthFrontendUserService::class);
+        // the secret is NOT important at this point: This is NOT the auth function. But needed because it's a mandatory value
+        $result = $authFrontendUserService->authGuest($emailAddress);
+
+        // token not found
         static::assertFalse($result);
     }
 

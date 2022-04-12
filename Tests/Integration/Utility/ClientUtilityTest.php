@@ -70,7 +70,7 @@ class ClientUtilityTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getIpReturnsIt ()
+    public function getIpReturnsIp ()
     {
         /**
          * Scenario:

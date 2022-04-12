@@ -87,8 +87,6 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
     public function loginCreatesFrontendUserSessionForGivenFrontendUser ()
     {
 
-        // @toDo: Is this a functional test?
-
         /**
          * Scenario:
          *
@@ -140,6 +138,38 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
         static::expectException(\RKW\RkwRegistration\Exception::class);
 
         $utility->login($frontendUser);
+    }
+
+
+    /**
+     * @test
+     */
+    public function loginWithFrontendUserArrayThrowsException ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given is a FrontendUser array
+         * When he is trying to log in
+         * Then an Exception is thrown
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
+        /** @var FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        $frontendUserArray = [
+            'uid' => $frontendUser->getUid(),
+            'email' => $frontendUser->getEmail()
+        ];
+
+        static::expectException(\TypeError::class);
+        static::expectExceptionCode(0);
+
+        /** @var FrontendUserSessionUtility $utility */
+        $utility = GeneralUtility::makeInstance(FrontendUserSessionUtility::class);
+        $utility->login($frontendUserArray);
     }
 
 

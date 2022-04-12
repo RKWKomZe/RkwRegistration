@@ -57,7 +57,7 @@ class UniqueEmailValidator extends AbstractValidator
             $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
 
             // check email is still available
-            if ($frontendUser = $frontendUserRepository->findOneByEmailOrUsernameInactive($email)) {
+            if ($frontendUser = $frontendUserRepository->findOneByEmailOrUsernameAlsoInactive($email)) {
 
 
                 // @toDo by MF:

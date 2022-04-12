@@ -224,7 +224,7 @@ class AuthFrontendUserService extends \TYPO3\CMS\Sv\AbstractAuthenticationServic
      * @param string $token
      * @return FrontendUser| boolean
      */
-    public function authGuest($token)
+    public function authGuest(string $token)
     {
         /** @var GuestUserRepository $guestUserRepository */
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);

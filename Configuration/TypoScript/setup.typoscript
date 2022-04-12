@@ -55,6 +55,7 @@ config.tx_extbase.persistence {
 					disable.mapOnProperty = disable
 					deleted.mapOnProperty = deleted
                     password.mapOnProperty = password
+                    tx_extbase_type.mapOnProperty = txExtbaseType
 				}
 			}
 		}
@@ -78,6 +79,7 @@ config.tx_extbase.persistence {
                     disable.mapOnProperty = disable
                     deleted.mapOnProperty = deleted
                     password.mapOnProperty = password
+                    tx_extbase_type.mapOnProperty = txExtbaseType
                 }
             }
         }

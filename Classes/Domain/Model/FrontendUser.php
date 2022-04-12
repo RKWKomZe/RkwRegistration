@@ -64,6 +64,11 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     protected $email;
 
     /**
+     * @var string
+     */
+    protected $txExtbaseType;
+
+    /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\FrontendUserGroup>
      */
     protected $usergroup;
@@ -193,6 +198,28 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function setEmail($email)
     {
         $this->email = strtolower($email);
+    }
+
+    /**
+     * Returns the txExtbaseType
+     *
+     * @return string
+     * @api
+     */
+    public function getTxExtbaseType()
+    {
+        return $this->txExtbaseType;
+    }
+
+    /**
+     * Sets the txExtbaseType
+     *
+     * @param string $txExtbaseType
+     * @api
+     */
+    public function setTxExtbaseType($txExtbaseType)
+    {
+        $this->txExtbaseType = $txExtbaseType;
     }
 
     /**

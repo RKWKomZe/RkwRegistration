@@ -70,32 +70,4 @@ class FrontendUserGroupRepository extends \TYPO3\CMS\Extbase\Persistence\Reposit
     }
 
 
-    /**
-     * Find all users that have been updated recently
-     *
-     * @api Used by RKW Soap
-     * @param integer $timestamp
-     * @param integer $serviceOnly
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
-     */
-    public function findByTimestamp($timestamp, $serviceOnly)
-    {
-
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setIncludeDeleted(true);
-
-        $query->matching(
-            $query->logicalAnd(
-                $query->greaterThanOrEqual('tstamp', intval($timestamp)),
-                $query->equals('txRkwregistrationIsService', intval($serviceOnly))
-            )
-        );
-
-        $query->setOrderings(['tstamp' => QueryInterface::ORDER_ASCENDING]);
-
-        return $query->execute();
-    }
-
-
 }

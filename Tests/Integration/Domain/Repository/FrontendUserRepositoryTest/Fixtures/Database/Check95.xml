@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <tx_rkwregistration_domain_model_privacy>
+        <uid>1</uid>
+        <pid>1</pid>
+        <frontend_user>1</frontend_user>
+        <foreign_table>tx_rkw_test</foreign_table>
+        <foreign_uid>0</foreign_uid>
+        <ip_address>172.28.128.1</ip_address>
+        <user_agent>Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0</user_agent>
+    </tx_rkwregistration_domain_model_privacy>
+
+</dataset>
