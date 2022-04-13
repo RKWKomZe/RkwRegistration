@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <fe_groups>
+        <uid>1</uid>
+        <pid>1</pid>
+        <title>Rkw Service Group</title>
+        <description>Some fe_group which is a service</description>
+        <tx_rkwregistration_is_service>0</tx_rkwregistration_is_service>
+        <tx_rkwregistration_service_opening_date>0</tx_rkwregistration_service_opening_date>
+        <tx_rkwregistration_service_closing_date>0</tx_rkwregistration_service_closing_date>
+    </fe_groups>
+</dataset>

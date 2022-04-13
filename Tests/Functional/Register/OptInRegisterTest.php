@@ -9,6 +9,7 @@ use \RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use RKW\RkwRegistration\Register\OptInRegister;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -67,6 +68,10 @@ class OptInRegisterTest extends FunctionalTestCase
      */
     private $optInRegister = null;
 
+    /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     */
+    private $objectManager = null;
 
     /**
      * Setup
@@ -92,12 +97,12 @@ class OptInRegisterTest extends FunctionalTestCase
         );
 
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         // Repository
-        $this->frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
-        $this->registrationRepository = $objectManager->get(RegistrationRepository::class);
+        $this->frontendUserRepository =  $this->objectManager->get(FrontendUserRepository::class);
+        $this->registrationRepository =  $this->objectManager->get(RegistrationRepository::class);
         // Service
-        $this->optInRegister = $objectManager->get(OptInRegister::class);
+        $this->optInRegister =  $this->objectManager->get(OptInRegister::class);
 
         $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromAddress'] = 'mail@default.rkw';
         $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromName'] = 'RKW Default';
@@ -252,6 +257,10 @@ class OptInRegisterTest extends FunctionalTestCase
         static::assertTrue($frontendUser->getDisable() === 1);
 
         $result = $this->optInRegister->process('', $register->getTokenNo(), $register->getUserSha1());
+
+        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
+        $persistenceManager->persistAll();
+        $persistenceManager->clearState();
 
         static::assertTrue($result === 2);
         // the given dataset is still disabled

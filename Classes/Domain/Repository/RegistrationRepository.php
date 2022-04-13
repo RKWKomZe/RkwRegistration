@@ -72,6 +72,10 @@ class RegistrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * function newOptIn
      *
+     * @toDo: It's possible so set 0 or negative daysForOptIn $daysForOptIn. Do we need a fallback value?
+     * -> newOptInWithNoTimeForOptInReturnsRegistration
+     * -> newOptInWithMinusTimeForOptInReturnsRegistration
+     *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @param mixed $additionalData
      * @param string $category

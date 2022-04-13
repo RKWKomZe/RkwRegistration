@@ -309,7 +309,6 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function removeHard(FrontendUser $frontendUser) :bool
     {
-
         // Important: We never want to delete a user with related privacy entries
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
         $rows = $queryBuilder

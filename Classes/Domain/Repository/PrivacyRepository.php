@@ -38,7 +38,8 @@ class PrivacyRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     public function findOneByRegistration(Registration $registration)
     {
         $query = $this->createQuery();
-        $query->getQuerySettings()->setRespectStoragePage(false);
+        // deprecated line: Hard cut, no more global storage pid
+        //$query->getQuerySettings()->setRespectStoragePage(false);
         $query->matching(
             $query->equals('registrationUserSha1', $registration->getUserSha1())
         );

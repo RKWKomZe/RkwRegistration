@@ -169,6 +169,7 @@ class OptInRegister extends AbstractRegister
             // remove only disabled user!
             if ($frontendUser->getDisable()) {
                 $frontendUser->setDeleted(1);
+                $this->frontendUserRepository->update($frontendUser);
                 $this->getFrontendUserRepository()->removeHard($frontendUser);
             }
 
