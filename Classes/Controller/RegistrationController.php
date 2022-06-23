@@ -40,14 +40,16 @@ class RegistrationController extends AbstractController
      */
     protected $serviceRepository;
 
+    
     /**
-     * Persistence Manager
+     * PersistenceManager
      *
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
      * @inject
      */
     protected $persistenceManager;
 
+    
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
      * @inject
@@ -112,7 +114,7 @@ class RegistrationController extends AbstractController
         $userSha1 = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('user'));
 
         /** @var OptInRegister $optInRegister */
-        $optInRegister = GeneralUtility::makeInstance(OptInRegister::class);
+        $optInRegister = $this->objectManager->get(OptInRegister::class);
         $check = $optInRegister->process($tokenYes, $tokenNo, $userSha1, $this->request);
 
         if ($check == 1) {

@@ -2,8 +2,6 @@
 
 namespace RKW\RkwRegistration\Domain\Repository;
 
-use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *

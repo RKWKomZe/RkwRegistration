@@ -15,6 +15,8 @@ namespace RKW\RkwRegistration\Domain\Model;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+
 /**
  * Class FrontendUserGroup
  *
@@ -26,44 +28,47 @@ namespace RKW\RkwRegistration\Domain\Model;
  */
 class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup
 {
+    
     /**
      * @var integer
      */
     protected $crdate;
 
+    
     /**
      * @var integer
      */
     protected $tstamp;
 
+    
+    /**
+     * @var bool
+     */
+    protected $hidden = true;
+
+    
+    /**
+     * @var bool
+     */
+    protected $deleted = false;
+    
+    
+    /**
+     * @var bool
+     */
+    protected $txRkwregistrationIsService = false;
+
+    
+    /**
+     * @var integer
+     */
+    protected $txRkwregistrationServiceOpeningDate = 0;
+
 
     /**
      * @var integer
      */
-    protected $hidden = 1;
-
-    /**
-     * @var integer
-     */
-    protected $deleted = 0;
-
-
-    /**
-     * @var integer
-     */
-    protected $txRkwregistrationIsService = 0;
-
-
-    /**
-     * @var integer
-     */
-    protected $txRkwregistrationServiceOpeningDate = '';
-
-
-    /**
-     * @var integer
-     */
-    protected $txRkwregistrationServiceClosingDate = '';
+    protected $txRkwregistrationServiceClosingDate = 0;
 
 
     /**
@@ -77,64 +82,14 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser>
      */
-    protected $txRkwregistrationServiceAdmins = null;
-
+    protected $txRkwregistrationServiceAdmins;
+    
+    
     /**
      * @var integer
      */
     protected $txRkwregistrationServicePid = 0;
-
-
-    /**
-     * Returns the crdate value
-     *
-     * @return integer
-     * @api
-     */
-    public function getCrdate()
-    {
-        return $this->crdate;
-        //===
-    }
-
-    /**
-     * Returns the tstamp value
-     *
-     * @return integer
-     * @api
-     */
-    public function getTstamp()
-    {
-        return $this->tstamp;
-        //===
-    }
-
-
-    /**
-     * Returns the hidden value
-     *
-     * @return integer
-     * @api
-     */
-    public function getHidden()
-    {
-        return $this->hidden;
-        //===
-    }
-
-
-    /**
-     * Returns the deletedvalue
-     *
-     * @return integer
-     * @api
-     */
-    public function getDeleted()
-    {
-        return $this->deleted;
-        //===
-    }
-
+    
 
     /**
      * __construct
@@ -148,6 +103,7 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
         $this->initStorageObjects();
     }
 
+
     /**
      * Initializes all ObjectStorage properties
      * Do not modify this method!
@@ -160,16 +116,63 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
     {
         $this->txRkwregistrationServiceAdmins = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
     }
+    
+    
+    /**
+     * Returns the crdate value
+     *
+     * @return integer
+     * @api
+     */
+    public function getCrdate(): int
+    {
+        return $this->crdate;
+    }
 
+    /**
+     * Returns the tstamp value
+     *
+     * @return integer
+     * @api
+     */
+    public function getTstamp(): int
+    {
+        return $this->tstamp;
+    }
+
+
+    /**
+     * Returns the hidden value
+     *
+     * @return bool
+     * @api
+     */
+    public function getHidden(): bool
+    {
+        return $this->hidden;
+    }
+
+
+    /**
+     * Returns the deleted value
+     *
+     * @return bool
+     * @api
+     */
+    public function getDeleted(): bool
+    {
+        return $this->deleted;
+    }
+    
 
     /**
      * Sets the txRkwregistrationIsService value
      *
-     * @param int $txRkwregistrationIsService
+     * @param bool $txRkwregistrationIsService
      * @return void
      * @api
      */
-    public function setTxRkwregistrationIsService($txRkwregistrationIsService)
+    public function setTxRkwregistrationIsService(bool $txRkwregistrationIsService): void
     {
         $this->txRkwregistrationIsUserService = $txRkwregistrationIsService;
     }
@@ -178,10 +181,10 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
     /**
      * Returns the txRkwregistrationIsService value
      *
-     * @return int
+     * @return bool
      * @api
      */
-    public function getTxRkwregistrationIsService()
+    public function getTxRkwregistrationIsService(): bool
     {
         return $this->txRkwregistrationIsService;
     }
@@ -190,11 +193,11 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
     /**
      * Sets the txRkwregistrationServiceOpeningDate value
      *
-     * @param string $txRkwregistrationServiceOpeningDate
+     * @param int $txRkwregistrationServiceOpeningDate
      * @return void
      * @api
      */
-    public function setTxRkwregistrationServiceOpeningDate($txRkwregistrationServiceOpeningDate)
+    public function setTxRkwregistrationServiceOpeningDate(int $txRkwregistrationServiceOpeningDate): void
     {
         $this->txRkwregistrationServiceOpeningDate = $txRkwregistrationServiceOpeningDate;
     }
@@ -205,7 +208,7 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
      * @return int
      * @api
      */
-    public function getTxRkwregistrationServiceOpeningDate()
+    public function getTxRkwregistrationServiceOpeningDate(): int
     {
         return $this->txRkwregistrationServiceOpeningDate;
     }
@@ -214,11 +217,11 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
     /**
      * Sets the txRkwregistrationtxRkwregistrationClosingDate value
      *
-     * @param string $txRkwregistrationServiceClosingDate
+     * @param int $txRkwregistrationServiceClosingDate
      * @return void
      * @api
      */
-    public function setTxRkwregistrationServiceClosingDate($txRkwregistrationServiceClosingDate)
+    public function setTxRkwregistrationServiceClosingDate(int $txRkwregistrationServiceClosingDate)
     {
         $this->txRkwregistrationServiceClosingDate = $txRkwregistrationServiceClosingDate;
     }
@@ -230,7 +233,7 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
      * @return int
      * @api
      */
-    public function getTxRkwregistrationServiceClosingDate()
+    public function getTxRkwregistrationServiceClosingDate(): int
     {
         return $this->txRkwregistrationServiceClosingDate;
     }
@@ -243,7 +246,7 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
      * @return void
      * @api
      */
-    public function setTxRkwregistrationServiceMandatoryFields($txRkwregistrationServiceMandatoryFields)
+    public function setTxRkwregistrationServiceMandatoryFields(string $txRkwregistrationServiceMandatoryFields): void
     {
         $this->txRkwregistrationServiceMandatoryFields = $txRkwregistrationServiceMandatoryFields;
     }
@@ -255,7 +258,7 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
      * @return string
      * @api
      */
-    public function getTxRkwregistrationServiceMandatoryFields()
+    public function getTxRkwregistrationServiceMandatoryFields(): string
     {
         return $this->txRkwregistrationServiceMandatoryFields;
     }
@@ -267,39 +270,42 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
      * @param \RKW\RkwRegistration\Domain\Model\BackendUser $admin
      * @return void
      */
-    public function addTxRkwregistrationServiceAdmins(\RKW\RkwRegistration\Domain\Model\BackendUser $admin)
+    public function addTxRkwregistrationServiceAdmins(BackendUser $admin): void
     {
         $this->txRkwregistrationServiceAdmins->attach($admin);
     }
 
+    
     /**
      * Removes a BackendUser
      *
      * @param \RKW\RkwRegistration\Domain\Model\BackendUser $adminToRemove The BackendUser to be removed
      * @return void
      */
-    public function removeTxRkwregistrationServiceAdmins(\RKW\RkwRegistration\Domain\Model\BackendUser $adminToRemove)
+    public function removeTxRkwregistrationServiceAdmins(BackendUser $adminToRemove): void
     {
         $this->txRkwregistrationServiceAdmins->detach($adminToRemove);
     }
 
+    
     /**
      * Returns the TxRkwregistrationServiceAdmins
      *
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser> $admins
      */
-    public function getTxRkwregistrationServiceAdmins()
+    public function getTxRkwregistrationServiceAdmins(): ObjectStorage
     {
         return $this->txRkwregistrationServiceAdmins;
     }
 
+    
     /**
      * Sets the TxRkwregistrationServiceAdmins
      *
      * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser> $admins
      * @return void
      */
-    public function setTxRkwregistrationServiceAdmins(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $admins)
+    public function setTxRkwregistrationServiceAdmins(ObjectStorage $admins): void
     {
         $this->txRkwregistrationServiceAdmins = $admins;
     }
@@ -312,7 +318,7 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
      * @return void
      * @api
      */
-    public function setTxRkwregistrationServicePid($txRkwregistrationServicePid)
+    public function setTxRkwregistrationServicePid(int $txRkwregistrationServicePid): void
     {
         $this->txRkwregistrationServicePid = $txRkwregistrationServicePid;
     }
@@ -324,7 +330,7 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
      * @return int
      * @api
      */
-    public function getTxRkwregistrationServicePid()
+    public function getTxRkwregistrationServicePid(): int
     {
         return $this->txRkwregistrationServicePid;
     }

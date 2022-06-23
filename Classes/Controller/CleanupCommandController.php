@@ -70,6 +70,7 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
      */
     protected $logger;
 
+    
 
     /**
      * Removes old service and registration requests

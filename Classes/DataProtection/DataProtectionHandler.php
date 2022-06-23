@@ -2,17 +2,6 @@
 
 namespace RKW\RkwRegistration\DataProtection;
 
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
-use RKW\RkwRegistration\Domain\Model\EncryptedData;
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use TYPO3\CMS\Core\Log\Logger;
-use TYPO3\CMS\Core\Log\LogLevel;
-use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
-use \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
-use \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
-use \RKW\RkwBasics\Utility\GeneralUtility;
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -26,6 +15,19 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use RKW\RkwRegistration\Domain\Model\EncryptedData;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Exception;
+use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
+use RKW\RkwBasics\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Class DataProtectionHandler
@@ -68,9 +70,8 @@ class DataProtectionHandler
      */
     protected $encryptionKey;
 
-    /**
-     * Deletes expired and disabled frontend users after x days (only sets deleted = 1)
-     *
+    
+    /***
      * @param string $encryptionKey
      * @return void
      */
@@ -79,6 +80,7 @@ class DataProtectionHandler
         $this->encryptionKey = $encryptionKey;
     }
 
+    
     /**
      * Deletes expired and disabled frontend users after x days (only sets deleted = 1)
      *
@@ -99,7 +101,7 @@ class DataProtectionHandler
             ($frontendUserList = $this->frontendUserRepository->findExpiredAndDisabledSinceDays($deleteExpiredAndDisabledAfterDays))
             && (count($frontendUserList))
         ) {
-            /** @var FrontendUser $frontendUser */
+            /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
             foreach ($frontendUserList as $frontendUser) {
                 $this->frontendUserRepository->remove($frontendUser);
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Deleted expired or disabled user with id %s.', $frontendUser->getUid()));
@@ -113,7 +115,7 @@ class DataProtectionHandler
      *
      * Also includes user-related data if configured
      *
-     * @param $anonymizeAfterDays
+     * @param int $anonymizeAfterDays
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
@@ -137,7 +139,7 @@ class DataProtectionHandler
             && (count($frontendUserList))
         ) {
 
-            /** @var FrontendUser $frontendUser */
+            /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
             foreach ($frontendUserList as $frontendUser) {
 
                 $updates = [];
@@ -147,7 +149,7 @@ class DataProtectionHandler
                     // anonymize and encrypt the frontend user
                     if ($modelClassName == 'RKW\RkwRegistration\Domain\Model\FrontendUser') {
 
-                        /** @var EncryptedData $encryptedData */
+                        /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
                         if (
                             ($encryptedData = $this->encryptObject($frontendUser, $frontendUser))
                             && ($this->anonymizeObject($frontendUser, $frontendUser))
@@ -181,10 +183,10 @@ class DataProtectionHandler
                             /** @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $result */
                             if ($result = $this->getRepositoryResults($repository, $frontendUserProperty, $frontendUser->getUid())) {
 
-                                /** @var AbstractEntity $object */
+                                /** @var \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object */
                                 foreach ($result as $object) {
 
-                                    /** @var EncryptedData $encryptedData */
+                                    /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
                                     if (
                                         ($encryptedData = $this->encryptObject($object, $frontendUser))
                                         && ($this->anonymizeObject($object, $frontendUser))
@@ -197,15 +199,34 @@ class DataProtectionHandler
                                         ];
                                         $adds[] = $encryptedData;
 
-                                        $this->getLogger()->log(LogLevel::INFO, sprintf('Anonymized and encrypted data of model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
+                                        $this->getLogger()->log(
+                                            LogLevel::INFO, 
+                                            sprintf(
+                                                'Anonymized and encrypted data of model "%s" of user-id %s.', 
+                                                $modelClassName, 
+                                                $frontendUser->getUid()
+                                            )
+                                        );
                                     } else {
-                                        $this->getLogger()->log(LogLevel::WARNING, sprintf('Could not anonymize and encrypt data of model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
+                                        $this->getLogger()->log(LogLevel::WARNING, 
+                                            sprintf(
+                                                'Could not anonymize and encrypt data of model "%s" of user-id %s.', 
+                                                $modelClassName, 
+                                                $frontendUser->getUid()
+                                            )
+                                        );
                                         continue(2);
                                     }
                                 }
                             }
                         } else {
-                            $this->getLogger()->log(LogLevel::WARNING, sprintf('Configuration for model %s seems to be incorrect. Please check your TypoScript.', $modelClassName));
+                            $this->getLogger()->log(
+                                LogLevel::WARNING,
+                                sprintf(
+                                    'Configuration for model %s seems to be incorrect. Please check your TypoScript.',
+                                    $modelClassName
+                                )
+                            );
                         }
                     }
                 }
@@ -225,7 +246,13 @@ class DataProtectionHandler
                     }
                 }
 
-                $this->getLogger()->log(LogLevel::INFO, sprintf('Saved and updated all data for user-id %s.', $frontendUser->getUid()));
+                $this->getLogger()->log(
+                    LogLevel::INFO, 
+                    sprintf(
+                        'Saved and updated all data for user-id %s.', 
+                        $frontendUser->getUid()
+                    )
+                );
             }
         }
     }
@@ -235,8 +262,8 @@ class DataProtectionHandler
     /**
      * Anonymizes data of a given object
      *
-     * @param AbstractEntity $object
-     * @param FrontendUser $frontendUser
+     * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \RKW\RkwRegistration\Exception
      * @return bool
@@ -244,7 +271,7 @@ class DataProtectionHandler
     public function anonymizeObject(AbstractEntity $object, FrontendUser $frontendUser): bool
     {
         if ($object->_isNew()) {
-            throw new \RKW\RkwRegistration\Exception('Given object is not persisted.');
+            throw new Exception('Given object is not persisted.');
         }
 
         // try property-mapping with current and parent class
@@ -268,17 +295,17 @@ class DataProtectionHandler
     /**
      * Encrypts data of a given object
      **
-     * @param AbstractEntity $object
-     * @param FrontendUser $frontendUser
+     * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      * @throws \RKW\RkwRegistration\Exception
-     * @return EncryptedData|null
+     * @return \RKW\RkwRegistration\Domain\Model\EncryptedData|null
      */
     public function encryptObject(AbstractEntity $object, FrontendUser $frontendUser)
     {
         if ($object->_isNew()) {
-            throw new \RKW\RkwRegistration\Exception('Given object is not persisted.');
+            throw new Exception('Given object is not persisted.');
         }
 
         // try property-mapping with current and parent class
@@ -298,7 +325,7 @@ class DataProtectionHandler
             $dataMapper = $this->objectManager->get(DataMapper::class);
             $tableName = $dataMapper->getDataMap($className)->getTableName();
 
-            /** @var EncryptedData $encryptedData */
+            /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
             $encryptedData = GeneralUtility::makeInstance(EncryptedData::class);
             $encryptedData->setFrontendUser($frontendUser);
             $encryptedData->setSearchKey(hash('sha256', $frontendUser->getEmail()));
@@ -325,7 +352,7 @@ class DataProtectionHandler
     /**
      * Decrypts data for given object
      **
-     * @param EncryptedData $encryptedData
+     * @param \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData
      * @param string $email
      * @return AbstractEntity|null
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
@@ -341,8 +368,8 @@ class DataProtectionHandler
             $data = $encryptedData->getEncryptedData();
             if (is_array($data)) {
 
-                /** @var Repository $repository */
-                /** @var AbstractEntity $object */
+                /** @var \TYPO3\CMS\Extbase\Persistence\Repository $repository */
+                /** @var \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $object */
                 if (
                     ($repository = $this->getRepositoryByModelClassName($encryptedData->getForeignClass()))
                     && ($object = $this->getRepositoryResults($repository, 'uid', $encryptedData->getForeignUid())->getFirst())
@@ -384,13 +411,12 @@ class DataProtectionHandler
 
         return [];
     }
-
-
+    
 
     /**
      * Get frontend user property for given model class name
      *
-     * @param $modelClassName
+     * @param string $modelClassName
      * @return string
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
@@ -432,12 +458,11 @@ class DataProtectionHandler
     }
 
 
-
     /**
      * Get repository of given model class name
      *
-     * @param $modelClassName
-     * @return Repository|object|null
+     * @param string $modelClassName
+     * @return \TYPO3\CMS\Extbase\Persistence\Repository|object|null
      */
     public function getRepositoryByModelClassName (string $modelClassName)
     {
@@ -469,7 +494,7 @@ class DataProtectionHandler
         define('AES_256_CBC', 'aes-256-cbc');
 
         if (! $this->encryptionKey) {
-            throw new \RKW\RkwRegistration\Exception('No encryption key configured.');
+            throw new Exception('No encryption key configured.');
         }
         $hash = hash('md5', $this->encryptionKey . $email);
 
@@ -505,7 +530,7 @@ class DataProtectionHandler
         define('AES_256_CBC', 'aes-256-cbc');
 
         if (! $this->encryptionKey) {
-            throw new \RKW\RkwRegistration\Exception('No encryption key configured.');
+            throw new Exception('No encryption key configured.');
         }
         $hash = hash('md5', $this->encryptionKey . $email);
 
@@ -522,7 +547,7 @@ class DataProtectionHandler
     /**
      * Get results from repository
      *
-     * @param Repository $repository
+     * @param \TYPO3\CMS\Extbase\Persistence\Repository $repository
      * @param string $property
      * @param integer $uid
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
@@ -550,7 +575,7 @@ class DataProtectionHandler
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
+    protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
     {
         return GeneralUtility::getTyposcriptConfiguration('rkwregistration', $which);
     }
@@ -560,13 +585,13 @@ class DataProtectionHandler
     /**
      * Returns logger instance
      *
-     * @return Logger
+     * @return \TYPO3\CMS\Core\Log\Logger
      */
     protected function getLogger(): Logger
     {
 
         if (!$this->logger instanceof Logger) {
-            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
+            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
         }
 
         return $this->logger;

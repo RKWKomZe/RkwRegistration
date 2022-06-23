@@ -17,6 +17,7 @@ namespace RKW\RkwRegistration\ViewHelpers;
 
 use RKW\RkwRegistration\Register\GroupRegister;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -38,10 +39,14 @@ class IsMandatoryFieldViewHelper extends AbstractViewHelper
      */
     public function render($fieldName, $frontendUser = null)
     {
-        /** @var GroupRegister $register */
-        $register = GeneralUtility::makeInstance(GroupRegister::class);
-        $requiredFields = $register->getMandatoryFieldsOfUser($frontendUser);
+        /** @var ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
+        /** @var \RKW\RkwRegistration\Register\GroupRegister $register */
+        $register = $objectManager->get(GroupRegister::class);
+
+        $requiredFields = $register->getMandatoryFieldsOfUser($frontendUser);
+        
         return in_array($fieldName, $requiredFields);
     }
 }

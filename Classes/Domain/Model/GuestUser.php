@@ -16,7 +16,7 @@ namespace RKW\RkwRegistration\Domain\Model;
  */
 
 /**
- * Class FrontendUser
+ * Class GuestUser
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>

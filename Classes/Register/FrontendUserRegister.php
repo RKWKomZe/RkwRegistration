@@ -1,23 +1,6 @@
 <?php
 
 namespace RKW\RkwRegistration\Register;
-
-use \RKW\RkwBasics\Utility\GeneralUtility;
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
-use RKW\RkwRegistration\Domain\Model\GuestUser;
-use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-use RKW\RkwRegistration\Domain\Repository\ServiceRepository;
-use RKW\RkwRegistration\Register\AbstractRegister;
-use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
-use \RKW\RkwRegistration\Utility\PasswordUtility;
-use RKW\RkwRegistration\Utility\ClientUtility;
-use TYPO3\CMS\Core\Log\Logger;
-use TYPO3\CMS\Core\Log\LogLevel;
-use TYPO3\CMS\Core\Log\LogManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -30,6 +13,17 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use \RKW\RkwBasics\Utility\GeneralUtility;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
+use RKW\RkwRegistration\Domain\Model\GuestUser;
+use RKW\RkwRegistration\Domain\Repository\ServiceRepository;
+use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use RKW\RkwRegistration\Utility\PasswordUtility;
+use RKW\RkwRegistration\Utility\ClientUtility;
+use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * FrontendUserRegister
@@ -48,6 +42,7 @@ class FrontendUserRegister extends AbstractRegister
      */
     const SIGNAL_AFTER_DELETING_USER = 'afterDeletingUser';
 
+    
     /**
      * FrontendUser
      *
@@ -55,8 +50,9 @@ class FrontendUserRegister extends AbstractRegister
      */
     protected $frontendUser;
 
+    
     /**
-     * @var Logger
+     * @var \TYPO3\CMS\Core\Log\Logger
      */
     protected $logger;
 
@@ -68,7 +64,6 @@ class FrontendUserRegister extends AbstractRegister
     public function __construct(FrontendUser $frontendUser)
     {
         $this->frontendUser = $frontendUser;
-
         if ($this->frontendUser->_isNew()) {
             $this->setBasicData();
         }
@@ -76,16 +71,14 @@ class FrontendUserRegister extends AbstractRegister
         $this->initializeObject();
     }
 
-
-
+    
     /**
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      */
-    public function getFrontendUser()
+    public function getFrontendUser(): FrontendUser
     {
         return $this->frontendUser;
     }
-
 
 
     /**
@@ -94,7 +87,7 @@ class FrontendUserRegister extends AbstractRegister
      * @return void
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function setBasicData()
+    public function setBasicData(): void
     {
         $settings = $this->getSettings();
 
@@ -119,29 +112,33 @@ class FrontendUserRegister extends AbstractRegister
         if (!$this->frontendUser->getUsergroup()->count()) {
             $this->setUserGroupsOnRegister($this->frontendUser);
         }
-
     }
 
-
-
+    
     /**
      * enables or disables a created frontendUser (if not enabled yet)
-     * Hint: This function is made for new created frontendUser and should not used for already existing users with lifetime
+     * Hint: This function is made for newly created frontendUsers and should not used for already existing users with lifetime
      *
      * @param bool $enable if the user should be enabled or not
-     * @return void
+     * @return bool
      */
-    public function setClearanceAndLifetime($enable = false)
+    public function setClearanceAndLifetime(bool $enable = false): bool
     {
         if (
             $enable
             && !$this->frontendUser->getDisable()
         ) {
-            $this->getLogger()->log(LogLevel::WARNING, sprintf('Cannot enable active user %s.', $this->frontendUser->getUid()));
+            $this->getLogger()->log(
+                LogLevel::WARNING, 
+                sprintf('Cannot enable active user %s.', $this->frontendUser->getUid())
+            );
+            
+            return false;
         }
 
         // enable or disable
         if ($enable) {
+            
             $this->frontendUser->setDisable(0);
 
             // set normal lifetime
@@ -160,6 +157,7 @@ class FrontendUserRegister extends AbstractRegister
                 }
             }
         } else {
+            
             // this function should never disable an already existing user
             $this->frontendUser->setDisable(1);
 
@@ -168,8 +166,9 @@ class FrontendUserRegister extends AbstractRegister
                 $this->frontendUser->setEndtime(time() + (intval($this->settings['users']['daysForOptIn']) * 24 * 60 * 60));
             }
         }
+        
+        return true;
     }
-
 
 
     /**
@@ -178,8 +177,10 @@ class FrontendUserRegister extends AbstractRegister
      * @param string $category
      * @return boolean
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      */
-    public function delete($category = null): bool
+    public function delete(string $category = ''): bool
     {
         if (FrontendUserSessionUtility::isUserLoggedIn($this->frontendUser)) {
             FrontendUserSessionUtility::logout();
@@ -187,11 +188,11 @@ class FrontendUserRegister extends AbstractRegister
 
         // @toDo: Check it: Added "setDelete" while writing the functions tests. The remove itself does not work. Should not be necessary
         $this->frontendUser->setDeleted(1);
-        $this->getFrontendUserRepository()->remove($this->frontendUser);
-        $this->getPersistenceManager()->persistAll();
+        $this->frontendUserRepository->remove($this->frontendUser);
+        $this->persistenceManager->persistAll();
 
         // Signal for e.g. E-Mails or other extensions
-        $this->getSignalSlotDispatcher()->dispatch(
+        $this->signalSlotDispatcher->dispatch(
             __CLASS__,
             self::SIGNAL_AFTER_DELETING_USER . ucfirst($category),
             [$this->frontendUser]
@@ -205,15 +206,13 @@ class FrontendUserRegister extends AbstractRegister
 
     /**
      * Checks if FE-User has valid email
-     * Because we're using the email also as username, this function can also be used as "validUsername"
+     * Since we're using the email also as username, this function can also be used as "validateUsername"
      *
-     * @param string | \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $email
      * @return boolean
      */
-    public function validateEmail($email = null): bool
+    public function validateEmail(): bool
     {
-        $email = $email ? $email : $this->frontendUser->getEmail();
-
+        $email = $this->frontendUser->getEmail();
         if ($email) {
 
             if ($email instanceof \TYPO3\CMS\Extbase\Domain\Model\FrontendUser) {
@@ -236,20 +235,17 @@ class FrontendUserRegister extends AbstractRegister
     /**
      * Checks if an email address is unique
      *
-     * @param string | \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $email
-     * @return boolean Return true is email still available (not used by another FrontendUser)
+     * @return bool return true is email still available (not used by another FrontendUser)
      */
-    public function uniqueEmail($email): bool
+    public function uniqueEmail(): bool
     {
-        if ($email instanceof \TYPO3\CMS\Extbase\Domain\Model\FrontendUser) {
-            $email = $email->getEmail();
-        }
-
+        $email = $this->frontendUser->getEmail();
         $dbFrontendUser = $this->frontendUserRepository->findOneByEmailOrUsernameAlsoInactive(strtolower($email));
 
         if (!$dbFrontendUser) {
             return true;
         }
+        
         return false;
     }
 
@@ -264,23 +260,21 @@ class FrontendUserRegister extends AbstractRegister
      * @return void
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function setUserGroupsOnRegister($userGroups = '')
+    public function setUserGroupsOnRegister(string $userGroups = '')
     {
         if (!$userGroups) {
             $settings = $this->getSettings();
 
             if ($this->frontendUser instanceof GuestUser) {
                 $userGroups = $settings['users']['guest']['groupsOnRegister'];
-
-                if (!$settings['users']['guest']['groupsOnRegister']) {
-                    $this->getLogger()->log(LogLevel::ERROR, sprintf('GuestUser "%s" will not be useable. Reason: Setting users.guest.groupsOnRegister is not defined in TypoScript.', strtolower($this->frontendUser->getUsername())));
-
+                if (!$userGroups) {
+                    $this->getLogger()->log(LogLevel::ERROR, sprintf('GuestUser "%s" will not be usable. Reason: Setting users.guest.groupsOnRegister is not defined in TypoScript.', strtolower($this->frontendUser->getUsername())));
                 }
+                
             } else {
                 $userGroups = $settings['users']['groupsOnRegister'];
-
-                if (!$settings['users']['groupsOnRegister']) {
-                    $this->getLogger()->log(LogLevel::ERROR, sprintf('FrontendUser "%s" will not be useable. Reason: Setting users.groupsOnRegister is not defined in TypoScript.', strtolower($this->frontendUser->getUsername())));
+                if (!$userGroups) {
+                    $this->getLogger()->log(LogLevel::ERROR, sprintf('FrontendUser "%s" will not be usable. Reason: Setting users.groupsOnRegister is not defined in TypoScript.', strtolower($this->frontendUser->getUsername())));
                 }
             }
         }
@@ -288,7 +282,7 @@ class FrontendUserRegister extends AbstractRegister
         $userGroupIds = GeneralUtility::trimExplode(',', $userGroups);
         foreach ($userGroupIds as $groupId) {
             /** @var FrontendUserGroup $frontendUserGroup */
-            $frontendUserGroup = $this->getFrontendUserGroupRepository()->findByUid($groupId);
+            $frontendUserGroup = $this->frontendUserGroupRepository->findByUid($groupId);
             if ($frontendUserGroup instanceof FrontendUserGroup) {
                 $this->frontendUser->addUsergroup($frontendUserGroup);
             }
@@ -297,12 +291,12 @@ class FrontendUserRegister extends AbstractRegister
 
 
     /**
-     * creates and set a new password
+     * Creates and set a new password
      * (a Service function which is calling the PasswordUtility)
      *
-     * @return string The new created plaintext password
+     * @return string The newly created plaintext password
      */
-    public function setNewPassword()
+    public function setNewPassword(): string
     {
         $plaintextPassword = PasswordUtility::generatePassword();
         $this->frontendUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
@@ -312,13 +306,12 @@ class FrontendUserRegister extends AbstractRegister
 
 
     /**
-     * function getMandatoryFieldsOfUser
-     * gives the required fields back that needs to fill out a user in the light of its service affiliation
+     * Returns the required fields that needs to be filled out by a user in the light of its service affiliation
      *
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function getMandatoryFieldsOfUser()
+    public function getMandatoryFields(): array
     {
         // get mandatory fields from TypoScript
         $settings = $this->getSettings();
@@ -326,68 +319,44 @@ class FrontendUserRegister extends AbstractRegister
 
         // get default mandatory fields
         if ($settings['users']['requiredFormFields']) {
-            $requiredFields = explode(',', str_replace(' ', '', $settings['users']['requiredFormFields']));
+            $requiredFields = explode(
+                ',', 
+                str_replace(' ', '', $settings['users']['requiredFormFields']))
+            ;
         }
 
-        // add specific mandatory fields which based on service groups
-        if ($this->frontendUser instanceof FrontendUser) {
+        // add specific mandatory fields which are based on service groups
+        /** @var ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+        
+        /** @var \RKW\RkwRegistration\Register\GroupRegister $groupRegister */
+        $groupRegister = $objectManager->get(GroupRegister::class);
+       
+        /** @var ServiceRepository $serviceRepository */
+        $serviceRepository = $objectManager->get(ServiceRepository::class);
 
-            /** @var ObjectManager $objectManager */
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-            /** @var \RKW\RkwRegistration\Register\GroupRegister $groupRegister */
-            $groupRegister = $objectManager->get(GroupRegister::class);
-            /** @var ServiceRepository $serviceRepository */
-            $serviceRepository = $objectManager->get(ServiceRepository::class);
+        // get mandatory fields by fe_groups the user is registered for
+        $requiredFields = array_merge(
+            $requiredFields, 
+            $groupRegister->getMandatoryFieldsOfGroupList(
+                $this->frontendUser->getUsergroup()->toArray()
+            )
+        );
 
-            // get mandatory fields by fe_groups the user is registered for
-            $requiredFields = array_merge($requiredFields, $groupRegister->getMandatoryFieldsOfGroupList($this->frontendUser->getUsergroup()->toArray()));
-
-            // get mandatory fields by fe_groups the user is still waiting to be registered but admin has already granted him access
-            $serviceInquiryList = $serviceRepository->findConfirmedByUser($this->frontendUser);
-            foreach ($serviceInquiryList as $serviceInquiry) {
-                if ($groups = $serviceInquiry->getUsergroup()) {
-                    $requiredFields = array_merge($requiredFields, $groupRegister->getMandatoryFieldsOfGroupList($serviceInquiry->getUsergroup()->toArray()));
-                }
+        // get mandatory fields by fe_groups the user is still waiting to be
+        // registered but admin has already granted him access
+        $serviceInquiryList = $serviceRepository->findConfirmedByUser($this->frontendUser);
+        foreach ($serviceInquiryList as $serviceInquiry) {
+            if ($groups = $serviceInquiry->getUsergroup()) {
+                $requiredFields = array_merge(
+                    $requiredFields, 
+                    $groupRegister->getMandatoryFieldsOfGroupList(
+                        $groups->toArray()
+                    )
+                );
             }
-        }
+        }        
 
         return $requiredFields;
-    }
-
-
-    /**
-     * Returns TYPO3 settings
-     *
-     * @return array
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     */
-    protected function getSettings()
-    {
-
-        if (!$this->settings) {
-            $this->settings = GeneralUtility::getTyposcriptConfiguration('Rkwregistration');
-        }
-
-        if (!$this->settings) {
-            return [];
-        }
-
-        return $this->settings;
-    }
-
-
-
-    /**
-     * Returns logger instance
-     *
-     * @return Logger
-     */
-    protected function getLogger()
-    {
-        if (!$this->logger instanceof Logger) {
-            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
-        }
-
-        return $this->logger;
     }
 }

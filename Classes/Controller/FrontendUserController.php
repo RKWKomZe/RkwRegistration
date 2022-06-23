@@ -22,6 +22,7 @@ use RKW\RkwRegistration\Register\FrontendUserRegister;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Utility\TitleUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -179,8 +180,10 @@ class FrontendUserController extends AbstractController
         $this->redirectIfUserNotLoggedIn();
 
         // all mandatory fields should be checked here.
-        // therefor we can finally add the user to all relevant groups now
-        $serviceClass = GeneralUtility::makeInstance(GroupRegister::class);
+        // therefore we can finally add the user to all relevant groups now
+
+        /** @var \RKW\RkwRegistration\Register\GroupRegister $register */
+        $serviceClass = $this->objectManager->get(GroupRegister::class);
         $serviceClass->addUserToAllGrantedGroups($frontendUser);
 
         if ($frontendUser->getTxRkwregistrationTitle()) {
@@ -249,7 +252,7 @@ class FrontendUserController extends AbstractController
         $this->redirectIfUserNotLoggedIn();
 
         /** @var FrontendUserRegister $frontendUserService */
-        $frontendUserService = GeneralUtility::makeInstance(
+        $frontendUserService = $this->objectManager->get(
             FrontendUserRegister::class,
             $this->getFrontendUser()
         );

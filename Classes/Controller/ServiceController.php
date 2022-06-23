@@ -39,6 +39,7 @@ class ServiceController extends AbstractController
      */
     const SIGNAL_ADMIN_SERVICE_REQUEST = 'afterAdminServiceRequest';
 
+    
     /**
      * Signal name for use in ext_localconf.php
      *
@@ -46,6 +47,7 @@ class ServiceController extends AbstractController
      */
     const SIGNAL_SERVICE_DELETE = 'afterServiceDelete';
 
+    
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
      * @inject
@@ -66,6 +68,7 @@ class ServiceController extends AbstractController
      */
     protected $backendUserRepository;
 
+    
     /**
      * Persistence Manager
      *
@@ -102,6 +105,7 @@ class ServiceController extends AbstractController
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
     public function listAction(): void
     {
@@ -139,6 +143,8 @@ class ServiceController extends AbstractController
      *
      * @param FrontendUserGroup $frontendUserGroup
      * @return void
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
     public function showAction(FrontendUserGroup $frontendUserGroup): void
     {
@@ -176,7 +182,7 @@ class ServiceController extends AbstractController
         $this->redirectIfUserNotLoggedIn();
 
         // Get the mandatory fields for the given group?
-        $serviceClass = GeneralUtility::makeInstance(GroupRegister::class);
+        $serviceClass = $this->objectManager->get(GroupRegister::class);
         $mandatoryFields = $serviceClass->getMandatoryFieldsOfUser($this->getFrontendUser(), $frontendUserGroup);
 
         // get the admins of the given group (if any)
@@ -249,7 +255,7 @@ class ServiceController extends AbstractController
 
 
     /**
-     * Takes optin parameters and checks them
+     * Takes opt-in parameters and checks them
      *
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
@@ -272,7 +278,7 @@ class ServiceController extends AbstractController
             $this->request->getArgument('service')
         );
 
-        $service = GeneralUtility::makeInstance(GroupRegister::class);
+        $service = $this->objectManager->get(GroupRegister::class);
         $check = $service->checkTokens($tokenYes, $tokenNo, $serviceSha1);
 
         if ($check == 1) {

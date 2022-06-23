@@ -37,7 +37,7 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class GroupRegister
+class GroupRegister extends AbstractRegister
 {
     /**
      * Signal name for use in ext_localconf.php
@@ -55,53 +55,6 @@ class GroupRegister
     const SIGNAL_AFTER_ADMIN_SERVICE_DENIAL = 'afterAdminServiceDenial';
 
 
-    /**
-     * ServiceRepository
-     *
-     * @var ServiceRepository
-     */
-    protected $serviceRepository;
-
-
-    /**
-     * FrontendUserRepository
-     *
-     * @var FrontendUserRepository
-     */
-    protected $frontendUserRepository;
-
-
-    /**
-     * FrontendUserGroupRepository
-     *
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
-     */
-    protected $frontendUserGroupRepository;
-
-    /**
-     * Persistence Manager
-     *
-     * @var PersistenceManager
-     */
-    protected $persistenceManager;
-
-
-    /**
-     * Signal-Slot Dispatcher
-     *
-     * @var Dispatcher
-     */
-    protected $signalSlotDispatcher;
-
-
-    /**
-     * Setting
-     *
-     * @var array
-     */
-    protected $settings;
-
-
 
     /**
      * getMandatoryFieldsOfGroup
@@ -114,13 +67,10 @@ class GroupRegister
     public function getMandatoryFieldsOfGroup(FrontendUserGroup $frontendUserGroup)
     {
         $requiredFields = [];
-
-        if ($frontendUserGroup) {
-            if ($groupMandatoryFields = $frontendUserGroup->getTxRkwregistrationServiceMandatoryFields()) {
-                $requiredFields = explode(',', str_replace(' ', '', $groupMandatoryFields));
-            }
+        if ($groupMandatoryFields = $frontendUserGroup->getTxRkwregistrationServiceMandatoryFields()) {
+            $requiredFields = explode(',', str_replace(' ', '', $groupMandatoryFields));
         }
-
+        
         return $requiredFields;
     }
 
@@ -169,7 +119,7 @@ class GroupRegister
     public function checkTokens(string $tokenYes, string $tokenNo, string $serviceSha1): int
     {
         // load service by SHA-token
-        $service = $this->getServiceRepository()->findOneByServiceSha1($serviceSha1);
+        $service = $this->serviceRepository->findOneByServiceSha1($serviceSha1);
 
         if (!$service instanceof Service) {
             return 0;
@@ -180,14 +130,15 @@ class GroupRegister
             (!$service->getValidUntil())
             || ($service->getValidUntil() < time())
         ) {
-            $this->getServiceRepository()->remove($service);
-            $this->getPersistanceManager()->persistAll();
+            $this->serviceRepository->remove($service);
+            $this->persistenceManager->persistAll();
             return 0;
         }
 
         // load fe-user
         if (
-            ($frontendUser = $this->getFrontendUserRepository()->findByUidAlsoInactiveNonGuest($service->getUser()))
+            ($service->getUser())
+            && ($frontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest($service->getUser()->getUid()))
             && ($frontendUserGroups = $service->getUsergroup())
         ) {
 
@@ -218,7 +169,7 @@ class GroupRegister
                     // -> UNKLAR!!!
 
                     // @toDo by MF: Should we log this? This is a "hidden" sub-routine I've debugged to, to understand what happen
-                    $this->getServiceRepository()->update($service);
+                    $this->serviceRepository->update($service);
 
                     // if there is none, we finally add the user to the fe-groups and remove the service request
                 } else {
@@ -227,18 +178,18 @@ class GroupRegister
                             $frontendUser->addUsergroup($frontendUserGroup);
                         }
                     }
-                    $this->getFrontendUserRepository()->update($frontendUser);
-                    $this->getServiceRepository()->remove($service);
+                    $this->frontendUserRepository->update($frontendUser);
+                    $this->serviceRepository->remove($service);
                 }
 
                 // Signal for E-Mails
-                $this->getSignalSlotDispatcher()->dispatch(
+                $this->signalSlotDispatcher->dispatch(
                     __CLASS__,
                     self::SIGNAL_AFTER_ADMIN_SERVICE_GRANT,
                     [$frontendUser, $service]
                 );
 
-                $this->getPersistanceManager()->persistAll();
+                $this->persistenceManager->persistAll();
 
                 return 1;
 
@@ -246,24 +197,24 @@ class GroupRegister
             } elseif ($service->getTokenNo() == $tokenNo) {
 
                 // delete service request from database
-                $this->getServiceRepository()->remove($service);
+                $this->serviceRepository->remove($service);
 
                 // Signal for E-Mails
-                $this->getSignalSlotDispatcher()->dispatch(
+                $this->signalSlotDispatcher->dispatch(
                     __CLASS__,
                     self::SIGNAL_AFTER_ADMIN_SERVICE_DENIAL,
                     [$frontendUser, $service]
                 );
 
-                $this->getPersistanceManager()->persistAll();
+                $this->persistenceManager->persistAll();
 
                 return 2;
             }
         }
 
         // token mismatch or something strange happened - kill that beast!!!
-        $this->getServiceRepository()->remove($service);
-        $this->getPersistanceManager()->persistAll();
+        $this->serviceRepository->remove($service);
+        $this->persistenceManager->persistAll();
 
         return 0;
     }
@@ -282,7 +233,7 @@ class GroupRegister
     {
         // find all services which have been granted by admin
         $cnt = 0;
-        if ($services = $this->getServiceRepository()->findConfirmedByUser($frontendUser)) {
+        if ($services = $this->serviceRepository->findConfirmedByUser($frontendUser)) {
 
             // go through all found services...
             foreach ($services as $service) {
@@ -303,103 +254,18 @@ class GroupRegister
                     }
 
                     // remove service and update user
-                    $this->getServiceRepository()->remove($service);
-                    $this->getFrontendUserRepository()->update($frontendUser);
+                    $this->serviceRepository->remove($service);
+                    $this->frontendUserRepository->update($frontendUser);
                 }
             }
 
             // persist all
-            $this->getPersistanceManager()->persistAll();
+            $this->persistenceManager->persistAll();
         }
 
         return (boolean)$cnt;
     }
-
-
-    /**
-     * Returns ServiceRepository
-     *
-     * @return ServiceRepository
-     */
-    protected function getServiceRepository()
-    {
-        if (!$this->serviceRepository) {
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-            $this->serviceRepository = $objectManager->get(ServiceRepository::class);
-        }
-
-        return $this->serviceRepository;
-    }
-
-
-    /**
-     * Returns FrontendUserRepository
-     *
-     * @return FrontendUserRepository
-     */
-    protected function getFrontendUserRepository()
-    {
-        if (!$this->frontendUserRepository) {
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-            $this->frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
-        }
-
-        return $this->frontendUserRepository;
-    }
-
-
-    /**
-     * Returns PersistanceManager
-     *
-     * @return PersistenceManager
-     */
-    protected function getPersistanceManager()
-    {
-        if (!$this->persistenceManager) {
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-            $this->persistenceManager = $objectManager->get(PersistenceManager::class);
-        }
-
-        return $this->persistenceManager;
-    }
-
-
-    /**
-     * Returns SignalSlotDispatcher
-     *
-     * @return Dispatcher
-     */
-    protected function getSignalSlotDispatcher()
-    {
-        if (!$this->signalSlotDispatcher) {
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-            $this->signalSlotDispatcher = $objectManager->get(Dispatcher::class);
-        }
-
-        return $this->signalSlotDispatcher;
-    }
-
-
-    /**
-     * Returns TYPO3 settings
-     *
-     * @return array
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     */
-    protected function getSettings()
-    {
-        if (!$this->settings) {
-            $this->settings = GeneralUtility::getTyposcriptConfiguration('Rkwregistration');
-        }
-
-        if (!$this->settings) {
-            return [];
-        }
-
-        return $this->settings;
-    }
-
-
+    
 
     /**
      * function getMandatoryFieldsOfUser

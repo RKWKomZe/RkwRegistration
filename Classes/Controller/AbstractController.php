@@ -166,7 +166,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
         if ($this->getFrontendUser()) {
 
             /** @var frontendUserRegister $frontendUserRegister */
-            $frontendUserRegister = GeneralUtility::makeInstance(
+            $frontendUserRegister = $this->objectManager->get(
                 FrontendUserRegister::class, 
                 $this->getFrontendUser()
             );
@@ -305,7 +305,6 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
      */
     protected function getLogger(): Logger
     {
-
         if (!$this->logger instanceof Logger) {
             $this->logger = GeneralUtility::makeInstance(LogManager::class)
                 ->getLogger(__CLASS__);

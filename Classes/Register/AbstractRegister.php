@@ -1,15 +1,6 @@
 <?php
 
 namespace RKW\RkwRegistration\Register;
-
-use \RKW\RkwBasics\Utility\GeneralUtility;
-use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
-use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-use RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,6 +13,16 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use \RKW\RkwBasics\Utility\GeneralUtility;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use RKW\RkwRegistration\Domain\Repository\RegistrationRepository;
+use RKW\RkwRegistration\Domain\Repository\ServiceRepository;
+use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Class AbstractRegistration
@@ -37,52 +38,74 @@ abstract class AbstractRegister
     /**
      * RegistrationRepository
      *
-     * @var RegistrationRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\RegistrationRepository
+     * @inject
      */
     protected $registrationRepository;
 
+    
     /**
      * FrontendUserRepository
      *
-     * @var FrontendUserRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @inject
      */
     protected $frontendUserRepository;
 
+    
     /**
      * FrontendUserGroupRepository
      *
-     * @var FrontendUserGroupRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
+     * @inject
      */
     protected $frontendUserGroupRepository;
+    
+
+    /**
+     * ServiceRepository
+     *
+     * @var \RKW\RkwRegistration\Domain\Repository\ServiceRepository
+     * @inject
+     */
+    protected $serviceRepository;
+
 
     /**
      * Persistence Manager
      *
-     * @var PersistenceManager
+     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     * @inject
      */
     protected $persistenceManager;
 
+    
     /**
      * ObjectManager
      *
-     * @var ObjectManager
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @inject
      */
     protected $objectManager;
 
+    
     /**
      * Signal-Slot Dispatcher
      *
-     * @var Dispatcher
+     * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     * @inject
      */
     protected $signalSlotDispatcher;
 
+    
     /**
      * Setting
      *
      * @var array
      */
     protected $settings;
-
+    
+    
     /**
      * initializeObject
      *
@@ -90,89 +113,9 @@ abstract class AbstractRegister
      */
     public function initializeObject()
     {
-        // system
-        //$this->getObjectManager();
-        $this->getPersistenceManager();
-        $this->getSignalSlotDispatcher();
-
-        // repositories
-        $this->getFrontendUserRepository();
-        $this->getFrontendUserGroupRepository();
-        $this->getRegistrationRepository();
-
-        // other
         $this->getSettings();
     }
 
-    /**
-     * Returns RegistrationRepository
-     *
-     * @return RegistrationRepository
-     */
-    protected function getRegistrationRepository()
-    {
-        if (!$this->registrationRepository) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $this->registrationRepository = $objectManager->get(RegistrationRepository::class);
-        }
-        return $this->registrationRepository;
-    }
-
-    /**
-     * Returns FrontendUserRepository
-     *
-     * @return FrontendUserRepository
-     */
-    protected function getFrontendUserRepository()
-    {
-        if (!$this->frontendUserRepository) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $this->frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
-        }
-        return $this->frontendUserRepository;
-    }
-
-    /**
-     * Returns FrontendUserGroupRepository
-     *
-     * @return FrontendUserGroupRepository
-     */
-    protected function getFrontendUserGroupRepository()
-    {
-        if (!$this->frontendUserGroupRepository) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $this->frontendUserGroupRepository = $objectManager->get(FrontendUserGroupRepository::class);
-        }
-        return $this->frontendUserGroupRepository;
-    }
-
-    /**
-     * Returns PersistenceManager
-     *
-     * @return PersistenceManager
-     */
-    protected function getPersistenceManager()
-    {
-        if (!$this->persistenceManager) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $this->persistenceManager = $objectManager->get(PersistenceManager::class);
-        }
-        return $this->persistenceManager;
-    }
-
-    /**
-     * Returns SignalSlotDispatcher
-     *
-     * @return Dispatcher
-     */
-    protected function getSignalSlotDispatcher()
-    {
-        if (!$this->signalSlotDispatcher) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $this->signalSlotDispatcher = $objectManager->get(Dispatcher::class);
-        }
-        return $this->signalSlotDispatcher;
-    }
 
     /**
      * Returns TYPO3 settings
@@ -190,6 +133,21 @@ abstract class AbstractRegister
             return [];
         }
         return $this->settings;
+    }
+
+
+    /**
+     * Returns logger instance
+     *
+     * @return \TYPO3\CMS\Core\Log\Logger
+     */
+    protected function getLogger()
+    {
+        if (!$this->logger instanceof Logger) {
+            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+        }
+
+        return $this->logger;
     }
 
 }

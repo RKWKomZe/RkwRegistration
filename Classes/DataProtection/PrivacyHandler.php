@@ -48,12 +48,12 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
      *    RKW\RkwRegistration\Domain\Model\Registration it will be automatically identified and set below in $this->setDataObject
      * 2. After successful optIn the 5th param is used to create the relationship between the two created privacy-datasets
      *
-     * @param Privacy           $privacy
-     * @param Request           $request
-     * @param FrontendUser|null $frontendUser
-     * @param null              $referenceObject
-     * @param string            $comment
-     * @param bool              $isOptInFinal
+     * @param \RKW\RkwRegistration\Domain\Model\Privacy $privacy
+     * @param \TYPO3\CMS\Extbase\Mvc\Request $request
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser|null $frontendUser
+     * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity|null $referenceObject
+     * @param string $comment
+     * @param bool $isOptInFinal
      * @return void
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
@@ -63,11 +63,10 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
         Privacy $privacy,
         Request $request,
         FrontendUser $frontendUser = null,
-        $referenceObject = null,
-        $comment = '',
-        $isOptInFinal = false
-    )
-    {
+        AbstractEntity $referenceObject = null,
+        string $comment = '',
+        bool $isOptInFinal = false
+    ): void {
 
         // set frontendUser
         if ($frontendUser) {
@@ -76,7 +75,6 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
 
         // set reference object info
         if ($referenceObject) {
-
             if (
                 ($isOptInFinal)
                 && ($referenceObject instanceof Registration)
@@ -143,16 +141,16 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * setReferenceObjectInfo
      *
-     * @param Privacy                       $privacy
-     * @param AbstractEntity|ObjectStorage  $referenceObject
-     * @return void
+     * @param \RKW\RkwRegistration\Domain\Model\Privacy $privacy
+     * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity|\TYPO3\CMS\Extbase\Persistence\ObjectStorage  $referenceObject
+     * @return bool
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      */
     protected static function setReferenceObjectInfo(
         Privacy $privacy,
         $referenceObject
-    )
-    {
+    ): bool {
+        
         /** @var ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
@@ -164,14 +162,22 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
             $referenceObject = $referenceObject->current();
 
             if ($referenceObject instanceof AbstractEntity) {
-                $privacy->setForeignTable(filter_var($dataMapper->getDataMap(get_class($referenceObject))->getTableName(), FILTER_SANITIZE_STRING));
+                $privacy->setForeignTable(filter_var(
+                    $dataMapper->getDataMap(get_class($referenceObject))->getTableName(), 
+                    FILTER_SANITIZE_STRING
+                ));
+                
+                return true;
             }
 
             // else we determine the concrete foreignTable and foreignUid
         } else {
             if ($referenceObject instanceof AbstractEntity) {
 
-                $privacy->setForeignTable(filter_var($dataMapper->getDataMap(get_class($referenceObject))->getTableName(), FILTER_SANITIZE_STRING));
+                $privacy->setForeignTable(filter_var(
+                    $dataMapper->getDataMap(get_class($referenceObject))->getTableName(), 
+                    FILTER_SANITIZE_STRING
+                ));
                 $privacy->setForeignUid($referenceObject->getUid());
 
                 // additional: Set registration, if $referenceObject is of type \RKW\RkwRegistration\Domain\Model\Registration
@@ -179,8 +185,12 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
                 if ($referenceObject instanceof Registration) {
                     $privacy->setRegistrationUserSha1($referenceObject->getUserSha1());
                 }
+                
+                return true;
             }
         }
+        
+        return false;
     }
 
 
@@ -190,22 +200,22 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
      * \RKW\RkwRegistration\Register\OptInRegister->register You have just to use ->setPrivacyDataBeforeOptIn and
      * ->setPrivacyDataFinal (with registration-object) to complete the procedure
      *
-     * @param Request $request
-     * @param FrontendUser $frontendUser
-     * @param Registration $registration
+     * @param \TYPO3\CMS\Extbase\Mvc\Request $request
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
      * @param string $comment
-     * @return Privacy
+     * @return \RKW\RkwRegistration\Domain\Model\Privacy
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      * @api
      */
     public static function addPrivacyDataForOptIn(
         Request $request,
         FrontendUser $frontendUser,
         Registration $registration,
-        $comment = ''
-    )
-    {
+        string $comment = ''
+    ): Privacy {
 
         /** @var Privacy $privacy */
         $privacy = GeneralUtility::makeInstance(Privacy::class);
@@ -231,10 +241,10 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
      * addPrivacyDataForOptInFinal
      * set the $registration-object if you want to complete an optIn
      *
-     * @param Request           $request
-     * @param FrontendUser      $frontendUser
-     * @param Registration|null $registration
-     * @param string            $comment
+     * @param \TYPO3\CMS\Extbase\Mvc\Request $request
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\Registration|null $registration
+     * @param string $comment
      * @return Privacy
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
@@ -245,10 +255,9 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
         Request $request,
         FrontendUser $frontendUser,
         Registration $registration = null,
-        $comment = ''
-
-    )
-    {
+        string $comment = ''
+    ): Privacy {
+        
         /** @var Privacy $privacy */
         $privacy = GeneralUtility::makeInstance(Privacy::class);
 
@@ -274,22 +283,23 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
      * addPrivacyData
      * set the $registration-object if you want to complete an optIn
      *
-     * @param Request                                                      $request
-     * @param FrontendUser                                                 $frontendUser
-     * @param AbstractEntity|ObjectStorage $dataObject
-     * @param string                                                       $comment
-     * @return Privacy
+     * @param \TYPO3\CMS\Extbase\Mvc\Request $request
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity|\TYPO3\CMS\Extbase\Persistence\ObjectStorage $dataObject
+     * @param string $comment
+     * @return \RKW\RkwRegistration\Domain\Model\Privacy
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      * @api
      */
     public static function addPrivacyData(
         Request $request,
         FrontendUser $frontendUser,
         $dataObject,
-        $comment = ''
-    )
-    {
+        string $comment = ''
+    ): Privacy {
+        
         /** @var Privacy $privacy */
         $privacy = GeneralUtility::makeInstance(Privacy::class);
 

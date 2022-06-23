@@ -147,7 +147,7 @@ class OptInRegister extends AbstractRegister
     {
         // load register by SHA-token
         /** @var Registration $register */
-        $register = $this->getRegistrationRepository()->findOneByUserSha1($userSha1);
+        $register = $this->registrationRepository->findOneByUserSha1($userSha1);
 
         // not found
         if (!$register) {
@@ -156,7 +156,7 @@ class OptInRegister extends AbstractRegister
         }
 
         /** @var FrontendUser $frontendUser */
-        $frontendUser = $this->getFrontendUserRepository()->findByUidAlsoInactiveNonGuest($register->getUser());
+        $frontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser());
 
         $status = $this->check($register, $tokenYes, $tokenNo);
 
@@ -170,11 +170,11 @@ class OptInRegister extends AbstractRegister
             if ($frontendUser->getDisable()) {
                 $frontendUser->setDeleted(1);
                 $this->frontendUserRepository->update($frontendUser);
-                $this->getFrontendUserRepository()->removeHard($frontendUser);
+                $this->frontendUserRepository->removeHard($frontendUser);
             }
 
-            $this->getRegistrationRepository()->remove($register);
-            $this->getPersistenceManager()->persistAll();
+            $this->registrationRepository->remove($register);
+            $this->persistenceManager->persistAll();
 
             // Signal for E-Mails
             $this->signalSlotDispatcher->dispatch(
@@ -200,7 +200,7 @@ class OptInRegister extends AbstractRegister
         if ($status === 1) {
 
             // load fe-user
-            if ($frontendUser = $this->getFrontendUserRepository()->findByUidAlsoInactiveNonGuest($register->getUser())) {
+            if ($frontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser())) {
 
                 if ($frontendUser->getDisable()) {
 
@@ -217,7 +217,7 @@ class OptInRegister extends AbstractRegister
                     $frontendUserService->setClearanceAndLifetime(true);
 
                     // Signal for E-Mails
-                    $this->getSignalSlotDispatcher()->dispatch(
+                    $this->signalSlotDispatcher->dispatch(
                         __CLASS__,
                         self::SIGNAL_AFTER_USER_REGISTER_GRANT,
                         [$frontendUser, $plaintextPassword, $register]
@@ -233,7 +233,7 @@ class OptInRegister extends AbstractRegister
 
             if ($register->getCategory()) {
 
-                $this->getSignalSlotDispatcher()->dispatch(
+                $this->signalSlotDispatcher->dispatch(
                     __CLASS__,
                     self::SIGNAL_AFTER_USER_REGISTER_GRANT . ucfirst($register->getCategory()),
                     [$frontendUser, $register]
@@ -250,16 +250,16 @@ class OptInRegister extends AbstractRegister
             }
 
             // delete registration
-            $this->getRegistrationRepository()->remove($register);
-            $this->getPersistenceManager()->persistAll();
+            $this->registrationRepository->remove($register);
+            $this->persistenceManager->persistAll();
             $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-in with id "%s" (FE-User-Id=%s, category=%s) was successful.', strtolower($register->getUid()), $frontendUser->getUid(), $register->getCategory()));
 
             return 1;
         }
 
         // token mismatch or something strange happened - kill that beast!!!
-        // $this->getRegistrationRepository()->remove($register);
-        // $this->getPersistenceManager()->persistAll();
+        // $this->registrationRepository->remove($register);
+        // $this->persistenceManager->persistAll();
         $this->getLogger()->log(LogLevel::ERROR, sprintf('Something went wrong when trying to register via opt-in with id "%s".', strtolower($register->getUid())));
 
         return 0;
@@ -352,7 +352,7 @@ class OptInRegister extends AbstractRegister
 
                 if (
                     ($frontendUser->getEmail() != strtolower($frontendUserDatabase->getEmail()))
-                    && (!$frontendUserRegister->uniqueEmail($frontendUserDatabase))
+                    && (!$frontendUserRegister->uniqueEmail())
                 ) {
 
                     $this->getLogger()->log(LogLevel::ERROR, sprintf('E-mail "%s" is already used by another user.', strtolower($frontendUser->getEmail())));
@@ -392,9 +392,9 @@ class OptInRegister extends AbstractRegister
             $frontendUserRegister->setClearanceAndLifetime($enable);
             $plaintextPassword = $frontendUserRegister->setNewPassword();
             // add user and persist!
-            $this->getFrontendUserRepository()->add($frontendUser);
+            $this->frontendUserRepository->add($frontendUser);
 
-            $this->getPersistenceManager()->persistAll();
+            $this->persistenceManager->persistAll();
 
             if ($enable) {
 
@@ -541,7 +541,7 @@ class OptInRegister extends AbstractRegister
         $persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(PersistenceManager::class);
         $persistenceManager->persistAll();
 
-        $this->getSignalSlotDispatcher()->dispatch(
+        $this->signalSlotDispatcher->dispatch(
             __CLASS__,
             self::SIGNAL_AFTER_REGISTER_GUEST . ucfirst($category),
             [$guestUser]
@@ -569,11 +569,11 @@ class OptInRegister extends AbstractRegister
         if (FrontendUserSessionUtility::isUserLoggedIn($frontendUser)) {
 
             FrontendUserSessionUtility::logout();
-            $this->getFrontendUserRepository()->remove($frontendUser);
-            $this->getPersistenceManager()->persistAll();
+            $this->frontendUserRepository->remove($frontendUser);
+            $this->persistenceManager->persistAll();
 
             // Signal for e.g. E-Mails or other extensions
-            $this->getSignalSlotDispatcher()->dispatch(
+            $this->signalSlotDispatcher->dispatch(
                 __CLASS__,
                 self::SIGNAL_AFTER_DELETING_USER . ucfirst($category),
                 [$frontendUser]
@@ -622,7 +622,7 @@ class OptInRegister extends AbstractRegister
         foreach ($userGroupIds as $groupId) {
 
             /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
-            $frontendUserGroup = $this->getFrontendUserGroupRepository()->findByUid($groupId);
+            $frontendUserGroup = $this->frontendUserGroupRepository->findByUid($groupId);
             if ($frontendUserGroup) {
                 $frontendUser->addUsergroup($frontendUserGroup);
             }
@@ -818,7 +818,7 @@ class OptInRegister extends AbstractRegister
     {
         // load register by SHA-token
         /** @var Registration $register */
-        $register = $this->getRegistrationRepository()->findOneByUserSha1($userSha1);
+        $register = $this->registrationRepository->findOneByUserSha1($userSha1);
         if (!$register) {
             $this->getLogger()->log(LogLevel::ERROR, sprintf('No opt-in found for given SHA1-key.'));
 
@@ -831,8 +831,8 @@ class OptInRegister extends AbstractRegister
             || ($register->getValidUntil() < time())
         ) {
 
-            $this->getRegistrationRepository()->remove($register);
-            $this->getPersistenceManager()->persistAll();
+            $this->registrationRepository->remove($register);
+            $this->persistenceManager->persistAll();
             $this->getLogger()->log(LogLevel::WARNING, sprintf('Opt-in with id "%s" is not valid any more.', strtolower($register->getUid())));
 
             return 0;
@@ -840,13 +840,13 @@ class OptInRegister extends AbstractRegister
 
 
         // load fe-user
-        if ($frontendUser = $this->getFrontendUserRepository()->findByUidAlsoInactiveNonGuest($register->getUser())) {
+        if ($frontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser())) {
 
             // check yes-token
             $category = $register->getCategory();
             if ($register->getTokenYes() == $tokenYes) {
 
-                if ($frontendUser = $this->getFrontendUserRepository()->findByUidAlsoInactiveNonGuest($register->getUser())) {
+                if ($frontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser())) {
 
                     if ($frontendUser->getDisable()) {
 
@@ -859,7 +859,7 @@ class OptInRegister extends AbstractRegister
                         // @toDo: persist?
 
                         // Signal for E-Mails
-                        $this->getSignalSlotDispatcher()->dispatch(
+                        $this->signalSlotDispatcher->dispatch(
                             __CLASS__,
                             self::SIGNAL_AFTER_USER_REGISTER_GRANT,
                             [$frontendUser, $plaintextPassword, $register]
@@ -876,7 +876,7 @@ class OptInRegister extends AbstractRegister
                 // Signal for E-Mails
                 if ($category) {
 
-                    $this->getSignalSlotDispatcher()->dispatch(
+                    $this->signalSlotDispatcher->dispatch(
                         __CLASS__,
                         self::SIGNAL_AFTER_USER_REGISTER_GRANT . ucfirst($category),
                         [$frontendUser, $register]
@@ -893,8 +893,8 @@ class OptInRegister extends AbstractRegister
                 }
 
                 // delete registration
-                $this->getRegistrationRepository()->remove($register);
-                $this->getPersistenceManager()->persistAll();
+                $this->registrationRepository->remove($register);
+                $this->persistenceManager->persistAll();
                 $this->getLogger()->log(LogLevel::INFO, sprintf('Opt-in with id "%s" (FE-User-Id=%s, category=%s) was successful.', strtolower($register->getUid()), $frontendUser->getUid(), $category));
 
                 return 1;
@@ -905,13 +905,13 @@ class OptInRegister extends AbstractRegister
                 // delete user and registration
                 // remove only disabled user!
                 if ($frontendUser->getDisable()) {
-                    $this->getFrontendUserRepository()->removeHard($frontendUser);
+                    $this->frontendUserRepository->removeHard($frontendUser);
                 }
-                $this->getRegistrationRepository()->remove($register);
-                $this->getPersistenceManager()->persistAll();
+                $this->registrationRepository->remove($register);
+                $this->persistenceManager->persistAll();
 
                 // Signal for E-Mails
-                $this->getSignalSlotDispatcher()->dispatch(
+                $this->signalSlotDispatcher->dispatch(
                     __CLASS__,
                     self::SIGNAL_AFTER_USER_REGISTER_DENIAL,
                     [$frontendUser]
@@ -927,8 +927,8 @@ class OptInRegister extends AbstractRegister
         }
 
         // token mismatch or something strange happened - kill that beast!!!
-        // $this->getRegistrationRepository()->remove($register);
-        // $this->getPersistenceManager()->persistAll();
+        // $this->registrationRepository->remove($register);
+        // $this->persistenceManager->persistAll();
 
         $this->getLogger()->log(LogLevel::ERROR, sprintf('Something went wrong when trying to register via opt-in with id "%s".', strtolower($register->getUid())));
 

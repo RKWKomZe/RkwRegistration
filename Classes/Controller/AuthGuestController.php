@@ -2,18 +2,6 @@
 
 namespace RKW\RkwRegistration\Controller;
 
-use RKW\RkwRegistration\Domain\Model\GuestUser;
-use RKW\RkwRegistration\Service\AuthFrontendUserService;
-use RKW\RkwRegistration\Service\AuthService as Authentication;
-use RKW\RkwRegistration\Register\GuestUserRegister;
-use RKW\RkwRegistration\Utility\RedirectUtility;
-use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
-use Snowflake\Varnish\Hooks\Frontend;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -26,6 +14,18 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  *
  * The TYPO3 project - inspiring people to share!
  */
+ 
+use RKW\RkwRegistration\Domain\Model\GuestUser;
+use RKW\RkwRegistration\Service\AuthFrontendUserService;
+use RKW\RkwRegistration\Service\AuthService as Authentication;
+use RKW\RkwRegistration\Register\GuestUserRegister;
+use RKW\RkwRegistration\Utility\RedirectUtility;
+use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use Snowflake\Varnish\Hooks\Frontend;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Class AuthGuestController
@@ -71,7 +71,7 @@ class AuthGuestController extends AbstractController
             $guestUser = GeneralUtility::makeInstance(GuestUser::class);
 
             /** @var GuestUserRegister $guestUserRegister */
-            $guestUserRegister = GeneralUtility::makeInstance(GuestUserRegister::class, $guestUser);
+            $guestUserRegister = $this->objectManager->get(GuestUserRegister::class, $guestUser);
             $guestUserRegister->setClearanceAndLifetime(true);
             $guestUserRegister->setUserGroupsOnRegister();
             $guestUserRegister->persistAll();

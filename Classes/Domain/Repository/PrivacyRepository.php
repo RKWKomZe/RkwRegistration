@@ -33,7 +33,7 @@ class PrivacyRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * function findByRegistration
      *
      * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
-     * @return \RKW\RkwRegistration\Domain\Model\Privacy|object
+     * @return \RKW\RkwRegistration\Domain\Model\Privacy|object|null
      */
     public function findOneByRegistration(Registration $registration)
     {

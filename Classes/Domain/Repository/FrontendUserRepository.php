@@ -2,16 +2,6 @@
 
 namespace RKW\RkwRegistration\Domain\Repository;
 
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\Restriction\EndTimeRestriction;
-use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
-use TYPO3\CMS\Core\Database\Query\Restriction\StartTimeRestriction;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
-use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -25,6 +15,13 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+
 /**
  * FrontendUserRepository
  *
@@ -36,32 +33,12 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  */
 class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
-    /**
-     * initializeObject
-     *
-     * @return void
-     */
-    public function initializeObject()
-    {
-        /** @var $querySettings Typo3QuerySettings */
-        $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
-
-        $version = VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
-        // for backward compatibility with old system with all fe_users in one storage PID
-        if ($version < 9000000) {
-            // don't add the pid constraint and enable fields
-            $querySettings->setRespectStoragePage(false);
-        }
-
-        $this->setDefaultQuerySettings($querySettings);
-    }
-
 
     /**
      * Finds deleted users
      *
      * @param int $uid
-     * @return FrontendUser
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
      */
     public function findOneDeletedByUid(int $uid)
     {
@@ -84,7 +61,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Finds deleted users
      *
      * @param int $uid
-     * @return FrontendUser
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
      */
     public function findOneDisabledByUid(int $uid)
     {
@@ -108,7 +85,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * This is relevant for checking during registration or profile editing
      *
      * @param string $input
-     * @return FrontendUser
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
      */
     public function findOneByEmailOrUsernameAlsoInactive($input)
     {
@@ -132,10 +109,10 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Finds inactive users - this is relevant for registration
      * This way we can activate the user then
      *
-     * @param string $uid
-     * @return FrontendUser
+     * @param int $uid
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
      */
-    public function findByUidAlsoInactiveNonGuest($uid)
+    public function findByUidAlsoInactiveNonGuest(int $uid)
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
@@ -164,17 +141,20 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @param int $daysSinceExpiredOrDisabled
      * @param int $timebase set the timebase for the calculation. if not set, time() is used
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findExpiredAndDisabledSinceDays ($daysSinceExpiredOrDisabled = 0, $timebase = 0)
-    {
+    public function findExpiredAndDisabledSinceDays (
+        int $daysSinceExpiredOrDisabled = 0, 
+        int $timebase = 0
+    ): QueryResultInterface {
+        
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
         $query->getQuerySettings()->setIgnoreEnableFields(true);
 
-        $timebase = ($timebase ? $timebase : time());
-        $timestamp = $timebase - (intval($daysSinceExpiredOrDisabled) * 24 * 60 * 60);
+        $timebase = ($timebase ?: time());
+        $timestamp = $timebase - ($daysSinceExpiredOrDisabled * 24 * 60 * 60);
 
         $query->matching(
             $query->logicalOr(
@@ -191,26 +171,25 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         return $query->execute();
     }
-
-
+    
 
     /**
      * Find all deleted frontend users that have been deleted x days ago and have not yet been anonymized/encrypted
      *
      * @param int $daysSinceDelete
      * @param int $timebase sets the timebase for the calculation. if not set, time() is used
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findDeletedSinceDays ($daysSinceDelete = 0, $timebase = 0)
+    public function findDeletedSinceDays (int $daysSinceDelete = 0, int $timebase = 0): QueryResultInterface
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
         $query->getQuerySettings()->setIncludeDeleted(true);
         $query->getQuerySettings()->setIgnoreEnableFields(true);
 
-        $timebase = ($timebase ? $timebase : time());
-        $timestamp = $timebase - (intval($daysSinceDelete) * 24 * 60 * 60);
+        $timebase = ($timebase ?: time());
+        $timestamp = $timebase - ($daysSinceDelete * 24 * 60 * 60);
 
         $query->matching(
             $query->logicalAnd(
@@ -225,18 +204,16 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         return $query->execute();
     }
-
-
-
+    
 
     /**
      * Finds an object matching the given identifier.
      *
      * @param int $uid The identifier of the object to find
-     * @return FrontendUser The matching object if found, otherwise NULL
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
      * @api used by RKW Soap
      */
-    public function findByUidSoap($uid)
+    public function findByUidSoap(int $uid)
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
@@ -251,17 +228,17 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         return $query->execute()->getFirst();
     }
-
-
+    
+    
     /**
      * Find all deleted users with optional timestamp tolerance
      *
      * @param int $tolerance Tolerance timestamp
      * @param bool $guestOnly Only return guest users
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findDeletedOrDisabled($tolerance = 0, $guestOnly = false)
+    public function findDeletedOrDisabled(int $tolerance = 0, bool $guestOnly = false): QueryResultInterface
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);
@@ -269,7 +246,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $timestamp = time();
         if ($tolerance) {
-            $timestamp = intval($tolerance);
+            $timestamp = $tolerance;
         }
 
         $constraints = [
@@ -304,10 +281,10 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * - (AND) marked als "deleted"
      * - (AND) older than 10 years (OR) with no login yet (rejected registrations)
      *
-     * @param FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @return bool
      */
-    public function removeHard(FrontendUser $frontendUser) :bool
+    public function removeHard(FrontendUser $frontendUser): bool
     {
         // Important: We never want to delete a user with related privacy entries
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
@@ -354,11 +331,11 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Finds non-anonymous users
      *
-     * @param integer $uid
-     * @return FrontendUser
+     * @param int $uid
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
      * @deprecated This method is deprecated and will be removed soon.
      */
-    public function findByUidNoAnonymous($uid)
+    public function findByUidNoAnonymous(int $uid)
     {
         GeneralUtility::logDeprecatedFunction();
 
@@ -378,11 +355,11 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Finds anonymous users
      *
-     * @deprecated Will be removed soon. Simply use magic function $guestUserRepository->findByUsername($token) instead
      * @param string $username
-     * @return FrontendUser
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
+     * @deprecated Will be removed soon. Simply use magic function $guestUserRepository->findByUsername($token) instead
      */
-    public function findOneByToken($token)
+    public function findOneByToken(string $token)
     {
         GeneralUtility::logDeprecatedFunction();
 
@@ -397,19 +374,18 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->execute();
 
         return $user->getFirst();
-        //====
     }
+
 
     /**
      * Finds inactive users - this is relevant for registration
      * This way we can activate the user then
      *
+     * @param int $uid
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
      * @deprecated Will be removed soon. Use findByUidInactiveNonGuest instead
-     *
-     * @param string $uid
-     * @return FrontendUser
      */
-    public function findByUidInactiveNonAnonymous($uid)
+    public function findByUidInactiveNonAnonymous(int $uid)
     {
         GeneralUtility::logDeprecatedFunction();
         return $this->findByUidAlsoInactiveNonGuest($uid);
@@ -421,13 +397,13 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @param int $tolerance Tolerance timestamp
      * @param bool $anonymousOnly Only return anonymous users
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @deprecated since 26.06.2018
      */
-    public function findExpired($tolerance = 0, $anonymousOnly = false)
+    public function findExpired(int $tolerance = 0, bool $anonymousOnly = false): QueryResultInterface
     {
-        GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
+        GeneralUtility::logDeprecatedFunction();
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
@@ -454,7 +430,6 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     }
 
 
-
     /**
      * Find all deleted or expired users with optional timestamp tolerance
      *
@@ -464,9 +439,9 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @deprecated since 19.12.2019
      */
-    public function findExpiredOrDeletedByTstamp($tolerance = 0, $anonymousOnly = false)
+    public function findExpiredOrDeletedByTstamp(int $tolerance = 0, bool $anonymousOnly = false): QueryResultInterface
     {
-        GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
+        GeneralUtility::logDeprecatedFunction();
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);
@@ -474,7 +449,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $timestamp = time();
         if ($tolerance) {
-            $timestamp = intval($tolerance);
+            $timestamp = $tolerance;
         }
 
         $constraints = [
@@ -502,7 +477,6 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         );
 
         return $query->execute();
-        //===
     }
 
 
@@ -510,13 +484,14 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Finds inactive users - this is relevant for registration
      * This way no one can register twice (only when deleted)
      *
-     * @deprecated NOT USED INSIDE COMPLETE /typo3conf/ext/
-     *
      * @param string $username
-     * @return FrontendUser
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
+     * @deprecated NOT USED INSIDE COMPLETE /typo3conf/ext/
      */
     public function findOneByUsernameAlsoInactive($username)
     {
+        GeneralUtility::logDeprecatedFunction();
+
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
 
@@ -532,13 +507,14 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Checks if user is already registered
      *
-     * @deprecated NOT USED INSIDE COMPLETE /typo3conf/ext/
-     *
-     * @param FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @return boolean
+     * @deprecated NOT USED INSIDE COMPLETE /typo3conf/ext/
      */
     public function isUser(FrontendUser $frontendUser)
     {
+        GeneralUtility::logDeprecatedFunction();
+
         if ($this->findUser($frontendUser)) {
             return true;
         }
@@ -550,10 +526,9 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Loads registered user from database
      *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|null
      * @deprecated NOT USED INSIDE COMPLETE /typo3conf/ext/
-     *
-     * @param FrontendUser $frontendUser
-     * @return FrontendUser | NULL
      */
     public function findUser(FrontendUser $frontendUser)
     {

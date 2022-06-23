@@ -2,19 +2,6 @@
 
 namespace RKW\RkwRegistration\Controller;
 
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Domain\Model\GuestUser;
-use RKW\RkwRegistration\Service\AuthFrontendUserService;
-use RKW\RkwRegistration\Register\OptInRegister;
-use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -27,6 +14,19 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  *
  * The TYPO3 project - inspiring people to share!
  */
+ 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\GuestUser;
+use RKW\RkwRegistration\Service\AuthFrontendUserService;
+use RKW\RkwRegistration\Register\OptInRegister;
+use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Class AuthController
@@ -216,11 +216,11 @@ class AuthController extends AbstractController
      * Important: This action with redirect is a workaround for setting the "logoutMessage" via flashMessenger
      * Reason: Deleting the FeUser-Session AND setting a FlashMessage in one action DOES NOT WORK! (this kills the message..)
      *
-     * @param string      $redirectAction Optional redirect parameter
-     * @param string|null $redirectController Optional redirect parameter
-     * @param string|null $extensionName Optional redirect parameter
-     * @param array|null  $arguments Optional redirect parameter
-     * @param int|null    $pageUid Optional redirect parameter
+     * @param string $redirectAction Optional redirect parameter
+     * @param string $redirectController Optional redirect parameter
+     * @param string $extensionName Optional redirect parameter
+     * @param array  $arguments Optional redirect parameter
+     * @param int   $pageUid Optional redirect parameter
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
@@ -230,8 +230,7 @@ class AuthController extends AbstractController
         string $extensionName = null,
         array $arguments = null, 
         int $pageUid = null
-    ) : void
-    {
+    ) : void {
         
         // do logout here
         FrontendUserSessionUtility::logout();
@@ -399,7 +398,7 @@ class AuthController extends AbstractController
                 // ! CREATE NEW ANONYMOUS USER !
 
                 /** @var OptInRegister $registration */
-                $registration = GeneralUtility::makeInstance(OptInRegister::class);
+                $registration = $this->objectManager->get(OptInRegister::class);
 
                 // register anonymous user and login
                 $anonymousUser = $registration->registerAnonymous();

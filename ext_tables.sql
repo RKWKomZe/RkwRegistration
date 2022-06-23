@@ -61,7 +61,6 @@ CREATE TABLE fe_users (
 
     tx_rkwregistration_facebook_id varchar(255) DEFAULT '' NOT NULL,
 	tx_rkwregistration_facebook_url varchar(255) DEFAULT '' NOT NULL,
-
 	tx_rkwregistration_xing_url varchar(255) DEFAULT '' NOT NULL,
 
 	tx_rkwregistration_register_remote_ip varchar(255) DEFAULT '' NOT NULL,
@@ -69,11 +68,8 @@ CREATE TABLE fe_users (
 
     tx_rkwregistration_login_error_count tinyint(4) DEFAULT '0' NOT NULL,
     tx_rkwregistration_is_anonymous tinyint(4) DEFAULT '0' NOT NULL,
-    tx_rkwregistration_cross_domain_token varchar(255) DEFAULT '' NOT NULL,
-    tx_rkwregistration_cross_domain_token_tstamp int(11) DEFAULT '0' NOT NULL,
 
     tx_rkwregistration_data_protection_status tinyint(4) DEFAULT '0' NOT NULL,
-
     tx_rkwregistration_privacy varchar(255) DEFAULT '' NOT NULL,
 
 );

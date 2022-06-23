@@ -209,7 +209,7 @@ class FrontendUserRegisterTest extends FunctionalTestCase
         $frontendUser = $this->objectManager->get(FrontendUser::class);
 
         // BEFORE
-        static::assertNull($frontendUser->getEndtime());
+        static::assertEquals(0, $frontendUser->getEndtime());
         static::assertEquals(1, $frontendUser->getDisable());
 
 
@@ -585,7 +585,7 @@ class FrontendUserRegisterTest extends FunctionalTestCase
         // Service
         /** @var FrontendUserRegister $register */
         $register = $this->objectManager->get(FrontendUserRegister::class);
-        $result = $register->uniqueEmail($frontendUser);
+        $result = $register->uniqueEmail($frontendUser->getEmail());
 
         static::assertFalse($result);
     }
@@ -610,7 +610,7 @@ class FrontendUserRegisterTest extends FunctionalTestCase
         // Service
         /** @var FrontendUserRegister $register */
         $register = $this->objectManager->get(FrontendUserRegister::class);
-        $result = $register->uniqueEmail($email);
+        $result = $register->uniqueEmail($email->getEmail());
 
         static::assertTrue($result);
     }
@@ -636,7 +636,7 @@ class FrontendUserRegisterTest extends FunctionalTestCase
         // Service
         /** @var FrontendUserRegister $register */
         $register = $this->objectManager->get(FrontendUserRegister::class);
-        $result = $register->uniqueEmail($email);
+        $result = $register->uniqueEmail($email->getEmail());
 
         static::assertTrue($result);
     }
@@ -800,7 +800,7 @@ class FrontendUserRegisterTest extends FunctionalTestCase
         /** @var FrontendUserRegister $register */
         $register = $this->objectManager->get(FrontendUserRegister::class);
 
-        $requiredFields = $register->getMandatoryFieldsOfUser();
+        $requiredFields = $register->getMandatoryFields();
 
         static::assertNotEmpty($requiredFields);
     }
@@ -830,7 +830,7 @@ class FrontendUserRegisterTest extends FunctionalTestCase
         /** @var FrontendUserRegister $register */
         $register = $this->objectManager->get(FrontendUserRegister::class, $frontendUser);
 
-        $requiredFields = $register->getMandatoryFieldsOfUser();
+        $requiredFields = $register->getMandatoryFields();
 
         /*
           FrontendUserResult:

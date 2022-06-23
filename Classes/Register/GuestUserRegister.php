@@ -102,7 +102,7 @@ class GuestUserRegister extends FrontendUserRegister
     {
         $this->persistenceManager->persistAll();
 
-        $this->getSignalSlotDispatcher()->dispatch(
+        $this->signalSlotDispatcher->dispatch(
             __CLASS__,
             self::SIGNAL_AFTER_REGISTER_GUEST . ucfirst($category),
             [$this->guestUser]

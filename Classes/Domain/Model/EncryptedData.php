@@ -31,41 +31,44 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
      */
     public $frontendUser;
-
-
+    
+    
     /**
      * @var string
      */
-    protected $searchKey;
-
+    protected $searchKey = '';
+    
+    
     /**
      * foreignUid
      *
      * @var integer
      */
-    public $foreignUid;
-
+    public $foreignUid = 0;
+    
+    
     /**
      * foreignTable
      *
      * @var string
      */
-    public $foreignTable;
-
+    public $foreignTable = '';
+    
+    
     /**
      * foreignClass
      *
      * @var string
      */
-    public $foreignClass;
+    public $foreignClass = '';
 
-
+    
     /**
      * encryptedData
      *
      * @var string
      */
-    public $encryptedData;    
+    public $encryptedData = '';    
     
 
     /**
@@ -74,127 +77,133 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @return void
      */
-    public function setFrontendUser($frontendUser)
+    public function setFrontendUser(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser)
     {
         $this->frontendUser = $frontendUser;
     }
 
+    
     /**
      * Returns the frontendUser
      *
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|null $frontendUser
      */
     public function getFrontendUser()
     {
         return $this->frontendUser;
     }
 
-
+    
     /**
      * Sets the searchKey value
      *
-     * @param integer $searchKey
+     * @param string $searchKey
      * @return void
-     *
      */
-    public function setSearchKey($searchKey)
+    public function setSearchKey(string $searchKey)
     {
         $this->searchKey = $searchKey;
     }
-
-
+    
+    
     /**
      * Returns the searchKey value
      *
-     * @return integer
-     *
+     * @return string
      */
-    public function getSearchKey()
+    public function getSearchKey(): string
     {
         return $this->searchKey;
     }
-
+    
+    
     /**
      * Sets the foreignUid value
      *
      * @param int $foreignUid
      * @return void
      */
-    public function setForeignUid($foreignUid)
+    public function setForeignUid(int $foreignUid)
     {
         $this->foreignUid = $foreignUid;
     }
-
+    
+    
     /**
      * Returns the foreignUid value
      *
      * @return integer
      */
-    public function getForeignUid()
+    public function getForeignUid(): int
     {
         return $this->foreignUid;
     }
-
+    
+    
     /**
      * Sets the foreignTable value
      *
      * @param string $foreignTable
      * @return void
      */
-    public function setForeignTable($foreignTable)
+    public function setForeignTable(string $foreignTable)
     {
         $this->foreignTable = $foreignTable;
     }
-
+    
+    
     /**
      * Returns the foreignTable value
      *
      * @return string
      */
-    public function getForeignTable()
+    public function getForeignTable(): string
     {
         return $this->foreignTable;
     }
-
+    
+    
     /**
      * Sets the foreignClass value
      *
      * @param string $foreignClass
      * @return void
      */
-    public function setForeignClass($foreignClass)
+    public function setForeignClass(string $foreignClass)
     {
         $this->foreignClass = $foreignClass;
     }
-
+    
+    
     /**
      * Returns the foreignClass value
      *
      * @return string
      */
-    public function getForeignClass()
+    public function getForeignClass(): string
     {
         return $this->foreignClass;
     }
-
-
+    
+    
     /**
      * Sets the encryptedValue value
      *
      * @param array $encryptedData
      * @return void
      */
-    public function setEncryptedData($encryptedData)
+    public function setEncryptedData(array $encryptedData)
     {
         $this->encryptedData = serialize($encryptedData);
     }
-
+    
+    
     /**
      * Returns the encryptedData value
      *
      * @return array
      */
-    public function getEncryptedData()
+    public function getEncryptedData(): array
     {
         return unserialize($this->encryptedData);
     }

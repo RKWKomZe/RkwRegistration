@@ -1,10 +1,6 @@
 <?php
 
 namespace RKW\RkwRegistration\Domain\Repository;
-
-use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
-use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -17,6 +13,11 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * FrontendUserGroupRepository
@@ -50,11 +51,12 @@ class FrontendUserGroupRepository extends \TYPO3\CMS\Extbase\Persistence\Reposit
     /**
      * function findUserServices
      *
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUserGroup
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface<\RKW\RkwRegistration\Domain\Model\FrontendUserGroup|null>
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findServices()
+    public function findServices(): QueryResultInterface
     {
-        //give all services which do not pass the closingDate or openingDate
+        // return all services which do not pass the closingDate or openingDate
         $query = $this->createQuery();
         $query->matching(
             $query->logicalAnd(

@@ -92,7 +92,7 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         /** @var FrontendUserRegister $register */
         $register = $objectManager->get(FrontendUserRegister::class, $this->frontendUserFormData);
-        $this->requiredFields = $register->getMandatoryFieldsOfUser();
+        $this->requiredFields = $register->getMandatoryFields();
 
         // do checks
         $this->checkEmailOfExistingUser();
@@ -188,7 +188,7 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
 
             // do only check this for new registration (do NOT check this, if a logged user want to update his user data)
             if (
-                !$frontendUserRegister->uniqueEmail($this->frontendUserFormData->getEmail())
+                !$frontendUserRegister->uniqueEmail()
                 && !FrontendUserSessionUtility::isUserLoggedIn()
             ) {
                 $this->result->forProperty('email')->addError(

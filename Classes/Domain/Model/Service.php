@@ -15,6 +15,8 @@ namespace RKW\RkwRegistration\Domain\Model;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+
 /**
  * Service
  *
@@ -26,8 +28,9 @@ namespace RKW\RkwRegistration\Domain\Model;
  */
 class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
+    
     /**
-     * User id
+     * FrontendUser
      *
      * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
      */
@@ -45,7 +48,7 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @var string
      */
-    protected $serviceSha1;
+    protected $serviceSha1 = '';
 
 
     /**
@@ -53,7 +56,7 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @var string
      */
-    protected $tokenYes;
+    protected $tokenYes = '';
 
 
     /**
@@ -61,7 +64,7 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @var string
      */
-    protected $tokenNo;
+    protected $tokenNo = '';
 
 
     /**
@@ -69,15 +72,15 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @var integer
      */
-    protected $validUntil;
+    protected $validUntil = 0;
 
 
     /**
      * enabledByAdmin
      *
-     * @var integer
+     * @var bool
      */
-    protected $enabledByAdmin;
+    protected $enabledByAdmin = false;
 
 
     /**
@@ -119,7 +122,7 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $user
      * @return void
      */
-    public function setUser($user)
+    public function setUser(FrontendUser $user): void
     {
         $this->user = $user;
     }
@@ -132,7 +135,7 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @return void
      * @api
      */
-    public function addUsergroup(\RKW\RkwRegistration\Domain\Model\FrontendUserGroup $userGroup)
+    public function addUsergroup(FrontendUserGroup $userGroup): void
     {
         $this->usergroup->attach($userGroup);
     }
@@ -145,7 +148,7 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @return void
      * @api
      */
-    public function removeUsergroup(\RKW\RkwRegistration\Domain\Model\FrontendUserGroup $userGroup)
+    public function removeUsergroup(FrontendUserGroup $userGroup): void
     {
         $this->usergroup->detach($userGroup);
     }
@@ -159,7 +162,7 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @return void
      * @api
      */
-    public function setUsergroup(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $userGroup)
+    public function setUsergroup(ObjectStorage $userGroup): void
     {
         $this->usergroup = $userGroup;
     }
@@ -171,7 +174,7 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage An object storage containing the usergroup
      * @api
      */
-    public function getUsergroup()
+    public function getUsergroup(): ObjectStorage
     {
         return $this->usergroup;
     }
@@ -182,18 +185,19 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string $serviceSha1
      */
-    public function getServiceSha1()
+    public function getServiceSha1(): string
     {
         return $this->serviceSha1;
     }
 
+    
     /**
      * Sets the serviceSha1
      *
      * @param string $serviceSha1
      * @return void
      */
-    public function setServiceSha1($serviceSha1)
+    public function setServiceSha1(string $serviceSha1): void
     {
         $this->serviceSha1 = $serviceSha1;
     }
@@ -204,18 +208,19 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string $tokenYes
      */
-    public function getTokenYes()
+    public function getTokenYes(): string
     {
         return $this->tokenYes;
     }
 
+    
     /**
      * Sets the tokenYes
      *
      * @param string $tokenYes
      * @return void
      */
-    public function setTokenYes($tokenYes)
+    public function setTokenYes(string $tokenYes): void
     {
         $this->tokenYes = $tokenYes;
     }
@@ -226,18 +231,19 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string $tokenNo
      */
-    public function getTokenNo()
+    public function getTokenNo(): string
     {
         return $this->tokenNo;
     }
 
+    
     /**
      * Sets the tokenNo
      *
      * @param string $tokenNo
      * @return void
      */
-    public function setTokenNo($tokenNo)
+    public function setTokenNo(string $tokenNo): void
     {
         $this->tokenNo = $tokenNo;
     }
@@ -246,9 +252,9 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the validUntil
      *
-     * @return string $validUntil
+     * @return int $validUntil
      */
-    public function getValidUntil()
+    public function getValidUntil(): int
     {
         return $this->validUntil;
     }
@@ -257,10 +263,10 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the validUntil
      *
-     * @param string $validUntil
+     * @param int $validUntil
      * @return void
      */
-    public function setValidUntil($validUntil)
+    public function setValidUntil(int $validUntil): void
     {
         $this->validUntil = $validUntil;
     }
@@ -269,9 +275,9 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the enabledByAdmin
      *
-     * @return integer $enabledByAdmin
+     * @return bool $enabledByAdmin
      */
-    public function getEnabledByAdmin()
+    public function getEnabledByAdmin(): bool
     {
         return $this->enabledByAdmin;
     }
@@ -279,10 +285,10 @@ class Service extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the enabledByAdmin
      *
-     * @param integer $enabledByAdmin
+     * @param bool $enabledByAdmin
      * @return void
      */
-    public function setEnabledByAdmin($enabledByAdmin)
+    public function setEnabledByAdmin(bool $enabledByAdmin): void
     {
         $this->enabledByAdmin = $enabledByAdmin;
     }
