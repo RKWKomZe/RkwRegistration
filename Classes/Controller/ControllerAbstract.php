@@ -45,7 +45,7 @@ class ControllerAbstract extends \RKW\RkwAjax\Controller\AjaxAbstractController
      * FrontendUserRepository
      *
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $frontendUserRepository;
 
@@ -60,14 +60,14 @@ class ControllerAbstract extends \RKW\RkwAjax\Controller\AjaxAbstractController
      * Persistence Manager
      *
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $persistenceManager;
 
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $objectManager;
 

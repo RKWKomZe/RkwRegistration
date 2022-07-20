@@ -15,7 +15,7 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 
@@ -61,8 +61,11 @@ if ($currentVersion < 8000000) {
          * @param \TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface $renderingContext
          * @return string
          */
-        static public function renderStatic(array $arguments, \Closure $renderChildrenClosure, \TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface $renderingContext)
-        {
+        static public function renderStatic(
+            array $arguments,
+            \Closure $renderChildrenClosure,
+            \TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface $renderingContext
+        ) {
 
             /** @var \RKW\RkwRegistration\Domain\Model\Title $title */
             $title = $arguments['title'];
@@ -120,8 +123,11 @@ if ($currentVersion < 8000000) {
          * @param RenderingContextInterface $renderingContext
          * @return string
          */
-        static public function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-        {
+        static public function renderStatic(
+            array $arguments,
+            \Closure $renderChildrenClosure,
+            RenderingContextInterface $renderingContext
+        ) {
 
             /** @var \RKW\RkwRegistration\Domain\Model\Title $title */
             $title = $arguments['title'];

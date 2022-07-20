@@ -645,6 +645,7 @@ class Registration implements \TYPO3\CMS\Core\SingletonInterface
                 $email = $email->getEmail();
             }
 
+            // kept for backwards compatibility
             if (
                 (\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail(strtolower($email)))
                 && (strpos(strtolower($email), '@facebook.com') === false)

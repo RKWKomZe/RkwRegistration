@@ -4,14 +4,13 @@
 // #########################################################
 
 config.tx_extbase.persistence {
-
 	classes {
 
-        TYPO3\CMS\Extbase\Domain\Model\BackendUser {
-            subclasses {
-                Tx_RkwRegistration_BackendUser = RKW\RkwRegistration\Domain\Model\BackendUser
-            }
-        }
+    TYPO3\CMS\Extbase\Domain\Model\BackendUser {
+      subclasses {
+        Tx_RkwRegistration_BackendUser = RKW\RkwRegistration\Domain\Model\BackendUser
+      }
+    }
 
 		RKW\RkwRegistration\Domain\Model\BackendUser {
 			mapping {
@@ -26,13 +25,13 @@ config.tx_extbase.persistence {
 			}
 		}
 
-        #===============================================
+    #===============================================
 
-        TYPO3\CMS\Extbase\Domain\Model\FrontendUser {
-            subclasses {
-                Tx_RkwRegistration_FrontendUser = RKW\RkwRegistration\Domain\Model\FrontendUser
-            }
-        }
+    TYPO3\CMS\Extbase\Domain\Model\FrontendUser {
+      subclasses {
+        Tx_RkwRegistration_FrontendUser = RKW\RkwRegistration\Domain\Model\FrontendUser
+      }
+    }
 
 
 		RKW\RkwRegistration\Domain\Model\FrontendUser {
@@ -48,67 +47,23 @@ config.tx_extbase.persistence {
 				# mapping to properties of class
 				columns {
 					tstamp.mapOnProperty = tstamp
-                    starttime.mapOnProperty = starttime
-                    endtime.mapOnProperty = endtime
-    				crdate.mapOnProperty = crdate
+          starttime.mapOnProperty = starttime
+          endtime.mapOnProperty = endtime
+          crdate.mapOnProperty = crdate
 					disable.mapOnProperty = disable
 					deleted.mapOnProperty = deleted
-                    password.mapOnProperty = password
+          password.mapOnProperty = password
 				}
-			}
-		}
-
-
-        #===============================================
-
-        RKW\RkwRegistration\Domain\Model\FrontendUser {
-            subclasses {
-                Tx_RkwRegistration_FacebookUser = RKW\RkwRegistration\Domain\Model\FacebookUser
-            }
-        }
-
-		RKW\RkwRegistration\Domain\Model\FacebookUser {
-			mapping {
-
-				# tablename
-				tableName = fe_users
-
-				# if we set an value, we filter by it
-				# if do not set anything, all records are found
-				recordType =
-
-			}
-		}
-
-        #===============================================
-
-        RKW\RkwRegistration\Domain\Model\FrontendUser {
-            subclasses {
-                Tx_RkwRegistration_TwitterUser = RKW\RkwRegistration\Domain\Model\TwitterUser
-            }
-        }
-
-		RKW\RkwRegistration\Domain\Model\TwitterUser {
-
-			mapping {
-
-				# tablename
-				tableName = fe_users
-
-				# if we set an value, we filter by it
-				# if do not set anything, all records are found
-				recordType =
-
 			}
 		}
 
 		#===============================================
 
 		\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup {
-            subclasses {
-                Tx_RkwRegistration_FrontendUserGroup = RKW\RkwRegistration\Domain\Model\FrontendUserGroup
-            }
-        }
+      subclasses {
+        Tx_RkwRegistration_FrontendUserGroup = RKW\RkwRegistration\Domain\Model\FrontendUserGroup
+      }
+    }
 
 		RKW\RkwRegistration\Domain\Model\FrontendUserGroup {
 			mapping {
@@ -130,16 +85,16 @@ config.tx_extbase.persistence {
 			}
 		}
 
-        RKW\RkwRegistration\Domain\Model\Title {
-            mapping {
-                columns {
-                    crdate.mapOnProperty = crdate
-                    tstamp.mapOnProperty = tstamp
-                    hidden.mapOnProperty = hidden
-                    deleted.mapOnProperty = deleted
-                }
-            }
+    RKW\RkwRegistration\Domain\Model\Title {
+      mapping {
+        columns {
+          crdate.mapOnProperty = crdate
+          tstamp.mapOnProperty = tstamp
+          hidden.mapOnProperty = hidden
+          deleted.mapOnProperty = deleted
         }
+      }
+    }
 
 
 		# very important to set the storagePid explicit - otherwise it will add to the pid of related objects
@@ -147,10 +102,10 @@ config.tx_extbase.persistence {
 			newRecordStoragePid = {$plugin.tx_rkwregistration.persistence.storagePid}
 		}
 
-        # very important to set the storagePid explicit - otherwise it will add to the pid of related objects
-        RKW\RkwRegistration\Domain\Model\Title {
-            newRecordStoragePid = {$plugin.tx_rkwregistration.settings.titles.storagePid}
-        }
+    # very important to set the storagePid explicit - otherwise it will add to the pid of related objects
+    RKW\RkwRegistration\Domain\Model\Title {
+      newRecordStoragePid = {$plugin.tx_rkwregistration.settings.titles.storagePid}
+    }
 	}
 }
 
@@ -167,24 +122,21 @@ plugin.tx_rkwregistration {
 		}
 		templateRootPaths {
 			0 = EXT:rkw_registration/Resources/Private/Templates/
-            1 = {$plugin.tx_rkwregistration.view.templateRootPath}
-        }
+      1 = {$plugin.tx_rkwregistration.view.templateRootPath}
+    }
 		partialRootPaths {
 			0 = EXT:rkw_registration/Resources/Private/Partials/
 			1 = {$plugin.tx_rkwregistration.view.partialRootPath}
-        }
+    }
 		widget {
 			TYPO3\CMS\Fluid\ViewHelpers\Widget\AutocompleteViewHelper {
 				templateRootPath = EXT:rkw_registration/Resources/Private/Templates/
 			}
 		}
-
 	}
 
 	persistence {
 		storagePid = {$plugin.tx_rkwregistration.persistence.storagePid}
-
-
 	}
 	features {
 		# uncomment the following line to enable the new Property Mapper.
@@ -196,15 +148,15 @@ plugin.tx_rkwregistration {
 		version = {$plugin.tx_rkwregistration.settings.version}
 
 		redirectDomains = {$plugin.tx_rkwregistration.settings.redirectDomains}
-        crossDomainLoginValidTime = {$plugin.tx_rkwregistration.settings.crossDomainLoginValidTime}
+    crossDomainLoginValidTime = {$plugin.tx_rkwregistration.settings.crossDomainLoginValidTime}
 
-        activateFacebookLogin= {$plugin.tx_rkwregistration.settings.activateFacebookLogin}
-        activateTwitterLogin = {$plugin.tx_rkwregistration.settings.activateTwitterLogin}
+    activateFacebookLogin= {$plugin.tx_rkwregistration.settings.activateFacebookLogin}
+    activateTwitterLogin = {$plugin.tx_rkwregistration.settings.activateTwitterLogin}
 
-        users {
+    users {
 
 			loginPid = {$plugin.tx_rkwregistration.settings.users.loginPid}
-            loginExternalPid = {$plugin.tx_rkwregistration.settings.users.loginExternalPid}
+      loginExternalPid = {$plugin.tx_rkwregistration.settings.users.loginExternalPid}
 			logoutPid = {$plugin.tx_rkwregistration.settings.users.logoutPid}
 			registrationPid = {$plugin.tx_rkwregistration.settings.users.registrationPid}
 			welcomePid = {$plugin.tx_rkwregistration.settings.users.welcomePid}
@@ -214,149 +166,122 @@ plugin.tx_rkwregistration {
 			termsPid = {$plugin.tx_rkwregistration.settings.users.termsPid}
 			privacyPid = {$plugin.tx_rkwregistration.settings.users.privacyPid}
 			storagePid = {$plugin.tx_rkwregistration.settings.users.storagePid}
-            lifetimeAnonymous = {$plugin.tx_rkwregistration.settings.users.lifetimeAnonymous}
-            lifetime = {$plugin.tx_rkwregistration.settings.users.lifetime}
-            loginText = {$plugin.tx_rkwregistration.settings.users.loginText}
+      lifetimeAnonymous = {$plugin.tx_rkwregistration.settings.users.lifetimeAnonymous}
+      lifetime = {$plugin.tx_rkwregistration.settings.users.lifetime}
+      loginText = {$plugin.tx_rkwregistration.settings.users.loginText}
 
-            anonymizeAfterDays = {$plugin.tx_rkwregistration.settings.users.anonymizeAfterDays}
+      anonymizeAfterDays = {$plugin.tx_rkwregistration.settings.users.anonymizeAfterDays}
 
 			groupsOnRegister = {$plugin.tx_rkwregistration.settings.users.groupsOnRegister}
 			groupsOnRegisterAnonymous = {$plugin.tx_rkwregistration.settings.users.groupsOnRegisterAnonymous}
 			languageKeyOnRegister = {$plugin.tx_rkwregistration.settings.users.languageKeyOnRegister}
 
-            daysForOptIn = {$plugin.tx_rkwregistration.settings.users.daysForOptIn}
-            maxLoginErrors = {$plugin.tx_rkwregistration.settings.users.maxLoginErrors}
+      daysForOptIn = {$plugin.tx_rkwregistration.settings.users.daysForOptIn}
+      maxLoginErrors = {$plugin.tx_rkwregistration.settings.users.maxLoginErrors}
 
-			# values ​​must be comma-separated
+			# values must be comma-separated
 			requiredFormFields = email, firstName, lastName
 
-            # security settings for password changes by the user
+      # security settings for password changes by the user
 			passwordSettings {
 				minLength = {$plugin.tx_rkwregistration.settings.users.passwordSettings.minLength}
 				alphaNum = {$plugin.tx_rkwregistration.settings.users.passwordSettings.alphaNum}
 			}
-
 		}
 
 		dataProtection {
 
-            anonymizeDeletedAfterDays = {$plugin.tx_rkwregistration.settings.dataProtection.anonymizeDeletedAfterDays}
-            deleteExpiredAndDisabledAfterDays = {$plugin.tx_rkwregistration.settings.dataProtection.deleteExpiredAndDisabledAfterDays}
+      anonymizeDeletedAfterDays = {$plugin.tx_rkwregistration.settings.dataProtection.anonymizeDeletedAfterDays}
+      deleteExpiredAndDisabledAfterDays = {$plugin.tx_rkwregistration.settings.dataProtection.deleteExpiredAndDisabledAfterDays}
 
-            classes {
+      classes {
 
-                RKW\RkwRegistration\Domain\Model\FrontendUser {
+        RKW\RkwRegistration\Domain\Model\FrontendUser {
 
-                    mappingField =
-                    fields {
+          mappingField =
+          fields {
 
-                        username = anonymous{UID}@rkw.de
-                        email = anonymous{UID}@rkw.de
-                        name = Anonymous Anonymous
-                        firstName = Anonymous
-                        middleName =
-                        lastName = Anonymous
-                        address =
-                        telephone =
-                        fax =
-                        title =
-                        zip =
-                        city =
-                        country =
-                        www =
-                        company =
-                        txRkwregistrationMobile =
-                        txRkwregistrationGender = 99
-                        txRkwregistrationFacebookUrl =
-                        txRkwregistrationTwitterUrl =
-                        txRkwregistrationXingUrl =
-                        txRkwregistrationFacebookId =
-                        txRkwregistrationTwitterId = 0
-                    }
-                }
-
-
-                RKW\RkwRegistration\Domain\Model\ShippingAddress {
-
-                    mappingField = frontendUser
-                    fields {
-
-                        gender = 99
-                        firstName = Anonymous
-                        lastName = Anonymous
-                        company =
-                        address =
-                        zip =
-                        city =
-                    }
-                }
-
-                RKW\RkwRegistration\Domain\Model\Privacy {
-
-                    mappingField = frontendUser
-                    fields {
-
-                        ipAddress = 127.0.0.1
-                        userAgent = Anonymous 1.0
-
-                    }
-                }
-
-                RKW\RkwShop\Domain\Model\Order {
-
-                    mappingField = frontendUser
-                    fields {
-
-                        email = anonymous{UID}@rkw.de
-                    }
-                }
-
-                RKW\RkwEvents\Domain\Model\EventReservation {
-
-                    mappingField = feUser
-                    fields {
-
-                        salutation = 99
-                        firstName = Anonymous
-                        lastName = Anonymous
-                        company =
-                        address =
-                        zip =
-                        city =
-                        phone =
-                        fax =
-                        email = anonymous{UID}@rkw.de
-
-                    }
-                }
-            }
+            username = anonymous{UID}@rkw.de
+            email = anonymous{UID}@rkw.de
+            name = Anonymous Anonymous
+            firstName = Anonymous
+            middleName =
+            lastName = Anonymous
+            address =
+            telephone =
+            fax =
+            title =
+            zip =
+            city =
+            country =
+            www =
+            company =
+            txRkwregistrationMobile =
+            txRkwregistrationGender = 99
+            txRkwregistrationFacebookUrl =
+            txRkwregistrationTwitterUrl =
+            txRkwregistrationXingUrl =
+            txRkwregistrationFacebookId =
+            txRkwregistrationTwitterId = 0
+          }
         }
 
-        titles {
-            storagePid = {$plugin.tx_rkwregistration.settings.titles.storagePid}
+        RKW\RkwRegistration\Domain\Model\ShippingAddress {
+
+          mappingField = frontendUser
+          fields {
+            gender = 99
+            firstName = Anonymous
+            lastName = Anonymous
+            company =
+            address =
+            zip =
+            city =
+          }
         }
+
+        RKW\RkwRegistration\Domain\Model\Privacy {
+
+          mappingField = frontendUser
+          fields {
+            ipAddress = 127.0.0.1
+            userAgent = Anonymous 1.0
+          }
+        }
+
+        RKW\RkwShop\Domain\Model\Order {
+          mappingField = frontendUser
+          fields {
+            email = anonymous{UID}@rkw.de
+          }
+        }
+
+        RKW\RkwEvents\Domain\Model\EventReservation {
+
+          mappingField = feUser
+          fields {
+            salutation = 99
+            firstName = Anonymous
+            lastName = Anonymous
+            company =
+            address =
+            zip =
+            city =
+            phone =
+            fax =
+            email = anonymous{UID}@rkw.de
+          }
+        }
+      }
+    }
+
+    titles {
+      storagePid = {$plugin.tx_rkwregistration.settings.titles.storagePid}
+    }
 
 		services {
-
 			adminOptInPid = {$plugin.tx_rkwregistration.settings.services.adminOptInPid}
-            daysForOptIn = {$plugin.tx_rkwregistration.settings.services.daysForOptIn}
-		}
-
-
-		apiData {
-
-			twitter {
-				baseUrl = {$plugin.tx_rkwregistration.settings.apiData.twitter.baseUrl}
-				consumerId = {$plugin.tx_rkwregistration.settings.apiData.twitter.consumerId}
-				consumerSecret = {$plugin.tx_rkwregistration.settings.apiData.twitter.consumerSecret}
-			}
-
-			facebook {
-				consumerId = {$plugin.tx_rkwregistration.settings.apiData.facebook.consumerId}
-				consumerSecret = {$plugin.tx_rkwregistration.settings.apiData.facebook.consumerSecret}
-				callbackUrl = {$plugin.tx_rkwregistration.settings.apiData.facebook.callbackUrl}
-			}
-
+      daysForOptIn = {$plugin.tx_rkwregistration.settings.services.daysForOptIn}
 		}
 	}
 }
@@ -380,61 +305,60 @@ module.tx_rkwregistration < plugin.tx_rkwregistration
 //=======================================
 [globalVar = LIT:1 = {$plugin.tx_rkwregistration.settings.version}]
 
-    page.includeJSFooter.rkwRegistrationScript     = EXT:rkw_registration/Resources/Public/Scripts/rkw_registration.js
+  page.includeJSFooter.rkwRegistrationScript     = EXT:rkw_registration/Resources/Public/Scripts/rkw_registration.js
 
-    // #########################################################
-    // AJAX Configuration
-    // #########################################################
-    txRkwRegistrationAjaxPage = PAGE
-    txRkwRegistrationAjaxPage {
-
-
-        typeNum = 1449722003
-        config {
-
-            disableAllHeaderCode = 1
-            xhtml_cleaning = 0
-            admPanel = 0
-            no_cache = 0
-            debug = 0
-
-            additionalHeaders.10.header = Content-type: application/json
-            metaCharset = utf-8
-
-            index_enable = 0
-            index_metatags = 0
-            index_externals = 0
-        }
+  // #########################################################
+  // AJAX Configuration
+  // #########################################################
+  txRkwRegistrationAjaxPage = PAGE
+  txRkwRegistrationAjaxPage {
 
 
-        10 = USER_INT
-        10 {
-            userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
-            extensionName = RkwRegistration
-            pluginName = RkwregistrationAjax
-            vendorName = RKW
-            controller =  Ajax
-            switchableControllerActions {
+    typeNum = 1449722003
+    config {
 
-                # Again: Controller-Name and Action
-                Ajax {
-                    1 = loginInfo
+      disableAllHeaderCode = 1
+      xhtml_cleaning = 0
+      admPanel = 0
+      no_cache = 0
+      debug = 0
 
-                }
-            }
+      additionalHeaders.10.header = Content-type: application/json
+      metaCharset = utf-8
 
-            view < plugin.tx_rkwregistration.view
-            persistence < plugin.tx_rkwregistration.persistence
-            settings < plugin.tx_rkwregistration.settings
-        }
+      index_enable = 0
+      index_metatags = 0
+      index_externals = 0
     }
 
-    lib.txRkwRegistrationAjaxCoa = COA
-    lib.txRkwRegistrationAjaxCoa {
 
-        10 = TEXT
-        10.value = Hello
-        10.wrap = |&nbsp;<span id="tx-rkwregistration-username"></span>
+    10 = USER_INT
+    10 {
+      userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+      extensionName = RkwRegistration
+      pluginName = RkwregistrationAjax
+      vendorName = RKW
+      controller =  Ajax
+      switchableControllerActions {
+
+        # Again: Controller-Name and Action
+        Ajax {
+          1 = loginInfo
+        }
+      }
+
+      view < plugin.tx_rkwregistration.view
+      persistence < plugin.tx_rkwregistration.persistence
+      settings < plugin.tx_rkwregistration.settings
     }
+  }
+
+  lib.txRkwRegistrationAjaxCoa = COA
+  lib.txRkwRegistrationAjaxCoa {
+
+    10 = TEXT
+    10.value = Hello
+    10.wrap = |&nbsp;<span id="tx-rkwregistration-username"></span>
+  }
 
 [global]

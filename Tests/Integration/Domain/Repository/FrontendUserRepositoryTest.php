@@ -62,7 +62,7 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
      * Setup
      * @throws \Exception
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Global.xml');
@@ -354,7 +354,7 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
     /**
      * TearDown
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
     }

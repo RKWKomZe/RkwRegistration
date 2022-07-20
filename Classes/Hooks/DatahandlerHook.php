@@ -43,7 +43,7 @@ class DatahandlerHook
 
         if ($table == 'fe_users') {
 
-            // @toDo: if this table is fe_users, then delete all tx_rkwregistration_domain_model_privacy entries of this user (do not remove!)
+            // @todo if this table is fe_users, then delete all tx_rkwregistration_domain_model_privacy entries of this user (do not remove!)
         }
 
 

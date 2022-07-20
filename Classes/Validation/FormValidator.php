@@ -30,7 +30,7 @@ class FormValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVali
      * booleanValidator
      *
      * @var \TYPO3\CMS\Extbase\Validation\Validator\BooleanValidator
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $booleanValidator;
 
@@ -38,7 +38,7 @@ class FormValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVali
      * emailAddressValidator
      *
      * @var \TYPO3\CMS\Extbase\Validation\Validator\EmailAddressValidator
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $emailAddressValidator;
 

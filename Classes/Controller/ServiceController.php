@@ -42,21 +42,21 @@ class ServiceController extends ControllerAbstract
 
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $frontendUserGroupRepository;
 
 
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\ServiceRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $serviceRepository;
 
 
     /**
      * @var \TYPO3\CMS\Extbase\Domain\Repository\BackendUserRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $backendUserRepository;
 
@@ -64,28 +64,28 @@ class ServiceController extends ControllerAbstract
      * Persistence Manager
      *
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $persistenceManager;
 
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $objectManager;
 
 
     /**
      * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $signalSlotDispatcher;
 
 
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $configurationManager;
 
@@ -165,6 +165,7 @@ class ServiceController extends ControllerAbstract
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
     public function createAction(\RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup)
     {

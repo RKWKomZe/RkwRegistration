@@ -28,7 +28,7 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
 {
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\ServiceRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $serviceRepository;
 
@@ -37,7 +37,7 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
      * RegistrationRepository
      *
      * @var \RKW\RkwRegistration\Domain\Repository\RegistrationRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $registrationRepository;
 
@@ -46,7 +46,7 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
      * frontendUserRepository
      *
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $frontendUserRepository;
 
@@ -55,7 +55,7 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
      * frontendUserRepository
      *
      * @var \RKW\RkwRegistration\Utilities\DataProtectionUtility
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $dataProtectionUtility;
 
@@ -96,7 +96,7 @@ class CleanupCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
 
 
     /**
-     * @toDo: Export and cleanup for deleted privacy entries
+     * @todo Export and cleanup for deleted privacy entries
      * !! DANGER !! Cleanup executes a real MySQL-Delete- Query!!!
      * @param integer $daysFromNow Users that have been marked as deleted x days from now are deleted
      * @return void

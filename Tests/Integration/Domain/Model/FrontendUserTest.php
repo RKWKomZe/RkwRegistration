@@ -81,7 +81,7 @@ class FrontendUserTest extends FunctionalTestCase
     /**
      * Setup
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -129,7 +129,7 @@ class FrontendUserTest extends FunctionalTestCase
     /**
      * TearDown
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
     }

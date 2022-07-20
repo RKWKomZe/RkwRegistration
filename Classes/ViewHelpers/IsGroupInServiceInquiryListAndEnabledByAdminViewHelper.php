@@ -24,7 +24,7 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class IsGroupInServiceInquiryListAndEnabledByAdminViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class IsGroupInServiceInquiryListAndEnabledByAdminViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper
 {
     /**
      * Checks if admin has granted service inquiry for given group id
@@ -59,8 +59,6 @@ class IsGroupInServiceInquiryListAndEnabledByAdminViewHelper extends \TYPO3\CMS\
                                 }
                             }
                         }
-                        //===
-
                     }
                 }
             }

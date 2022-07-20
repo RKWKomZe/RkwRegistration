@@ -486,7 +486,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         \RKW\RkwRegistration\Domain\Model\Registration $registration = null
     )
     {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more. Use RKW\RkwRegistration\Tools\Privacy instead.');
+        trigger_error(__CLASS__ . ': Do not use this method any more. Use RKW\RkwRegistration\Tools\Privacy instead.', E_USER_DEPRECATED);
 
         // set frontendUser
         if ($frontendUser) {
@@ -553,7 +553,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public function setDataObject($dataObject)
     {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more. Use RKW\RkwRegistration\Tools\Privacy instead.');
+        trigger_error(__CLASS__ . ': Do not use this method any more. Use RKW\RkwRegistration\Tools\Privacy instead.', E_USER_DEPRECATED);
 
         $dataMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper::class);
         if ($dataObject instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage) {
@@ -589,7 +589,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $comment = ''
     )
     {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more. Use RKW\RkwRegistration\Tools\Privacy instead.');
+        trigger_error(__CLASS__ . ': Do not use this method any more. Use RKW\RkwRegistration\Tools\Privacy instead.', E_USER_DEPRECATED);
 
         $this->setPrivacyData(null, null, $request, $comment);
     }
@@ -613,7 +613,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $dataObject
     )
     {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more. Use RKW\RkwRegistration\Tools\Privacy instead.');
+        trigger_error(__CLASS__ . ': Do not use this method any more. Use RKW\RkwRegistration\Tools\Privacy instead.', E_USER_DEPRECATED);
 
         $this->setFrontendUser($frontendUser);
         $this->setDataObject($dataObject);
@@ -641,7 +641,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         \RKW\RkwRegistration\Domain\Model\Registration $registration = null
     )
     {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more. Use RKW\RkwRegistration\Tools\Privacy instead.');
+        trigger_error(__CLASS__ . ': Do not use this method any more. Use RKW\RkwRegistration\Tools\Privacy instead.', E_USER_DEPRECATED);
 
         $this->setPrivacyData($frontendUser, $dataObject, $request, $comment, $registration);
     }
@@ -664,7 +664,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $comment = ''
     )
     {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more. Use RKW\RkwRegistration\Tools\Privacy instead.');
+        trigger_error(__CLASS__ . ': Do not use this method any more. Use RKW\RkwRegistration\Tools\Privacy instead.', E_USER_DEPRECATED);
 
         $this->setPrivacyData($frontendUser, null, $request, $comment);
     }

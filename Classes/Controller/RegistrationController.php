@@ -41,7 +41,7 @@ class RegistrationController extends ControllerAbstract
      * RegistrationRepository
      *
      * @var \RKW\RkwRegistration\Domain\Repository\RegistrationRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $registrationRepository;
 
@@ -50,7 +50,7 @@ class RegistrationController extends ControllerAbstract
      * ServiceRepository
      *
      * @var \RKW\RkwRegistration\Domain\Repository\ServiceRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $serviceRepository;
 
@@ -59,7 +59,7 @@ class RegistrationController extends ControllerAbstract
      * FacebookUserRepository
      *
      * @var \RKW\RkwRegistration\Domain\Repository\FacebookUserRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $facebookUserRepository;
 
@@ -68,7 +68,7 @@ class RegistrationController extends ControllerAbstract
      * TwitterUserRepository
      *
      * @var \RKW\RkwRegistration\Domain\Repository\TwitterUserRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $twitterUserRepository;
 
@@ -77,14 +77,14 @@ class RegistrationController extends ControllerAbstract
      * Persistence Manager
      *
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $persistenceManager;
 
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $objectManager;
 
@@ -490,127 +490,7 @@ class RegistrationController extends ControllerAbstract
             }
 
             $this->redirect('welcome');
-            //===
         }
-
-        // load facebook- object since this needs a special treatment
-        /** @var \RKW\RkwRegistration\SocialMedia\Facebook $facebook
-        $facebookLogin = null;
-        try {
-
-            if ($facebook = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\SocialMedia\\Facebook')) {
-
-                $facebookLogin = $facebook->login();
-            }
-
-        } catch (\Exception $e) {
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('Error using Facebook-API for Login. Message: %s', str_replace(array("\n", "\r"), '', $e->getMessage())));
-        }*/
-
-
-        //=============================
-        // if user is logged in
-        /*
-        if (
-            (is_object($facebookLogin))
-            && ($facebookLogin instanceof \Facebook\GraphNodes\GraphUser)
-        ) {
-
-            try {
-
-                /** @var \RKW\RkwRegistration\Tools\Authentication $authentication
-                $authentication = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Authentication');
-
-                // load data into model
-                /** @var \RKW\RkwRegistration\Domain\Model\FacebookUser $facebookUser
-                $facebookUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\FacebookUser');
-                $facebookUser->insertData($facebookLogin);
-
-                // check if user exists
-                if ($registeredUser = $this->facebookUserRepository->findOneByUsernameInactive(strtolower($facebookUser->getUsername()))) {
-
-                    // check if user is valid (not deactivated)
-                    if ($authentication->validateSocialMediaUser($registeredUser)) {
-
-                        // login user
-                        $authentication->loginUser($registeredUser);
-
-                        /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin
-                        $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
-                        if ($url = $redirectLogin->getRedirectUrlLogin()) {
-                            $this->redirectToUri($url);
-                        }
-
-                        // redirect
-                        if ($this->settings['users']['welcomePid']) {
-                            $this->redirect('welcome', null, null, null, $this->settings['users']['welcomePid']);
-                        }
-
-                        $this->redirect('welcome');
-                        //===
-
-                    } else {
-
-                        $this->addFlashMessage(
-                            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                                'registrationController.error.invalid_socialmedia_login', $this->extensionName
-                            ),
-                            '',
-                            \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
-                        );
-                    }
-
-                    // else register user!
-                } else {
-
-                    // register user
-                    /** @var \RKW\RkwRegistration\Tools\Registration $registration
-                    $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Registration');
-                    $registeredUser = $registration->register($facebookUser, true);
-
-                    // check if user is valid
-                    if ($authentication->validateSocialMediaUser($registeredUser)) {
-
-                        // login user
-                        $authentication->loginUser($registeredUser);
-
-                        /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin
-                        $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
-                        if ($url = $redirectLogin->getRedirectUrlLogin()) {
-                            $this->redirectToUri($url);
-                        }
-
-                        // redirect new user to login
-                        if ($this->settings['users']['welcomePid']) {
-                            $this->redirect('welcome', null, null, null, $this->settings['users']['welcomePid']);
-                        }
-
-                        $this->redirect('welcome');
-                        //===
-
-                    } else {
-
-                        $this->addFlashMessage(
-                            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                                'registrationController.error.invalid_socialmedia_login', $this->extensionName
-                            ),
-                            '',
-                            \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
-                        );
-                    }
-                }
-
-            } catch (\Facebook\Exceptions\FacebookSDKException $e) {
-
-                $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('Error using Facebook-API for Login. Message: %s', str_replace(array("\n", "\r"), '', $e->getMessage())));
-                $this->addFlashMessage(
-                    \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                        'registrationController.error.facebook_unexpected', $this->extensionName
-                    )
-                );
-            }
-        } else {
-        */
 
         /** @var \RKW\RkwRegistration\Tools\RedirectLogin $redirectLogin */
         $redirectLogin = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\RedirectLogin');
@@ -1477,7 +1357,7 @@ class RegistrationController extends ControllerAbstract
      * RKW own register action
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $newFrontendUser
-     * @ignorevalidation $newFrontendUser
+     * @TYPO3\\CMS\\Extbase\\Annotation\\IgnoreValidation $newFrontendUser
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException

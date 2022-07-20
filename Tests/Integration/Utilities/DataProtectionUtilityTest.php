@@ -93,7 +93,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
      * Setup
      * @throws \Exception
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->importDataSet(__DIR__ . '/DataProtectionUtilityTest/Fixtures/Database/Global.xml');
@@ -948,7 +948,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
          */
 
         $result = $this->subject->getPropertyMapByModelClassName('RKW\RkwRegistration\Domain\Model\FrontendUser');
-        static::assertInternalType('array', $result);
+        static::assertIsArray( $result);
         static::assertEquals($result['username'], 'anonymous{UID}@rkw.de');
 
     }
@@ -1076,7 +1076,7 @@ class DataProtectionUtilityTest extends FunctionalTestCase
     /**
      * TearDown
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
     }

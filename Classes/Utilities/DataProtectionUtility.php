@@ -36,20 +36,20 @@ class DataProtectionUtility
 
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $frontendUserRepository;
 
 
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\EncryptedDataRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $encryptedDataRepository;
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $objectManager;
 

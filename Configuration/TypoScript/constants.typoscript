@@ -9,8 +9,8 @@ plugin.tx_rkwregistration {
 
 		# cat=plugin.tx_rkwregistration/file; type=string; label=Path to template layouts (FE)
 		layoutRootPath  = EXT:rkw_registration/Resources/Private/Layouts/
-
 	}
+
 	persistence {
 		# cat=plugin.tx_rkwregistration//a; type=string; label=Default storage PID
 		storagePid =
@@ -18,8 +18,8 @@ plugin.tx_rkwregistration {
 
 	settings {
 
-        # cat=plugin.tx_rkwregistration//a; type=integer; label=Version to use
-        version = 2
+    # cat=plugin.tx_rkwregistration//a; type=integer; label=Version to use
+    version = 2
 
 		# cat=plugin.tx_rkwregistration//a; type=boolean; label=Include jQuery?
 		includeJQuery = 0
@@ -27,19 +27,7 @@ plugin.tx_rkwregistration {
 		# cat=plugin.tx_rkwregistration//a; type=boolean; label=Include jQueryUi?
 		includeJQueryUi = 0
 
-        # cat=plugin.tx_rkwregistration//a; type=string; label=Comma-separated list of allowd domains for redirect after login
-        redirectDomains =
-
-        # cat=plugin.tx_rkwregistration//a; type=integer; label=Defines how long the generated token for cross domain logins is valid (in seconds, default = 60sec)
-        crossDomainLoginValidTime =
-
-        # cat=plugin.tx_rkwregistration//a; type=boolean; label=Activate Facebook Login
-        activateFacebookLogin= 0
-
-        # cat=plugin.tx_rkwregistration//a; type=boolean; label=Activate Twitter Login
-        activateTwitterLogin = 0
-
-        users {
+    users {
 
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=Storage Pid
 			storagePid =
@@ -47,8 +35,8 @@ plugin.tx_rkwregistration {
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of login mask
 			loginPid =
 
-            # cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of external login mask
-            loginExternalPid =
+      # cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of external login mask
+      loginExternalPid =
 
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of logout mask
 			logoutPid =
@@ -89,40 +77,39 @@ plugin.tx_rkwregistration {
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=How many times a user can try to login before his user is disabled
 			maxLoginErrors =
 
-            # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered users (default = 0 = unlimited)
-            lifetime =
+      # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered users (default = 0 = unlimited)
+      lifetime =
 
-            # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered anonymous users (default = 7776000 = 90 days)
-            lifetimeAnonymous = 7776000
+      # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered anonymous users (default = 7776000 = 90 days)
+      lifetimeAnonymous = 7776000
 
-            # cat=plugin.tx_rkwregistration//a; type=string; label=Login text
-            loginText = Logged in
+      # cat=plugin.tx_rkwregistration//a; type=string; label=Login text
+      loginText = Logged in
 
-            passwordSettings {
-                # cat=plugin.tx_rkwregistration//a; type=integer; label=Minimum password length (default = 8)
-                minLength = 8
+      passwordSettings {
+        # cat=plugin.tx_rkwregistration//a; type=integer; label=Minimum password length (default = 8)
+        minLength = 8
 
-                # cat=plugin.tx_rkwregistration//a; type=boolean; label=Password must contain letters and numbers (default = false)
-                alphaNum = true
-            }
+        # cat=plugin.tx_rkwregistration//a; type=boolean; label=Password must contain letters and numbers (default = false)
+        alphaNum = true
+      }
+    }
 
-        }
+    dataProtection {
 
-        dataProtection {
+      # cat=plugin.tx_rkwregistration//a; type=integer; label=Anonymize and encrypt user data after x days if user is already deleted
+      anonymizeDeletedAfterDays = 30
 
-            # cat=plugin.tx_rkwregistration//a; type=integer; label=Anonymize and encrypt user data after x days if user is already deleted
-            anonymizeDeletedAfterDays = 30
+      # cat=plugin.tx_rkwregistration//a; type=integer; label=Delete expired users after x days if user is expired
+      deleteExpiredAndDisabledAfterDays = 30
+    }
 
-            # cat=plugin.tx_rkwregistration//a; type=integer; label=Delete expired users after x days if user is expired
-            deleteExpiredAndDisabledAfterDays = 30
-        }
+    titles {
 
-        titles {
+      # cat=plugin.tx_rkwregistration//a; type=integer; label=Storage Pid of titles
+      storagePid =
 
-            # cat=plugin.tx_rkwregistration//a; type=integer; label=Storage Pid of titles
-            storagePid =
-
-        }
+    }
 
 		services {
 
@@ -132,33 +119,5 @@ plugin.tx_rkwregistration {
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=how many days a admin has to opt in a user via email
 			daysForOptIn =
 		}
-
-        apiData {
-
-            twitter {
-
-                # cat=plugin.tx_rkwregistration//a; type=string; label=Twitter API Url
-                baseUrl =
-
-                # cat=plugin.tx_rkwregistration//a; type=string; label=Twitter Consumer ID
-                consumerId =
-
-                # cat=plugin.tx_rkwregistration//a; type=string; label=Twitter Consumer Secret
-                consumerSecret =
-            }
-
-            facebook {
-
-                # cat=plugin.tx_rkwregistration//a; type=string; label=Facebook Callback Url
-                callbackUrl =
-
-                # cat=plugin.tx_rkwregistration//a; type=string; label=Facebook Consumer ID
-                consumerId =
-
-                # cat=plugin.tx_rkwregistration//a; type=string; label=Facebook Consumer Secret
-                consumerSecret = 
-            }
-
-        }
 	}
 }

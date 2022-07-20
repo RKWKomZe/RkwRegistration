@@ -260,7 +260,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findExpired($tolerance = 0, $anonymousOnly = false)
     {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
+        trigger_error(__CLASS__ . ': Do not use this method any more.', E_USER_DEPRECATED);
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
@@ -300,7 +300,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     public function findDeletedOrDisabled($tolerance = 0, $anonymousOnly = false)
     {
 
-        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
+        trigger_error(__CLASS__ . ': Do not use this method any more.', E_USER_DEPRECATED);
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);
@@ -346,7 +346,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function findExpiredOrDeletedByTstamp($tolerance = 0, $anonymousOnly = false)
     {
-        \TYPO3\CMS\Core\Utility\GeneralUtility::deprecationLog(__CLASS__ . ': Do not use this method any more.');
+        trigger_error(__CLASS__ . ': Do not use this method any more.', E_USER_DEPRECATED);
 
         $query = $this->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);

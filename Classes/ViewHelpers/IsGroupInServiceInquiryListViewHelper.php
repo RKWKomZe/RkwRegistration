@@ -24,7 +24,7 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class IsGroupInServiceInquiryListViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class IsGroupInServiceInquiryListViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper
 {
     /**
      * Checks if given group id is in the list of the groups that belong to the given inquiry-set

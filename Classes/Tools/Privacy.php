@@ -206,7 +206,7 @@ class Privacy implements \TYPO3\CMS\Core\SingletonInterface
         $privacyRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\PrivacyRepository');
         $privacyRepository->add($privacy);
 
-        // @toDo: should normally be called in the context of RKW\RkwRegistration\Tools\Registration where already persistence happens
+        // @todo should normally be called in the context of RKW\RkwRegistration\Tools\Registration where already persistence happens
         /** @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager $persistenceManager */
         // $persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
         // $persistenceManager->persistAll();
@@ -250,7 +250,7 @@ class Privacy implements \TYPO3\CMS\Core\SingletonInterface
         $privacyRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\PrivacyRepository');
         $privacyRepository->add($privacy);
 
-        // @toDo: should normally be called in the context of RKW\RkwRegistration\Tools\Registration where already persistence happens
+        // @todo should normally be called in the context of RKW\RkwRegistration\Tools\Registration where already persistence happens
         /** @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager $persistenceManager */
         // $persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
         // $persistenceManager->persistAll();
