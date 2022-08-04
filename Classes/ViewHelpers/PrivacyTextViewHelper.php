@@ -37,19 +37,35 @@ class PrivacyTextViewHelper extends AbstractViewHelper
     protected $escapeOutput = false;
 
     /**
+     * Initialize arguments.
+     *
+     * @throws \TYPO3Fluid\Fluid\Core\ViewHelper\Exception
+     */
+    public function initializeArguments()
+    {
+        parent::initializeArguments();
+        $this->registerArgument('textVersion', 'string', 'The key to use for the text.', false, 'default');
+        $this->registerArgument('privacyPid', 'int', 'The pid of the page with the privacy terms.', false, '0');
+    }
+
+    /**
      * Returns a standard text for the privacy checkbox
      * (not a partial because this is more complicated to use it universally in several extensions)
      *
-     * @param string $textVersion
-     * @param integer $privacyPid
      * @return string
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\InvalidExtensionNameException
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function render($textVersion = 'default', $privacyPid = null)
+    public function render(): string
     {
         $settingsExtension = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+
+        /** @var string $textVersion */
+        $textVersion = $this->arguments['textVersion'];
+
+        /** @var int $privacyPid */
+        $privacyPid = $this->arguments['privacyPid'];
 
         // use given privacyPid or just the one which is set in the RkwRegistration-settings
         if (!$privacyPid) {
