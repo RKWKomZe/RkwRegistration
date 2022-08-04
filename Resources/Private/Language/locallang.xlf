@@ -47,21 +47,6 @@
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.www">
 				<source>Website</source>
 			</trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by">
-                <source>Registered By</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.rkw">
-                <source>RKW</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.facebook">
-                <source>Facebook</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.twitter">
-                <source>Twitter</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.xing">
-                <source>Xing</source>
-            </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_mobile">
                 <source>Mobile</source>
             </trans-unit>
@@ -251,14 +236,26 @@
             <trans-unit id="validator.password_too_short">
                 <source>Password is too short. Your password should at least consist of %s signs.</source>
             </trans-unit>
+            <trans-unit id="validator.password_too_long">
+                <source>Password is too long. Your password should maximum consist of %s signs.</source>
+            </trans-unit>
             <trans-unit id="validator.password_missing_signs">
                 <source>Your Password should contain numbers and letters.</source>
+            </trans-unit>
+            <trans-unit id="validator.old_password_not_set">
+                <source>Please enter your old and the new password accordingly.</source>
             </trans-unit>
             <trans-unit id="validator.passwords_not_all_set">
                 <source>Please enter your old and the new password accordingly. Please make sure to repeat the new password once.</source>
             </trans-unit>
             <trans-unit id="validator.passwords_not_identical">
                 <source>New password and password repeat are not identical. Please check again.</source>
+            </trans-unit>
+            <trans-unit id="validator.password_old_wrong">
+                <source>Password could not be updated. Maybe you did not enter your current password right.</source>
+            </trans-unit>
+            <trans-unit id="validator.remaining_attempts">
+                <source>You have %s remaining attempts before your account will be disabled.</source>
             </trans-unit>
             <trans-unit id="validator.zip.incorrect">
 				<source>ZIP is not correct.</source>
@@ -291,6 +288,9 @@
             <trans-unit id="registrationController.message.login_message">
                 <source><![CDATA[Please login here or <a href="%s">register</a> for free.]]></source>
             </trans-unit>
+            <trans-unit id="registrationController.message.login_message_guest">
+                <source><![CDATA[You are currently logged in as guest. Please login here or <a href="%s">register</a> for free.]]></source>
+            </trans-unit>
             <trans-unit id="registrationController.error.registration_error">
                 <source>An error occurred. Please try again</source>
             </trans-unit>
@@ -309,9 +309,6 @@
             <trans-unit id="registrationController.error.wrong_login">
                 <source>Wrong username or password.</source>
             </trans-unit>
-            <trans-unit id="registrationController.error.invalid_username">
-                <source>Username does not exist.</source>
-            </trans-unit>
             <trans-unit id="registrationController.message.new_password">
                 <source>Password was reset and send to you via E-Mail.</source>
             </trans-unit>
@@ -329,6 +326,9 @@
             </trans-unit>
             <trans-unit id="registrationController.error.delete_wrong_password">
                 <source>Entered password was wrong. Please try again.</source>
+            </trans-unit>
+            <trans-unit id="registrationController.error.something_went_wrong">
+                <source>Something went wrong.</source>
             </trans-unit>
             <trans-unit id="registrationController.message.delete_successfull">
                 <source>Your account has been successfully deleted.</source>
@@ -366,16 +366,26 @@
             <trans-unit id="registrationController.error.anonymous_login_impossible">
                 <source>Anonymous login was not possible. If you are already logged in, please log out before using an anonymous login token. </source>
             </trans-unit>
-            <trans-unit id="registrationController.message.anonymous_link">
+            <trans-unit id="registrationController.message.guest_link">
                 <source><![CDATA[Copy and save the following link. It is valid for %s days.<br><br> %s]]></source>
             </trans-unit>
             <trans-unit id="registrationController.message.xdl_login_hint">
                 <source><![CDATA[You have been logged in via <i>%s</i>. To login into another page of our network, please logout first.]]></source>
             </trans-unit>
-            <trans-unit id="registrationController.message.xdl_login_welcome">
+
+
+            <!-- Auth Controller -->
+            <trans-unit id="authController.message.login_welcome">
                 <source>Welcome! You are logged in with your e-mail-address "%s".</source>
             </trans-unit>
+            <trans-unit id="authController.message.guest_login_welcome">
+                <source>Welcome! You are logged in as guest.</source>
+            </trans-unit>
 
+            <!-- Password Controller -->
+            <trans-unit id="passwordController.message.error.locked_account">
+                <source>You account is locked.</source>
+            </trans-unit>
 
 
             <!-- Service Controller -->
@@ -518,7 +528,7 @@
             <trans-unit id="templates_registration_loginShowExternal.registerLabel">
                 <source>Create account</source>
             </trans-unit>
-            <trans-unit id="templates_registration_loginShowExternal.anonymousLabel">
+            <trans-unit id="templates_registration_loginShowExternal.guestLabel">
                 <source>Continue without account</source>
             </trans-unit>
             <trans-unit id="templates_registration_loginShowExternal.orLabel">
@@ -533,8 +543,8 @@
             <trans-unit id="templates_registration_loginShowExternal.logout">
                 <source>Logout</source>
             </trans-unit>
-            <trans-unit id="templates_registration_loginShowExternal.anonymous">
-                <source>Start anonymously</source>
+            <trans-unit id="templates_registration_loginShowExternal.guest">
+                <source>Start as guest</source>
             </trans-unit>
             <trans-unit id="templates_registration_loginShowExternal.login2">
                 <source>Login</source>

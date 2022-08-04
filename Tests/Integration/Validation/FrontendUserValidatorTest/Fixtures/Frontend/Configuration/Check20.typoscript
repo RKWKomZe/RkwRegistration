@@ -1,0 +1,15 @@
+plugin.tx_rkwregistration  {
+    persistence {
+        storagePid = 1
+    }
+
+    settings {
+        users {
+            // check for email field to make it possible to validate it
+            requiredFormFields = email
+        }
+    }
+}
+
+// for cronjob
+module.tx_rkwregistration < plugin.tx_rkwregistration

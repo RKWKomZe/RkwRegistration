@@ -1,0 +1,13 @@
+plugin.tx_rkwregistration  {
+    persistence {
+        // cat=plugin.tx_rkwregistration_rkwregistration//a; type=string; label=Default storage PID
+        storagePid = 1
+    }
+
+    settings {
+
+    }
+}
+
+// for cronjob
+module.tx_rkwregistration < plugin.tx_rkwregistration

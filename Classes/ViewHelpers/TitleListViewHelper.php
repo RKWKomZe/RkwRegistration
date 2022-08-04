@@ -2,7 +2,9 @@
 
 namespace RKW\RkwRegistration\ViewHelpers;
 
+use RKW\RkwRegistration\Domain\Repository\TitleRepository;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -50,10 +52,10 @@ class TitleListViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractView
             $showTitleAfter = true;
         }
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
-        $titleRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\TitleRepository');
+        /** @var ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var TitleRepository $titleRepository */
+        $titleRepository = $objectManager->get(TitleRepository::class);
 
         $titles = $titleRepository->findAllOfType($showTitleBefore, $showTitleAfter, $returnArray);
 
@@ -66,6 +68,5 @@ class TitleListViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractView
         }
 
         return ($returnJson) ? json_encode($titles) : $titles;
-        //===
     }
 }

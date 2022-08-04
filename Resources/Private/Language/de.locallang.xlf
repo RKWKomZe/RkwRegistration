@@ -65,22 +65,6 @@
 				<source>Website</source>
                 <target>Website</target>
 			</trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by">
-                <source>Registered By</source>
-                <target>Registriert</target>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.rkw">
-                <source>RKW</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.facebook">
-                <source>Facebook</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.twitter">
-                <source>Twitter</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.xing">
-                <source>Xing</source>
-            </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_mobile">
                 <source>Mobile</source>
                 <target>Handy</target>
@@ -315,17 +299,33 @@
                 <source>Password is too short. Your password should at least consist of %s signs.</source>
                 <target>Sicher ist sicher: Ihr Passwort sollte mindestens %s Zeichen lang sein.</target>
             </trans-unit>
+            <trans-unit id="validator.password_too_long">
+                <source>Password is too long. Your password should maximum consist of %s signs.</source>
+                <target>Zuviel des Guten: Ihr Passwort sollte höchstens %s Zeichen lang sein.</target>
+            </trans-unit>
             <trans-unit id="validator.password_missing_signs">
                 <source>Your Password should contain numbers and letters.</source>
                 <target>Weil etwas komplizierter sehr viel sicherer ist: Ihr Passwort sollte Buchstaben und Zahlen enthalten.</target>
             </trans-unit>
+            <trans-unit id="validator.old_password_not_set">
+                <source>Please enter your old and the new password accordingly.</source>
+                <target>Bitte geben Sie Ihr bisheriges Passwort ein.</target>
+            </trans-unit>
             <trans-unit id="validator.passwords_not_all_set">
-                <source>Please enter your old and the new password accordingly. Please make sure to repeat the new password once.</source>
-                <target>Bitte geben Sie Ihr bisheriges Passwort und das gewünschte neue Passwort zwei Mal ein.</target>
+                <source>Please make sure to repeat the new password once.</source>
+                <target>Bitte geben Sie das gewünschte neue Passwort zwei Mal ein.</target>
             </trans-unit>
             <trans-unit id="validator.passwords_not_identical">
                 <source>New password and password repeat are not identical. Please check again.</source>
                 <target>Hm, leider stimmen die beiden Versionen des neuen Passworts nicht ganz überein. Bitte schauen Sie doch noch mal drüber.</target>
+            </trans-unit>
+            <trans-unit id="validator.password_old_wrong">
+                <source>Password could not be updated. Maybe you did not enter your current password right.</source>
+                <target>Hat sich bei der Eingabe Ihres bisherigen Passworts vielleicht ein Fehler eingeschlichen?</target>
+            </trans-unit>
+            <trans-unit id="validator.remaining_attempts">
+                <source>You have %s remaining attempts before your account will be disabled.</source>
+                <target>Hinweis: Sie haben noch %s Versuch(e), bevor ihr Nutzerkonto aus Sicherheitsgründen gesperrt wird.</target>
             </trans-unit>
             <trans-unit id="validator.zip.incorrect">
 				<source>ZIP is not correct.</source>
@@ -361,11 +361,15 @@
             </trans-unit>
             <trans-unit id="registrationController.message.logout_message">
                 <source>You have been successfully logged out.</source>
-                <target>Sie wurden erfolgreich abgemeldet.</target>
+                <target>Das hat geklappt! Sie wurden erfolgreich abgemeldet.</target>
             </trans-unit>
             <trans-unit id="registrationController.message.login_message">
                 <source><![CDATA[Please login here or <a href="%s">register</a> for free.]]></source>
                 <target><![CDATA[Bitte loggen Sie sich ein oder <a href="%s">registrieren Sie sich</a> kostenlos.]]></target>
+            </trans-unit>
+            <trans-unit id="registrationController.message.login_message_guest">
+                <source><![CDATA[You are currently logged in as guest. Please login here or <a href="%s">register</a> for free.]]></source>
+                <target><![CDATA[Sie sind aktuell als Gast angemeldet. Um weitere Services des RKW nutzen zu können, wird ein reguläres Nutzerkonto benötigt. Bitte loggen Sie sich ein oder <a href="%s">registrieren Sie sich</a> kostenlos.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.registration_error">
                 <source>An error occurred. Please try again</source>
@@ -391,13 +395,9 @@
                 <source>Wrong username or password.</source>
                 <target>Hm, leider sind E-Mail oder Passwort falsch. Bitte prüfen Sie die Angaben noch mal.</target>
             </trans-unit>
-            <trans-unit id="registrationController.error.invalid_username">
-                <source>Username does not exist.</source>
-                <target>Hm, die angebenene E-Mail-Adresse scheint nicht zu existieren. Sind Sie denn mit dieser E-Mail-Adresse registriert?</target>
-            </trans-unit>
             <trans-unit id="registrationController.message.new_password">
                 <source>Password was reset and send to you via E-Mail.</source>
-                <target><![CDATA[Das hat geklappt! Wir haben Ihnen das neue Passwort per E-Mail zugesendet. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
+                <target><![CDATA[Das hat geklappt! Sofern ein Nutzer mit dieser E-Mail Adresse existiert, haben wir Ihnen ihr neues Passwort soeben per E-Mail zugesendet. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.message.update_successfull">
                 <source>Update was successfull.</source>
@@ -413,11 +413,15 @@
             </trans-unit>
             <trans-unit id="registrationController.error.password_not_updated">
                 <source>Password could not be updated. Maybe you did not enter your current password right.</source>
-                <target>Da ist etwas schief gelaufen! Das Passwort konnte nicht geändert werden. Hat sich bei der Eingabe Ihres bisherigen Passworts vielleicht ein Fehler eingeschlichen?</target>
+                <target><![CDATA[Da ist etwas schief gelaufen! Das Passwort konnte nicht geändert werden. Wenden Sie sich bitte an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.delete_wrong_password">
                 <source>Entered password was wrong. Please try again.</source>
                 <target>Da ist was schief gelaufen! Hat sich bei der Eingabe Ihres bisherigen Passworts vielleicht ein Fehler eingeschlichen?</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.something_went_wrong">
+                <source>Something went wrong.</source>
+                <target><![CDATA[Upps, da ist wohl etwas schief gelaufen! Wenden Sie sich im Zweifel an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
             </trans-unit>
             <trans-unit id="registrationController.message.delete_successfull">
                 <source>Your account has been successfully deleted.</source>
@@ -429,7 +433,7 @@
             </trans-unit>
             <trans-unit id="registrationController.error.user_not_found">
                 <source>User not found.</source>
-                <target><![CDATA[Das hat leider nicht geklappt! Wenn Sie sich  über Facebook oder Twitter angemeldet haben, dann nutzen Sie bitte die Buttons am Ende der Seite. Möglicherweise haben Sie sich aber auch mit einer anderen E-Mail-Adresse registriert. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen im Zweifelsfall gerne weiter!]]></target>
+                <target><![CDATA[Das hat leider nicht geklappt! Möglicherweise haben Sie sich mit einer anderen E-Mail-Adresse registriert. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen im Zweifelsfall gerne weiter!]]></target>
             </trans-unit>
             <trans-unit id="registrationController.error.login_blocked">
                 <source>Your login was blocked after %s attempts. Please contact support.</source>
@@ -461,13 +465,13 @@
             </trans-unit>
             <trans-unit id="registrationController.error.invalid_anonymous_token">
                 <source>The given token is not valid (any more). Please use a new one or contact support.</source>
-                <target>Der Login- Link ist leider ungültig oder abgelaufen. Bitte verwenden Sie einen neuen anonymen Zugang oder registrieren Sie sich kostenlos.</target>
+                <target>Der Login-Link ist leider ungültig oder abgelaufen. Bitte verwenden Sie einen neuen Gastzugang oder registrieren Sie sich kostenlos.</target>
             </trans-unit>
             <trans-unit id="registrationController.error.anonymous_login_impossible">
                 <source>Anonymous login was not possible. If you are already logged in, please log out before using an anonymous login token. </source>
-                <target>Der anonyme Login war nicht möglich. Wenn Sie bereits eingeloggt sind, loggen Sie sich bitte aus, bevor Sie einen Login-Link verwenden.</target>
+                <target>Der Login als Gast war nicht möglich. Wenn Sie bereits eingeloggt sind, loggen Sie sich bitte aus, bevor Sie einen Login-Link verwenden.</target>
             </trans-unit>
-            <trans-unit id="registrationController.message.anonymous_link">
+            <trans-unit id="registrationController.message.guest_link">
                 <source><![CDATA[Copy and save the following link. It is valid for %s days.<br><br> %s]]></source>
                 <target><![CDATA[Kopieren Sie den nachstehenden Link und heben Sie ihn gut auf. Nur mit diesem Link können Sie sich zu einem späteren Zeitpunkt erneut einloggen. Der Link ist %s Tage gültig.<br><br> %s]]></target>
             </trans-unit>
@@ -475,12 +479,23 @@
                 <source><![CDATA[You have been logged in via <i>%s</i>. To login into another page of our network, please logout first.]]></source>
                 <target><![CDATA[Sie wurden via <i>%s</i> eingeloggt. Um den Login über eine andere Seite des RKW Netzwerks zu nutzen, loggen Sie sich bitte zunächst aus und rufen Sie anschließend den Login-Bereich über die gewünschte Seite des RKW Netzwerks erneut auf.]]></target>
             </trans-unit>
-            <trans-unit id="registrationController.message.xdl_login_welcome">
+
+
+            <!-- Auth Controller -->
+            <trans-unit id="authController.message.login_welcome">
                 <source>Welcome! You are logged in with your e-mail-address "%s".</source>
                 <target>Herzlich willkommen! Sie sind mit Ihrer E-Mailadresse "%s" angemeldet.</target>
             </trans-unit>
+            <trans-unit id="authController.message.guest_login_welcome">
+                <source>Welcome! You are logged in as guest.</source>
+                <target>Herzlich willkommen! Sie sind als Gast angemeldet.</target>
+            </trans-unit>
 
-
+            <!-- Password Controller -->
+            <trans-unit id="passwordController.message.error.locked_account">
+                <source>You account is locked.</source>
+                 <target><![CDATA[Ihr Zugang wurde aufgrund wiederholt falscher Passworteingabe aus Sicherheitsgründen gesperrt. Bitte wenden Sie sich an den <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            </trans-unit>
 
             <!-- Service Controller -->
             <trans-unit id="serviceController.message.apply_admin_request">
@@ -676,7 +691,7 @@
                 <source>Create account</source>
                 <target>Kostenlosen "Mein RKW"-Account anlegen</target>
             </trans-unit>
-            <trans-unit id="templates_registration_loginShowExternal.anonymousLabel">
+            <trans-unit id="templates_registration_loginShowExternal.guestLabel">
                 <source>Continue without account</source>
                 <target>Ohne Account weitermachen</target>
             </trans-unit>
@@ -696,9 +711,9 @@
                 <source>Logout</source>
                 <target>Ausloggen</target>
             </trans-unit>
-            <trans-unit id="templates_registration_loginShowExternal.anonymous">
-                <source>Start anonymously</source>
-                <target>Anonym starten</target>
+            <trans-unit id="templates_registration_loginShowExternal.guest">
+                <source>Start as guest</source>
+                <target>Als Gast einloggen</target>
             </trans-unit>
             <trans-unit id="templates_registration_loginShowExternal.login2">
                 <source>Login</source>

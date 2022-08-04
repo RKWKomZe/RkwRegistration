@@ -1,9 +1,6 @@
 <?php
 
 namespace RKW\RkwRegistration\Domain\Repository;
-
-use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,6 +13,11 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * FrontendUserGroupRepository
@@ -35,9 +37,8 @@ class FrontendUserGroupRepository extends \TYPO3\CMS\Extbase\Persistence\Reposit
      */
     public function initializeObject()
     {
-
-        /** @var $querySettings \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings */
-        $querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Typo3QuerySettings');
+        /** @var $querySettings Typo3QuerySettings */
+        $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
 
         // don't add the pid constraint and enable fields
         $querySettings->setRespectStoragePage(false);
@@ -50,12 +51,12 @@ class FrontendUserGroupRepository extends \TYPO3\CMS\Extbase\Persistence\Reposit
     /**
      * function findUserServices
      *
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUserGroup
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface<\RKW\RkwRegistration\Domain\Model\FrontendUserGroup|null>
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findServices()
+    public function findServices(): QueryResultInterface
     {
-
-        //give all services which do not pass the closingDate or openingDate
+        // return all services which do not pass the closingDate or openingDate
         $query = $this->createQuery();
         $query->matching(
             $query->logicalAnd(
@@ -63,42 +64,11 @@ class FrontendUserGroupRepository extends \TYPO3\CMS\Extbase\Persistence\Reposit
                     $query->greaterThanOrEqual('txRkwregistrationServiceClosingDate', time()),
                     $query->equals('txRkwregistrationServiceClosingDate', 0)
                 ),
-
                 $query->equals('txRkwregistrationIsService', 1)
             )
         );
 
         return $query->execute();
-        //====
-    }
-
-
-    /**
-     * Find all users that have been updated recently
-     *
-     * @api Used by RKW Soap
-     * @param integer $timestamp
-     * @param integer $serviceOnly
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
-     */
-    public function findByTimestamp($timestamp, $serviceOnly)
-    {
-
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setIncludeDeleted(true);
-
-        $query->matching(
-            $query->logicalAnd(
-                $query->greaterThanOrEqual('tstamp', intval($timestamp)),
-                $query->equals('txRkwregistrationIsService', intval($serviceOnly))
-            )
-        );
-
-        $query->setOrderings(array('tstamp' => QueryInterface::ORDER_ASCENDING));
-
-        return $query->execute();
-        //===
     }
 
 

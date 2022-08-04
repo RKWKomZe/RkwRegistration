@@ -1,0 +1,48 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:vh="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
+    data-namespace-typo3-fluid="true">
+
+    <f:layout name="Default" />
+
+    <f:section name="main">
+
+        <f:render partial="FlashMessages" arguments="{_all}" />
+        <f:render partial="FormErrors" arguments="{for:newFrontendUser}"/>
+
+        <f:form action="create" name="newFrontendUser" object="{newFrontendUser}" class="form-fields">
+            <div class="flex-container">
+                <div class="form flex flex-basis-6 full-width-medium space-between">
+                    <f:render partial="Registration/RegisterFormFields" arguments="{_all}" />
+
+                    <div class="form__field">
+                        <f:form.checkbox
+                            class="checkbox"
+                            id="terms"
+                            name="terms"
+                            value="1"
+                        />
+                        <label for="terms" class="checkbox-label">
+                            <span class="text-smaller"><f:link.page pageUid="{termsPid}" target="_blank"><f:translate key="templates_registration_registerShow.terms" /></f:link.page></span>
+                        </label>
+                    </div>
+
+                    <div class="form__field">
+                        <f:form.checkbox
+                            class="checkbox"
+                            id="privacy"
+                            name="privacy"
+                            value="1"
+                        />
+                        <label for="privacy" class="checkbox-label">
+                            <vh:privacyText textVersion="registration"/>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn--primary full-width-narrow">
+                        <span><f:translate key="templates_registration_registerShow.labelRegister" /></span>
+                    </button>
+                </div>
+            </div>
+        </f:form>
+    </f:section>
+</html>

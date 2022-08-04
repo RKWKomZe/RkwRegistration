@@ -4,6 +4,8 @@ namespace RKW\RkwRegistration\Tests\Integration\Domain\Repository;
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
+use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -22,7 +24,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
  * The TYPO3 project - inspiring people to share!
  */
 /**
- * FrontendUserTest
+ * FrontendUserRepositoryTest
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
@@ -31,6 +33,11 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
  */
 class FrontendUserRepositoryTest extends FunctionalTestCase
 {
+    /**
+     * @const
+     */
+    const FIXTURE_PATH = __DIR__ . '/FrontendUserRepositoryTest/Fixtures';
+
     /**
      * @var string[]
      */
@@ -65,13 +72,14 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Global.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Global.xml');
 
         $this->setUpFrontendRootPage(
             1,
             [
                 'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
+                self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
             ]
         );
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
@@ -100,10 +108,10 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
          * When I fetch the frontend user by uid
          * Then the frontend user is returned
          */
-        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check10.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         $result = $this->subject->findByUidSoap(1);
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $result);
+        static::assertInstanceOf(FrontendUser::class, $result);
 
     }
 
@@ -123,10 +131,10 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
          * When I fetch the frontend user by uid
          * Then the frontend user is returned
          */
-        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check20.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
 
         $result = $this->subject->findByUidSoap(1);
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $result);
+        static::assertInstanceOf(FrontendUser::class, $result);
 
     }
 
@@ -147,10 +155,10 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
          * When I fetch the frontend user by uid
          * Then the frontend user is returned
          */
-        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check30.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check30.xml');
 
         $result = $this->subject->findByUidSoap(1);
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $result);
+        static::assertInstanceOf(FrontendUser::class, $result);
 
     }
 
@@ -173,7 +181,7 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
          * Then only one frontend user is returned
          * Then the frontend user that has is deleted since five days is returned
          */
-        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check40.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check40.xml');
 
         $result = $this->subject->findDeletedSinceDays(5, 864000);
 
@@ -202,7 +210,7 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
          * Then only one frontend user is returned
          * Then the frontend user that has is deleted since five days is returned
          */
-        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check50.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check50.xml');
 
         $result = $this->subject->findDeletedSinceDays(5, 864000);
 
@@ -230,7 +238,7 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
          * Then only one frontend user is returned
          * Then the frontend user that has is deleted since five days and not yet anonymized is returned
          */
-        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check51.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check51.xml');
 
         $result = $this->subject->findDeletedSinceDays(5, 864000);
 
@@ -259,7 +267,7 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
          * Then only one frontend user is returned
          * Then the frontend user that has is expired since five days is returned
          */
-        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check60.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check60.xml');
 
         $result = $this->subject->findExpiredAndDisabledSinceDays(5, 864000);
 
@@ -286,7 +294,7 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
          * Then only one frontend user is returned
          * Then the frontend user that has is disabled since five days is returned
          */
-        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check61.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check61.xml');
 
         $result = $this->subject->findExpiredAndDisabledSinceDays(5, 864000);
 
@@ -315,7 +323,7 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
          * Then only one frontend user is returned
          * Then the frontend user that has is expired since five days is returned
          */
-        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check70.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check70.xml');
 
         $result = $this->subject->findExpiredAndDisabledSinceDays(5, 864000);
 
@@ -343,13 +351,538 @@ class FrontendUserRepositoryTest extends FunctionalTestCase
          * Then only one frontend user is returned
          * Then the frontend user that has is expired since five days is returned
          */
-        $this->importDataSet(__DIR__ . '/FrontendUserRepositoryTest/Fixtures/Database/Check80.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check80.xml');
 
         $result = $this->subject->findExpiredAndDisabledSinceDays(5, 864000);
 
         static::assertCount(0,  $result);
 
     }
+
+
+    //===================================================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function removeHardEnabledFrontendUserWithoutPrivacyEntryReturnsFalse()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given is an enabled (not deleted) frontend user
+         * When the function removeHard is called
+         * Then false is returned
+         * Then the frontendUser still exists
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check90.xml');
+
+        /** @var FrontendUser $frontendUser */
+        $frontendUser = $this->subject->findByIdentifier(1);
+
+        static::assertInstanceOf(FrontendUser::class, $frontendUser);
+
+        $result = $this->subject->removeHard($frontendUser);
+
+        static::assertFalse($result);
+
+        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
+        $persistenceManager->persistAll();
+        $persistenceManager->clearState();
+
+        // user still exists
+        $frontendUser = $this->subject->findByIdentifier(1);
+        static::assertInstanceOf(FrontendUser::class, $frontendUser);
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function removeHardDisabledFrontendUserReturnsFalse()
+    {
+        /**
+         * Scenario:
+         *
+         * Given is an disabled (not deleted) frontend user
+         * When the function removeHard is called
+         * Then false is returned
+         * Then the frontendUser still exists
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check91.xml');
+
+        /** @var FrontendUser $frontendUser */
+        $frontendUser = $this->subject->findOneDisabledByUid(1);
+
+        static::assertInstanceOf(FrontendUser::class, $frontendUser);
+
+        $result = $this->subject->removeHard($frontendUser);
+
+        static::assertFalse($result);
+
+        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
+        $persistenceManager->persistAll();
+        $persistenceManager->clearState();
+
+        // user still exists
+        $frontendUser = $this->subject->findOneDisabledByUid(1);
+        static::assertInstanceOf(FrontendUser::class, $frontendUser);
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function removeHardDeletedFrontendUserReturnsTrue()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a deleted frontend user
+         * When the function removeHard is called
+         * Then true is returned
+         * Then the frontendUser is removed from database
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check92.xml');
+
+        /** @var FrontendUser $frontendUser */
+        $frontendUser = $this->subject->findOneDeletedByUid(1);
+
+        static::assertInstanceOf(FrontendUser::class, $frontendUser);
+
+        $result = $this->subject->removeHard($frontendUser);
+
+        static::assertTrue($result);
+
+        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
+        $persistenceManager->persistAll();
+        $persistenceManager->clearState();
+
+        $frontendUser = $this->subject->findOneDeletedByUid(1);
+        static::assertNull($frontendUser);
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function removeHardDeletedFrontendUserWithPrivacyEntryReturnsFalse()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given is a deleted frontend user
+         * Given is a privacy entry related to that user
+         * When the function removeHard is called
+         * Then false is returned
+         * Then the frontendUser still exists
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check92.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check95.xml');
+
+        /** @var FrontendUser $frontendUser */
+        $frontendUser = $this->subject->findOneDeletedByUid(1);
+
+        static::assertInstanceOf(FrontendUser::class, $frontendUser);
+
+        $result = $this->subject->removeHard($frontendUser);
+
+        static::assertFalse($result);
+
+        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
+        $persistenceManager->persistAll();
+        $persistenceManager->clearState();
+
+        // user still exists
+        $frontendUser = $this->subject->findOneDeletedByUid(1);
+        static::assertInstanceOf(FrontendUser::class, $frontendUser);
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function removeHardDeletedFrontendUserWithDeletedPrivacyEntryReturnsTrue()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given is a deleted frontend user
+         * Given is a -deleted- privacy entry related to that user (still exists in database, but marked as "deleted")
+         * When the function removeHard is called
+         * Then false is returned
+         * Then the frontendUser still exists
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check92.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check96.xml');
+
+        /** @var FrontendUser $frontendUser */
+        $frontendUser = $this->subject->findOneDeletedByUid(1);
+
+        static::assertInstanceOf(FrontendUser::class, $frontendUser);
+
+        $result = $this->subject->removeHard($frontendUser);
+
+        static::assertTrue($result);
+
+        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
+        $persistenceManager->persistAll();
+        $persistenceManager->clearState();
+
+        // user still exists
+        $frontendUser = $this->subject->findOneDeletedByUid(1);
+        static::assertNull($frontendUser);
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function removeHardNotExistingFrontendUser()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a frontend user
+         * Given the frontend user is deleted
+         * When I fetch the frontend user by uid
+         * Then the frontend user is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
+
+        $result = $this->subject->findByUidSoap(1);
+        static::assertInstanceOf(FrontendUser::class, $result);
+
+    }
+
+
+    //===================================================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function findOneByEmailOrUsernameAlsoInactiveWithEnabledFrontendUserReturnsFrontendUser()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given is a frontend user
+         * When the function is called
+         * Then the frontend user is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check90.xml');
+
+        $result = $this->subject->findOneByEmailOrUsernameAlsoInactive('lauterbach@spd.de');
+        static::assertInstanceOf(FrontendUser::class, $result);
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function findOneByEmailOrUsernameAlsoInactiveWithDisabledFrontendUserReturnsFrontendUser()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given is a -disabled- frontend user
+         * When the function is called
+         * Then the frontend user is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check91.xml');
+
+        $result = $this->subject->findOneByEmailOrUsernameAlsoInactive('lauterbach@spd.de');
+        static::assertInstanceOf(FrontendUser::class, $result);
+
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function findOneByEmailOrUsernameAlsoInactiveWithDeletedFrontendUserReturnsNull()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given is a -deleted- frontend user
+         * When the function is called
+         * Then null is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check92.xml');
+
+        $result = $this->subject->findOneByEmailOrUsernameAlsoInactive('lauterbach@spd.de');
+        static::assertNull($result);
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function findOneByEmailOrUsernameAlsoInactiveWithNotExistingFrontendUserReturnsNull()
+    {
+
+        // @toDo: Vielleicht auch etwas arg überflüssig der Test? Das ist ja quasi, als würde man TYPO3 prüfen...
+
+        /**
+         * Scenario:
+         *
+         * Given is a - not existing - frontend user
+         * When the function is called
+         * Then null is returned
+         */
+
+        $result = $this->subject->findOneByEmailOrUsernameAlsoInactive('spass@bei.seite');
+        static::assertNull($result);
+
+    }
+
+    //===================================================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function findByUidAlsoInactiveNonGuestWithEnabledFrontendUser()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given is a frontend user
+         * When the function is called
+         * Then the frontend user is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check90.xml');
+
+        $result = $this->subject->findByUidAlsoInactiveNonGuest(1);
+        static::assertInstanceOf(FrontendUser::class, $result);
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function findByUidAlsoInactiveNonGuestWithDisabledFrontendUser()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a - disabled - frontend user
+         * When the function is called
+         * Then the frontend user is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check91.xml');
+
+        $result = $this->subject->findByUidAlsoInactiveNonGuest(1);
+        static::assertInstanceOf(FrontendUser::class, $result);
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function findByUidAlsoInactiveNonGuestWithDeletedFrontendUser()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a - deleted - frontend user
+         * When the function is called
+         * Then null is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check92.xml');
+
+        $result = $this->subject->findByUidAlsoInactiveNonGuest(1);
+        static::assertNull($result);
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function findByUidAlsoInactiveNonGuestWithGuestUser()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given there is a - deleted - frontend user
+         * When the function is called
+         * Then null is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check93.xml');
+
+        $result = $this->subject->findByUidAlsoInactiveNonGuest(1);
+        static::assertNull($result);
+
+    }
+
+
+
+    //===================================================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function findOneDeletedByUidWithDeletedUserReturnsFrontendUser()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given is a deleted frontend user
+         * When the function is called
+         * Then the frontend user is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check92.xml');
+
+        $result = $this->subject->findOneDeletedByUid(1);
+        static::assertInstanceOf(FrontendUser::class, $result);
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function findOneDeletedByUidWithDisabledUserReturnsNull()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given is a disabled frontend user
+         * When the function is called
+         * Then null is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check91.xml');
+
+        $result = $this->subject->findOneDeletedByUid(1);
+        static::assertNull($result);
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function findOneDeletedByUidWithEnabledUserReturnsNull()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given is an enabled frontend user
+         * When the function is called
+         * Then null is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check90.xml');
+
+        $result = $this->subject->findOneDeletedByUid(1);
+        static::assertNull($result);
+
+    }
+
+
+    //===================================================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function findOneDisabledByUidWithDeletedUserReturnsNull()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given is a deleted frontend user
+         * When the function is called
+         * Then null is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check92.xml');
+
+        $result = $this->subject->findOneDisabledByUid(1);
+        static::assertNull($result);
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function findOneDisabledByUidWithDisabledUserReturnsFrontendUser()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given is a disabled frontend user
+         * When the function is called
+         * Then the frontend user is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check91.xml');
+
+        $result = $this->subject->findOneDisabledByUid(1);
+        static::assertInstanceOf(FrontendUser::class, $result);
+
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function findOneDisabledByUidWithEnabledUserReturnsNull()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given is an enabled frontend user
+         * When the function is called
+         * Then null is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check90.xml');
+
+        $result = $this->subject->findOneDisabledByUid(1);
+        static::assertNull($result);
+
+    }
+
 
     /**
      * TearDown

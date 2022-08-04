@@ -15,132 +15,69 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 
-$currentVersion = \TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version);
-if ($currentVersion < 8000000) {
+
+/**
+ * Class TitleViewHelper
+ *
+ * @author Steffen Kroggel <developer@steffenkroggel.de>
+ * @copyright RKW Kompetenzzentrum
+ * @package RKW_RkwRegistration
+ * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ */
+class TitleViewHelper extends AbstractViewHelper
+{
+
     /**
-     * Class TitleViewHelper
+     * Return the title
      *
-     * @author Steffen Kroggel <developer@steffenkroggel.de>
-     * @copyright RKW Kompetenzzentrum
-     * @package RKW_RkwRegistration
-     * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+     * @param \RKW\RkwRegistration\Domain\Model\Title $title
+     * @param bool $titleAfter
+     * @return string $string
      */
-    class TitleViewHelper extends AbstractViewHelper
+    public function render(\RKW\RkwRegistration\Domain\Model\Title $title = null, $titleAfter = false)
     {
 
-        /**
-         * Return the title
-         *
-         * @param \RKW\RkwRegistration\Domain\Model\Title $title
-         * @param bool $titleAfter
-         * @return string $string
-         */
-        public function render(\RKW\RkwRegistration\Domain\Model\Title $title = null, $titleAfter = false)
-        {
-
-            return static::renderStatic(
-                array(
-                    'title'      => $title,
-                    'titleAfter' => $titleAfter,
-                ),
-                $this->buildRenderChildrenClosure(),
-                $this->renderingContext
-            );
-        }
-
-
-        /**
-         * Static rendering
-         *
-         * @param array $arguments
-         * @param \Closure $renderChildrenClosure
-         * @param \TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface $renderingContext
-         * @return string
-         */
-        static public function renderStatic(
-            array $arguments,
-            \Closure $renderChildrenClosure,
-            \TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface $renderingContext
-        ) {
-
-            /** @var \RKW\RkwRegistration\Domain\Model\Title $title */
-            $title = $arguments['title'];
-            $titleAfter = $arguments['titleAfter'];
-
-            if ($title instanceof \RKW\RkwRegistration\Domain\Model\Title) {
-                if ($titleAfter == $title->getIsTitleAfter()) {
-                    return $title->getName();
-                }
-            }
-
-            return '';
-        }
+        return static::renderStatic(
+            [
+                'title'      => $title,
+                'titleAfter' => $titleAfter,
+            ],
+            $this->buildRenderChildrenClosure(),
+            $this->renderingContext
+        );
     }
 
-} else {
 
     /**
-     * Class TitleViewHelper
+     * Static rendering
      *
-     * @author Steffen Kroggel <developer@steffenkroggel.de>
-     * @copyright RKW Kompetenzzentrum
-     * @package RKW_RkwRegistration
-     * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+     * @param array $arguments
+     * @param \Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
+     * @return string
      */
-    class TitleViewHelper extends AbstractViewHelper
-    {
-
-        /**
-         * Return the title
-         *
-         * @param \RKW\RkwRegistration\Domain\Model\Title $title
-         * @param bool $titleAfter
-         * @return string $string
-         */
-        public function render(\RKW\RkwRegistration\Domain\Model\Title $title = null, $titleAfter = false)
-        {
-
-            return static::renderStatic(
-                array(
-                    'title'      => $title,
-                    'titleAfter' => $titleAfter,
-                ),
-                $this->buildRenderChildrenClosure(),
-                $this->renderingContext
-            );
-        }
-
-
-        /**
-         * Static rendering
-         *
-         * @param array $arguments
-         * @param \Closure $renderChildrenClosure
-         * @param RenderingContextInterface $renderingContext
-         * @return string
-         */
         static public function renderStatic(
             array $arguments,
             \Closure $renderChildrenClosure,
             RenderingContextInterface $renderingContext
-        ) {
+        ): string {
+        
+        /** @var \RKW\RkwRegistration\Domain\Model\Title $title */
+        $title = $arguments['title'];
+        $titleAfter = $arguments['titleAfter'];
 
-            /** @var \RKW\RkwRegistration\Domain\Model\Title $title */
-            $title = $arguments['title'];
-            $titleAfter = $arguments['titleAfter'];
-
-            if ($title instanceof \RKW\RkwRegistration\Domain\Model\Title) {
-                if ($titleAfter == $title->getIsTitleAfter()) {
-                    return $title->getName();
-                }
+        if ($title instanceof \RKW\RkwRegistration\Domain\Model\Title) {
+            if ($titleAfter == $title->getIsTitleAfter()) {
+                return $title->getName();
             }
-
-            return '';
         }
+
+        return '';
     }
 }
+
 

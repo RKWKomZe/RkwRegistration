@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <fe_users>
+        <disable>1</disable>
+        <tx_extbase_type>\RKW\RkwRegistration\Domain\Model\GuestUser</tx_extbase_type>
+        <uid>1</uid>
+        <pid>1</pid>
+        <username>lfrb0u4ih3k7azqv8yc2</username>
+        <password>$P$ClHIAG6PM63ffTgUGTirkhRQqoNGLm0</password>
+        <tx_rkwregistration_gender>99</tx_rkwregistration_gender>
+    </fe_users>
+
+</dataset>

@@ -15,6 +15,12 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\Registration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+
 /**
  * RegistrationRepository
  *
@@ -33,9 +39,8 @@ class RegistrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function initializeObject()
     {
-
-        /** @var $querySettings \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings */
-        $querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Typo3QuerySettings');
+        /** @var $querySettings Typo3QuerySettings */
+        $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
 
         // don't add the pid constraint and enable fields
         $querySettings->setRespectStoragePage(false);
@@ -51,51 +56,41 @@ class RegistrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findExpired()
+    public function findExpired(): QueryResultInterface
     {
-
         $query = $this->createQuery();
-        $userServices = $query
+        return $query
             ->matching(
                 $query->lessThan('validUntil', time())
             )
             ->execute();
-
-        return $userServices;
-        //===
     }
 
-
-    /**
-     * function generateRandomSha1
-     *
-     * @return string
-     */
-    public function generateRandomSha1()
-    {
-
-        return sha1(rand());
-        //====
-
-    }
-
+    
 
     /**
      * function newOptIn
      *
+     * @toDo: It's possible so set 0 or negative daysForOptIn $daysForOptIn. Do we need a fallback value?
+     * -> newOptInWithNoTimeForOptInReturnsRegistration
+     * -> newOptInWithMinusTimeForOptInReturnsRegistration
+     *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @param mixed $additionalData
-     * @param integer $daysForOptIn
      * @param string $category
+     * @param integer $daysForOptIn
      * @return \RKW\RkwRegistration\Domain\Model\Registration
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
-    public function newOptIn(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, $additionalData = null, $category = null, $daysForOptIn = 0)
+    public function newOptIn(
+        FrontendUser $frontendUser,
+        int $daysForOptIn,
+        $additionalData = null, 
+        string $category = ''
+        )
     {
-
         /** @var \RKW\RkwRegistration\Domain\Model\Registration $registration */
-        $registration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\Registration');
+        $registration = GeneralUtility::makeInstance(Registration::class);
 
         $registration->setCategory($category);
         $registration->setData($additionalData);
@@ -104,18 +99,21 @@ class RegistrationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $registration->setTokenYes($this->generateRandomSha1());
         $registration->setTokenNo($this->generateRandomSha1());
 
-        // token valid for seven days
-        if (!$daysForOptIn) {
-            $daysForOptIn = 7;
-        }
-        $registration->setValidUntil(strtotime("+" . intval($daysForOptIn) . " day", time()));
-
+        $registration->setValidUntil(strtotime("+" . $daysForOptIn . " day", time()));
         $this->add($registration);
 
         return $registration;
-        //====
-
-
+    }
+    
+    
+    /**
+     * generateRandomSha1
+     *
+     * @return string
+     */
+    protected function generateRandomSha1(): string
+    {
+        return sha1(rand());
     }
 
 }

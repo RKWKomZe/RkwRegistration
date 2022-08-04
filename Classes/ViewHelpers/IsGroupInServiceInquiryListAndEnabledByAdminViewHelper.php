@@ -15,6 +15,8 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+
 /**
  * IsGroupInServiceInquiryListViewHelper
  *
@@ -24,7 +26,7 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class IsGroupInServiceInquiryListAndEnabledByAdminViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper
+class IsGroupInServiceInquiryListAndEnabledByAdminViewHelper extends AbstractViewHelper
 {
     /**
      * Checks if admin has granted service inquiry for given group id
@@ -35,8 +37,6 @@ class IsGroupInServiceInquiryListAndEnabledByAdminViewHelper extends \TYPO3Fluid
      */
     public function render($groupId, $serviceInquiries)
     {
-
-
         if ($serviceInquiries instanceof \Traversable) {
 
             // go through all inquiries
@@ -65,9 +65,5 @@ class IsGroupInServiceInquiryListAndEnabledByAdminViewHelper extends \TYPO3Fluid
         }
 
         return false;
-        //===
-
     }
-
-
 }

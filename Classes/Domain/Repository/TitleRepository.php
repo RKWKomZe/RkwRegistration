@@ -15,6 +15,8 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+
 /**
  * TitleRepository
  *
@@ -34,8 +36,8 @@ class TitleRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function initializeObject()
     {
-        /** @var $querySettings \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings */
-        $querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Typo3QuerySettings');
+        /** @var $querySettings Typo3QuerySettings */
+        $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
 
         // don't add the pid constraint
         $querySettings->setRespectStoragePage(false);
@@ -51,14 +53,17 @@ class TitleRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param boolean $returnArray
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array
      */
-    public function findAllOfType($showTitleBefore = true, $showTitleAfter = false, $returnArray = false)
-    {
+    public function findAllOfType(
+        bool $showTitleBefore = true, 
+        bool $showTitleAfter = false, 
+        bool $returnArray = false
+    ) {
         $query = $this->createQuery();
         $result = $query
             ->matching(
                 $query->logicalAnd(
                     $query->logicalOr(
-                        $query->equals('isTitleAfter', $showTitleBefore ? false : true),
+                        $query->equals('isTitleAfter', !$showTitleBefore),
                         $query->equals('isTitleAfter', $showTitleAfter)
                     ),
                     $query->equals('isChecked', true)
@@ -66,6 +71,5 @@ class TitleRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             )->execute($returnArray);
 
         return $result;
-        //===
     }
 }

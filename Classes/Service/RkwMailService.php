@@ -2,8 +2,17 @@
 
 namespace RKW\RkwRegistration\Service;
 
-use \RKW\RkwBasics\Helper\Common;
+use RKW\RkwBasics\Utility\GeneralUtility;
+use RKW\RkwMailer\Service\MailService;
+use RKW\RkwRegistration\Domain\Model\BackendUser;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
+use RKW\RkwRegistration\Domain\Model\Registration;
+use RKW\RkwRegistration\Domain\Model\Service;
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -32,8 +41,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Handles create user event
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
+     * @param FrontendUser $frontendUser
+     * @param Registration $registration
      * @param mixed $signalInformation
      * @return void
      * @throws \RKW\RkwMailer\Service\MailException
@@ -45,16 +54,16 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function handleCreateUserEvent(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, \RKW\RkwRegistration\Domain\Model\Registration $registration, $signalInformation)
+    public function handleCreateUserEvent(FrontendUser $frontendUser, Registration $registration, $signalInformation)
     {
-
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $settingsDefault = $this->getSettings();
+
         if ($settings['view']['templateRootPaths']) {
 
-            /** @var \RKW\RkwMailer\Service\MailService $mailService */
-            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
+            /** @var MailService $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
             // send new user an email with token
             $mailService->setTo($frontendUser, array(
@@ -82,14 +91,15 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService->getQueueMail()->setHtmlTemplate('Email/RegisterOptInRequest');
             $mailService->send();
         }
-
     }
 
+
+
     /**
-     * Handles register user event
+     * Handles register user event (after user has done his OptIn)
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
+     * @param FrontendUser $frontendUser
+     * @param Registration $registration
      * @param string $plaintextPassword
      * @return void
      * @throws \RKW\RkwMailer\Service\MailException
@@ -101,27 +111,44 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function handleRegisterUserEvent(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, $plaintextPassword, \RKW\RkwRegistration\Domain\Model\Registration $registration = null)
+    public function handleRegisterUserEvent(FrontendUser $frontendUser, $plaintextPassword, Registration $registration = null)
     {
-
-
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $settingsDefault = $this->getSettings();
         if ($settings['view']['templateRootPaths']) {
 
-            /** @var \RKW\RkwMailer\Service\MailService $mailService */
-            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
+            /** @var MailService $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
+
+            // create OptIn links now and not inside the fluid template, which will be used by the RkwMailer
+            // Reason: Only via this way we get suitable links to the current active dynamic domain
+
+            /** @var ObjectManager objectManager */
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+            /** @var UriBuilder $uriBuilder */
+            $uriBuilder = $objectManager->get(UriBuilder::class);
+            $uriLogin = $uriBuilder->reset()
+                ->setTargetPageUid(intval($settingsDefault['users']['loginPid']))
+                ->setCreateAbsoluteUri(true)
+                ->setUseCacheHash(false)
+                ->build();
 
             // send new user an email with token
-            $mailService->setTo($frontendUser, array(
-                'marker' => array(
-                    'plaintextPasswordForMail' => $plaintextPassword,
-                    'frontendUser'             => $frontendUser,
-                    'pageUid'                  => intval($GLOBALS['TSFE']->id),
-                    'loginPid'                 => intval($settingsDefault['users']['loginPid']),
-                ),
-            ));
+            $mailService->setTo(
+                $frontendUser,
+                [
+                    'marker' => [
+                        'plaintextPasswordForMail'  => $plaintextPassword,
+                        'frontendUser'              => $frontendUser,
+                        'pageUid'                   => intval($GLOBALS['TSFE']->id),
+                        'loginLink'                 => $uriLogin
+
+                        // old
+                        #'loginPid'                 => intval($settingsDefault['users']['loginPid']),
+                    ]
+                ]
+            );
 
             $mailService->getQueueMail()->setSubject(
                 \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
@@ -137,13 +164,12 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService->getQueueMail()->setHtmlTemplate('Email/RegisterOptInSuccess');
             $mailService->send();
         }
-
     }
 
     /**
      * Handles password reset event
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param FrontendUser $frontendUser
      * @param string $plaintextPassword
      * @param mixed $signalInformation
      * @return void
@@ -156,28 +182,29 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function handlePasswordResetEvent(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, $plaintextPassword, $signalInformation)
+    public function handlePasswordResetEvent(FrontendUser $frontendUser, $plaintextPassword, $signalInformation)
     {
-
-
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $settingsDefault = $this->getSettings();
 
         if ($settings['view']['templateRootPaths']) {
 
-            /** @var \RKW\RkwMailer\Service\MailService $mailService */
-            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
+            /** @var MailService $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
             // send new user an email with token
-            $mailService->setTo($frontendUser, array(
-                'marker' => array(
-                    'plaintextPasswordForMail' => $plaintextPassword,
-                    'frontendUser'             => $frontendUser,
-                    'pageUid'                  => intval($GLOBALS['TSFE']->id),
-                    'loginPid'                 => intval($settingsDefault['users']['loginPid']),
-                ),
-            ));
+            $mailService->setTo(
+                $frontendUser,
+                [
+                    'marker' => [
+                        'plaintextPasswordForMail' => $plaintextPassword,
+                        'frontendUser'             => $frontendUser,
+                        'pageUid'                  => intval($GLOBALS['TSFE']->id),
+                        'loginPid'                 => intval($settingsDefault['users']['loginPid']),
+                    ],
+                ]
+            );
 
             $mailService->getQueueMail()->setSubject(
                 \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
@@ -192,18 +219,16 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService->getQueueMail()->setPlaintextTemplate('Email/PasswordReset');
             $mailService->getQueueMail()->setHtmlTemplate('Email/PasswordReset');
             $mailService->send();
-
         }
-
     }
 
     /**
      * Handles register user event
      *
-     * @param \RKW\RkwRegistration\Domain\Model\BackendUser $admin
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup
-     * @param \RKW\RkwRegistration\Domain\Model\Service $serviceOptIn
+     * @param BackendUser $admin
+     * @param FrontendUser $frontendUser
+     * @param FrontendUserGroup $frontendUserGroup
+     * @param Service $serviceOptIn
      * @param integer $pid
      * @param mixed $signalInformation
      * @return void
@@ -216,29 +241,31 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function handleAdminServiceEvent(\RKW\RkwRegistration\Domain\Model\BackendUser $admin, \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup, \RKW\RkwRegistration\Domain\Model\Service $serviceOptIn, $pid, $signalInformation)
+    public function handleAdminServiceEvent(BackendUser $admin, FrontendUser $frontendUser, FrontendUserGroup $frontendUserGroup, Service $serviceOptIn, $pid, $signalInformation)
     {
-
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         if ($settings['view']['templateRootPaths']) {
 
-            /** @var \RKW\RkwMailer\Service\MailService $mailService */
-            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
+            /** @var MailService $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
             // send new user an email with token
-            $mailService->setTo($admin, array(
-                'marker' => array(
-                    'tokenYes'          => $serviceOptIn->getTokenYes(),
-                    'tokenNo'           => $serviceOptIn->getTokenNo(),
-                    'serviceSha1'       => $serviceOptIn->getServiceSha1(),
-                    'service'           => $serviceOptIn,
-                    'frontendUser'      => $frontendUser,
-                    'frontendUserGroup' => $frontendUserGroup,
-                    'backendUser'       => $admin,
-                    'pageUid'           => intval($pid),
-                ),
-            ));
+            $mailService->setTo(
+                $admin,
+                [
+                    'marker' => [
+                        'tokenYes'          => $serviceOptIn->getTokenYes(),
+                        'tokenNo'           => $serviceOptIn->getTokenNo(),
+                        'serviceSha1'       => $serviceOptIn->getServiceSha1(),
+                        'service'           => $serviceOptIn,
+                        'frontendUser'      => $frontendUser,
+                        'frontendUserGroup' => $frontendUserGroup,
+                        'backendUser'       => $admin,
+                        'pageUid'           => intval($pid),
+                    ],
+                ]
+            );
 
             $mailService->getQueueMail()->setSubject(
                 \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
@@ -254,14 +281,13 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService->getQueueMail()->setHtmlTemplate('Email/ServiceOptInAdminRequest');
             $mailService->send();
         }
-
     }
 
     /**
      * Handles register user event
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Service $service
+     * @param FrontendUser $frontendUser
+     * @param Service $service
      * @param mixed $signalInformation
      * @return void
      * @throws \RKW\RkwMailer\Service\MailException
@@ -273,26 +299,28 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function handleAdminServiceGrantEvent(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, \RKW\RkwRegistration\Domain\Model\Service $service, $signalInformation)
+    public function handleAdminServiceGrantEvent(FrontendUser $frontendUser, Service $service, $signalInformation)
     {
-
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $settingsDefault = $this->getSettings();
         if ($settings['view']['templateRootPaths']) {
 
-            /** @var \RKW\RkwMailer\Service\MailService $mailService */
-            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
+            /** @var MailService $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
             // send new user an email with token
-            $mailService->setTo($frontendUser, array(
-                'marker' => array(
-                    'service'      => $service,
-                    'frontendUser' => $frontendUser,
-                    'pageUid'      => intval($GLOBALS['TSFE']->id),
-                    'loginPid'     => intval($settingsDefault['users']['loginPid']),
-                ),
-            ));
+            $mailService->setTo(
+                $frontendUser,
+                [
+                    'marker' => [
+                        'service'      => $service,
+                        'frontendUser' => $frontendUser,
+                        'pageUid'      => intval($GLOBALS['TSFE']->id),
+                        'loginPid'     => intval($settingsDefault['users']['loginPid']),
+                    ],
+                ]
+            );
 
             $mailService->getQueueMail()->setSubject(
                 \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
@@ -307,17 +335,15 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService->getQueueMail()->setPlaintextTemplate('Email/ServiceOptInSuccess');
             $mailService->getQueueMail()->setHtmlTemplate('Email/ServiceOptInSuccess');
             $mailService->send();
-
         }
-
     }
 
 
     /**
      * Handles register user event
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Service $service
+     * @param FrontendUser $frontendUser
+     * @param Service $service
      * @param mixed $signalInformation
      * @return void
      * @throws \RKW\RkwMailer\Service\MailException
@@ -329,24 +355,27 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function handleAdminServiceDenialEvent(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, \RKW\RkwRegistration\Domain\Model\Service $service, $signalInformation)
+    public function handleAdminServiceDenialEvent(FrontendUser $frontendUser, Service $service, $signalInformation)
     {
 
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         if ($settings['view']['templateRootPaths']) {
 
-            /** @var \RKW\RkwMailer\Service\MailService $mailService */
-            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
+            /** @var MailService $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
             // send new user an email with token
-            $mailService->setTo($frontendUser, array(
-                'marker' => array(
-                    'service'      => $service,
-                    'frontendUser' => $frontendUser,
-                    'pageUid'      => intval($GLOBALS['TSFE']->id),
-                ),
-            ));
+            $mailService->setTo(
+                $frontendUser,
+                [
+                    'marker' => [
+                        'service'      => $service,
+                        'frontendUser' => $frontendUser,
+                        'pageUid'      => intval($GLOBALS['TSFE']->id),
+                    ]
+                ]
+            );
 
             $mailService->getQueueMail()->setSubject(
                 \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
@@ -375,7 +404,6 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      */
     protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
     {
-        return Common::getTyposcriptConfiguration('Rkwregistration', $which);
-        //===
+        return GeneralUtility::getTyposcriptConfiguration('Rkwregistration', $which);
     }
 }

@@ -15,6 +15,8 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\Registration;
+
 /**
  * PrivacyRepository
  *
@@ -31,18 +33,18 @@ class PrivacyRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * function findByRegistration
      *
      * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
-     * @return \RKW\RkwRegistration\Domain\Model\Privacy|object
+     * @return \RKW\RkwRegistration\Domain\Model\Privacy|object|null
      */
-    public function findOneByRegistration($registration)
+    public function findOneByRegistration(Registration $registration)
     {
         $query = $this->createQuery();
-        $query->getQuerySettings()->setRespectStoragePage(false);
+        // deprecated line: Hard cut, no more global storage pid
+        //$query->getQuerySettings()->setRespectStoragePage(false);
         $query->matching(
             $query->equals('registrationUserSha1', $registration->getUserSha1())
         );
 
         return $query->execute()->getFirst();
-        //====
     }
 
 }

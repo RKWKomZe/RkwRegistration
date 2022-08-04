@@ -12,7 +12,7 @@ CREATE TABLE tx_rkwregistration_domain_model_registration (
 	token_yes varchar(255) DEFAULT '' NOT NULL,
 	token_no varchar(255) DEFAULT '' NOT NULL,
 	valid_until int(11) unsigned DEFAULT '0' NOT NULL,
-	data longtext NOT NULL,
+	data longtext DEFAULT '' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,
@@ -61,20 +61,15 @@ CREATE TABLE fe_users (
 
     tx_rkwregistration_facebook_id varchar(255) DEFAULT '' NOT NULL,
 	tx_rkwregistration_facebook_url varchar(255) DEFAULT '' NOT NULL,
-
 	tx_rkwregistration_xing_url varchar(255) DEFAULT '' NOT NULL,
 
-    tx_rkwregistration_registered_by tinyint(4) DEFAULT '0' NOT NULL,
 	tx_rkwregistration_register_remote_ip varchar(255) DEFAULT '' NOT NULL,
 	tx_rkwregistration_language_key varchar(255) DEFAULT 'default' NOT NULL,
 
     tx_rkwregistration_login_error_count tinyint(4) DEFAULT '0' NOT NULL,
     tx_rkwregistration_is_anonymous tinyint(4) DEFAULT '0' NOT NULL,
-    tx_rkwregistration_cross_domain_token varchar(255) DEFAULT '' NOT NULL,
-    tx_rkwregistration_cross_domain_token_tstamp int(11) DEFAULT '0' NOT NULL,
 
     tx_rkwregistration_data_protection_status tinyint(4) DEFAULT '0' NOT NULL,
-
     tx_rkwregistration_privacy varchar(255) DEFAULT '' NOT NULL,
 
 );
@@ -225,3 +220,4 @@ CREATE TABLE tx_rkwregistration_domain_model_shippingaddress (
 	KEY parent (pid),
 
 );
+

@@ -15,6 +15,12 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
+use RKW\RkwRegistration\Register\GroupRegister;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+
 /**
  * ServiceController
  *
@@ -24,7 +30,7 @@ namespace RKW\RkwRegistration\Controller;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ServiceController extends ControllerAbstract
+class ServiceController extends AbstractController
 {
     /**
      * Signal name for use in ext_localconf.php
@@ -33,6 +39,7 @@ class ServiceController extends ControllerAbstract
      */
     const SIGNAL_ADMIN_SERVICE_REQUEST = 'afterAdminServiceRequest';
 
+    
     /**
      * Signal name for use in ext_localconf.php
      *
@@ -40,6 +47,7 @@ class ServiceController extends ControllerAbstract
      */
     const SIGNAL_SERVICE_DELETE = 'afterServiceDelete';
 
+    
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
@@ -60,6 +68,7 @@ class ServiceController extends ControllerAbstract
      */
     protected $backendUserRepository;
 
+    
     /**
      * Persistence Manager
      *
@@ -96,15 +105,15 @@ class ServiceController extends ControllerAbstract
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function listAction()
+    public function listAction(): void
     {
-
         // for logged in users only!
-        $this->hasUserValidLoginRedirect();
+        $this->redirectIfUserNotLoggedIn();
 
         // check email!
-        $this->hasUserValidEmailRedirect();
+        $this->redirectIfUserHasNoValidEmail();
 
         // available services
         $frontendUserGroups = $this->frontendUserGroupRepository->findServices();
@@ -115,37 +124,37 @@ class ServiceController extends ControllerAbstract
 
         // services where the user is waiting for the release
         $serviceInquiries = $this->serviceRepository->findByUser($this->getFrontendUser());
-        $serviceInquiriesAdmin = $this->serviceRepository->findEnabledByAdminByUser($this->getFrontendUser());
+        $serviceInquiriesAdmin = $this->serviceRepository->findConfirmedByUser($this->getFrontendUser());
 
         $this->view->assignMultiple(
-            array(
+            [
                 'frontendUserGroups'    => $frontendUserGroups,
                 'groupsOfFrontendUser'  => $groupsOfFrontendUser,
                 'serviceInquiries'      => $serviceInquiries,
                 'serviceInquiriesAdmin' => $serviceInquiriesAdmin,
                 'editUserPid'           => intval($this->settings['users']['editUserPid']),
-            )
+            ]
         );
-
     }
 
 
     /**
      * action show
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup
+     * @param FrontendUserGroup $frontendUserGroup
      * @return void
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
-    public function showAction(\RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup)
+    public function showAction(FrontendUserGroup $frontendUserGroup): void
     {
-
         // for logged in users only!
-        $this->hasUserValidLoginRedirect();
+        $this->redirectIfUserNotLoggedIn();
 
         $this->view->assignMultiple(
-            array(
+            [
                 'frontendUserGroup' => $frontendUserGroup,
-            )
+            ]
         );
     }
 
@@ -157,7 +166,7 @@ class ServiceController extends ControllerAbstract
      * for the users is directly released and the user as userGroup added
      * Otherwise he has wait for admin grant
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup
+     * @param FrontendUserGroup $frontendUserGroup
      * @return void
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
@@ -167,14 +176,13 @@ class ServiceController extends ControllerAbstract
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function createAction(\RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup)
+    public function createAction(FrontendUserGroup $frontendUserGroup): void
     {
-
         // for logged in users only!
-        $this->hasUserValidLoginRedirect();
+        $this->redirectIfUserNotLoggedIn();
 
         // Get the mandatory fields for the given group?
-        $serviceClass = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Service');
+        $serviceClass = $this->objectManager->get(GroupRegister::class);
         $mandatoryFields = $serviceClass->getMandatoryFieldsOfUser($this->getFrontendUser(), $frontendUserGroup);
 
         // get the admins of the given group (if any)
@@ -189,7 +197,11 @@ class ServiceController extends ControllerAbstract
         ) {
 
             // create new opt-in for service
-            $newOptIn = $this->serviceRepository->newOptIn($this->getFrontendUser(), $frontendUserGroup, $this->settings['services']['daysForOptIn']);
+            $newOptIn = $this->serviceRepository->newOptIn(
+                $this->getFrontendUser(), 
+                $frontendUserGroup, 
+                $this->settings['services']['daysForOptIn']
+            );
 
             // per default take admin permission for granted
             $newOptIn->setEnabledByAdmin(1);
@@ -202,20 +214,29 @@ class ServiceController extends ControllerAbstract
 
                 // dispatcher for e.g. E-Mail
                 foreach ($admins as $admin) {
-                    $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_ADMIN_SERVICE_REQUEST, array($admin, $this->getFrontendUser(), $frontendUserGroup, $newOptIn, intval($this->settings['services']['adminOptInPid'])));
+                    $this->signalSlotDispatcher->dispatch(
+                        __CLASS__, 
+                        self::SIGNAL_ADMIN_SERVICE_REQUEST, 
+                        [
+                            $admin, 
+                            $this->getFrontendUser(), 
+                            $frontendUserGroup, 
+                            $newOptIn, 
+                            intval($this->settings['services']['adminOptInPid'])
+                        ]
+                    );
                 }
 
                 $this->addFlashMessage(
-                    \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                        'serviceController.message.apply_admin_request', 'rkw_registration'
+                    LocalizationUtility::translate(
+                        'serviceController.message.apply_admin_request' ,
+                        $this->extensionName
                     )
                 );
 
                 $this->redirect('list');
-                //===
             }
         }
-
 
         // if there is nothing to check - we simply add the user-group to the fe-user's
         $frontendUser = $this->getFrontendUser();
@@ -223,45 +244,58 @@ class ServiceController extends ControllerAbstract
         $this->frontendUserRepository->update($frontendUser);
 
         $this->addFlashMessage(
-            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                'serviceController.message.apply_successfull', 'rkw_registration'
+            LocalizationUtility::translate(
+                'serviceController.message.apply_successfull',
+                $this->extensionName
             )
         );
 
         $this->redirect('list');
-        //===
     }
 
 
     /**
-     * Takes optin parameters and checks them
+     * Takes opt-in parameters and checks them
      *
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
      */
-    public function optInAction()
+    public function optInAction(): void
     {
+        $tokenYes = preg_replace(
+            '/[^a-zA-Z0-9]/',
+            '',
+            ($this->request->hasArgument('token_yes') ? $this->request->getArgument('token_yes') : '')
+        );
+        $tokenNo = preg_replace(
+            '/[^a-zA-Z0-9]/',
+            '',
+            ($this->request->hasArgument('token_no') ? $this->request->getArgument('token_no') : '')
+        );
+        $serviceSha1 = preg_replace(
+            '/[^a-zA-Z0-9]/',
+            '',
+            $this->request->getArgument('service')
+        );
 
-        $tokenYes = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_yes') ? $this->request->getArgument('token_yes') : ''));
-        $tokenNo = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_no') ? $this->request->getArgument('token_no') : ''));
-        $serviceSha1 = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('service'));
-
-        $service = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Service');
+        $service = $this->objectManager->get(GroupRegister::class);
         $check = $service->checkTokens($tokenYes, $tokenNo, $serviceSha1);
 
         if ($check == 1) {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                    'serviceController.message.service_optin_successfull', 'rkw_registration'
+                LocalizationUtility::translate(
+                    'serviceController.message.service_optin_successfull',
+                    $this->extensionName
                 )
             );
 
         } elseif ($check == 2) {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                    'serviceController.message.service_optin_canceled', 'rkw_registration'
+                LocalizationUtility::translate(
+                    'serviceController.message.service_optin_canceled',
+                    $this->extensionName
                 )
             );
 
@@ -269,21 +303,21 @@ class ServiceController extends ControllerAbstract
         } else {
 
             $this->addFlashMessage(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                    'serviceController.error.service_optin_error', 'rkw_registration'
+                LocalizationUtility::translate(
+                    'serviceController.error.service_optin_error',
+                    $this->extensionName
                 ),
                 '',
-                \TYPO3\CMS\Core\Messaging\AbstractMessage::ERROR
+                AbstractMessage::ERROR
             );
         }
-
     }
 
 
     /**
      * action delete
      *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup
+     * @param FrontendUserGroup $frontendUserGroup
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
@@ -292,28 +326,34 @@ class ServiceController extends ControllerAbstract
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      */
-    public function deleteAction(\RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup)
+    public function deleteAction(FrontendUserGroup $frontendUserGroup): void
     {
-
         // for logged in users only!
-        $this->hasUserValidLoginRedirect();
+        $this->redirectIfUserNotLoggedIn();
 
         // remove group from user
         $this->getFrontendUser()->removeUsergroup($frontendUserGroup);
         $this->frontendUserRepository->update($this->getFrontendUser());
 
         // dispatch event
-        $this->signalSlotDispatcher->dispatch(__CLASS__, self::SIGNAL_SERVICE_DELETE, array($this->getFrontendUser(), $frontendUserGroup));
+        $this->signalSlotDispatcher->dispatch(
+            __CLASS__, 
+            self::SIGNAL_SERVICE_DELETE, 
+            [
+                $this->getFrontendUser(), 
+                $frontendUserGroup
+            ]
+        );
 
 
         $this->addFlashMessage(
-            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                'serviceController.message.service_delete', 'rkw_registration'
+            LocalizationUtility::translate(
+                'serviceController.message.service_delete',
+                $this->extensionName
             )
         );
 
         $this->redirect('list');
-        //===
     }
 
 

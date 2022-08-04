@@ -29,21 +29,6 @@
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.socialmedia">
                 <source>Social Media</source>
             </trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by">
-				<source>Registered By</source>
-			</trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.rkw">
-                <source>RKW</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.facebook">
-                <source>Facebook</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.twitter">
-                <source>Twitter</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.xing">
-                <source>Xing</source>
-            </trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_mobile">
 				<source>Mobile</source>
 			</trans-unit>
@@ -73,9 +58,6 @@
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_xing_url">
 				<source>XING URL</source>
-			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by">
-				<source>Registered By</source>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_register_remote_ip">
 				<source>Register Remote Ip</source>
@@ -303,12 +285,49 @@
                 <source>Redirect Pid After XDL Logout</source>
             </trans-unit>
             <trans-unit id="flexform.registration.allowAnonymousLogin">
-                <source>Allow Anonmyous Login</source>
+                <source>Allow Anonmyous Login (deprecated)</source>
             </trans-unit>
             <trans-unit id="flexform.registration.anonymousRedirectPid">
-                <source>Redirect Pid After Anonymous Login</source>
+                <source>Redirect Pid After Anonymous Login (deprecated)</source>
+            </trans-unit>
+            <trans-unit id="flexform.registration.allowGuestLogin">
+                <source>Allow Guest Login</source>
+                <target>Gast-Login erlauben</target>
+            </trans-unit>
+            <trans-unit id="flexform.registration.guestRedirectPid">
+                <source>Redirect Pid After Guest Login</source>
+                <target>Gast nach erfolgreichen Login auf diese Seite weiterleiten</target>
             </trans-unit>
 
+
+            <!-- tx_rkwregistration_domain_model_sysdomain -->
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain">
+                <source>RKW Registration: SysDomain</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_related_sys_domain">
+                <source>My RKW: Related sys domain</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_related_sys_domain.I.neutral">
+                <source>Please choose</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tabs.myRkw">
+                <source>My RKW</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.palette.registeredUsers">
+                <source>Registered Users</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.palette.anonymousUsers">
+                <source>Anonymous Users</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_page_login">
+                <source>Forward after login</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_page_logout">
+                <source>Forward after logout</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_sysdomain.tx_rkwregistration_page_login_guest">
+                <source>Forward after login (can be overwritten via flexform)</source>
+            </trans-unit>
 
 		</body>
 	</file>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <tx_rkwregistration_domain_model_title>
+        <uid>1</uid>
+        <pid>1</pid>
+        <name>TestTitle</name>
+    </tx_rkwregistration_domain_model_title>
+</dataset>

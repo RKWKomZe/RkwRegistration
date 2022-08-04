@@ -15,7 +15,9 @@ namespace RKW\RkwRegistration\ViewHelpers;
  */
 
 /**
- * sUserAnonymousViewHelper
+ * IsUserAnonymousViewHelper
+ *
+ * @deprecated Will be removed soon. Use the InstanceOfViewHelper instead
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>

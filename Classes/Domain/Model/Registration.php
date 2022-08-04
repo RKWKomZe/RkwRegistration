@@ -15,6 +15,9 @@ namespace RKW\RkwRegistration\Domain\Model;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+
 /**
  * Registration
  *
@@ -26,19 +29,21 @@ namespace RKW\RkwRegistration\Domain\Model;
  */
 class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
+    
     /**
      * category
      *
      * @var string
      */
-    protected $category;
+    protected $category = '';
 
+    
     /**
      * FrontendUser
      *
      * @var int
      */
-    protected $user;
+    protected $user = 0;
 
 
     /**
@@ -46,7 +51,7 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @var string
      */
-    protected $userSha1;
+    protected $userSha1 = '';
 
 
     /**
@@ -54,7 +59,7 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @var string
      */
-    protected $tokenYes;
+    protected $tokenYes = '';
 
 
     /**
@@ -62,7 +67,7 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @var string
      */
-    protected $tokenNo;
+    protected $tokenNo = '';
 
 
     /**
@@ -70,7 +75,7 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @var integer
      */
-    protected $validUntil;
+    protected $validUntil = 0;
 
 
     /**
@@ -78,7 +83,7 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @var string
      */
-    protected $data;
+    protected $data = '';
 
 
     /**
@@ -86,18 +91,19 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string $category
      */
-    public function getCategory()
+    public function getCategory(): string
     {
         return $this->category;
     }
 
+    
     /**
      * Sets the category
      *
      * @param string $category
      * @return void
      */
-    public function setCategory($category)
+    public function setCategory(string $category)
     {
         $this->category = $category;
     }
@@ -108,11 +114,12 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return int $user
      */
-    public function getUser()
+    public function getUser(): int
     {
         return $this->user;
     }
 
+    
     /**
      * Sets the feuser
      *
@@ -134,18 +141,19 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string $userSha1
      */
-    public function getUserSha1()
+    public function getUserSha1(): string
     {
         return $this->userSha1;
     }
 
+    
     /**
      * Sets the userSha1
      *
      * @param string $userSha1
      * @return void
      */
-    public function setUserSha1($userSha1)
+    public function setUserSha1(string $userSha1): void
     {
         $this->userSha1 = $userSha1;
     }
@@ -156,18 +164,19 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string $tokenYes
      */
-    public function getTokenYes()
+    public function getTokenYes(): string
     {
         return $this->tokenYes;
     }
 
+    
     /**
      * Sets the tokenYes
      *
      * @param string $tokenYes
      * @return void
      */
-    public function setTokenYes($tokenYes)
+    public function setTokenYes(string $tokenYes): void
     {
         $this->tokenYes = $tokenYes;
     }
@@ -178,10 +187,11 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string $tokenNo
      */
-    public function getTokenNo()
+    public function getTokenNo(): string
     {
         return $this->tokenNo;
     }
+    
 
     /**
      * Sets the tokenNo
@@ -189,7 +199,7 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param string $tokenNo
      * @return void
      */
-    public function setTokenNo($tokenNo)
+    public function setTokenNo(string $tokenNo): void
     {
         $this->tokenNo = $tokenNo;
     }
@@ -198,9 +208,9 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the validUntil
      *
-     * @return string $validUntil
+     * @return int $validUntil
      */
-    public function getValidUntil()
+    public function getValidUntil(): int
     {
         return $this->validUntil;
     }
@@ -208,10 +218,10 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the validUntil
      *
-     * @param string $validUntil
+     * @param int $validUntil
      * @return void
      */
-    public function setValidUntil($validUntil)
+    public function setValidUntil(int $validUntil)
     {
         $this->validUntil = $validUntil;
     }
@@ -227,13 +237,11 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         if ($this->data) {
             return unserialize($this->data);
         }
-
-        //===
-
+        
         return null;
-        //===
     }
 
+    
     /**
      * Sets the data
      *
@@ -242,7 +250,6 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public function setData($data)
     {
-
         if ($data) {
             $this->data = serialize($data);
         }

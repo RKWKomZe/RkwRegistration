@@ -18,8 +18,8 @@ plugin.tx_rkwregistration {
 
 	settings {
 
-    # cat=plugin.tx_rkwregistration//a; type=integer; label=Version to use
-    version = 2
+        # cat=plugin.tx_rkwregistration//a; type=integer; label=Version to use
+        version = 2
 
 		# cat=plugin.tx_rkwregistration//a; type=boolean; label=Include jQuery?
 		includeJQuery = 0
@@ -27,7 +27,7 @@ plugin.tx_rkwregistration {
 		# cat=plugin.tx_rkwregistration//a; type=boolean; label=Include jQueryUi?
 		includeJQueryUi = 0
 
-    users {
+        users {
 
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=Storage Pid
 			storagePid =
@@ -35,8 +35,8 @@ plugin.tx_rkwregistration {
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of login mask
 			loginPid =
 
-      # cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of external login mask
-      loginExternalPid =
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of external login mask
+            loginExternalPid =
 
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of logout mask
 			logoutPid =
@@ -62,54 +62,74 @@ plugin.tx_rkwregistration {
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of privacy & conditions
 			privacyPid =
 
+            # cat=plugin.tx_rkwregistration//a; type=string; label=Anonymize after days
+            anonymizeAfterDays =
+
 			# cat=plugin.tx_rkwregistration//a; type=string; label=Groups a user is added to when registering
 			groupsOnRegister =
-
-			# cat=plugin.tx_rkwregistration//a; type=string; label=Groups a user is added to when registering anonymous
-			groupsOnRegisterAnonymous =
 
 			# cat=plugin.tx_rkwregistration//a; type=string; label=Language-key on registering (default:default)
 			languageKeyOnRegister =
 
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=How many days a user has to opt in via email
-			daysForOptIn =
+			daysForOptIn = 7
 
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=How many times a user can try to login before his user is disabled
-			maxLoginErrors =
+            maxLoginErrors = 10
 
-      # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered users (default = 0 = unlimited)
-      lifetime =
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered users (default = 0 = unlimited)
+            lifetime =
 
-      # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered anonymous users (default = 7776000 = 90 days)
-      lifetimeAnonymous = 7776000
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered users (default = 0 = unlimited)
+            lifetime =
 
-      # cat=plugin.tx_rkwregistration//a; type=string; label=Login text
-      loginText = Logged in
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=DEPRECATED! Lifetime of registered anonymous users (default = 7776000 = 90 days)
+            # @toDo @deprecated
+            lifetimeAnonymous = 7776000
 
-      passwordSettings {
-        # cat=plugin.tx_rkwregistration//a; type=integer; label=Minimum password length (default = 8)
-        minLength = 8
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered guest users (default = 7776000 = 90 days)
+            #lifetimeGuest = 7776000
 
-        # cat=plugin.tx_rkwregistration//a; type=boolean; label=Password must contain letters and numbers (default = false)
-        alphaNum = true
-      }
-    }
+            # cat=plugin.tx_rkwregistration//a; type=string; label=Login text
+            loginText = Logged in
 
-    dataProtection {
+            # cat=plugin.tx_rkwregistration//a; type=string; label=Register mandatory fields
+            # values must be comma-separated
+            requiredFormFields = email, firstName, lastName
 
-      # cat=plugin.tx_rkwregistration//a; type=integer; label=Anonymize and encrypt user data after x days if user is already deleted
-      anonymizeDeletedAfterDays = 30
+            passwordSettings {
+                # cat=plugin.tx_rkwregistration//a; type=integer; label=Minimum password length (default = 8)
+                minLength = 8
+                # cat=plugin.tx_rkwregistration//a; type=integer; label=Maximum password length (default = 100)
+                maxLength = 100
+                # cat=plugin.tx_rkwregistration//a; type=boolean; label=Password must contain letters and numbers (default = false)
+                alphaNum = true
+            }
 
-      # cat=plugin.tx_rkwregistration//a; type=integer; label=Delete expired users after x days if user is expired
-      deleteExpiredAndDisabledAfterDays = 30
-    }
+            guest {
+                # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered guest users (default = 7776000 = 90 days)
+                lifetime = 7776000
+                # cat=plugin.tx_rkwregistration//a; type=string; label=Groups a user is added to when registering as guest
+                groupsOnRegister =
+            }
 
-    titles {
+        }
 
-      # cat=plugin.tx_rkwregistration//a; type=integer; label=Storage Pid of titles
-      storagePid =
+        dataProtection {
 
-    }
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Anonymize and encrypt user data after x days if user is already deleted
+            anonymizeDeletedAfterDays = 30
+
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Delete expired users after x days if user is expired
+            deleteExpiredAndDisabledAfterDays = 30
+        }
+
+        titles {
+
+            # cat=plugin.tx_rkwregistration//a; type=integer; label=Storage Pid of titles
+            storagePid =
+
+        }
 
 		services {
 
