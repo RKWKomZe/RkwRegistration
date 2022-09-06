@@ -127,8 +127,8 @@ CREATE TABLE tx_rkwregistration_domain_model_privacy (
 	action_name varchar(255) DEFAULT '' NOT NULL,
 	comment varchar(255) DEFAULT '' NOT NULL,
 	server_host varchar(255) DEFAULT '' NOT NULL,
-	server_uri varchar(255) DEFAULT '' NOT NULL,
-	server_referer_url varchar(255) DEFAULT '' NOT NULL,
+	server_uri text NOT NULL,
+	server_referer_url text NOT NULL,
 
 	child int(11) DEFAULT '0' NOT NULL,
 
