@@ -15,6 +15,10 @@ namespace RKW\RkwRegistration\Domain\Model;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwMailer\Persistence\MarkerReducer;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+
 /**
  * Registration
  *
@@ -79,6 +83,14 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var string
      */
     protected $data;
+
+
+    /**
+     * !!! Should never be persisted!!! !!!
+     *
+     * @var string
+     */
+    protected $_rawdata = '';
 
 
     /**
@@ -225,26 +237,43 @@ class Registration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function getData()
     {
         if ($this->data) {
-            return unserialize($this->data);
+
+            if (! $this->_dataRaw) {
+
+                /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+                $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
+                /** @var \RKW\RkwMailer\Persistence\MarkerReducer $markerReducer */
+                $markerReducer = $objectManager->get(MarkerReducer::class);
+
+                $this->_dataRaw = $markerReducer->explodeMarker(unserialize($this->data));
+            }
+            return $this->_dataRaw;
         }
 
-        //===
-
-        return null;
-        //===
+        return false;
     }
+
 
     /**
      * Sets the data
      *
      * @param mixed $data
      * @return void
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      */
-    public function setData($data)
+    public function setData($data): void
     {
-
         if ($data) {
-            $this->data = serialize($data);
+
+            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
+            /** @var \RKW\RkwMailer\Persistence\MarkerReducer $markerReducer */
+            $markerReducer = $objectManager->get(MarkerReducer::class);
+
+            $this->_dataRaw = $data;
+            $this->data = serialize($markerReducer->implodeMarker($data));
         }
     }
 
