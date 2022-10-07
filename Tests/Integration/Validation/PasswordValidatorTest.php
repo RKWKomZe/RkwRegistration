@@ -2,21 +2,6 @@
 
 namespace RKW\RkwRegistration\Tests\Integration\Validation;
 
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
-use RKW\RkwBasics\Utility\GeneralUtility;
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
-use RKW\RkwRegistration\Validation\FrontendUserValidator;
-use RKW\RkwRegistration\Validation\PasswordValidator;
-use RKW\RkwRegistration\ViewHelpers\GetAllFlashMessageIdentifierViewHelper;
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Error\Result;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -30,10 +15,20 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
+use RKW\RkwBasics\Utility\GeneralUtility;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use RKW\RkwRegistration\Validation\PasswordValidator;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+
 /**
  * Class PasswordValidatorTest
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
+ * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -43,22 +38,23 @@ class PasswordValidatorTest extends FunctionalTestCase
     /**
      * @const
      */
-    const PASSWORD_ALPHANUM = 'newValidPassword1';
-
-    /**
-     * @const
-     */
-    const PASSWORD_ALPHANUM_ALT = 'newValidPassword2';
-
-    /**
-     * @const
-     */
-    const PASSWORD_ALPHA = 'newInvalidPassword';
-
-    /**
-     * @const
-     */
     const FIXTURE_PATH = __DIR__ . '/PasswordValidatorTest/Fixtures';
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     */
+    private $objectManager;
+
+    /**
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     */
+    private $frontendUserRepository;
+
+    /**
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
+     */
+    private $frontendUserGroupRepository;
+
 
     /**
      * @var string[]
@@ -73,7 +69,7 @@ class PasswordValidatorTest extends FunctionalTestCase
      * Setup
      * @throws \Exception
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -87,82 +83,50 @@ class PasswordValidatorTest extends FunctionalTestCase
             ]
         );
 
-        FrontendSimulatorUtility::simulateFrontendEnvironment();
-    }
-
-    /**
-     * @test
-     */
-    public function isValidWithCorrectDataReturnsTrue ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given is a logged in FrontendUser
-         * Given are correct form data for changing the password
-         * When the validator is called
-         * Then true is returned
-         */
-
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager objectManager */
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
-        $passwordValidator = $this->objectManager->get(PasswordValidator::class);
 
-        // START: Login existing User
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
+        /** @var  \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository frontendUserRepository */
+        $this->frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
+
+        /** @var  \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository frontendUserGroupRepository */
+        $this->frontendUserGroupRepository = $this->objectManager->get(FrontendUserGroupRepository::class);
+
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $frontendUserRepository->findByIdentifier(1);
-        FrontendUserSessionUtility::login($frontendUser);
-        // END: Login existing User
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
 
-        $formInputArray = [
-            'old' => 'secretPassword',
-            'first' => self::PASSWORD_ALPHANUM,
-            'second' => self::PASSWORD_ALPHANUM
-        ];
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
+        $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(1);
 
-        // workaround start: for creating $this->result of the validator
-        $passwordValidator->validate($formInputArray);
-        // workaround end
+        FrontendSimulatorUtility::simulateFrontendEnvironment(1);
+        FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup);
 
-        $result = $passwordValidator->isValid($formInputArray);
-
-        static::assertTrue($result);
     }
+
+    #==============================================================================
+
 
     /**
      * @test
      */
-    public function isValidWithFirstNewPasswordFieldIsNotFilledReturnsFalse ()
+    public function isValidWithNewPasswordNotSetReturnsFalse ()
     {
         /**
          * Scenario:
          *
-         * Given is a logged in FrontendUser
-         * Given are form data but the first new password field is not filled
+         * Given a logged-in frontendUser
+         * Given all relevant form-data except the new password is filled
          * When the validator is called
          * Then false is returned
          */
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
         $passwordValidator = $this->objectManager->get(PasswordValidator::class);
 
-        // START: Login existing User
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $frontendUserRepository->findByIdentifier(1);
-        FrontendUserSessionUtility::login($frontendUser);
-        // END: Login existing User
-
         $formInputArray = [
-            'old' => 'secretPassword',
-            'first' => '',                      // <- not filled!
-            'second' => self::PASSWORD_ALPHANUM
+            'old' => 'testtest',
+            'first' => '',  // <- not filled!
+            'second' => 'newValidPassword0815'
         ];
 
         // workaround start: for creating $this->result of the validator
@@ -177,34 +141,24 @@ class PasswordValidatorTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function isValidWithSecondNewPasswordFieldIsNotFilledReturnsFalse ()
+    public function isValidWithNewPasswordRepeatNotSetReturnsFalse ()
     {
         /**
          * Scenario:
          *
-         * Given is a logged in FrontendUser
-         * Given are form data but the second new password field is not filled
+         * Given a logged-in frontendUser
+         * Given all relevant form-data except the password-repeat is filled
          * When the validator is called
          * Then false is returned
          */
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
         $passwordValidator = $this->objectManager->get(PasswordValidator::class);
 
-        // START: Login existing User
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $frontendUserRepository->findByIdentifier(1);
-        FrontendUserSessionUtility::login($frontendUser);
-        // END: Login existing User
-
         $formInputArray = [
-            'old' => 'secretPassword',
-            'first' => self::PASSWORD_ALPHANUM,
-            'second' => ''    // <- not filled!
+            'old' => 'testtest',
+            'first' => 'newValidPassword0815',
+            'second' => '' // <- not filled!
         ];
 
         // workaround start: for creating $this->result of the validator
@@ -219,297 +173,24 @@ class PasswordValidatorTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function isValidWithTypoInNewPasswordReturnsFalse ()
+    public function isValidWithOldPassworNotSetReturnsFalse ()
     {
         /**
          * Scenario:
          *
-         * Given is a logged in FrontendUser
-         * Given are form data with a typo in the repeat
+         * Given a logged-in frontendUser
+         * Given all relevant form-data except the old password is filled
          * When the validator is called
          * Then false is returned
          */
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
         $passwordValidator = $this->objectManager->get(PasswordValidator::class);
 
-        // START: Login existing User
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $frontendUserRepository->findByIdentifier(1);
-        FrontendUserSessionUtility::login($frontendUser);
-        // END: Login existing User
-
         $formInputArray = [
-            'old' => 'secretPassword',
-            'first' => self::PASSWORD_ALPHANUM,
-            'second' => self::PASSWORD_ALPHANUM_ALT // <- the typo! Same length!
-        ];
-
-        // workaround start: for creating $this->result of the validator
-        $passwordValidator->validate($formInputArray);
-        // workaround end
-
-        $result = $passwordValidator->isValid($formInputArray);
-
-        static::assertFalse($result);
-    }
-
-
-    /**
-     * @test
-     */
-    public function isValidWithTooShortNewPasswordLengthReturnsFalse ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given is a logged in FrontendUser
-         * Given are form data with a too short new password
-         * When the validator is called
-         * Then false is returned
-         */
-
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
-        $passwordValidator = $this->objectManager->get(PasswordValidator::class);
-
-        // START: Login existing User
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $frontendUserRepository->findByIdentifier(1);
-        FrontendUserSessionUtility::login($frontendUser);
-        // END: Login existing User
-
-        $formInputArray = [
-            'old' => 'secretPassword',
-            'first' => 'pswd1',         // <- too short!
-            'second' => 'pswd1'         // <- too short!
-        ];
-
-        // workaround start: for creating $this->result of the validator
-        $passwordValidator->validate($formInputArray);
-        // workaround end
-
-        $result = $passwordValidator->isValid($formInputArray);
-
-        static::assertFalse($result);
-    }
-
-
-    /**
-     * @test
-     */
-    public function isValidWithVeryLongNewPasswordLengthReturnsTrue ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given is a logged in FrontendUser
-         * Given are form data with a very long new password
-         * When the validator is called
-         * Then true is returned
-         */
-
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
-        $passwordValidator = $this->objectManager->get(PasswordValidator::class);
-
-        // START: Login existing User
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $frontendUserRepository->findByIdentifier(1);
-        FrontendUserSessionUtility::login($frontendUser);
-        // END: Login existing User
-
-        $formInputArray = [
-            'old' => 'secretPassword',
-            'first' => self::PASSWORD_ALPHANUM . 'Loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong',
-            'second' => self::PASSWORD_ALPHANUM . 'Loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong'
-        ];
-
-        // workaround start: for creating $this->result of the validator
-        $passwordValidator->validate($formInputArray);
-        // workaround end
-
-        $result = $passwordValidator->isValid($formInputArray);
-
-        static::assertTrue($result);
-    }
-
-
-    /**
-     * @test
-     */
-    public function isValidWithTooLongNewPasswordLengthReturnsFalse ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given is a logged in FrontendUser
-         * Given are form data with a too long new password
-         * When the validator is called
-         * Then false is returned
-         */
-
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
-        $passwordValidator = $this->objectManager->get(PasswordValidator::class);
-
-        // START: Login existing User
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $frontendUserRepository->findByIdentifier(1);
-        FrontendUserSessionUtility::login($frontendUser);
-        // END: Login existing User
-
-        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $newPassword = substr(str_shuffle($permitted_chars), 0, 101);
-
-        $formInputArray = [
-            'old' => 'secretPassword',
-            'first' => $newPassword,
-            'second' => $newPassword
-        ];
-
-        // workaround start: for creating $this->result of the validator
-        $passwordValidator->validate($formInputArray);
-        // workaround end
-
-        $result = $passwordValidator->isValid($formInputArray);
-
-        static::assertFalse($result);
-    }
-
-
-    /**
-     * @test
-     */
-    public function isValidWithMaximumNewPasswordLengthReturnsTrue ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given is a logged in FrontendUser
-         * Given are form data with a too long new password
-         * When the validator is called
-         * Then false is returned
-         */
-
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
-        $passwordValidator = $this->objectManager->get(PasswordValidator::class);
-
-        // START: Login existing User
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $frontendUserRepository->findByIdentifier(1);
-        FrontendUserSessionUtility::login($frontendUser);
-        // END: Login existing User
-
-        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $newPassword = substr(str_shuffle($permitted_chars), 0, 100);
-
-        $formInputArray = [
-            'old' => 'secretPassword',
-            'first' => $newPassword,
-            'second' => $newPassword
-        ];
-
-        // workaround start: for creating $this->result of the validator
-        $passwordValidator->validate($formInputArray);
-        // workaround end
-
-        $result = $passwordValidator->isValid($formInputArray);
-
-        static::assertTrue($result);
-    }
-
-
-    /**
-     * @test
-     */
-    public function isValidWithNotAlphaNumericNewPasswordReturnsFalse ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given is a logged in FrontendUser
-         * Given are form data with a not alphanumeric new password
-         * When the validator is called
-         * Then false is returned
-         */
-
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
-        $passwordValidator = $this->objectManager->get(PasswordValidator::class);
-
-        // START: Login existing User
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $frontendUserRepository->findByIdentifier(1);
-        FrontendUserSessionUtility::login($frontendUser);
-        // END: Login existing User
-
-        $formInputArray = [
-            'old' => 'secretPassword',
-            'first' => self::PASSWORD_ALPHA,
-            'second' => self::PASSWORD_ALPHA
-        ];
-
-        // workaround start: for creating $this->result of the validator
-        $passwordValidator->validate($formInputArray);
-        // workaround end
-
-        $result = $passwordValidator->isValid($formInputArray);
-
-        static::assertFalse($result);
-    }
-
-    /**
-     * @test
-     */
-    public function isValidWithNotSetOldPasswordReturnsFalse ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given is a logged in FrontendUser
-         * Given are form data but old password is not given
-         * When the validator is called
-         * Then false is returned
-         */
-
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
-        $passwordValidator = $this->objectManager->get(PasswordValidator::class);
-
-        // START: Login existing User
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $frontendUserRepository->findByIdentifier(1);
-        FrontendUserSessionUtility::login($frontendUser);
-        // END: Login existing User
-
-        $formInputArray = [
-            'old' => '',                    // <- old password not set!
-            'first' => self::PASSWORD_ALPHANUM,
-            'second' => self::PASSWORD_ALPHANUM
+            'old' => '', // <- not filled!
+            'first' => 'newValidPassword0815',
+            'second' => 'newValidPassword0815'
         ];
 
         // workaround start: for creating $this->result of the validator
@@ -530,29 +211,20 @@ class PasswordValidatorTest extends FunctionalTestCase
         /**
          * Scenario:
          *
-         * Given is a logged in FrontendUser
-         * Given are form data but old password is not given
+         * Given a logged-in frontendUser
+         * Given all relevant form-data except
+         * Given the old password is wrong
          * When the validator is called
          * Then false is returned
          */
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
         $passwordValidator = $this->objectManager->get(PasswordValidator::class);
 
-        // START: Login existing User
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $frontendUserRepository->findByIdentifier(1);
-        FrontendUserSessionUtility::login($frontendUser);
-        // END: Login existing User
-
         $formInputArray = [
-            'old' => 'somethingWrong',                    // <- wrong old password!
-            'first' => self::PASSWORD_ALPHANUM,
-            'second' => self::PASSWORD_ALPHANUM
+            'old' => 'blabla',
+            'first' => 'newValidPassword0815',
+            'second' => 'newValidPassword0815'
         ];
 
         // workaround start: for creating $this->result of the validator
@@ -566,9 +238,227 @@ class PasswordValidatorTest extends FunctionalTestCase
 
 
     /**
+     * @test
+     */
+    public function isValidWithNonEqualNewPasswordsReturnsFalse ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a logged-in frontendUser
+         * Given all relevant form-data except
+         * Given the old password is correct
+         * Given the value of the password-repeat is not equal to the new password
+         * When the validator is called
+         * Then false is returned
+         */
+
+        /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
+        $passwordValidator = $this->objectManager->get(PasswordValidator::class);
+
+        $formInputArray = [
+            'old' => 'testtest',
+            'first' => 'newValidPassword0814',
+            'second' => 'newValidPassword0815'
+        ];
+
+        // workaround start: for creating $this->result of the validator
+        $passwordValidator->validate($formInputArray);
+        // workaround end
+
+        $result = $passwordValidator->isValid($formInputArray);
+
+        static::assertFalse($result);
+    }
+
+
+    /**
+     * @test
+     */
+    public function isValidWithTooShortNewPasswordReturnsFalse ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a logged-in frontendUser
+         * Given all relevant form-data except
+         * Given the old password is correct
+         * Given the value of the password-repeat is equal to the new password
+         * Given the new password is too short
+         * When the validator is called
+         * Then false is returned
+         */
+
+        /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
+        $passwordValidator = $this->objectManager->get(PasswordValidator::class);
+
+        $formInputArray = [
+            'old' => 'testtest',
+            'first' => 'short',
+            'second' => 'short'
+        ];
+
+        // workaround start: for creating $this->result of the validator
+        $passwordValidator->validate($formInputArray);
+        // workaround end
+
+        $result = $passwordValidator->isValid($formInputArray);
+
+        static::assertFalse($result);
+    }
+
+
+    /**
+     * @test
+     */
+    public function isValidWithTooLongNewPasswordReturnsFalse ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a logged-in frontendUser
+         * Given all relevant form-data except
+         * Given the old password is correct
+         * Given the value of the password-repeat is equal to the new password
+         * Given the new password is too long
+         * When the validator is called
+         * Then false is returned
+         */
+
+        /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
+        $passwordValidator = $this->objectManager->get(PasswordValidator::class);
+
+        $formInputArray = [
+            'old' => 'testtest',
+            'first' => 'looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong',
+            'second' => 'looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong'
+        ];
+
+        // workaround start: for creating $this->result of the validator
+        $passwordValidator->validate($formInputArray);
+        // workaround end
+
+        $result = $passwordValidator->isValid($formInputArray);
+
+        static::assertFalse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function isValidWithNonNumericNewPasswordsReturnsFalse ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a logged-in frontendUser
+         * Given all relevant form-data except
+         * Given the old password is correct
+         * Given the value of the password-repeat is equal to the new password
+         * Given the new password has the right length
+         * Given the new password contains no numbers
+         * When the validator is called
+         * Then false is returned
+         */
+
+        /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
+        $passwordValidator = $this->objectManager->get(PasswordValidator::class);
+
+        $formInputArray = [
+            'old' => 'testtest',
+            'first' => 'newValidPassword',
+            'second' => 'newValidPassword'
+        ];
+
+        // workaround start: for creating $this->result of the validator
+        $passwordValidator->validate($formInputArray);
+        // workaround end
+
+        $result = $passwordValidator->isValid($formInputArray);
+
+        static::assertFalse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function isValidWithNonLetterNewPasswordsReturnsFalse ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a logged-in frontendUser
+         * Given all relevant form-data except
+         * Given the old password is correct
+         * Given the value of the password-repeat is equal to the new password
+         * Given the new password has the right length
+         * Given the new password contains no letters
+         * When the validator is called
+         * Then false is returned
+         */
+
+        /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
+        $passwordValidator = $this->objectManager->get(PasswordValidator::class);
+
+        $formInputArray = [
+            'old' => 'testtest',
+            'first' => '123456789',
+            'second' => '123456789'
+        ];
+
+        // workaround start: for creating $this->result of the validator
+        $passwordValidator->validate($formInputArray);
+        // workaround end
+
+        $result = $passwordValidator->isValid($formInputArray);
+
+        static::assertFalse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function isValidReturnsTrue ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a logged-in frontendUser
+         * Given all relevant form-data except
+         * Given the old password is correct
+         * Given the value of the password-repeat is equal to the new password
+         * Given the new password has the right length
+         * Given the new password contains letters
+         * Given the new password contains numbers
+         * When the validator is called
+         * Then true is returned
+         */
+
+        /** @var \RKW\RkwRegistration\Validation\PasswordValidator $passwordValidator */
+        $passwordValidator = $this->objectManager->get(PasswordValidator::class);
+
+        $formInputArray = [
+            'old' => 'testtest',
+            'first' => 'newValidPassword0815',
+            'second' => 'newValidPassword0815'
+        ];
+
+        // workaround start: for creating $this->result of the validator
+        $passwordValidator->validate($formInputArray);
+        // workaround end
+
+        $result = $passwordValidator->isValid($formInputArray);
+
+        static::assertTrue($result);
+    }
+
+
+    #==============================================================================
+
+    /**
      * TearDown
      */
-    protected function tearDown()
+    protected function teardown(): void
     {
         FrontendSimulatorUtility::resetFrontendEnvironment();
         parent::tearDown();

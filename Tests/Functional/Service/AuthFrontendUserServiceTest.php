@@ -5,7 +5,7 @@ namespace RKW\RkwRegistration\Tests\Functional\Service;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Service\AuthFrontendUserService;
-use RKW\RkwRegistration\Register\GroupRegister;
+use RKW\RkwRegistration\Register\GroupFrontendUser;
 use RKW\RkwRegistration\DataProtection\PrivacyHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -65,7 +65,7 @@ class AuthFrontendUserServiceTest extends FunctionalTestCase
      * Setup
      * @throws \Exception
      */
-    protected function setUp()
+    protected function setUp(): void
     {
 
         parent::setUp();
@@ -323,7 +323,7 @@ class AuthFrontendUserServiceTest extends FunctionalTestCase
     /**
      * TearDown
      */
-    protected function tearDown()
+    protected function teardown(): void
     {
         parent::tearDown();
     }

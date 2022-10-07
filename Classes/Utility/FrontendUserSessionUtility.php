@@ -2,13 +2,6 @@
 
 namespace RKW\RkwRegistration\Utility;
 
-use RKW\RkwBasics\Utility\GeneralUtility;
-use RKW\RkwRegistration\Exception;
-use TYPO3\CMS\Core\Log\Logger;
-use TYPO3\CMS\Core\Log\LogLevel;
-use TYPO3\CMS\Core\Log\LogManager;
-use \TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,11 +15,20 @@ use \TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwBasics\Utility\GeneralUtility;
+use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use RKW\RkwRegistration\Domain\Repository\GuestUserRepository;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\UserAspect;
+use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+
 /**
  * Class FrontendUserSessionUtility
- * Handles everything to a FeUser session (e.g. login and logout).
- * Hint: For authentication take a look to \RKW\RkwRegistration\Service\AuthFrontendUserService
  *
+ * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
@@ -35,137 +37,180 @@ use \TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 class FrontendUserSessionUtility
 {
 
-    /**
-     * login
-     *
-     * Sets a temporary session cookie with the user-id
-     * IMPORTANT: After a redirect the user is logged in then
-     * DANGER: This method authenticates the given user without checking for password!!!
-     * @see \RKW\RkwRegistration\Service\AuthFrontendUserService for authentication
-     *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser
-     * @return void
-     * @throws Exception
-     */
-    public static function login(FrontendUser $frontendUser): void
-    {
 
-        if (!$frontendUser->getUid()) {
-            throw new Exception('No valid uid for user given.', 1435002338);
+    /**
+     * Simulates a frontend-login - this is NOT a real login!!!
+     * !!! WARNING !!! This method is only to be used for previews or testing purposes!
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup
+     * @return bool
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @see \TYPO3\CMS\Adminpanel\Modules\PreviewModule::initializeFrontendPreview()
+     */
+    public static function simulateLogin (
+        FrontendUser $frontendUser,
+        FrontendUserGroup $frontendUserGroup
+    ): bool {
+
+        // no login simulation if a user is logged in
+        // this would kill his session!
+        if (self::getLoggedInUserId()) {
+            return false;
         }
 
-        $userArray = [
-            'uid' => $frontendUser->getUid()
-        ];
+        /** @var \TYPO3\CMS\Core\Context\Context $context */
+        $context = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Context::class);
 
-        /** @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $GLOBALS['TSFE'] */
-        /** @var \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication $GLOBALS['TSFE']->fe_user */
-        $GLOBALS['TSFE']->fe_user->is_permanent = 0; //set 1 for a permanent cookie, 0 for session cookie
-        $GLOBALS['TSFE']->fe_user->checkPid = 0;
-        $GLOBALS['TSFE']->fe_user->dontSetCookie = false;
+        $GLOBALS['TSFE']->fePreview = 1;
+        $GLOBALS['TSFE']->clear_preview();
+        $GLOBALS['TSFE']->simUserGroup = $frontendUserGroup->getUid();
 
-        $GLOBALS['TSFE']->fe_user->start(); // set cookie and initiate login
-        $GLOBALS['TSFE']->fe_user->createUserSession($userArray);  // create user session in database
-        $GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession(); // get user session from database
-        $GLOBALS['TSFE']->fe_user->loginSessionStarted = true; // set session as started equal to a successful login
-        $GLOBALS['TSFE']->initUserGroups(); // Initializes the front-end user groups based on all fe_groups records that the current fe_user is member of
-        $GLOBALS['TSFE']->loginUser = true; //  Global flag indicating that a frontend user is logged in. Should already by set by \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::initUserGroups();
-        $GLOBALS['TSFE']->storeSessionData(); // store session in database
+        /** @var \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication $frontendUserAuthentication */
+        $frontendUserAuthentication = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(FrontendUserAuthentication::class);
+        $frontendUserAuthentication->user = [$frontendUserAuthentication->userid_column => $frontendUser->getUid()];
+        $frontendUserAuthentication->user[$frontendUserAuthentication->usergroup_column] = $frontendUserGroup->getUid();
 
-        self::getLogger()->log(
-            LogLevel::INFO, 
-            sprintf(
-                'Logging in User "%s" with uid %s.', 
-                strtolower($frontendUser->getUsername()), 
-                $frontendUser->getUid()
+        // New random session-$id is made
+        $frontendUserAuthentication->id = $frontendUserAuthentication->createSessionId();
+        $frontendUserAuthentication->newSessionID = true;
+
+        // Load groupData
+        $frontendUserAuthentication->fetchGroupData();
+
+        $GLOBALS['TSFE']->fe_user = $frontendUserAuthentication;
+        $context->setAspect('frontend.user',
+            GeneralUtility::makeInstance(
+                UserAspect::class,
+                $frontendUserAuthentication,
+                [$frontendUserGroup->getUid()]
             )
         );
+
+        return $context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
     }
 
 
     /**
-     * Logout
+     * Performs a logout for the active frontendUser - this is a REAL logout-method
      *
-     * @return void
+     * @return bool
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
-    public static function logout(): void
+    public static function logout(): bool
     {
-        $GLOBALS['TSFE']->fe_user->removeSessionData();
-        $GLOBALS['TSFE']->fe_user->logoff();
 
-        self::getLogger()->log(
-            LogLevel::INFO,
-            sprintf(
-                'Logging out user with uid %s.',
-                intval($GLOBALS['TSFE']->fe_user->user['uid'])
-            )
-        );
-    }
-
-
-    /**
-     * Checks if user is logged in
-     *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser|null $frontendUser
-     * @return boolean
-     */
-    public static function isUserLoggedIn(FrontendUser $frontendUser = null): bool
-    {
-        // check which id is logged in and compare it with given user
-        if (
-            ($GLOBALS['TSFE'])
-            && ($GLOBALS['TSFE']->loginUser)
-            && ($GLOBALS['TSFE']->fe_user->user['uid'])
-        ) {
-            if (
-                $frontendUser
-                && $frontendUser->getUid() == intval($GLOBALS['TSFE']->fe_user->user['uid'])
-            ) {
-                // the given frontendUser is logged in
-                return true;
-            }
-            /** 
-            @toDo: does that really make sense?
-            else {
-                // somebody is logged in
-                return true;
-            } */
+        // no logout if no user is logged in
+        if (!self::getLoggedInUserId()) {
+            return false;
         }
 
-        // nobody is logged in
-        return false;
+        /** @var \TYPO3\CMS\Core\Context\Context $context */
+        $context = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Context::class);
+
+        /** @var \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication $frontendUserAuthentication */
+        $frontendUserAuthentication = $GLOBALS['TSFE']->fe_user;
+        $frontendUserAuthentication->logoff();
+
+        $GLOBALS['TSFE']->fe_user = $frontendUserAuthentication;
+
+        $context->setAspect('frontend.user',
+            GeneralUtility::makeInstance(
+                UserAspect::class,
+                $frontendUserAuthentication,
+                []
+            )
+        );
+
+        return !$context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
     }
 
 
-
     /**
-     * Id of logged User
+     * Id of logged-in User
      *
      * @return integer
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
-    public static function getFrontendUserId(): int
+    public static function getLoggedInUserId(): int
     {
-        // is $GLOBALS set?
+        // is user logged in
+        /** @var \TYPO3\CMS\Core\Context\Context $context */
+        $context = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Context::class);
         if (
-            ($GLOBALS['TSFE'])
-            && ($GLOBALS['TSFE']->loginUser)
-            && ($GLOBALS['TSFE']->fe_user->user['uid'])
-        ) {
-            return intval($GLOBALS['TSFE']->fe_user->user['uid']);
+            ($context->getPropertyFromAspect('frontend.user', 'isLoggedIn'))
+            && ($frontendUserId = $context->getPropertyFromAspect('frontend.user', 'id'))
+        ){
+            return intval($frontendUserId);
         }
 
         return 0;
     }
 
-
     /**
-     * Returns logger instance
+     * Id of logged-in User
      *
-     * @return \TYPO3\CMS\Core\Log\Logger
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|null
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
-    public static function getLogger(): Logger
+    public static function getLoggedInUser(): ?FrontendUser
     {
-        return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+
+        if ($uid = self::getLoggedInUserId()) {
+
+            // user may not be able to accept the email address of another person
+            /** @var }TYPO3\CMS\Extbase\Object\ObjectManager\ObjectManager $objectManager */
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+
+            /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
+            $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
+
+            /** @var \RKW\RkwRegistration\Domain\Repository\GuestUserRepository $guestUserRepository */
+            $guestUserRepository = $objectManager->get(GuestUserRepository::class);
+
+            /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+            if ($frontendUser = $frontendUserRepository->findByIdentifier($uid)) {
+                return $frontendUser;
+            }
+
+            /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+            if ($frontendUser = $guestUserRepository->findByIdentifier($uid)) {
+                return $frontendUser;
+            }
+        }
+
+        return null;
     }
 
+
+    /**
+     * Is a frontendUser logged in?
+     *
+     * @return bool
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     */
+    public static function isLoggedIn(): bool
+    {
+        return (bool) self::getLoggedInUserId();
+    }
+
+
+    /**
+     * Checks if a given frontendUser is logged in
+     *
+     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $frontendUser
+     * @return boolean
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     */
+    public static function isUserLoggedIn(FrontendUser $frontendUser): bool
+    {
+        // check which id is logged in and compare it with given user
+        if ($frontendUserId = self::getLoggedInUserId()) {
+            if ($frontendUser->getUid() == $frontendUserId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

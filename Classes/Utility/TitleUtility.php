@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Utility;
 
 /*
@@ -44,25 +43,20 @@ class TitleUtility
     {
         /** @var ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
         /** @var TitleRepository $titleRepository */
         $titleRepository = $objectManager->get(TitleRepository::class);
         $txRegistrationTitle = $titleRepository->findOneByName($title);
 
-        // @toDo by MF: Set a max length for title?
-
         if (!$txRegistrationTitle && $title !== '') {
 
             $txRegistrationTitle = GeneralUtility::makeInstance(Title::class);
-
             $txRegistrationTitle->setPid(intval($settings['titles']['storagePid']));
-
             $txRegistrationTitle->setName($title);
 
             $persistenceManager = $objectManager->get(PersistenceManager::class);
-
             $titleRepository->add($txRegistrationTitle);
             $persistenceManager->persistAll();
-
         }
 
         return $txRegistrationTitle;

@@ -2,13 +2,10 @@
     data-namespace-typo3-fluid="true">
 
     <f:layout name="Default" />
-    
+
     <f:section name="main">
-        <h2><f:translate key="templates_registration_passwordForgotShow.headline" /></h2>
-
+        <h2><f:translate key="templates_password_new.headline" /></h2>
         <f:render partial="FlashMessages" arguments="{_all}" />
-
-        <f:render partial="Password/PasswordForgot" arguments="{_all}" />
-
+        <f:render partial="Password/Forgot" arguments="{_all}" />
     </f:section>
 </html>

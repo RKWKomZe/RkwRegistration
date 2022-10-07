@@ -5,14 +5,36 @@
     <f:layout name="Default" />
     <f:section name="main">
 
-        <h2><f:translate key="templates_registration_loginShow.headline" /></h2>
-
         <f:render partial="FlashMessages" arguments="{_all}" />
         <f:render partial="FormErrors" arguments="{for:frontendUser}" />
 
-        <f:render partial="Auth/Login" arguments="{_all}" />
+        <f:security.ifAuthenticated>
+            <f:else>
 
-        <f:link.action action="new" controller="Password" class="text-smaller"><f:translate key="templates_registration_loginShow.passwordForgot" /></f:link.action>
+
+                <div class="alternatives">
+                    <div class="alternatives__item">
+                        <h3 class="h4"><f:translate key="templates_auth_index.loginHeadline" /></h3>
+                        <f:render partial="Auth/Login" arguments="{_all}" />
+                    </div>
+
+                    <div class="alternatives__item alternatives__item--between">
+                        <f:translate key="templates_auth_index.orHeadline" />
+                    </div>
+
+                    <div class="alternatives__item">
+                        <h3 class="h4"><f:translate key="templates_auth_index.registerHeadline" /></h3>
+                        <f:link.action
+                            class="btn btn--secondary"
+                            action="new"
+                            controller="FrontendUser"
+                        >
+                            <f:translate key="templates_auth_index.registerNow" />
+                        </f:link.action>
+                    </div>
+                </div>
+            </f:else>
+        </f:security.ifAuthenticated>
 
     </f:section>
 </html>

@@ -26,7 +26,7 @@ namespace RKW\RkwRegistration\Domain\Model;
  */
 class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
-    
+
     /**
      * frontendUser
      *
@@ -34,7 +34,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $frontendUser;
 
-    
+
     /**
      * registrationUserSha1
      *
@@ -42,7 +42,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $registrationUserSha1 = '';
 
-    
+
     /**
      * parent
      *
@@ -50,7 +50,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $parent;
 
-    
+
     /**
      * foreignTable
      *
@@ -58,7 +58,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $foreignTable = '';
 
-    
+
     /**
      * foreignUid
      *
@@ -66,7 +66,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $foreignUid = 0;
 
-    
+
     /**
      * ipAddress
      *
@@ -74,7 +74,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $ipAddress = '';
 
-    
+
     /**
      * userAgent
      *
@@ -82,7 +82,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $userAgent = '';
 
-    
+
     /**
      * extensionName
      *
@@ -90,7 +90,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $extensionName = '';
 
-    
+
     /**
      * pluginName
      *
@@ -98,7 +98,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $pluginName = '';
 
-    
+
     /**
      * controllerName
      *
@@ -106,7 +106,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $controllerName = '';
 
-    
+
     /**
      * actionName
      *
@@ -114,7 +114,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $actionName = '';
 
-    
+
     /**
      * comment
      *
@@ -122,7 +122,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $comment = '';
 
-    
+
     /**
      * serverHost
      *
@@ -130,7 +130,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $serverHost = '';
 
-    
+
     /**
      * serverUri
      *
@@ -138,7 +138,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $serverUri = '';
 
-    
+
     /**
      * serverRefererUrl
      *
@@ -146,7 +146,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $serverRefererUrl = '';
 
-    
+
     /**
      * Sets the frontendUser
      *
@@ -158,18 +158,18 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $this->frontendUser = $frontendUser;
     }
 
-    
+
     /**
      * Returns the frontendUser
      *
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      */
-    public function getFrontendUser()
+    public function getFrontendUser() :? FrontendUser
     {
         return $this->frontendUser;
     }
 
-    
+
     /**
      * Sets the registrationUserSha1
      *
@@ -180,7 +180,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->registrationUserSha1 = $registrationUserSha1;
     }
-    
+
 
     /**
      * Returns the registrationUserSha1
@@ -192,7 +192,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return $this->registrationUserSha1;
     }
 
-    
+
     /**
      * Sets the parent
      *
@@ -203,14 +203,14 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->parent = $parent;
     }
-    
+
 
     /**
      * Returns the parent
      *
      * @return \RKW\RkwRegistration\Domain\Model\Privacy $parent
      */
-    public function getParent()
+    public function getParent() :? Privacy
     {
         return $this->parent;
     }
@@ -226,7 +226,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $this->foreignTable = $foreignTable;
     }
 
-    
+
     /**
      * Returns the foreignTable value
      *
@@ -236,7 +236,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->foreignTable;
     }
-    
+
 
     /**
      * Sets the foreignUid value
@@ -249,7 +249,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $this->foreignUid = $foreignUid;
     }
 
-    
+
     /**
      * Returns the foreignUid value
      *
@@ -260,7 +260,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return $this->foreignUid;
     }
 
-    
+
     /**
      * Sets the ipAddress value
      *
@@ -272,7 +272,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $this->ipAddress = $ipAddress;
     }
 
-    
+
     /**
      * Returns the ipAddress value
      *
@@ -283,7 +283,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return $this->ipAddress;
     }
 
-    
+
     /**
      * Sets the userAgent value
      *
@@ -294,7 +294,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->userAgent = $userAgent;
     }
-    
+
 
     /**
      * Returns the userAgent value
@@ -306,7 +306,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return $this->userAgent;
     }
 
-    
+
     /**
      * Sets the extensionName value
      *
@@ -317,7 +317,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->extensionName = $extensionName;
     }
-    
+
 
     /**
      * Returns the extensionName value
@@ -329,7 +329,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return $this->extensionName;
     }
 
-    
+
     /**
      * Sets the pluginName value
      *
@@ -341,7 +341,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $this->pluginName = $pluginName;
     }
 
-    
+
     /**
      * Returns the pluginName value
      *
@@ -352,7 +352,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return $this->pluginName;
     }
 
-    
+
     /**
      * Sets the controllerName value
      *
@@ -363,7 +363,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->controllerName = $controllerName;
     }
-    
+
 
     /**
      * Returns the controllerName value
@@ -375,7 +375,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return $this->controllerName;
     }
 
-    
+
     /**
      * Sets the actionName value
      *
@@ -387,7 +387,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $this->actionName = $actionName;
     }
 
-    
+
     /**
      * Returns the actionName value
      *
@@ -398,7 +398,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return $this->actionName;
     }
 
-    
+
     /**
      * Sets the comment value
      *
@@ -410,7 +410,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $this->comment = $comment;
     }
 
-    
+
     /**
      * Returns the comment value
      *
@@ -421,7 +421,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return $this->comment;
     }
 
-    
+
     /**
      * Sets the serverHost value
      *
@@ -432,7 +432,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->serverHost = $serverHost;
     }
-    
+
 
     /**
      * Returns the serverHost value
@@ -444,7 +444,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return $this->serverHost;
     }
 
-    
+
     /**
      * Sets the serverUri value
      *
@@ -455,7 +455,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->serverUri = $serverUri;
     }
-    
+
 
     /**
      * Returns the serverUri value
@@ -466,7 +466,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->serverUri;
     }
-    
+
 
     /**
      * Sets the serverRefererUrl value
@@ -479,7 +479,7 @@ class Privacy extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $this->serverRefererUrl = $serverRefererUrl;
     }
 
-    
+
     /**
      * Returns the serverRefererUrl value
      *

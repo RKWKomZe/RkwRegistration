@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Utility;
 
 /*
@@ -102,6 +101,7 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
     {
         // fallback: If something went wrong, at least something should be set
         $saltedPassword = $plaintextPassword;
+
         if (
             ExtensionManagementUtility::isLoaded('saltedpasswords')
             && SaltedPasswordsUtility::isUsageEnabled('FE')
@@ -122,20 +122,8 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
             );
         }
 
-        return $saltedPassword;
+        return (string) $saltedPassword;
     }
-
-
-    /**
-     * Returns logger instance
-     *
-     * @return \TYPO3\CMS\Core\Log\Logger
-     */
-    protected static function getLogger()
-    {
-        return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
-    }
-
 
 
     /**
@@ -162,6 +150,19 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
 
         return $plaintextPassword;
     }
+
+
+
+    /**
+     * Returns logger instance
+     *
+     * @return \TYPO3\CMS\Core\Log\Logger
+     */
+    protected static function getLogger()
+    {
+        return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+    }
+
 
 
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Utility;
 
 /*
@@ -21,6 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Class ClientUtility
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
+ * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -28,12 +28,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ClientUtility
 {
     /**
-     * Returns the users ip
+     * Returns the client's ip
      *
      * @return string
      */
     public static function getIp(): string
     {
+
         // set users server ip-address
         $remoteAddress = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
         if ($_SERVER['HTTP_X_FORWARDED_FOR']) {
@@ -43,6 +44,6 @@ class ClientUtility
             }
         }
 
-        return $remoteAddress;
+        return $remoteAddress ?: '127.0.0.1';
     }
 }

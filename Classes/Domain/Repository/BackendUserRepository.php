@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Domain\Repository;
 
 /*
@@ -26,15 +25,18 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class BackendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class BackendUserRepository extends AbstractRepository
 {
     /**
      * initializeObject
      *
      * @return void
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function initializeObject()
     {
+        parent::initializeObject();
+
         /** @var $querySettings Typo3QuerySettings */
         $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
 

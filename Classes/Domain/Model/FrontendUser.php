@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Domain\Model;
 
 /*
@@ -17,10 +16,7 @@ namespace RKW\RkwRegistration\Domain\Model;
 
 use RKW\RkwMailer\Utility\FrontendLocalizationUtility;
 use RKW\RkwRegistration\Domain\Repository\TitleRepository;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup as CoreFrontendUserGroup;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class FrontendUser
@@ -62,7 +58,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     /**
      * @var bool
      */
-    protected $disable = true;
+    protected $disable = false;
 
 
     /**
@@ -78,9 +74,11 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\FrontendUserGroup>
+     * !!!! THIS SHOULD NEVER BE PERSISTED !!!!
+     *
+     * @var string
      */
-    protected $usergroup;
+    protected $_tempPlaintextPassword = '';
 
 
     /**
@@ -139,40 +137,12 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     protected $txRkwregistrationXingUrl = '';
 
 
-    /**
-     * @var int
-     */
-    protected $txRkwregistrationTwitterId = 0;
-
-
-    /**
-     * @var string
-     */
-    protected $txRkwregistrationFacebookId = '';
-
-
-    /**
-     * @deprecated Will be removed soon. Use GuestUser Model instead
-     * @var boolean
-     */
-    protected $txRkwregistrationIsAnonymous = false;
-
 
     /**
      * @var bool
      */
     protected $txRkwregistrationDataProtectionStatus = 0;
 
-
-    /**
-     * initialize objectStorage
-     *
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->usergroup = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-    }
 
 
     /**
@@ -193,7 +163,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      * @return int
      * @api
      */
-    public function getCrdate()
+    public function getCrdate(): int
     {
         return $this->crdate;
     }
@@ -278,7 +248,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      * @return void
      *
      */
-    public function setDisable(bool $disable)
+    public function setDisable(bool $disable): void
     {
         $this->disable = $disable;
     }
@@ -347,29 +317,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
         $this->email = strtolower($email);
     }
 
-    /**
-     * Returns the txExtbaseType
-     *
-     * @return string
-     * @api
-     */
-    public function getTxExtbaseType()
-    {
-        return $this->txExtbaseType;
-    }
-
-
-    /**
-     * Sets the txExtbaseType
-     *
-     * @param string $txExtbaseType
-     * @api
-     */
-    public function setTxExtbaseType($txExtbaseType)
-    {
-        $this->txExtbaseType = $txExtbaseType;
-    }
-
 
     /**
      * Returns the title
@@ -392,6 +339,32 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function setTitle($title): void
     {
         $this->title = $title;
+    }
+
+
+    /**
+     * Gets the plaintext password
+     * !!! SHOULD NEVER BE PERSISTED!!!
+     *
+     * @return string
+     * @api
+     */
+    public function getTempPlaintextPassword(): string
+    {
+        return $this->_tempPlaintextPassword;
+    }
+
+
+    /**
+     * Sets the plaintext password
+     * !!! SHOULD NEVER BE PERSISTED!!!
+     *
+     * @param string $tempPlaintextPassword
+     * @api
+     */
+    public function setTempPlaintextPassword(string $tempPlaintextPassword): void
+    {
+        $this->_tempPlaintextPassword = $tempPlaintextPassword;
     }
 
 
@@ -442,60 +415,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 
 
     /**
-     * Returns the title as text
-     *
-     * @param bool $titleAfter
-     * @return string
-     */
-    public function getTitleText(bool $titleAfter = false): string
-    {
-
-        if ($this->getTxRkwregistrationTitle()) {
-
-            if ($this->getTxRkwregistrationTitle()->getIsTitleAfter() == $titleAfter) {
-                return $this->getTxRkwregistrationTitle()->getName();
-            }
-        }
-
-        if (!is_numeric($this->getTitle())) {
-            return $this->getTitle();
-        }
-
-        return '';
-    }
-
-
-    /**
-     * Returns the full salutation including gender, title and name
-     *
-     * @param bool $checkIncludedInSalutation
-     * @return string
-     */
-    public function getCompleteSalutationText(bool $checkIncludedInSalutation = false): string
-    {
-        $fullSalutation = $this->getFirstName() . ' ' . $this->getLastName();
-        $title = $this->getTxRkwregistrationTitle();
-
-        if ($title && $title->getName()) {
-
-            $titleName = ($this->getTxRkwregistrationGender() === 1 && $title->getNameFemale()) ? $title->getNameFemale() : $title->getName();
-            if ($checkIncludedInSalutation) {
-                if ($title->getIsIncludedInSalutation()) {
-                    $fullSalutation = ($title->getIsTitleAfter()) ? $fullSalutation . ', ' . $titleName : $titleName . ' ' . $fullSalutation;
-                }
-            } else {
-                $fullSalutation = ($title->getIsTitleAfter()) ? $fullSalutation . ', ' . $titleName : $titleName . ' ' . $fullSalutation;
-            }
-        }
-
-        if ($this->getGenderText()) {
-            $fullSalutation = $this->getGenderText() . ' ' . $fullSalutation;
-        }
-
-        return $fullSalutation;
-    }
-
-    /**
      * Sets the firstName
      *
      * @param string $firstName
@@ -529,58 +448,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
         } else {
             $this->name = $this->getLastName();
         }
-    }
-
-
-    /**
-     * Sets the usergroups. Keep in mind that the property is called "usergroup"
-     * although it can hold several usergroups.
-     *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $usergroup
-     * @return void
-     * @api
-     */
-    public function setUsergroup(ObjectStorage $usergroup): void
-    {
-        $this->usergroup = $usergroup;
-    }
-
-
-    /**
-     * Adds a usergroup to the frontend user
-     *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup $usergroup
-     * @return void
-     * @api
-     */
-    public function addUsergroup(CoreFrontendUserGroup $usergroup): void
-    {
-        $this->usergroup->attach($usergroup);
-    }
-
-    /**
-     * Removes a usergroup from the frontend user
-     *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup $usergroup
-     * @return void
-     * @api
-     */
-    public function removeUsergroup(CoreFrontendUserGroup $usergroup): void
-    {
-        $this->usergroup->detach($usergroup);
-    }
-
-
-    /**
-     * Returns the usergroups. Keep in mind that the property is called "usergroup"
-     * although it can hold several usergroups.
-     *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage An object storage containing the usergroup
-     * @api
-     */
-    public function getUsergroup(): ObjectStorage
-    {
-        return $this->usergroup;
     }
 
 
@@ -635,28 +502,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 
 
     /**
-     * Returns the gender as string
-     *
-     * @return string
-     */
-    public function getGenderText(): string
-    {
-        if ($this->getTxRkwregistrationGender() < 99) {
-
-            return FrontendLocalizationUtility::translate(
-                'tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.' . $this->getTxRkwregistrationGender(),
-                'rkw_registration',
-                [],
-                $this->getTxRkwregistrationLanguageKey()
-            );
-
-        }
-
-        return '';
-    }
-
-
-    /**
      * Sets the registerRemoteIp value
      *
      * @param string $remoteIp
@@ -691,18 +536,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function setTxRkwregistrationLoginErrorCount(int $count): void
     {
         $this->txRkwregistrationLoginErrorCount = $count;
-    }
-
-
-    /**
-     * Increments the loginErrorCount value
-     *
-     * @return void
-     *
-     */
-    public function incrementTxRkwregistrationLoginErrorCount(): void
-    {
-        $this->txRkwregistrationLoginErrorCount++;
     }
 
 
@@ -819,85 +652,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 
 
     /**
-     * Sets the twitterId value
-     *
-     * @param int $twitter
-     * @return void
-     * @api
-     */
-    public function setTxRkwregistrationTwitterId(int $twitter): void
-    {
-        $this->txRkwregistrationTwitterId = $twitter;
-    }
-
-
-    /**
-     * Returns the twitterId value
-     *
-     * @return int
-     * @api
-     */
-    public function getTxRkwregistrationTwitterId(): int
-    {
-        return $this->txRkwregistrationTwitterId;
-    }
-
-
-    /**
-     * Sets the facebookId value
-     *
-     * @param string $facebookId
-     * @return void
-     * @api
-     */
-    public function setTxRkwregistrationFacebookId(string $facebookId)
-    {
-        $this->txRkwregistrationFacebookId = $facebookId;
-    }
-
-
-    /**
-     * Returns the facebookId value
-     *
-     * @return string
-     * @api
-     */
-    public function getTxRkwregistrationFacebookId(): string
-    {
-        return $this->txRkwregistrationFacebookId;
-    }
-
-
-    /**
-     * Returns the txRkwregistrationIsAnonymous
-     **
-     * @return boolean $txRkwregistrationIsAnonymous
-     * @deprecated Will be removed soon. Use GuestUser Model instead
-     */
-    public function getTxRkwregistrationIsAnonymous(): bool
-    {
-        trigger_error('This method "' . __METHOD__ . '" is deprecated and will be removed soon. Do not use it anymore.', E_USER_DEPRECATED);
-
-        return $this->txRkwregistrationIsAnonymous;
-    }
-
-
-    /**
-     * Sets the txRkwregistrationIsAnonymous
-     *
-     * @param boolean $txRkwregistrationIsAnonymous
-     * @return void
-     * @deprecated Will be removed soon. Use GuestUser Model instead
-     */
-    public function setTxRkwregistrationIsAnonymous(bool $txRkwregistrationIsAnonymous): void
-    {
-        trigger_error('This method "' . __METHOD__ . '" is deprecated and will be removed soon. Do not use it anymore.', E_USER_DEPRECATED);
-
-        $this->txRkwregistrationIsAnonymous = $txRkwregistrationIsAnonymous;
-    }
-
-
-    /**
      * Sets the txRkwregistrationDataProtectionStatus value
      *
      * @param int $txRkwregistrationDataProtectionStatus
@@ -919,5 +673,94 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
         return $this->txRkwregistrationDataProtectionStatus;
     }
 
+
+    //=================================================================================
+    // Special-methods that are NOT simply getter or setter below
+    //=================================================================================
+
+    /**
+     * Increments the loginErrorCount value
+     *
+     * @return void
+     */
+    public function incrementTxRkwregistrationLoginErrorCount(): void
+    {
+        $this->txRkwregistrationLoginErrorCount++;
+    }
+
+    /**
+     * Returns the gender as string
+     *
+     * @return string
+     */
+    public function getGenderText(): string
+    {
+        if ($this->getTxRkwregistrationGender() < 99) {
+
+            return FrontendLocalizationUtility::translate(
+                'tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.' . $this->getTxRkwregistrationGender(),
+                'rkw_registration',
+                [],
+                $this->getTxRkwregistrationLanguageKey()
+            );
+
+        }
+
+        return '';
+    }
+
+    /**
+     * Returns the full salutation including gender, title and name
+     *
+     * @param bool $checkIncludedInSalutation
+     * @return string
+     */
+    public function getCompleteSalutationText(bool $checkIncludedInSalutation = false): string
+    {
+        $fullSalutation = $this->getFirstName() . ' ' . $this->getLastName();
+        $title = $this->getTxRkwregistrationTitle();
+
+        if ($title && $title->getName()) {
+
+            $titleName = ($this->getTxRkwregistrationGender() === 1 && $title->getNameFemale()) ? $title->getNameFemale() : $title->getName();
+            if ($checkIncludedInSalutation) {
+                if ($title->getIsIncludedInSalutation()) {
+                    $fullSalutation = ($title->getIsTitleAfter()) ? $fullSalutation . ', ' . $titleName : $titleName . ' ' . $fullSalutation;
+                }
+            } else {
+                $fullSalutation = ($title->getIsTitleAfter()) ? $fullSalutation . ', ' . $titleName : $titleName . ' ' . $fullSalutation;
+            }
+        }
+
+        if ($this->getGenderText()) {
+            $fullSalutation = $this->getGenderText() . ' ' . $fullSalutation;
+        }
+
+        return $fullSalutation;
+    }
+
+
+    /**
+     * Returns the title as text
+     *
+     * @param bool $titleAfter
+     * @return string
+     */
+    public function getTitleText(bool $titleAfter = false): string
+    {
+
+        if ($this->getTxRkwregistrationTitle()) {
+
+            if ($this->getTxRkwregistrationTitle()->getIsTitleAfter() == $titleAfter) {
+                return $this->getTxRkwregistrationTitle()->getName();
+            }
+        }
+
+        if (!is_numeric($this->getTitle())) {
+            return $this->getTitle();
+        }
+
+        return '';
+    }
 
 }

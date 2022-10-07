@@ -1,50 +1,39 @@
 #
-# Table structure for table 'tx_rkwregistration_domain_model_registration'
+# Table structure for table 'tx_rkwregistration_domain_model_optin'
 #
-CREATE TABLE tx_rkwregistration_domain_model_registration (
+CREATE TABLE tx_rkwregistration_domain_model_optin (
 
 	uid int(11) NOT NULL auto_increment,
 	pid int(11) DEFAULT '0' NOT NULL,
 
-	category varchar(255) DEFAULT '' NOT NULL,
-	user int(11) DEFAULT '0' NOT NULL,
-	user_sha1 varchar(255) DEFAULT '' NOT NULL,
+	frontend_user_uid int(11) DEFAULT '0' NOT NULL,
+	frontend_user_update text DEFAULT '' NOT NULL,
+	token_user varchar(255) DEFAULT '' NOT NULL,
 	token_yes varchar(255) DEFAULT '' NOT NULL,
 	token_no varchar(255) DEFAULT '' NOT NULL,
-	valid_until int(11) unsigned DEFAULT '0' NOT NULL,
+	admin_token_yes varchar(255) DEFAULT '' NOT NULL,
+	admin_token_no varchar(255) DEFAULT '' NOT NULL,
+	category varchar(255) DEFAULT '' NOT NULL,
+	approved tinyint(1) DEFAULT '0' NOT NULL,
+	admin_approved tinyint(1) DEFAULT '0' NOT NULL,
 	data longtext DEFAULT '' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,
+	starttime int(11) unsigned DEFAULT '0' NOT NULL,
+	endtime int(11) unsigned DEFAULT '0' NOT NULL,
+	deleted tinyint(1) unsigned DEFAULT '0' NOT NULL,
 
 	PRIMARY KEY (uid),
 	KEY parent (pid),
+	KEY token_user (token_user),
+  KEY token_yes (token_yes),
+	KEY token_no (token_no),
+	KEY admin_token_yes (admin_token_yes),
+	KEY admin_token_no (admin_token_no),
+	KEY endtime (endtime)
 );
 
-#
-# Table structure for table 'tx_rkwregistration_domain_model_service'
-#
-CREATE TABLE tx_rkwregistration_domain_model_service (
-
-	uid int(11) NOT NULL auto_increment,
-	pid int(11) DEFAULT '0' NOT NULL,
-
-	user int(11) DEFAULT '0' NOT NULL,
-	usergroup int(11) DEFAULT '0' NOT NULL,
-	service_sha1 varchar(255) DEFAULT '' NOT NULL,
-	token_yes varchar(255) DEFAULT '' NOT NULL,
-	token_no varchar(255) DEFAULT '' NOT NULL,
-	valid_until int(11) unsigned DEFAULT '0' NOT NULL,
-	enabled_by_admin tinyint(1) DEFAULT '0' NOT NULL,
-
-
-	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
-	crdate int(11) unsigned DEFAULT '0' NOT NULL,
-
-	PRIMARY KEY (uid),
-	KEY parent (pid),
-
-);
 
 #
 # Table structure for table 'fe_users'
@@ -56,21 +45,21 @@ CREATE TABLE fe_users (
 	tx_rkwregistration_mobile varchar(255) DEFAULT '' NOT NULL,
 	tx_rkwregistration_federal_state varchar(255) DEFAULT '' NOT NULL,
 
-    tx_rkwregistration_twitter_id int(11) DEFAULT '0' NOT NULL,
+  tx_rkwregistration_twitter_id int(11) DEFAULT '0' NOT NULL,
 	tx_rkwregistration_twitter_url varchar(255) DEFAULT '' NOT NULL,
 
-    tx_rkwregistration_facebook_id varchar(255) DEFAULT '' NOT NULL,
+  tx_rkwregistration_facebook_id varchar(255) DEFAULT '' NOT NULL,
 	tx_rkwregistration_facebook_url varchar(255) DEFAULT '' NOT NULL,
 	tx_rkwregistration_xing_url varchar(255) DEFAULT '' NOT NULL,
 
 	tx_rkwregistration_register_remote_ip varchar(255) DEFAULT '' NOT NULL,
 	tx_rkwregistration_language_key varchar(255) DEFAULT 'default' NOT NULL,
 
-    tx_rkwregistration_login_error_count tinyint(4) DEFAULT '0' NOT NULL,
-    tx_rkwregistration_is_anonymous tinyint(4) DEFAULT '0' NOT NULL,
+  tx_rkwregistration_login_error_count tinyint(4) DEFAULT '0' NOT NULL,
+  tx_rkwregistration_is_anonymous tinyint(4) DEFAULT '0' NOT NULL,
 
-    tx_rkwregistration_data_protection_status tinyint(4) DEFAULT '0' NOT NULL,
-    tx_rkwregistration_privacy varchar(255) DEFAULT '' NOT NULL,
+  tx_rkwregistration_data_protection_status tinyint(4) DEFAULT '0' NOT NULL,
+  tx_rkwregistration_privacy varchar(255) DEFAULT '' NOT NULL,
 
 );
 
@@ -79,10 +68,10 @@ CREATE TABLE fe_groups (
 	tx_rkwregistration_is_service tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	tx_rkwregistration_service_opening_date int(11) unsigned DEFAULT '0' NOT NULL,
 	tx_rkwregistration_service_closing_date int(11) unsigned DEFAULT '0' NOT NULL,
-    tx_rkwregistration_service_mandatory_fields varchar(255) DEFAULT '' NOT NULL,
+  tx_rkwregistration_service_mandatory_fields varchar(255) DEFAULT '' NOT NULL,
 	tx_rkwregistration_service_admins int(11) unsigned DEFAULT '0' NOT NULL,
 	tx_rkwregistration_service_pid int(11) unsigned DEFAULT '0' NOT NULL,
-
+	KEY token_user (tx_rkwregistration_is_service),
 );
 
 

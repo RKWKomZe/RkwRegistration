@@ -45,10 +45,9 @@ class GetAllFlashMessageIdentifierViewHelper extends \TYPO3\CMS\Fluid\Core\ViewH
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function render()
+    public function render(): array
     {
         $frameworkSettings = $this->getSettings();
-
         $pluginList = preg_grep('/^tx_rkwregistration_[\d]*/', array_keys($frameworkSettings['plugin.']));
 
         foreach ($pluginList as $key => $value) {

@@ -31,7 +31,7 @@ class GetTodaysDateViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abstract
      *
      * @return string
      */
-    public function render()
+    public function render(): string
     {
         return time();
     }

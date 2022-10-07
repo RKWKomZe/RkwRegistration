@@ -1,10 +1,5 @@
 <?php
-
 namespace RKW\RkwRegistration\Validation;
-
-use RKW\RkwBasics\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -19,6 +14,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 /**
  * Class TermsValidator
@@ -27,6 +23,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * @todo write a fucking test
  */
 class TermsValidator extends AbstractValidator
 {

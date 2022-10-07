@@ -1,0 +1,17 @@
+plugin.tx_rkwregistration  {
+    persistence {
+        // cat=plugin.tx_rkwshop_rkwshop//a; type=string; label=Default storage PID
+        storagePid = 1
+    }
+
+    settings {
+         users {
+            maxLoginErrors = 8
+            storagePid = 99
+            languageKeyOnRegister = ru
+        }
+    }
+}
+
+// for cronjob
+module.tx_rkwregistration < plugin.tx_rkwregistration

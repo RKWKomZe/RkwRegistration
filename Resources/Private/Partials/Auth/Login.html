@@ -1,24 +1,39 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
     data-namespace-typo3-fluid="true">
 
-    <f:form action="login" name="frontendUser" class="form-fields" >
+    <f:form action="login" name="frontendUser" >
         <div class="flex-container">
-            <div class="form flex flex-basis-6 full-width-medium space-between">
+            <div class="form flex flex-basis-12">
                 <div class="form__field width100">
                     <label class="form-label" for="username">
                         <f:translate key="tx_rkwregistration_domain_model_frontenduser.username" />
                     </label>
-                    <f:form.textfield id="username" name="login[username]" value="{login.username}" type="email" additionalAttributes="{autocomplete:'email'}"/>
+                    <f:form.textfield id="username" name="login[username]" value="{login.username}"
+                         type="email" additionalAttributes="{autocomplete:'email'}"/>
                 </div>
                 <div class="form__field width100">
                     <label class="form-label" for="password" >
                         <f:translate key="tx_rkwregistration_domain_model_frontenduser.password" />
                     </label>
                     <f:form.password id="password" name="login[password]" />
+                    <f:link.action action="new" controller="Password">
+                        <f:translate key="partials_auth_login.passwordForgot" />
+                    </f:link.action>
                 </div>
-                <button type="submit" class="btn btn--primary btn--small">
-                    <span><f:translate key="partials_registration_login.labelLogin" /></span>
+
+                <button type="submit" class="btn btn--primary">
+                    <f:translate key="partials_auth_login.labelLogin" />
                 </button>
+
+                <f:if condition="{settings.users.allowGuestLogin}">
+                    <f:link.action
+                        class="mt-1 btn btn--secondary"
+                        action="login"
+                        controller="AuthGuest"
+                    >
+                        <f:translate key="partials_auth_login.guest" />
+                    </f:link.action>
+                </f:if>
             </div>
         </div>
     </f:form>

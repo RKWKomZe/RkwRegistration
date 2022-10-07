@@ -15,7 +15,7 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwRegistration\Register\OptInRegister;
+use RKW\RkwRegistration\Register\OptInFrontendUser;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -32,27 +32,26 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class RegistrationController extends AbstractController
 {
-    /**
-     * ServiceRepository
-     *
-     * @var \RKW\RkwRegistration\Domain\Repository\ServiceRepository
-     * @inject
-     */
-    protected $serviceRepository;
 
-    
+    /**
+     * @var \RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration
+     * @TYPO3\CMS\Extbase\Annotation\Inject
+     */
+    protected $frontendUserRegistration;
+
+
     /**
      * PersistenceManager
      *
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $persistenceManager;
 
-    
+
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $objectManager;
 
@@ -70,7 +69,7 @@ class RegistrationController extends AbstractController
         parent::indexAction($flashMessageToInject);
 
         // only for logged in users!
-        $this->redirectIfUserNotLoggedIn();
+        $this->redirectIfUserNotLoggedInOrGuest();
 
         // check email!
         $this->redirectIfUserHasNoValidEmail();
@@ -79,11 +78,11 @@ class RegistrationController extends AbstractController
         $this->redirectIfUserHasMissingData();
 
         // check if there are new services where the user has fill out mandatory fields
-        $services = $this->serviceRepository->findConfirmedByUser($this->getFrontendUser());
+     //   $services = $this->serviceRepository->findConfirmedByUser($this->getFrontendUser());
 
         $this->view->assignMultiple(
             [
-                'services'        => $services,
+        //        'services'        => $services,
                 'frontendUser'    => $this->getFrontendUser(),
                 'editUserPid'     => intval($this->settings['users']['editUserPid']),
                 'deleteUserPid'   => intval($this->settings['users']['deleteUserPid']),
@@ -94,53 +93,55 @@ class RegistrationController extends AbstractController
     }
 
 
-
     /**
      * Takes optIn parameters and checks them
      *
      * @return void
+     * @throws \RKW\RkwRegistration\Exception
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function optInAction(): void
     {
-        $tokenYes = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_yes') ? $this->request->getArgument('token_yes') : ''));
-        $tokenNo = preg_replace('/[^a-zA-Z0-9]/', '', ($this->request->hasArgument('token_no') ? $this->request->getArgument('token_no') : ''));
-        $userSha1 = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('user'));
+        $token = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('token'));
+        $tokenUser = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('user'));
 
-        /** @var OptInRegister $optInRegister */
-        $optInRegister = $this->objectManager->get(OptInRegister::class);
-        $check = $optInRegister->process($tokenYes, $tokenNo, $userSha1, $this->request);
+        $check =  $this->frontendUserRegistration->setFrontendUserToken($tokenUser)
+            ->setRequest($this->getRequest())
+            ->validateOptIn($token);
 
-        if ($check == 1) {
+        if ($check < 300) {
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'registrationController.message.registration_successfull', 
+                    'registrationController.message.registration_successfull',
                     $this->extensionName
                 )
             );
 
             if ($this->settings['users']['loginPid']) {
                 $this->redirect(
-                    'index', 
-                    'Auth', 
-                    null, 
+                    'index',
+                    'Auth',
+                    null,
                     [],
                     $this->settings['users']['loginPid']
                 );
             }
 
-        } elseif ($check == 2) {
+        } elseif ($check < 400) {
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'registrationController.message.registration_canceled', 
+                    'registrationController.message.registration_canceled',
                     $this->extensionName
                 )
             );
@@ -149,7 +150,7 @@ class RegistrationController extends AbstractController
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'registrationController.error.registration_error', 
+                    'registrationController.error.registration_error',
                     $this->extensionName
                 ),
                 '',
@@ -158,9 +159,9 @@ class RegistrationController extends AbstractController
         }
 
         $this->redirect(
-            'index', 
-            'Auth', 
-            null, 
+            'index',
+            'Auth',
+            null,
             [],
             $this->settings['users']['loginPid']
         );

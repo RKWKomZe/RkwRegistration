@@ -8,65 +8,41 @@ call_user_func(
         //=================================================================
         // Configure Plugin
         //=================================================================
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        /*\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'Register',
             [
-                'FrontendUser' => 'new, create',
-                'Registration' => 'optIn',
-                'Service' => 'list, show, create, delete, optIn',
+                'Registration' => 'index, optIn',
+                'Service' => 'index, list, show, create, delete, optIn',
             ],
             // non-cacheable actions
             [
-                'FrontendUser' => 'new, create',
-                'Registration' => 'optIn',
-                'Service' => 'list, show, create, delete, optIn',
+                'FrontendUser' => 'index, new, create',
+                'Registration' => 'index, optIn',
+                'Service' => 'index, list, show, create, delete, optIn',
             ]
-        );
-
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'RKW.' . $extKey,
-            'Welcome',
-            [
-                'Registration' => 'index',
-                //'FrontendUser' => 'edit, update',
-            ],
-            // non-cacheable actions
-            [
-                'Registration' => 'index',
-                //'FrontendUser' => 'edit, update',
-            ]
-        );
+        );*/
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'AuthInternal',
             [
-                'Auth' => 'index, login, logoutExternal, loginAnonymous, loginHintAnonymous',
+                'Auth' => 'index, login, logout, logoutRedirect',
+                'AuthGuest' => 'login, loginHint',
+                'FrontendUser' => 'index, new, create',
                 'Password' => 'new, create',
-                //'Registration' => 'new, create, optIn, index',
-                //'Password' => 'new, create',
-            ],
-            // non-cacheable actions
-            [
-                'Auth' => 'index, login, logoutExternal, loginAnonymous, loginHintAnonymous',
-                'Password' => 'new, create',
-                //'Registration' => 'new, create, optIn, index',
-                //'Password' => 'new, create',
-            ]
-        );
+                'Registration' => 'optIn',
 
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'RKW.' . $extKey,
-            'AuthExternal',
-            [
-                'Auth' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous',
-                'AuthGuest' => 'login, loginHint',
+                //'Registration' => 'new, create, optIn, index',
+                //'Password' => 'new, create',
             ],
             // non-cacheable actions
             [
-                'Auth' => 'loginExternal, logoutExternal, loginAnonymous, loginHintAnonymous',
+                'Auth' => 'index, login, logout, logoutRedirect',
                 'AuthGuest' => 'login, loginHint',
+                'FrontendUser' => 'index, new, create',
+                'Password' => 'new, create',
+                'Registration' => 'optIn',
             ]
         );
 
@@ -74,35 +50,42 @@ call_user_func(
             'RKW.' . $extKey,
             'LogoutInternal',
             [
-                'Auth' => 'logout, logoutRedirect',
+                'Auth' => 'index, logout, logoutRedirect',
             ],
             // non-cacheable actions
             [
-                'Auth' => 'logout, logoutRedirect',
+                'Auth' => 'index, logout, logoutRedirect',
             ]
         );
 
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'RKW.' . $extKey,
-            'LogoutExternal',
-            [
-                'Auth' => 'logoutExternal',
-            ],
-            // non-cacheable actions
-            [
-                'Auth' => 'logoutExternal',
-            ]
-        );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'Password',
             [
                 'Password' => 'edit, update, redirectDisabledUser',
+                'Auth' => 'index',
+                'FrontendUser' => 'index'
             ],
             // non-cacheable actions
             [
                 'Password' => 'edit, update, redirectDisabledUser',
+                'Auth' => 'index',
+                'FrontendUser' => 'index'
+            ]
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
+            'FrontendUserWelcome',
+            [
+                'FrontendUser' => 'index, welcome',
+                'Auth' => 'index'
+            ],
+            // non-cacheable actions
+            [
+                'FrontendUser' => 'index, welcome',
+                'Auth' => 'index'
             ]
         );
 
@@ -110,11 +93,13 @@ call_user_func(
             'RKW.' . $extKey,
             'FrontendUserEdit',
             [
-                'FrontendUser' => 'edit, update',
+                'FrontendUser' => 'index, edit, update',
+                'Auth' => 'index'
             ],
             // non-cacheable actions
             [
-                'FrontendUser' => 'edit, update',
+                'FrontendUser' => 'index, edit, update',
+                'Auth' => 'index'
             ]
         );
 
@@ -122,47 +107,55 @@ call_user_func(
             'RKW.' . $extKey,
             'FrontendUserDelete',
             [
-                'FrontendUser' => 'show, delete',
+                'FrontendUser' => 'index, show, delete',
+                'Auth' => 'index'
             ],
             // non-cacheable actions
             [
-                'FrontendUser' => 'show, delete',
+                'FrontendUser' => 'index, show, delete',
+                'Auth' => 'index'
             ]
         );
+
+
+
+
+
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'Service',
             [
-                'Service' => 'list, show, create, delete, index',
+                'Service' => 'index, list, show, create, delete, index',
             ],
             // non-cacheable actions
             [
-                'Service' => 'list, show, create, delete, index',
+                'Service' => 'index, list, show, create, delete, index',
             ]
         );
 
+        /*
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'ServiceOptIn',
             [
-                'Service' => 'optIn, index',
+                'Service' => 'index, optIn, index',
             ],
             // non-cacheable actions
             [
-                'Service' => 'optIn, index',
+                'Service' => 'index, optIn, index',
             ]
-        );
+        );*/
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
             'RkwregistrationAjax',
             [
-                'Ajax' => 'loginInfoInit, loginInfo'
+                'Ajax' => 'index, loginInfoInit, loginInfo'
             ],
             // non-cacheable actions
             [
-                'Ajax' => 'loginInfo'
+                'Ajax' => 'index, loginInfo'
             ]
         );
 
@@ -170,11 +163,11 @@ call_user_func(
             'RKW.' . $extKey,
             'RkwregistrationInfo',
             [
-                'Info' => 'loginInfo'
+                'Info' => 'index, loginInfo'
             ],
             // non-cacheable actions
             [
-                'Info' => 'loginInfo'
+                'Info' => 'index, loginInfo'
             ]
         );
 
@@ -203,22 +196,22 @@ call_user_func(
          */
         $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Register\\OptInRegister',
-            \RKW\RkwRegistration\Register\OptInRegister::SIGNAL_AFTER_CREATING_OPTIN_USER,
+            'RKW\\RkwRegistration\\Registration\\OptInRegistration',
+            \RKW\RkwRegistration\Registration\OptInRegistration::SIGNAL_AFTER_CREATING_OPTIN_NEW_USER,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleCreateUserEvent'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Register\\OptInRegister',
-            \RKW\RkwRegistration\Register\OptInRegister::SIGNAL_AFTER_CREATING_FINAL_USER,
+            'RKW\\RkwRegistration\\Registration\\OptInRegistration',
+            \RKW\RkwRegistration\Registration\OptInRegistration::SIGNAL_AFTER_CREATING_FINAL_USER,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleRegisterUserEvent'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Register\\OptInRegister',
-            \RKW\RkwRegistration\Register\OptInRegister::SIGNAL_AFTER_USER_REGISTER_GRANT,
+            'RKW\\RkwRegistration\\Registration\\OptInRegistration',
+            \RKW\RkwRegistration\Registration\OptInRegistration::SIGNAL_AFTER_REGISTRATION_COMPLETED,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleRegisterUserEvent'
         );
@@ -238,15 +231,15 @@ call_user_func(
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Register\\GroupRegister',
-            \RKW\RkwRegistration\Register\GroupRegister::SIGNAL_AFTER_ADMIN_SERVICE_GRANT,
+            'RKW\\RkwRegistration\\Registration\\GroupRegister',
+            \RKW\RkwRegistration\Registration\GroupRegister::SIGNAL_AFTER_ADMIN_SERVICE_GRANT,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleAdminServiceGrantEvent'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Register\\GroupRegister',
-            \RKW\RkwRegistration\Register\GroupRegister::SIGNAL_AFTER_ADMIN_SERVICE_DENIAL,
+            'RKW\\RkwRegistration\\Registration\\GroupRegister',
+            \RKW\RkwRegistration\Registration\GroupRegister::SIGNAL_AFTER_ADMIN_SERVICE_DENIAL,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleAdminServiceDenialEvent'
         );
@@ -278,22 +271,55 @@ call_user_func(
         // AuthService
         //=================================================================
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
-            $extKey,
+            $_EXTKEY,
             'auth',
-            RKW\RkwRegistration\Service\AuthFrontendUserService::class,
+            \RKW\RkwRegistration\Service\FrontendUserAuthenticationService::class,
             [
                 'title' => 'Authentication Service for fe_users',
                 'description' => 'Authentication Service for fe_users',
-                //'subtype' => 'authUserFE,getGroupsFE,getUserFE,processLoginDataFE',
-                'subtype' => 'authUserFE, getUserFE',
+                'subtype' => 'getUserFE, authUserFE, getGroupsFE, processLoginDataFE',
+                'available' => true,
+                'priority' => 90,
+                'quality' => 90,
+                'os' => '',
+                'exec' => '',
+                'className' => \RKW\RkwRegistration\Service\FrontendUserAuthenticationService::class
+            ]
+        );
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+            $_EXTKEY,
+            'auth',
+            \RKW\RkwRegistration\Service\GuestUserAuthenticationService::class,
+            [
+                'title' => 'Authentication Service for fe_users',
+                'description' => 'Authentication Service for fe_users',
+                'subtype' => 'getUserFE, authUserFE, getGroupsFE, processLoginDataFE',
                 'available' => true,
                 'priority' => 80,
                 'quality' => 80,
                 'os' => '',
                 'exec' => '',
-                'className' => RKW\RkwRegistration\Service\AuthFrontendUserService::class
+                'className' => \RKW\RkwRegistration\Service\GuestUserAuthenticationService::class
             ]
         );
+
+        /*\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+            $extKey,
+            'auth',
+            RKW\RkwRegistration\Service\HashAuthentificationService::class,
+            [
+                'title' => 'Authentication Service for fe_users',
+                'description' => 'Authentication Service for fe_users',
+                //'subtype' => 'authUserFE,getGroupsFE,getUserFE,processLoginDataFE',
+                'subtype' => '',
+                'available' => true,
+                'priority' => 80,
+                'quality' => 80,
+                'os' => '',
+                'exec' => '',
+                'className' => RKW\RkwRegistration\Service\HashAuthentificationService::class
+            ]
+        );*/
 
         # It is possible to force TYPO3 CMS to go through the authentication process for every request no matter any existing session.
         # By setting the following local configuration either for the FE or the BE:

@@ -1081,7 +1081,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
     /**
      * TearDown
      */
-    protected function tearDown(): void
+    protected function teardown(): void
     {
         parent::tearDown();
     }

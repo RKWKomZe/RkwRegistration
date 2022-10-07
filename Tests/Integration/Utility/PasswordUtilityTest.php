@@ -65,7 +65,7 @@ class PasswordUtilityTest extends FunctionalTestCase
      * Setup
      * @throws \Exception
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Global.xml');
@@ -175,7 +175,7 @@ class PasswordUtilityTest extends FunctionalTestCase
          * Then a the password with minimum length is returned
          */
 
-        // @toDo: Not necessary to check all values via loop
+        // @todo: Not necessary to check all values via loop
 
         $individualLength = 0;
 
@@ -292,7 +292,7 @@ class PasswordUtilityTest extends FunctionalTestCase
     /**
      * TearDown
      */
-    protected function tearDown()
+    protected function teardown(): void
     {
         parent::tearDown();
     }

@@ -3,11 +3,9 @@
 namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Service\AuthFrontendUserService;
+use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use RKW\RkwRegistration\Utility\PasswordUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /*
@@ -43,27 +41,115 @@ class PasswordController extends AbstractController
 
     /**
      * initialize
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
     public function initializeAction()
     {
         // intercept disabled user (e.g. after input too often the wrong password)
-        if ($this->getFrontendUser()->getDisable()) {
+        if (
+            ($this->getFrontendUser())
+            && (! FrontendUserUtility::getRemainingLoginAttempts($this->getFrontendUser()))
+        ){
 
             // This redirect with message is necessary because we've no flash message possibilities at this point
-            // we also can't add an FlashMessage object, because it's not persistent and would be completely added to the URL
+            // we also can't add a FlashMessage object, because it's not persisted and would be completely added to the URL
             $this->redirect(
                 'index',
                 'Auth',
                 null,
                 [
                     'flashMessageToInject' => LocalizationUtility::translate(
-                        'passwordController.message.error.locked_account',
+                        'passwordController.error.locked_account',
                         $this->extensionName
                     )
                 ],
                 $this->settings['users']['loginPid']
             );
         }
+    }
+
+
+
+    /**
+     * action forgot password show
+     *
+     * @return void
+     */
+    public function newAction(): void
+    {
+
+        if (
+            ($this->controllerContext->getFlashMessageQueue()->isEmpty())
+            && (! $_POST)
+        ) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate(
+                    'passwordController.message.enter_email',
+                    $this->extensionName,
+                )
+            );
+        }
+    }
+
+
+    /**
+     * action forgot password
+     *
+     * @param string $username
+     * @return void
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     */
+    public function createAction(string $username): void
+    {
+        if (!$username) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate(
+                    'passwordController.error.no_username', $this->extensionName
+                ),
+                '',
+                AbstractMessage::ERROR
+            );
+
+            $this->redirect('new');
+            return;
+        }
+
+        // check if user exists
+        /** @var  @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        if ($frontendUser= $this->frontendUserRepository->findOneByUsername(strtolower($username))) {
+
+            // reset password
+            $plaintextPassword = PasswordUtility::generatePassword();
+            $frontendUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
+            $this->frontendUserRepository->update($frontendUser);
+
+            // dispatcher for e.g. E-Mail
+            $this->signalSlotDispatcher->dispatch(
+                __CLASS__,
+                self::SIGNAL_AFTER_USER_PASSWORD_RESET,
+                [$frontendUser, $plaintextPassword]
+            );
+        }
+
+        // Either user exists or not: Send user back with message
+        $this->addFlashMessage(
+            LocalizationUtility::translate(
+                'passwordController.message.new_password', $this->extensionName
+            )
+        );
+
+        $this->redirect(
+            'index',
+            'Auth'
+        );
     }
 
 
@@ -91,7 +177,7 @@ class PasswordController extends AbstractController
      * action update password
      *
      * @param array  $passwordNew
-     * @TYPO3\CMS\Extbase\Annotation\Validate$passwordNew \RKW\RkwRegistration\Validation\PasswordValidator
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\PasswordValidator", param="passwordNew")
      * @return void
      * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
@@ -145,73 +231,6 @@ class PasswordController extends AbstractController
 
     }
 
-
-    /**
-     * action forgot password show
-     *
-     * @return void
-     */
-    public function newAction(): void
-    {
-        // nothing to do here
-    }
-
-
-    /**
-     * action forgot password
-     *
-     * @param string $username
-     * @return void
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     */
-    public function createAction(string $username): void
-    {
-        if (!$username) {
-            $this->addFlashMessage(
-                LocalizationUtility::translate(
-                    'registrationController.error.login_no_username', $this->extensionName
-                ),
-                '',
-                AbstractMessage::ERROR
-            );
-
-            $this->redirect('new');
-            return;
-        }
-
-        // check if user exists
-        if ($registeredUser = $this->frontendUserRepository->findOneByUsername(strtolower($username))) {
-
-            // reset password
-            $plaintextPassword = PasswordUtility::generatePassword();
-            $registeredUser->setPassword(PasswordUtility::saltPassword($plaintextPassword));
-            $this->frontendUserRepository->update($registeredUser);
-
-            // dispatcher for e.g. E-Mail
-            $this->signalSlotDispatcher->dispatch(
-                __CLASS__,
-                self::SIGNAL_AFTER_USER_PASSWORD_RESET,
-                [$registeredUser, $plaintextPassword]
-            );
-        }
-
-        // Either user exists or not: Send user back with message
-        $this->addFlashMessage(
-            LocalizationUtility::translate(
-                'registrationController.message.new_password', $this->extensionName
-            )
-        );
-
-        $this->redirect(
-            'index',
-            'Auth'
-        );
-    }
 
 
 }

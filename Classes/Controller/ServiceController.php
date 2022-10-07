@@ -16,7 +16,7 @@ namespace RKW\RkwRegistration\Controller;
  */
 
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
-use RKW\RkwRegistration\Register\GroupRegister;
+use RKW\RkwRegistration\Register\GroupFrontendUser;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -39,7 +39,7 @@ class ServiceController extends AbstractController
      */
     const SIGNAL_ADMIN_SERVICE_REQUEST = 'afterAdminServiceRequest';
 
-    
+
     /**
      * Signal name for use in ext_localconf.php
      *
@@ -47,7 +47,7 @@ class ServiceController extends AbstractController
      */
     const SIGNAL_SERVICE_DELETE = 'afterServiceDelete';
 
-    
+
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
@@ -68,7 +68,7 @@ class ServiceController extends AbstractController
      */
     protected $backendUserRepository;
 
-    
+
     /**
      * Persistence Manager
      *
@@ -116,22 +116,22 @@ class ServiceController extends AbstractController
         $this->redirectIfUserHasNoValidEmail();
 
         // available services
-        $frontendUserGroups = $this->frontendUserGroupRepository->findServices();
+        $services = $this->frontendUserGroupRepository->findServices();
         $frontendUser = $this->getFrontendUser();
 
         // services which the user already belongs
         $groupsOfFrontendUser = $frontendUser->getUsergroup();
 
         // services where the user is waiting for the release
-        $serviceInquiries = $this->serviceRepository->findByUser($this->getFrontendUser());
-        $serviceInquiriesAdmin = $this->serviceRepository->findConfirmedByUser($this->getFrontendUser());
+        $serviceRequests = $this->serviceRepository->findByUser($this->getFrontendUser());
+        $serviceRequestsdmin = $this->serviceRepository->findConfirmedByUser($this->getFrontendUser());
 
         $this->view->assignMultiple(
             [
-                'frontendUserGroups'    => $frontendUserGroups,
+                'services'    => $services,
                 'groupsOfFrontendUser'  => $groupsOfFrontendUser,
-                'serviceInquiries'      => $serviceInquiries,
-                'serviceInquiriesAdmin' => $serviceInquiriesAdmin,
+                'serviceRequests'      => $serviceRequests,
+                'serviceRequestsAdmin' => $serviceRequestsAdmin,
                 'editUserPid'           => intval($this->settings['users']['editUserPid']),
             ]
         );
@@ -175,6 +175,7 @@ class ServiceController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function createAction(FrontendUserGroup $frontendUserGroup): void
     {
@@ -182,7 +183,7 @@ class ServiceController extends AbstractController
         $this->redirectIfUserNotLoggedIn();
 
         // Get the mandatory fields for the given group?
-        $serviceClass = $this->objectManager->get(GroupRegister::class);
+        $serviceClass = $this->objectManager->get(GroupFrontendUser::class);
         $mandatoryFields = $serviceClass->getMandatoryFieldsOfUser($this->getFrontendUser(), $frontendUserGroup);
 
         // get the admins of the given group (if any)
@@ -198,8 +199,8 @@ class ServiceController extends AbstractController
 
             // create new opt-in for service
             $newOptIn = $this->serviceRepository->newOptIn(
-                $this->getFrontendUser(), 
-                $frontendUserGroup, 
+                $this->getFrontendUser(),
+                $frontendUserGroup,
                 $this->settings['services']['daysForOptIn']
             );
 
@@ -215,13 +216,13 @@ class ServiceController extends AbstractController
                 // dispatcher for e.g. E-Mail
                 foreach ($admins as $admin) {
                     $this->signalSlotDispatcher->dispatch(
-                        __CLASS__, 
-                        self::SIGNAL_ADMIN_SERVICE_REQUEST, 
+                        __CLASS__,
+                        self::SIGNAL_ADMIN_SERVICE_REQUEST,
                         [
-                            $admin, 
-                            $this->getFrontendUser(), 
-                            $frontendUserGroup, 
-                            $newOptIn, 
+                            $admin,
+                            $this->getFrontendUser(),
+                            $frontendUserGroup,
+                            $newOptIn,
                             intval($this->settings['services']['adminOptInPid'])
                         ]
                     );
@@ -278,7 +279,7 @@ class ServiceController extends AbstractController
             $this->request->getArgument('service')
         );
 
-        $service = $this->objectManager->get(GroupRegister::class);
+        $service = $this->objectManager->get(GroupFrontendUser::class);
         $check = $service->checkTokens($tokenYes, $tokenNo, $serviceSha1);
 
         if ($check == 1) {
@@ -337,10 +338,10 @@ class ServiceController extends AbstractController
 
         // dispatch event
         $this->signalSlotDispatcher->dispatch(
-            __CLASS__, 
-            self::SIGNAL_SERVICE_DELETE, 
+            __CLASS__,
+            self::SIGNAL_SERVICE_DELETE,
             [
-                $this->getFrontendUser(), 
+                $this->getFrontendUser(),
                 $frontendUserGroup
             ]
         );

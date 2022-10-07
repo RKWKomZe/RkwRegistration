@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Domain\Repository;
 
 /*
@@ -15,8 +14,6 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
-
 /**
  * ShippingAddressRepository
  *
@@ -25,21 +22,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ShippingAddressRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class ShippingAddressRepository extends AbstractRepository
 {
-    /**
-     * initializeObject
-     *
-     * @return void
-     */
-    public function initializeObject()
-    {
-        /** @var $querySettings Typo3QuerySettings */
-        $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
-
-        // don't add the pid constraint
-        $querySettings->setRespectStoragePage(false);
-        $this->setDefaultQuerySettings($querySettings);
-    }
 
 }

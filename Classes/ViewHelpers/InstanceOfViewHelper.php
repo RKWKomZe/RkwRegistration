@@ -14,6 +14,7 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -26,13 +27,31 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class InstanceOfViewHelper extends AbstractViewHelper
 {
+
+    /**
+     * Initialize arguments.
+     *
+     * @throws \TYPO3Fluid\Fluid\Core\ViewHelper\Exception
+     */
+    public function initializeArguments()
+    {
+        parent::initializeArguments();
+        $this->registerArgument('entity', AbstractEntity::class, 'The entity to check.', true);
+        $this->registerArgument('type', 'string', 'The type to check against.', true);
+    }
+
     /**
      * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $entity
-     * @param string $type
      * @return boolean
      */
-    public function render($entity, $type)
+    public function render(): bool
     {
+        /** @var TYPO3\CMS\Extbase\DomainObject\AbstractEntity $entity */
+        $textVersion = $this->arguments['entity'];
+
+        /** @var string $type */
+        $type = $this->arguments['type'];
+
         if ($entity instanceof $type) {
             return true;
         }

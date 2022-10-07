@@ -8,7 +8,7 @@
         <h2><f:translate key="templates_registration_editUser.headline" /></h2>
 
         <f:render partial="FlashMessages" arguments="{_all}" />
-        <f:render partial="FormErrors" arguments="{for:frontendUser}"/>
+        <f:render partial="FormErrors" arguments="{object:frontendUser}"/>
 
         <f:form
             action="update"
@@ -18,7 +18,7 @@
             <div class="flex-container">
                 <div class="flex flex-basis-8 full-width-medium space-between">
 
-                    <f:render partial="Registration/FormFields" arguments="{_all}" />
+                    <f:render partial="FrontendUser/FormFields" arguments="{_all}" />
 
                     <div class="btn-list btn-list--footer">
                         <f:link.action pageUid="{welcomePid}" action="index" controller="Registration" class="btn btn--secondary">

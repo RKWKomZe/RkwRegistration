@@ -8,7 +8,7 @@ return [
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
 		'dividers2tabs' => true,
-		'hideTable' => 1,
+		'hideTable' => true,
 		'delete' => 'deleted',
 		'searchFields' => 'frontend_user, foreign_uid, foreign_table, foreign_field, encrypted_value',
 		'iconfile' => 'EXT:rkw_registration/Resources/Public/Icons/tx_rkwregistration_domain_model_encrypteddata.gif'

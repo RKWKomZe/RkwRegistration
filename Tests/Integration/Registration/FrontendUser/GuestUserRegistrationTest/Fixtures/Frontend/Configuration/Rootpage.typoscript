@@ -1,0 +1,29 @@
+module.tx_rkwregistration  {
+
+    persistence {
+        // cat=plugin.tx_rkwregistration_rkwregistration//a; type=string; label=Default storage PID
+        storagePid = 88
+    }
+
+    settings {
+        users {
+            storagePid = 99
+            languageKeyOnRegister = ru
+            daysForOptIn = 7
+            lifetime = 10000
+            groupsOnRegister = 20,21
+            guest {
+                groupsOnRegister = 57
+            }
+        }
+    }
+}
+
+plugin.tx_rkwregistration < module.tx_rkwregistration
+
+
+page = PAGE
+page {
+    10 = TEXT
+    10.value = Hallo Welt!
+}

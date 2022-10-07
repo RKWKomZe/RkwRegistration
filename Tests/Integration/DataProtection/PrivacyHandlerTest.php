@@ -72,7 +72,7 @@ class PrivacyHandlerTest extends FunctionalTestCase
      * Setup
      * @throws \Exception
      */
-    protected function setUp()
+    protected function setUp(): void
     {
 
         parent::setUp();
@@ -365,7 +365,7 @@ class PrivacyHandlerTest extends FunctionalTestCase
     /**
      * TearDown
      */
-    protected function tearDown()
+    protected function teardown(): void
     {
         parent::tearDown();
     }

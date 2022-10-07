@@ -31,6 +31,7 @@ class InfoController extends AbstractController
      * Returns personal info of user, used via AJAX
      *
      * @return void
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     public function loginInfoAction(): void
     {

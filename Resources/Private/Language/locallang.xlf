@@ -124,7 +124,7 @@
             </trans-unit>
             <trans-unit id="form.error.newFrontendUser.title">
                 <source>Title</source>
-            </trans-unit>            
+            </trans-unit>
             <trans-unit id="form.error.newFrontendUser.email">
                 <source>E-Mail</source>
             </trans-unit>
@@ -276,20 +276,20 @@
             <trans-unit id="registrationController.message.registration_successfull">
                 <source>You have been successfully registered. Your password has been sent to you via e-mail.</source>
             </trans-unit>
-            <trans-unit id="registrationController.message.registration_watch_for_email">
+            <trans-unit id="frontendUserController.message.registration_watch_for_email">
                 <source>An e-mail has been send to you. Please click the link in the e-mail to confirm your registration.</source>
             </trans-unit>
             <trans-unit id="registrationController.message.registration_canceled">
                 <source>Your registration was canceled.</source>
             </trans-unit>
-            <trans-unit id="registrationController.message.logout_message">
+            <trans-unit id="authController.message.logout_message">
                 <source>You have been successfully logged out.</source>
             </trans-unit>
-            <trans-unit id="registrationController.message.login_message">
+            <trans-unit id="authController.message.login_message">
                 <source><![CDATA[Please login here or <a href="%s">register</a> for free.]]></source>
             </trans-unit>
-            <trans-unit id="registrationController.message.login_message_guest">
-                <source><![CDATA[You are currently logged in as guest. Please login here or <a href="%s">register</a> for free.]]></source>
+            <trans-unit id="authController.message.login_message_guest">
+                <source><![CDATA[You are currently logged in as a guest. To use this section, you must be logged in as a regular user. <a href="%s">Please log out here</a> and then log in again as a regular user.]]></source>
             </trans-unit>
             <trans-unit id="registrationController.error.registration_error">
                 <source>An error occurred. Please try again</source>
@@ -300,19 +300,19 @@
             <trans-unit id="registrationController.error.facebook_unexpected">
                 <source>An unexpected error occurred with Facebook Login. Please try another login.</source>
             </trans-unit>
-            <trans-unit id="registrationController.error.login_no_username">
+            <trans-unit id="loginValidator.error.login_no_username">
                 <source>No username given. Please enter username.</source>
             </trans-unit>
-            <trans-unit id="registrationController.error.login_no_password">
+            <trans-unit id="loginValidator.error.login_no_password">
                 <source>No password given. Please enter password.</source>
             </trans-unit>
-            <trans-unit id="registrationController.error.wrong_login">
+            <trans-unit id="authController.error.wrong_login">
                 <source>Wrong username or password.</source>
             </trans-unit>
-            <trans-unit id="registrationController.message.new_password">
+            <trans-unit id="passwordController.message.new_password">
                 <source>Password was reset and send to you via E-Mail.</source>
             </trans-unit>
-            <trans-unit id="registrationController.message.update_successfull">
+            <trans-unit id="frontendUserController.message.update_successful">
                 <source>Update was successfull.</source>
             </trans-unit>
             <trans-unit id="registrationController.error.twitter_unexpected">
@@ -330,7 +330,7 @@
             <trans-unit id="registrationController.error.something_went_wrong">
                 <source>Something went wrong.</source>
             </trans-unit>
-            <trans-unit id="registrationController.message.delete_successfull">
+            <trans-unit id="frontendUserController.message.delete_successful">
                 <source>Your account has been successfully deleted.</source>
             </trans-unit>
             <trans-unit id="registrationController.error.password_empty">
@@ -339,7 +339,7 @@
             <trans-unit id="registrationController.error.user_not_found">
                 <source>User not found.</source>
             </trans-unit>
-            <trans-unit id="registrationController.error.login_blocked">
+            <trans-unit id="authController.error.login_blocked">
                 <source>Your login was blocked after %s attempts. Please contact support.</source>
             </trans-unit>
             <trans-unit id="registrationController.error.accept_terms">
@@ -383,9 +383,12 @@
             </trans-unit>
 
             <!-- Password Controller -->
-            <trans-unit id="passwordController.message.error.locked_account">
+            <trans-unit id="passwordController.error.locked_account">
                 <source>You account is locked.</source>
             </trans-unit>
+
+
+
 
 
             <!-- Service Controller -->
@@ -522,16 +525,16 @@
 
 
             <!-- Templates/Registration/xdlLoginShow.html -->
-            <trans-unit id="templates_registration_loginShowExternal.loginLabel">
-                <source>Continue with existing account</source>
+            <trans-unit id="templates_auth_index.loginHeadline">
+                <source>Login</source>
             </trans-unit>
-            <trans-unit id="templates_registration_loginShowExternal.registerLabel">
-                <source>Create account</source>
+            <trans-unit id="templates_auth_index.registerHeadline">
+                <source>Create free account</source>
             </trans-unit>
             <trans-unit id="templates_registration_loginShowExternal.guestLabel">
                 <source>Continue without account</source>
             </trans-unit>
-            <trans-unit id="templates_registration_loginShowExternal.orLabel">
+            <trans-unit id="templates_auth_index.orHeadline">
                 <source>or</source>
             </trans-unit>
             <trans-unit id="templates_registration_loginShowExternal.login">
@@ -543,8 +546,8 @@
             <trans-unit id="templates_registration_loginShowExternal.logout">
                 <source>Logout</source>
             </trans-unit>
-            <trans-unit id="templates_registration_loginShowExternal.guest">
-                <source>Start as guest</source>
+            <trans-unit id="partials_auth_login.guest">
+                <source>Continue as guest</source>
             </trans-unit>
             <trans-unit id="templates_registration_loginShowExternal.login2">
                 <source>Login</source>
@@ -552,31 +555,31 @@
 
 
             <!-- Templates/Registration/LoginShow.html -->
-            <trans-unit id="templates_registration_loginShow.headline">
+            <trans-unit id="templates_auth_index.headline">
                 <source>Login</source>
             </trans-unit>
-            <trans-unit id="templates_registration_loginShow.labelLogin">
+            <trans-unit id="partials_auth_login.labelLogin">
                 <source>Login</source>
             </trans-unit>
-            <trans-unit id="templates_registration_loginShow.passwordForgot">
-                <source>Forgotten password</source>
+            <trans-unit id="partials_auth_login.passwordForgot">
+                <source>Forgotten password?</source>
             </trans-unit>
 
 
             <!-- Templates/Registration/LoginAnonymous.html -->
-            <trans-unit id="templates_registration_loginHintAnonymous.continue">
+            <trans-unit id="templates_authGuest_loginHint.continue">
                 <source>Continue</source>
             </trans-unit>
 
 
             <!-- Templates/Registration/PasswordForgotShow.html -->
-            <trans-unit id="templates_registration_passwordForgotShow.headline">
+            <trans-unit id="templates_password_new.headline">
                 <source>Password forgot</source>
             </trans-unit>
-            <trans-unit id="templates_registration_passwordForgotShow.labelSend">
+            <trans-unit id="partials_password_forgot.labelSend">
                 <source>Send password</source>
             </trans-unit>
-            <trans-unit id="templates_registration_passwordForgotShow.labelBack">
+            <trans-unit id="partials_password_forgot.labelBack">
                 <source>Back</source>
             </trans-unit>
 
@@ -751,7 +754,7 @@
             <trans-unit id="templates_email_serviceOptInDenial.text2">
                 <source>For questions, please contact our support.</source>
             </trans-unit>
-            
+
 
             <!-- Templates/Email/ServiceOptInSuccess.html -->
             <trans-unit id="templates_email_serviceOptInSuccess.headline">
@@ -808,10 +811,10 @@
             </trans-unit>
 
             <!-- Partials/Registration/RegisterFormFields.html -->
-            <trans-unit id="partials_registration_registerFormFields.labelOptional">
+            <trans-unit id="partials_labelSuffix.labelOptional">
                 <source>(Optional)</source>
             </trans-unit>
-            <trans-unit id="partials_registration_registerFormFields.labelRequired">
+            <trans-unit id="partials_labelSuffix.labelRequired">
                 <source>(Required)</source>
             </trans-unit>
 

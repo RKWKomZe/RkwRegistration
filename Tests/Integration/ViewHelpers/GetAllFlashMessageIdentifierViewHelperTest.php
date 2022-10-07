@@ -51,7 +51,7 @@ class GetAllFlashMessageIdentifierViewHelperTest extends FunctionalTestCase
      * Setup
      * @throws \Exception
      */
-    protected function setUp()
+    protected function setUp(): void
     {
 
         parent::setUp();
@@ -84,7 +84,7 @@ class GetAllFlashMessageIdentifierViewHelperTest extends FunctionalTestCase
     public function renderReturnsArrayWithFlashMessageIdentifiers ()
     {
 
-         // @toDo: Eigentlich ein UNIT Test, anstatt Integration?
+         // @todo: Eigentlich ein UNIT Test, anstatt Integration?
 
         /**
          * Scenario:
@@ -112,7 +112,7 @@ class GetAllFlashMessageIdentifierViewHelperTest extends FunctionalTestCase
     /**
      * TearDown
      */
-    protected function tearDown()
+    protected function teardown(): void
     {
         parent::tearDown();
     }

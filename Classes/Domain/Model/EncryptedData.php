@@ -31,30 +31,30 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
      */
     public $frontendUser;
-    
-    
+
+
     /**
      * @var string
      */
     protected $searchKey = '';
-    
-    
+
+
     /**
      * foreignUid
      *
      * @var integer
      */
     public $foreignUid = 0;
-    
-    
+
+
     /**
      * foreignTable
      *
      * @var string
      */
     public $foreignTable = '';
-    
-    
+
+
     /**
      * foreignClass
      *
@@ -62,14 +62,14 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public $foreignClass = '';
 
-    
+
     /**
      * encryptedData
      *
      * @var string
      */
-    public $encryptedData = '';    
-    
+    public $encryptedData = '';
+
 
     /**
      * Sets the frontendUser
@@ -77,23 +77,23 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @return void
      */
-    public function setFrontendUser(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser)
+    public function setFrontendUser(FrontendUser $frontendUser)
     {
         $this->frontendUser = $frontendUser;
     }
 
-    
+
     /**
      * Returns the frontendUser
      *
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|null $frontendUser
      */
-    public function getFrontendUser()
+    public function getFrontendUser() :? FrontendUser
     {
         return $this->frontendUser;
     }
 
-    
+
     /**
      * Sets the searchKey value
      *
@@ -104,8 +104,8 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->searchKey = $searchKey;
     }
-    
-    
+
+
     /**
      * Returns the searchKey value
      *
@@ -115,8 +115,8 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->searchKey;
     }
-    
-    
+
+
     /**
      * Sets the foreignUid value
      *
@@ -127,8 +127,8 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->foreignUid = $foreignUid;
     }
-    
-    
+
+
     /**
      * Returns the foreignUid value
      *
@@ -138,8 +138,8 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->foreignUid;
     }
-    
-    
+
+
     /**
      * Sets the foreignTable value
      *
@@ -150,8 +150,8 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->foreignTable = $foreignTable;
     }
-    
-    
+
+
     /**
      * Returns the foreignTable value
      *
@@ -161,8 +161,8 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->foreignTable;
     }
-    
-    
+
+
     /**
      * Sets the foreignClass value
      *
@@ -173,8 +173,8 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->foreignClass = $foreignClass;
     }
-    
-    
+
+
     /**
      * Returns the foreignClass value
      *
@@ -184,8 +184,8 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->foreignClass;
     }
-    
-    
+
+
     /**
      * Sets the encryptedValue value
      *
@@ -196,8 +196,8 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->encryptedData = serialize($encryptedData);
     }
-    
-    
+
+
     /**
      * Returns the encryptedData value
      *

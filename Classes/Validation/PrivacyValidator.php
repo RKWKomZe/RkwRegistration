@@ -1,10 +1,6 @@
 <?php
 
 namespace RKW\RkwRegistration\Validation;
-
-use RKW\RkwBasics\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -26,6 +22,7 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * @todo write a fucking test
  */
 class PrivacyValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator
 {

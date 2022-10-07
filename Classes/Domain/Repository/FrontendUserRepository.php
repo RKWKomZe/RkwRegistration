@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Domain\Repository;
 
 /*
@@ -14,12 +13,11 @@ namespace RKW\RkwRegistration\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
@@ -31,8 +29,87 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class FrontendUserRepository extends AbstractRepository
 {
+
+
+    /**
+     * Finds users which have the given uid even if they are disabled
+     * This is relevant for checking during registration or profile editing
+     *
+     * @param int $uid
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|null
+     * implicitly tested
+     */
+    public function findByIdentifierIncludingDisabled(int $uid): ?FrontendUser
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setIncludeDeleted(false);
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+
+        $user = $query->matching(
+            $query->equals('uid', $uid)
+        )->setLimit(1)
+            ->execute();
+
+        return $user->getFirst();
+    }
+
+
+    /**
+     * Finds users which have the given uid even if they are deleted
+     * This is relevant for checking during registration or profile editing
+     *
+     * @param int $uid
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|null
+     * implicitly tested
+     */
+    public function findByIdentifierIncludingDeleted (int $uid): ?FrontendUser
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setIncludeDeleted(true);
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+
+        $user = $query->matching(
+            $query->equals('uid', $uid)
+        )->setLimit(1)
+            ->execute();
+
+        return $user->getFirst();
+    }
+
+
+    /**
+     * Finds users which have the given username even if they are disabled
+     * This is relevant for checking during registration or profile editing
+     *
+     * @param string $username
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|null
+     * implicitly tested
+     */
+    public function findOneByUsernameIncludingDisabled(string $username): ?FrontendUser
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setIncludeDeleted(false);
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+
+        $user = $query->matching(
+            $query->equals('username', strtolower($username))
+        )->setLimit(1)
+            ->execute();
+
+        return $user->getFirst();
+    }
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Finds deleted users
@@ -61,9 +138,9 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Finds deleted users
      *
      * @param int $uid
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|null
      */
-    public function findOneDisabledByUid(int $uid)
+    public function findOneDisabledByUid(int $uid): ?FrontendUser
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
@@ -80,28 +157,7 @@ class FrontendUserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     }
 
 
-    /**
-     * Finds users which have the given username OR email-address
-     * This is relevant for checking during registration or profile editing
-     *
-     * @param string $input
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
-     */
-    public function findOneByEmailOrUsernameAlsoInactive($input)
-    {
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setIgnoreEnableFields(true);
 
-        $user = $query->matching(
-                $query->logicalOr(
-                    $query->equals('email', $input),
-                    $query->equals('username', $input)
-                )
-            )->setLimit(1)
-            ->execute();
-
-        return $user->getFirst();
-    }
 
 
 

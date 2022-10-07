@@ -1,12 +1,5 @@
 <?php
-
 namespace RKW\RkwRegistration\Validation;
-
-use RKW\RkwBasics\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Error\Error;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -21,6 +14,9 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Extbase\Error\Error;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 /**
  * Class LoginValidator
@@ -29,6 +25,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * @todo write a fucking test
  */
 class LoginValidator extends AbstractValidator
 {
@@ -48,7 +45,7 @@ class LoginValidator extends AbstractValidator
             $this->result->forProperty('username')->addError(
                 new Error(
                     LocalizationUtility::translate(
-                        'registrationController.error.login_no_username',
+                        'loginValidator.error.login_no_username',
                         'rkw_registration'
                     ), 1649340637
                 )
@@ -60,7 +57,7 @@ class LoginValidator extends AbstractValidator
             $this->result->forProperty('password')->addError(
                 new Error(
                     LocalizationUtility::translate(
-                        'registrationController.error.login_no_password',
+                        'loginValidator.error.login_no_password',
                         'rkw_registration'
                     ), 1649340691
                 )

@@ -5,7 +5,12 @@ plugin.tx_rkwregistration  {
     }
 
     settings {
-
+         users {
+            maxLoginErrors = 8
+            storagePid = 99
+            languageKeyOnRegister = ru
+            requiredFormFields = hamptyDamty, first_name, LastName
+        }
     }
 }
 

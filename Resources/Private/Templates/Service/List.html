@@ -12,36 +12,59 @@
 
          <table class="responsive-table responsive-table--background" >
 
-            <f:for each="{frontendUserGroups}" as="frontendUserGroup" iteration="iterator">
+            <f:for each="{services}" as="service" iteration="iterator">
                 <tr>
                     <td>
-                        <h3 class="h4">{frontendUserGroup.title}
-                            <f:if condition="{frontendUserGroup.txRkwregistrationServiceOpeningDate} > <vh:getTodaysDate/>">
-                                &nbsp;(<f:translate key="templates_service_list.serviceComingSoon" /> <f:format.date format="d.m.Y">{frontendUserGroup.txRkwregistrationServiceOpeningDate}</f:format.date>)
+                        <h3 class="h4">{service.title}
+                            <f:if condition="{service.txRkwregistrationServiceOpeningDate} > <vh:getTodaysDate/>">
+                                &nbsp;(<f:translate key="templates_service_list.serviceComingSoon" /> <f:format.date format="d.m.Y">{service.txRkwregistrationServiceOpeningDate}</f:format.date>)
                             </f:if>
                         </h3>
 
-                        <p>{frontendUserGroup.description}</p>
-                        <f:if condition="{frontendUserGroup.txRkwregistrationServiceOpeningDate} <= <vh:getTodaysDate/>">
+                        <p>{service.description}</p>
+                        <f:if condition="{service.txRkwregistrationServiceOpeningDate} <= <vh:getTodaysDate/>">
                             <f:then>
-                                <f:if condition="<vh:isGroupInServiceInquiryList groupId='{frontendUserGroup.uid}' serviceInquiries='{serviceInquiries}' /> == 0">
+                                <f:if condition="<vh:isRequestedService service='{service}' serviceRequests='{serviceRequestsAdmin}' /> == 1">
                                     <f:then>
-                                        <f:if condition="<vh:isUserInGroup groupId='{frontendUserGroup.uid}' groupsOfFrontendUser='{groupsOfFrontendUser}' /> == 0">
+                                        <div class="system-message" role="alert">
+                                            <div class="system-message__item system-message__item--severity2">
+                                                <f:translate key="templates_service_list.additionalProfileData" />
+                                            </div>
+                                        </div>
+                                        <div class="btn-list">
+                                            <f:link.action pageUid="{editUserPid}" action="editUser" controller="Registration" class="btn btn--primary">
+                                                <f:translate key="templates_service_list.checkProfile" />
+                                            </f:link.action>
+                                        </div>
+                                    </f:then>
+                                    <f:else>
+                                        <div class="system-message" role="alert">
+                                            <div class="system-message__item system-message__item--severity2">
+                                                <f:translate key="templates_service_list.adminRequestPending" />
+                                            </div>
+                                        </div>
+                                    </f:else>
+                                </f:if>
+
+
+                                <f:if condition="<vh:isRequestedService service='{service}' serviceRequests='{serviceRequests}' /> == 0">
+                                    <f:then>
+                                        <f:if condition="<vh:isUserInGroup groupId='{service.uid}' groupsOfFrontendUser='{groupsOfFrontendUser}' /> == 0">
                                             <f:then>
                                                 <div class="btn-list">
-                                                    <f:link.action action="create" arguments="{frontendUserGroup : frontendUserGroup}" class="btn btn--primary">
+                                                    <f:link.action action="create" arguments="{service : service}" class="btn btn--primary">
                                                         <f:translate key="templates_service_list.joinService" />
                                                     </f:link.action>
                                                 </div>
                                             </f:then>
                                             <f:else>
                                                 <div class="btn-list">
-                                                    <f:if condition="{frontendUserGroup.txRkwregistrationServicePid}">
-                                                        <f:link.page pageUid="{frontendUserGroup.txRkwregistrationServicePid}"  class="btn btn--primary">
+                                                    <f:if condition="{service.txRkwregistrationServicePid}">
+                                                        <f:link.page pageUid="{service.txRkwregistrationServicePid}"  class="btn btn--primary">
                                                             <f:translate key="templates_service_list.startNow" />
                                                         </f:link.page>
                                                     </f:if>
-                                                    <f:link.action action="delete" arguments="{frontendUserGroup : frontendUserGroup}" class="btn btn--secondary">
+                                                    <f:link.action action="delete" arguments="{service : service}" class="btn btn--secondary">
                                                         <f:translate key="templates_service_list.resignService" />
                                                     </f:link.action>
                                                 </div>
@@ -49,27 +72,7 @@
                                         </f:if>
                                     </f:then>
                                     <f:else>
-                                        <f:if condition="<vh:isGroupInServiceInquiryListAndEnabledByAdmin groupId='{frontendUserGroup.uid}' serviceInquiries='{serviceInquiriesAdmin}' /> == 1">
-                                            <f:then>
-                                                <div class="system-message" role="alert">
-                                                    <div class="system-message__item system-message__item--alert-error">
-                                                        <f:translate key="templates_service_list.additionalProfileData" />
-                                                    </div>
-                                                </div>
-                                                <div class="btn-list">
-                                                    <f:link.action pageUid="{editUserPid}" action="editUser" controller="Registration" class="btn btn--primary">
-                                                        <f:translate key="templates_service_list.checkProfile" />
-                                                    </f:link.action>
-                                                </div>
-                                            </f:then>
-                                            <f:else>
-                                                <div class="system-message" role="alert">
-                                                    <div class="system-message__item system-message__item--alert-error">
-                                                        <f:translate key="templates_service_list.adminRequestPending" />
-                                                    </div>
-                                                </div>
-                                            </f:else>
-                                        </f:if>
+
                                     </f:else>
                                 </f:if>
                             </f:then>

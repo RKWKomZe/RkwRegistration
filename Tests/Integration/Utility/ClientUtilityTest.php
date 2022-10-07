@@ -1,12 +1,6 @@
 <?php
 namespace RKW\RkwRegistration\Tests\Integration\Utility;
 
-
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-
-use RKW\RkwRegistration\Utility\ClientUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,10 +13,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use RKW\RkwRegistration\Utility\ClientUtility;
+
 /**
  * ClientUtilityTest
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
+ * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -46,7 +45,7 @@ class ClientUtilityTest extends FunctionalTestCase
      * Setup
      * @throws \Exception
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Global.xml');
@@ -62,35 +61,69 @@ class ClientUtilityTest extends FunctionalTestCase
             ]
         );
 
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-
     }
 
+    #==============================================================================
 
     /**
      * @test
      */
-    public function getIpReturnsIp ()
+    public function getIpReturnsLocalHost ()
     {
         /**
          * Scenario:
          *
-         * When an IP is read out
-         * An IP is returned
+         * Given a request without a proxy
+         * Given no remote-address is set
+         * When the method is called
+         * Then localhost is returned
          */
 
-        /** @var ClientUtility $utility */
-        $utility = GeneralUtility::makeInstance(ClientUtility::class);
-        $ipAddress = $utility::getIp();
-
-        static::assertEquals('127.0.0.1', $ipAddress);
+        static::assertEquals('127.0.0.1', ClientUtility::getIp());
     }
 
+    /**
+     * @test
+     */
+    public function getIpReturnsClientIp ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a request without a proxy
+         * Given $_SERVER['REMOTE_ADDR'] is set
+         * When the method is called
+         * Then the remote-address is returned
+         */
+
+        $_SERVER['REMOTE_ADDR'] = '1.1.2.1';
+        static::assertEquals('1.1.2.1', ClientUtility::getIp());
+    }
+
+    /**
+     * @test
+     */
+    public function getIpReturnsClientIpWithProxy ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a request with a proxy
+         * Given $_SERVER['HTTP_X_FORWARDED_FOR'] is set
+         * When the method is called
+         * Then the first IP in $_SERVER['HTTP_X_FORWARDED_FOR']  is returned
+         */
+
+        $_SERVER['REMOTE_ADDR'] = '1.1.2.1, 2.2.1.2, 3.3.2.3';
+        static::assertEquals('1.1.2.1', ClientUtility::getIp());
+    }
+
+    #==============================================================================
 
     /**
      * TearDown
      */
-    protected function tearDown()
+    protected function teardown(): void
     {
         parent::tearDown();
     }

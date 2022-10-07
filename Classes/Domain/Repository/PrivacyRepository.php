@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Domain\Repository;
 
 /*
@@ -15,7 +14,8 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwRegistration\Domain\Model\Registration;
+use RKW\RkwRegistration\Domain\Model\OptIn;
+use RKW\RkwRegistration\Domain\Model\Privacy;
 
 /**
  * PrivacyRepository
@@ -26,22 +26,21 @@ use RKW\RkwRegistration\Domain\Model\Registration;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class PrivacyRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class PrivacyRepository extends AbstractRepository
 {
 
     /**
-     * function findByRegistration
+     * function findByOptIn
      *
-     * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
-     * @return \RKW\RkwRegistration\Domain\Model\Privacy|object|null
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
+     * @return \RKW\RkwRegistration\Domain\Model\Privacy|null
      */
-    public function findOneByRegistration(Registration $registration)
+    public function findOneByOptIn(OptIn $optIn): ?Privacy
     {
         $query = $this->createQuery();
-        // deprecated line: Hard cut, no more global storage pid
-        //$query->getQuerySettings()->setRespectStoragePage(false);
+
         $query->matching(
-            $query->equals('registrationUserSha1', $registration->getUserSha1())
+            $query->equals('registrationUserSha1', $optIn->getTokenUser())
         );
 
         return $query->execute()->getFirst();

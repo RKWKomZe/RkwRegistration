@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Controller;
 
 /*
@@ -14,14 +13,16 @@ namespace RKW\RkwRegistration\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Register\FrontendUserRegister;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use RKW\RkwRegistration\Utility\FrontendUserUtility;
+use RKW\RkwRegistration\Validation\FrontendUserValidator;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -36,12 +37,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
 {
-    /**
-     * ID of logged in FrontendUser
-     *
-     * @var integer
-     */
-    protected $frontendUserId;
 
     /**
      * logged in FrontendUser
@@ -55,7 +50,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
      * FrontendUserRepository
      *
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $frontendUserRepository;
 
@@ -64,7 +59,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
      * GuestUserRepository
      *
      * @var \RKW\RkwRegistration\Domain\Repository\GuestUserRepository
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $guestUserRepository;
 
@@ -79,14 +74,14 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
      * Persistence Manager
      *
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $persistenceManager;
 
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     * @inject
+     * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $objectManager;
 
@@ -125,30 +120,12 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
     /**
      * Returns current logged in user object
      *
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|NULL
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|null
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
-    protected function getFrontendUser()
+    protected function getFrontendUser(): ?FrontendUser
     {
-
-        if (!$this->frontendUser) {
-
-            // Guest user?
-            $guestUser = $this->guestUserRepository->findByUid(FrontendUserSessionUtility::getFrontendUserId());
-
-            if ($guestUser instanceof GuestUser) {
-                $this->frontendUser = $guestUser;
-
-            } else {
-
-                // Or standard user?
-                $frontendUser = $this->frontendUserRepository->findByUid(FrontendUserSessionUtility::getFrontendUserId());
-                if ($frontendUser instanceof FrontendUser) {
-                    $this->frontendUser = $frontendUser;
-                }
-            }
-        }
-
-        return $this->frontendUser;
+        return FrontendUserSessionUtility::getLoggedInUser();
     }
 
 
@@ -158,6 +135,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     protected function redirectIfUserHasNoValidEmail(): void
     {
@@ -165,13 +143,8 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
         // if not redirect to edit form
         if ($this->getFrontendUser()) {
 
-            /** @var frontendUserRegister $frontendUserRegister */
-            $frontendUserRegister = $this->objectManager->get(
-                FrontendUserRegister::class,
-                $this->getFrontendUser()
-            );
+            if (!FrontendUserUtility::isEmailValid($this->getFrontendUser()->getEmail())) {
 
-            if (!$frontendUserRegister->validateEmail()) {
                 $this->addFlashMessage(
                     LocalizationUtility::translate(
                         'abstractController.message.enter_valid_email',
@@ -182,14 +155,17 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
                 if ($this->settings['users']['editUserPid']) {
                     $this->redirect(
                         'editUser',
-                        'Registration',
+                        'FrontendUser',
                         null,
                         [],
                         $this->settings['users']['editUserPid']
                     );
                 }
 
-                $this->redirect('index');
+                $this->redirect(
+                    'index',
+                    'FrontendUser',
+                );
             }
         }
     }
@@ -198,9 +174,10 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
     /**
      * Checks if user is logged in and redirects to login (if defined)
      *
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @return void
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      */
     protected function redirectIfUserNotLoggedIn(): void
     {
@@ -211,55 +188,21 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
 
 
     /**
-     * Checks if user has filled out all mandatory fields and redirects to profile page (if defined)
+     * Checks if user is logged in as guest and redirects to login (if defined)
      *
      * @return void
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      */
-    protected function redirectIfUserHasMissingData(): void
+    protected function redirectIfUserNotLoggedInOrGuest(): void
     {
-        // check if user has an email-address!
-        // if not redirect to edit form
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        if ($frontendUser = $this->getFrontendUser()) {
-
-            $requiredFields = [];
-            if ($this->settings['users']['requiredFormFields']) {
-                $requiredFields = explode(
-                    ',',
-                    str_replace(
-                        ' ',
-                        '',
-                        $this->settings['users']['requiredFormFields']
-                    )
-                );
-            }
-
-            foreach ($requiredFields as $field) {
-                $getter = 'get' . ucfirst($field);
-                if (!$frontendUser->$getter()) {
-
-                    $this->addFlashMessage(
-                        LocalizationUtility::translate(
-                            'abstractController.message.enter_mandatory_fields',
-                            'rkw_registration'
-                        )
-                    );
-
-                    if ($this->settings['users']['editUserPid']) {
-                        $this->redirect(
-                            'edit',
-                            'FrontendUser',
-                            null,
-                            [],
-                            $this->settings['users']['editUserPid']
-                        );
-                    }
-
-                    $this->redirect('index');
-                }
-            }
+        if (!$this->getFrontendUser()
+            || (
+                ($frontendUser = $this->getFrontendUser())
+                && ($frontendUser instanceof GuestUser))
+        ){
+            $this->redirectToLogin();
         }
     }
 
@@ -293,9 +236,60 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
             );
         }
 
-        $this->redirect('index');
+        $this->redirect(
+            'index',
+            'Auth',
+        );
     }
 
+
+    /**
+     * Checks if user has filled out all mandatory fields and redirects to profile page (if defined)
+     *
+     * @return void
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    protected function redirectIfUserHasMissingData(): void
+    {
+        // check if user has all relevant fields filled out
+        // if not redirect to edit form
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        if ($frontendUser = $this->getFrontendUser()) {
+
+            $frontendUserValidator = $this->objectManager->get(FrontendUserValidator::class);
+            $frontendUserValidator->validate($frontendUser);
+
+            if (! $frontendUserValidator->isValid($frontendUser)) {
+
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'abstractController.message.enter_mandatory_fields',
+                        'rkw_registration'
+                    ),
+                    '',
+                    AbstractMessage::WARNING
+                );
+
+                if ($this->settings['users']['editUserPid']) {
+                    $this->redirect(
+                        'edit',
+                        'FrontendUser',
+                        null,
+                        ['frontendUser' => $this->getFrontendUser()],
+                        $this->settings['users']['editUserPid']
+                    );
+                }
+
+                $this->redirect(
+                    'index',
+                    'FrontendUser',
+                );
+            }
+        }
+    }
 
 
     /**
@@ -311,39 +305,6 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
         }
 
         return $this->logger;
-    }
-
-
-
-    /**
-     * Id of logged User
-     *
-     * @deprecated Will be removed soon. Use FrontendUserSessionUtility::getFrontendUserId() instead
-     * @return integer
-     */
-    protected function getFrontendUserId(): int
-    {
-        trigger_error('This method "' . __METHOD__ . '" is deprecated and will be removed soon. Do not use it anymore.', E_USER_DEPRECATED);
-        return FrontendUserSessionUtility::getFrontendUserId();
-    }
-
-
-    /**
-     * Returns current logged in user object
-     *
-     * @deprecated Will be removed soon. Use AbstractController::getFrontendUser() instead and check with instanceof \RKW\RkwRegistration\Domain\Model\GuestUser
-     * @return \RKW\RkwRegistration\Domain\Model\GuestUser|NULL
-     */
-    protected function getFrontendUserAnonymous()
-    {
-        trigger_error('This method "' . __METHOD__ . '" is deprecated and will be removed soon. Do not use it anymore.', E_USER_DEPRECATED);
-
-        $frontendUser = $this->getFrontendUser();
-        if ($frontendUser instanceof GuestUser) {
-            return $frontendUser;
-        }
-
-        return null;
     }
 
 }

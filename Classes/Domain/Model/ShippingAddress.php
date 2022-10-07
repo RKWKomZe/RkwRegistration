@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Domain\Model;
 
 /*
@@ -40,7 +39,7 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * gender
      *
      * @var integer
-     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Validator\GenderValidator")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\GenderValidator")
      */
     protected $gender = 99;
 
@@ -60,12 +59,14 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $firstName = '';
 
+
     /**
      * lastName
      *
      * @var string
      */
     protected $lastName = '';
+
 
     /**
      * company
@@ -74,12 +75,14 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $company = '';
 
+
     /**
      * fullName
      *
      * @var string
      */
     protected $fullName = '';
+
 
     /**
      * address
@@ -88,11 +91,12 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $address = '';
 
+
     /**
      * zip
      *
      * @var string
-     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Validator\ZipValidator")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\ZipValidator")
      */
     protected $zip = '';
 
@@ -110,7 +114,7 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      */
-    public function getFrontendUser()
+    public function getFrontendUser() :? FrontendUser
     {
         return $this->frontendUser;
     }
@@ -156,7 +160,7 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return \RKW\RkwRegistration\Domain\Model\Title $title
      */
-    public function getTitle()
+    public function getTitle() :? Title
     {
         return $this->title;
     }
@@ -323,6 +327,4 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->city = $city;
     }
-
-
 }

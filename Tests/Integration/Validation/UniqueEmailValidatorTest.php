@@ -6,6 +6,7 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
 use RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Validation\FrontendUserValidator;
@@ -47,6 +48,23 @@ class UniqueEmailValidatorTest extends FunctionalTestCase
      */
     const FIXTURE_PATH = __DIR__ . '/UniqueEmailValidatorTest/Fixtures';
 
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     */
+    private $objectManager;
+
+    /**
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     */
+    private $frontendUserRepository;
+
+    /**
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
+     */
+    private $frontendUserGroupRepository;
+
+
     /**
      * @var string[]
      */
@@ -60,7 +78,7 @@ class UniqueEmailValidatorTest extends FunctionalTestCase
      * Setup
      * @throws \Exception
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -74,34 +92,77 @@ class UniqueEmailValidatorTest extends FunctionalTestCase
             ]
         );
 
-        FrontendSimulatorUtility::simulateFrontendEnvironment();
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager objectManager */
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
+        /** @var  \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository frontendUserRepository */
+        $this->frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
+
+        /** @var  \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository frontendUserGroupRepository */
+        $this->frontendUserGroupRepository = $this->objectManager->get(FrontendUserGroupRepository::class);
+
+        FrontendSimulatorUtility::simulateFrontendEnvironment(1);
     }
+
+    #==============================================================================
 
     /**
      * @test
      */
-    public function isValidWithAlreadyPersistentEmailOfExistingUserReturnsTrue ()
+    public function isValidWithInvalidEmailReturnsFalse ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given is a persistent frontendUser with a valid email-address
+         * Given a new frontendUser with a different, but invalid email-address
+         * When the validator is called
+         * Then false is returned
+         */
+
+        /** @var \RKW\RkwRegistration\Validation\UniqueEmailValidator $uniqueEmailValidator */
+        $uniqueEmailValidator = $this->objectManager->get(UniqueEmailValidator::class);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->objectManager->get(FrontendUser::class);
+        $frontendUser->setEmail('lauterbach');
+
+        // workaround start: for creating $this->result of the validator
+        $uniqueEmailValidator->validate($frontendUser);
+        // workaround end
+
+        $result = $uniqueEmailValidator->isValid($frontendUser);
+
+        static::assertFalse($result);
+
+    }
+
+
+    /**
+     * @test
+     */
+    public function isValidWithExistingUserReturnsTrue ()
     {
         /**
          * Scenario:
          *
-         * Given is a persistent FrontendUser
-         * Given is that user who is checked for it's email address
-         * When the validator is called with that FrontendUser
-         * When this users email address is validated again
-         * When the validator compares the UID of the given and of the fetched user
+         * Given is a persistent frontendUser with a valid email-address
+         * Given is that frontendUser is logged in
+         * When the validator is called
          * Then true is returned
          */
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         /** @var \RKW\RkwRegistration\Validation\UniqueEmailValidator $uniqueEmailValidator */
         $uniqueEmailValidator = $this->objectManager->get(UniqueEmailValidator::class);
 
-        /** @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository $frontendUserRepository */
-        $frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $frontendUserRepository->findByIdentifier(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(1);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
+        $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(1);
+
+        FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup);
 
         // workaround start: for creating $this->result of the validator
         $uniqueEmailValidator->validate($frontendUser);
@@ -116,19 +177,18 @@ class UniqueEmailValidatorTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function isValidWithAlreadyPersistentEmailOfNotExistingUserReturnsFalse ()
+    public function isValidWithAlreadyExistingEmailReturnsFalse ()
     {
+
         /**
          * Scenario:
          *
-         * Given is a persistent FrontendUser
-         * Given is a new FrontendUser with an equal email address which already exists
+         * Given is a persistent frontendUser with a valid email-address
+         * Given a new frontendUser with the same valid email-address
          * When the validator is called
          * Then false is returned
          */
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         /** @var \RKW\RkwRegistration\Validation\UniqueEmailValidator $uniqueEmailValidator */
         $uniqueEmailValidator = $this->objectManager->get(UniqueEmailValidator::class);
 
@@ -149,24 +209,24 @@ class UniqueEmailValidatorTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function isValidWithNotExistingEmailReturnsTrue ()
+    public function isValidReturnsTrue ()
     {
+
         /**
          * Scenario:
          *
-         * Given is a new FrontendUser with a not existing email address
+         * Given is a persistent frontendUser with a valid email-address
+         * Given a new frontendUser with a different valid email-address
          * When the validator is called
          * Then true is returned
          */
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         /** @var \RKW\RkwRegistration\Validation\UniqueEmailValidator $uniqueEmailValidator */
         $uniqueEmailValidator = $this->objectManager->get(UniqueEmailValidator::class);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->objectManager->get(FrontendUser::class);
-        $frontendUser->setEmail('best@of.de');
+        $frontendUser->setEmail('merkel@cdu.de');
 
         // workaround start: for creating $this->result of the validator
         $uniqueEmailValidator->validate($frontendUser);
@@ -177,46 +237,12 @@ class UniqueEmailValidatorTest extends FunctionalTestCase
         static::assertTrue($result);
     }
 
-
-    /**
-     * @test
-     */
-    public function isValidWithFaultyEmailReturnsFalse ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given is a new FrontendUser with a faulty email address
-         * When the validator is called
-         * Then false is returned
-         */
-
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var \RKW\RkwRegistration\Validation\UniqueEmailValidator $uniqueEmailValidator */
-        $uniqueEmailValidator = $this->objectManager->get(UniqueEmailValidator::class);
-
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->objectManager->get(FrontendUser::class);
-        $frontendUser->setEmail('bestofde');
-
-        // workaround start: for creating $this->result of the validator
-        $uniqueEmailValidator->validate($frontendUser);
-        // workaround end
-
-        $result = $uniqueEmailValidator->isValid($frontendUser);
-
-        static::assertFalse($result);
-    }
-
-
-
-
+    #==============================================================================
 
     /**
      * TearDown
      */
-    protected function tearDown()
+    protected function teardown(): void
     {
         FrontendSimulatorUtility::resetFrontendEnvironment();
         parent::tearDown();

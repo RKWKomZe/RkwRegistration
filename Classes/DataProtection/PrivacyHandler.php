@@ -16,8 +16,8 @@ namespace RKW\RkwRegistration\DataProtection;
  */
 
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\OptIn;
 use RKW\RkwRegistration\Domain\Model\Privacy;
-use RKW\RkwRegistration\Domain\Model\Registration;
 use RKW\RkwRegistration\Domain\Repository\PrivacyRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
@@ -60,13 +60,15 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      */
     protected static function setPrivacyData(
-        Privacy $privacy,
         Request $request,
         FrontendUser $frontendUser = null,
         AbstractEntity $referenceObject = null,
         string $comment = '',
         bool $isOptInFinal = false
-    ): void {
+    ): Privacy {
+
+        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $privacy */
+        $privacy = GeneralUtility::makeInstance(Privacy::class);
 
         // set frontendUser
         if ($frontendUser) {
@@ -77,7 +79,7 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
         if ($referenceObject) {
             if (
                 ($isOptInFinal)
-                && ($referenceObject instanceof Registration)
+                && ($referenceObject instanceof OptIn)
             ) {
                 self::setReferenceObjectInfo($privacy, $referenceObject->getData());
             } else {
@@ -119,22 +121,24 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
         // set parent privacy entry in final step on opt-in
         if (
             ($isOptInFinal)
-            && ($referenceObject instanceof Registration)
+            && ($referenceObject instanceof OptIn)
         ) {
 
             // get optIn privacy-entry via registrationUserSha1, because uid may be already re-used and cleanup reference in parent here
-            /** @var ObjectManager $objectManager */
+            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-            /** @var PrivacyRepository $privacyRepository */
+            /** @var \RKW\RkwRegistration\Domain\Repository\PrivacyRepository $privacyRepository */
             $privacyRepository = $objectManager->get(PrivacyRepository::class);
-            $privacyParent = $privacyRepository->findOneByRegistration($referenceObject);
+            $privacyParent = $privacyRepository->findOneByOptIn($referenceObject);
             if ($privacyParent) {
                 $privacy->setParent($privacyParent);
                 $privacyParent->setRegistrationUserSha1('');
                 $privacyRepository->update($privacyParent);
             }
         }
+
+        return $privacy;
     }
 
 
@@ -150,8 +154,8 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
         Privacy $privacy,
         $referenceObject
     ): bool {
-        
-        /** @var ObjectManager $objectManager */
+
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
         /** @var DataMapper $dataMapper */
@@ -163,33 +167,33 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
 
             if ($referenceObject instanceof AbstractEntity) {
                 $privacy->setForeignTable(filter_var(
-                    $dataMapper->getDataMap(get_class($referenceObject))->getTableName(), 
+                    $dataMapper->getDataMap(get_class($referenceObject))->getTableName(),
                     FILTER_SANITIZE_STRING
                 ));
-                
+
                 return true;
             }
 
-            // else we determine the concrete foreignTable and foreignUid
+        // else we determine the concrete foreignTable and foreignUid
         } else {
             if ($referenceObject instanceof AbstractEntity) {
 
                 $privacy->setForeignTable(filter_var(
-                    $dataMapper->getDataMap(get_class($referenceObject))->getTableName(), 
+                    $dataMapper->getDataMap(get_class($referenceObject))->getTableName(),
                     FILTER_SANITIZE_STRING
                 ));
                 $privacy->setForeignUid($referenceObject->getUid());
 
                 // additional: Set registration, if $referenceObject is of type \RKW\RkwRegistration\Domain\Model\Registration
                 // -> we need to set this to identify it on successful optIn (for creating a parent-relationship)
-                if ($referenceObject instanceof Registration) {
-                    $privacy->setRegistrationUserSha1($referenceObject->getUserSha1());
+                if ($referenceObject instanceof OptIn) {
+                    $privacy->setRegistrationUserSha1($referenceObject->getTokenUser());
                 }
-                
+
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -202,7 +206,7 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
      *
      * @param \TYPO3\CMS\Extbase\Mvc\Request $request
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
      * @param string $comment
      * @return \RKW\RkwRegistration\Domain\Model\Privacy
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
@@ -213,27 +217,11 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
     public static function addPrivacyDataForOptIn(
         Request $request,
         FrontendUser $frontendUser,
-        Registration $registration,
+        OptIn $optIn,
         string $comment = ''
     ): Privacy {
 
-        /** @var Privacy $privacy */
-        $privacy = GeneralUtility::makeInstance(Privacy::class);
-        self::setPrivacyData($privacy, $request, $frontendUser, $registration, $comment);
-
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-        /** @var PrivacyRepository $privacyRepository */
-        $privacyRepository = $objectManager->get(PrivacyRepository::class);
-        $privacyRepository->add($privacy);
-
-        // @toDo: should normally be called in the context of RKW\RkwRegistration\Service\RegistrationService where already persistence happens
-        /** @var PersistenceManager $persistenceManager */
-        // $persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-        // $persistenceManager->persistAll();
-
-        return $privacy;
+        return self::addPrivacyData($request, $frontendUser, $optIn, $comment);
     }
 
 
@@ -243,9 +231,9 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
      *
      * @param \TYPO3\CMS\Extbase\Mvc\Request $request
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Registration|null $registration
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn|null $optIn
      * @param string $comment
-     * @return Privacy
+     * @return \RKW\RkwRegistration\Domain\Model\Privacy
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
@@ -254,26 +242,24 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
     public static function addPrivacyDataForOptInFinal(
         Request $request,
         FrontendUser $frontendUser,
-        Registration $registration = null,
+        OptIn $optIn = null,
         string $comment = ''
     ): Privacy {
-        
-        /** @var Privacy $privacy */
-        $privacy = GeneralUtility::makeInstance(Privacy::class);
 
-        self::setPrivacyData($privacy, $request, $frontendUser, $registration, $comment, true);
+        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $privacy */
+        $privacy = self::setPrivacyData($request, $frontendUser, $optIn, $comment, true);
 
-        /** @var ObjectManager $objectManager */
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-        /** @var PrivacyRepository $privacyRepository */
+        /** @var \RKW\RkwRegistration\Domain\Repository\PrivacyRepository $privacyRepository */
         $privacyRepository = $objectManager->get(PrivacyRepository::class);
         $privacyRepository->add($privacy);
 
-        // @toDo: should normally be called in the context of RKW\RkwRegistration\Service\RegistrationService where already persistence happens
-        /** @var PersistenceManager $persistenceManager */
-        // $persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-        // $persistenceManager->persistAll();
+        // @todo: should normally be called in the context of RKW\RkwRegistration\Service\RegistrationService where already persistence happens
+        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager $persistenceManager */
+        $persistenceManager = $objectManager->get(PersistenceManager::class);
+        $persistenceManager->persistAll();
 
         return $privacy;
     }
@@ -299,25 +285,20 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
         $dataObject,
         string $comment = ''
     ): Privacy {
-        
-        /** @var Privacy $privacy */
-        $privacy = GeneralUtility::makeInstance(Privacy::class);
 
-        self::setPrivacyData($privacy, $request, $frontendUser, $dataObject, $comment);
+        $privacy = self::setPrivacyData($request, $frontendUser, $dataObject, $comment);
 
-        /** @var ObjectManager $objectManager */
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
-        /** @var PrivacyRepository $privacyRepository */
+        /** @var \RKW\RkwRegistration\Domain\Repository\PrivacyRepository $privacyRepository */
         $privacyRepository = $objectManager->get(PrivacyRepository::class);
         $privacyRepository->add($privacy);
 
-        /** @var PersistenceManager $persistenceManager */
+        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager  $persistenceManager */
         $persistenceManager = $objectManager->get(PersistenceManager::class);
         $persistenceManager->persistAll();
 
         return $privacy;
     }
-
-
 }

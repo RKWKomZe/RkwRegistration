@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Validation;
 
 /*
@@ -15,17 +14,9 @@ namespace RKW\RkwRegistration\Validation;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-use RKW\RkwRegistration\Register\GroupRegister;
-use RKW\RkwRegistration\Register\FrontendUserRegister;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Error\Error;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -33,34 +24,19 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RkwKompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator
 {
-    /**
-     * booleanValidator
-     *
-     * @var \TYPO3\CMS\Extbase\Validation\Validator\BooleanValidator
-     * @inject
-     */
-    protected $booleanValidator;
 
     /**
-     * emailAddressValidator
-     *
-     * @var \TYPO3\CMS\Extbase\Validation\Validator\EmailAddressValidator
-     * @inject
-     */
-    protected $emailAddressValidator;
-
-    /**
-     * frontendUserFormData
+     * frontendUser
      *
      * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
      */
-    protected $frontendUserFormData;
+    protected $frontendUser;
 
     /**
      * isValid
@@ -80,84 +56,64 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
     /**
      * validation
      *
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUserForm
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser $value
      * @return boolean
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function isValid($frontendUserForm)
+    public function isValid($value): bool
     {
-        $this->frontendUserFormData = $frontendUserForm;
+        $this->frontendUser = $value;
 
         // get required fields of user
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var FrontendUserRegister $register */
-        $register = $objectManager->get(FrontendUserRegister::class, $this->frontendUserFormData);
-        $this->requiredFields = $register->getMandatoryFields();
+        $this->requiredFields = FrontendUserUtility::getMandatoryFields($this->frontendUser);
 
-        // do checks
-        $this->checkEmailOfExistingUser();
-        if (!empty($this->frontendUserFormData->getEmail())) {
-            // empty values are covered in "checkMandatoryFields" function
-            $this->checkEmailOfNewUserIsValid();
-            $this->checkEmailOfNewUserIsAvailable();
-        }
+        // is username unique?
+        $this->checkUsername();
+
+        // is email valid?
+        $this->checkEmail();
+
+        // is zip valid?
         $this->checkZip();
+
+        // check mandatory fields
         $this->checkMandatoryFields();
 
         return $this->isValid;
     }
 
 
-
     /**
-     * checkIfEmailAddressAlreadyAssigned
+     * checkUsername
      *
      * @return void
      */
-    protected function checkEmailOfExistingUser()
+    protected function checkUsername()
     {
-        // user may not be able to use the email address of another person
-        // only relevant for existing users
-        if ($this->frontendUserFormData->getUid()) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            /** @var FrontendUserRepository $frontendUserRepository */
-            $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
-            $frontendUser = $frontendUserRepository->findOneByEmailOrUsernameAlsoInactive($this->frontendUserFormData->getEmail());
-
-            if ($frontendUser) {
-                if ($frontendUser->getUid() != $this->frontendUserFormData->getUid()) {
-                    $this->result->forProperty('email')->addError(
-                        new Error(
-                            LocalizationUtility::translate(
-                                'validator.email_alreadyassigned',
-                                'rkw_registration'
-                            ), 1406119134
-                        )
-                    );
-                    $this->isValid = false;
-                }
-            }
+        // we have to take the email from the form because the username is never asked for in forms
+        if (! FrontendUserUtility::isUsernameUnique($this->frontendUser->getEmail(), FrontendUserSessionUtility::getLoggedInUser())) {
+            $this->result->forProperty('email')->addError(
+                new Error(
+                    LocalizationUtility::translate(
+                        'registrationController.error.username_exists',
+                        'rkw_registration'
+                    ), 1628688993
+                )
+            );
+            $this->isValid = false;
         }
     }
 
 
-
     /**
-     * checkEmailAddress
+     * checkEmail
      *
      * @return void
      */
-    protected function checkEmailOfNewUserIsValid()
+    protected function checkEmail()
     {
-        // check valid email
-        if (in_array('email', $this->requiredFields)) {
-
-            $objectManager = \RKW\RkwBasics\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-            /** @var FrontendUserRegister $frontendUserRegister */
-            $frontendUserRegister = $objectManager->get(FrontendUserRegister::class, $this->frontendUserFormData);
-
-            if (!$frontendUserRegister->validateEmail()) {
-
+        if ($this->frontendUser->getEmail()) {
+            if (!FrontendUserUtility::isEmailValid($this->frontendUser->getEmail())) {
                 $this->result->forProperty('email')->addError(
                     new Error(
                         LocalizationUtility::translate(
@@ -173,40 +129,6 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
 
 
     /**
-     * checkEmailAddress
-     *
-     * @return void
-     */
-    protected function checkEmailOfNewUserIsAvailable()
-    {
-        // check valid email
-        if (in_array('email', $this->requiredFields)) {
-
-            $objectManager = \RKW\RkwBasics\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-            /** @var FrontendUserRegister $frontendUserRegister */
-            $frontendUserRegister = $objectManager->get(FrontendUserRegister::class, $this->frontendUserFormData);
-
-            // do only check this for new registration (do NOT check this, if a logged user want to update his user data)
-            if (
-                !$frontendUserRegister->uniqueEmail()
-                && !FrontendUserSessionUtility::isUserLoggedIn()
-            ) {
-                $this->result->forProperty('email')->addError(
-                    new Error(
-                        LocalizationUtility::translate(
-                            'registrationController.error.username_exists',
-                            'rkw_registration'
-                        ), 1628688993
-                    )
-                );
-                $this->isValid = false;
-            }
-        }
-    }
-
-
-
-    /**
      * checkZip
      *
      * @return void
@@ -214,12 +136,12 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
     protected function checkZip()
     {
         // check valid zip
-        if (in_array('zip', $this->requiredFields)) {
+        if ($this->frontendUser->getZip()) {
 
-            if (!($this->frontendUserFormData->getZip())
-                || (strlen(trim($this->frontendUserFormData->getZip())) != 5)
-                || !is_numeric($this->frontendUserFormData->getZip())
+            if ((strlen(trim($this->frontendUser->getZip())) != 5)
+                || !is_numeric($this->frontendUser->getZip())
             ) {
+
                 $this->result->forProperty('zip')->addError(
                     new Error(
                         $this->translateErrorMessage(
@@ -241,24 +163,25 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
      */
     protected function checkMandatoryFields()
     {
-        $frontendUserFormData = (array)$this->frontendUserFormData;
-        foreach ($frontendUserFormData as $property => $value) {
+        foreach ($this->requiredFields as $property) {
 
-            $property = trim(substr($property, 2));
-
-            if (in_array($property, $this->requiredFields)) {
-
-                if (empty($value)) {
-                    $this->result->forProperty($property)->addError(
-                        new Error(
-                            LocalizationUtility::translate(
-                                'validator_field_notfilled',
-                                'rkw_registration'
-                            ), 1414595322
-                        )
-                    );
-                    $this->isValid = false;
-                }
+            $getter = 'get' . ucfirst($property);
+            if (
+                (empty($this->frontendUser->$getter()))
+                ||(
+                    ($property == 'txRkwregistrationGender')
+                    && ($this->frontendUser->$getter()== 99)
+                )
+            ){
+                $this->result->forProperty($property)->addError(
+                    new Error(
+                        LocalizationUtility::translate(
+                            'validator_field_notfilled',
+                            'rkw_registration'
+                        ), 1414595322
+                    )
+                );
+                $this->isValid = false;
             }
         }
     }

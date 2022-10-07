@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Controller;
 
 /*
@@ -14,18 +13,20 @@ namespace RKW\RkwRegistration\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
- 
+
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Service\AuthFrontendUserService;
 use RKW\RkwRegistration\Service\AuthService as Authentication;
-use RKW\RkwRegistration\Register\GuestUserRegister;
+use RKW\RkwRegistration\Register\GuestUserRegisterRegister;
 use RKW\RkwRegistration\Utility\RedirectUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use Snowflake\Varnish\Hooks\Frontend;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
  * Class AuthGuestController
@@ -37,85 +38,121 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class AuthGuestController extends AbstractController
 {
+
+    /**
+     * @var \RKW\RkwRegistration\Registration\FrontendUser\GuestUserRegistration
+     * @TYPO3\CMS\Extbase\Annotation\Inject
+     */
+    protected $guestUserRegistration;
+
     
+
     /**
      * action login
-     * if the current user is not logged in, create one. Unless a token is given, than re-login guest
      *
+     * @param string $token
      * @return void
      * @throws \RKW\RkwRegistration\Exception
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      */
-    public function loginAction(): void
+    public function loginAction(string $token = ''): void
     {
-        // a) ERROR: send back already logged in user. Nothing to do here
+        // send back already logged in user. Nothing to do here
         if (FrontendUserSessionUtility::isUserLoggedIn()) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'registrationController.error.anonymous_login_impossible', 
+                    'registrationController.error.anonymous_login_impossible',
                     $this->extensionName
                 ),
                 '',
                 AbstractMessage::ERROR
             );
-            $this->redirect('loginExternal', 'Auth');
+            $this->redirect('index');
         }
 
-        // b) NEW USER: if no token is given, a new guest user will be created
-        if (!$this->request->hasArgument('token')) {
+        // if no token is given, a new guest user will be created
+        // then we use his token
+        $newLogin = (bool) $token;
+        if ($newLogin) {
 
-            /** @var GuestUser $guestUser */
-            $guestUser = GeneralUtility::makeInstance(GuestUser::class);
+            if ($this->guestUserRegistration->setRequest($this->request)->startRegistration()) {
+                if ($this->guestUserRegistration->completeRegistration()) {
 
-            /** @var GuestUserRegister $guestUserRegister */
-            $guestUserRegister = $this->objectManager->get(GuestUserRegister::class, $guestUser);
-            $guestUserRegister->setClearanceAndLifetime(true);
-            $guestUserRegister->setUserGroupsOnRegister();
-            $guestUserRegister->persistAll();
-
-            FrontendUserSessionUtility::login($guestUser);
-
-            $this->redirect('loginHint');
-        }
-
-        // c) LOGIN: if token is given: Re-login guest user
-        if (
-            $this->request->hasArgument('token')
-            && $token = $this->request->getArgument('token')
-        ) {
-
-            // @toDo: Is AuthFrontendUserService correct? Or would be AuthGuestUserService the right one?
-
-            /** @var AuthFrontendUserService $authService */
-            $authService = GeneralUtility::makeInstance(AuthFrontendUserService::class);
-            if ($guestUser = $authService->authGuest($token)) {
-
-                FrontendUserSessionUtility::login($guestUser);
-
-                // redirect user
-                if (RedirectUtility::getGuestRedirectUrl()) {
-                    $this->redirectToUri(RedirectUtility::getGuestRedirectUrl());
-                } else {
-                    $this->redirect('index', 'Auth');
+                    /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+                    if ($frontendUser = $this->guestUserRegistration->getFrontendUserPersisted()) {
+                        $token = $frontendUser->getUsername();
+                    }
                 }
-            } else {
-
-                FrontendUserSessionUtility::logout();
-
-                $this->addFlashMessage(
-                    LocalizationUtility::translate(
-                        'registrationController.error.invalid_anonymous_token', $this->extensionName
-                    ),
-                    '',
-                    AbstractMessage::ERROR
-                );
             }
         }
-    }
 
+        // do login
+        $_POST['logintype'] = 'login';
+        $_POST['user'] = $token;
+        $_POST['pass'] = '';
+
+        $authService = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
+        $authService->start();
+
+        if (
+            !$authService->loginFailure
+            && $authService->loginSessionStarted
+        ) {
+
+            if ($newLogin) {
+                $this->redirect('loginHint');
+            } else {
+                if ($this->settings['users']['guestRedirectPid']) {
+
+                    /** @var UriBuilder $uriBuilder */
+                    $uriBuilder = $this->objectManager->get(UriBuilder::class);
+                    $redirectUrl = $uriBuilder->reset()
+                        ->setTargetPageUid(intval($this->settings['users']['guestRedirectPid']))
+                        ->setCreateAbsoluteUri(true)
+                        ->setLinkAccessRestrictedPages(true)
+                        ->setUseCacheHash(false)
+                        ->buildFrontendUri();
+
+                    $this->redirectToUri($redirectUrl);
+                }
+            }
+        }
+
+        // if something went wrong on the way...
+        if ($newLogin) {
+
+            $this->addFlashMessage(
+                LocalizationUtility::translate(
+                    'registrationController.error.anonymous_login_impossible',
+                    $this->extensionName
+                ),
+                '',
+                AbstractMessage::ERROR
+            );
+
+        } else {
+
+            $this->addFlashMessage(
+                LocalizationUtility::translate(
+                    'registrationController.error.invalid_anonymous_token',
+                    $this->extensionName
+                ),
+                '',
+                AbstractMessage::ERROR
+            );
+        }
+
+        $this->redirect('index');
+    }
 
 
     /**
@@ -124,6 +161,7 @@ class AuthGuestController extends AbstractController
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     public function loginHintAction(): void
     {

@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Domain\Repository;
 
 /*
@@ -26,7 +25,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class TitleRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class TitleRepository extends AbstractRepository
 {
 
     /**
@@ -36,6 +35,8 @@ class TitleRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function initializeObject()
     {
+        parent::initializeObject();
+
         /** @var $querySettings Typo3QuerySettings */
         $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
 
@@ -54,12 +55,12 @@ class TitleRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array
      */
     public function findAllOfType(
-        bool $showTitleBefore = true, 
-        bool $showTitleAfter = false, 
+        bool $showTitleBefore = true,
+        bool $showTitleAfter = false,
         bool $returnArray = false
     ) {
         $query = $this->createQuery();
-        $result = $query
+        return $query
             ->matching(
                 $query->logicalAnd(
                     $query->logicalOr(
@@ -69,7 +70,5 @@ class TitleRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     $query->equals('isChecked', true)
                 )
             )->execute($returnArray);
-
-        return $result;
     }
 }

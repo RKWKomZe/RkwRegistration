@@ -31,7 +31,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $crdate;
 
-    
+
     /**
      * @var integer
      */
@@ -49,7 +49,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $deleted = 0;
 
-    
+
     /**
      * name
      *
@@ -57,7 +57,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $name = '';
 
-    
+
     /**
      * nameFemale
      *
@@ -65,7 +65,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $nameFemale = '';
 
-    
+
     /**
      * nameLong
      *
@@ -73,7 +73,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $nameLong = '';
 
-    
+
     /**
      * nameFemaleLong
      *
@@ -81,7 +81,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $nameFemaleLong = '';
 
-    
+
     /**
      * isTitleAfter
      *
@@ -89,7 +89,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $isTitleAfter = false;
 
-    
+
     /**
      * isIncludedInSalutation
      *
@@ -97,7 +97,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $isIncludedInSalutation = false;
 
-    
+
     /**
      * isChecked
      *
@@ -105,8 +105,8 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $isChecked = false;
 
-    
-    
+
+
     /**
      * Returns the crdate value
      *
@@ -115,7 +115,6 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public function getCrdate(): int
     {
-
         return $this->crdate;
     }
 
@@ -130,7 +129,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->tstamp;
     }
-    
+
 
     /**
      * Sets the hidden value
@@ -154,7 +153,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->hidden;
     }
-    
+
 
     /**
      * Sets the deleted value
@@ -190,7 +189,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         return $this->name;
     }
 
-    
+
     /**
      * Sets the name
      *
@@ -201,7 +200,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->name = $name;
     }
-    
+
 
     /**
      * Returns the female variant of the name
@@ -212,7 +211,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->nameFemale;
     }
-    
+
 
     /**
      * Sets the female variant of the name
@@ -224,7 +223,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->nameFemale = $nameFemale;
     }
-    
+
 
     /**
      * Returns the nameLong
@@ -235,7 +234,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->nameLong;
     }
-    
+
 
     /**
      * Sets the nameLong
@@ -248,7 +247,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $this->nameLong = $nameLong;
     }
 
-    
+
     /**
      * Returns the long female variant of the name
      *
@@ -258,7 +257,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->nameFemaleLong;
     }
-    
+
 
     /**
      * Sets the long female variant of the name
@@ -271,7 +270,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $this->nameFemaleLong = $nameFemaleLong;
     }
 
-    
+
     /**
      * Returns the isTitleAfter
      *
@@ -281,7 +280,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->isTitleAfter;
     }
-    
+
 
     /**
      * Sets the isTitleAfter
@@ -294,7 +293,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $this->isTitleAfter = $isTitleAfter;
     }
 
-    
+
     /**
      * Returns the isIncludedInSalutation
      *
@@ -304,7 +303,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         return $this->isIncludedInSalutation;
     }
-    
+
 
     /**
      * Sets the isIncludedInSalutation
@@ -317,7 +316,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $this->isIncludedInSalutation = $isIncludedInSalutation;
     }
 
-    
+
     /**
      * Returns the isChecked
      *

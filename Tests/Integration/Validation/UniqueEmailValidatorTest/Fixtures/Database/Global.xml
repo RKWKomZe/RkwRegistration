@@ -34,4 +34,9 @@
         <tx_rkwregistration_twitter_id>12345</tx_rkwregistration_twitter_id>
     </fe_users>
 
+    <fe_groups>
+        <uid>1</uid>
+        <pid>1</pid>
+        <title>test</title>
+    </fe_groups>
 </dataset>

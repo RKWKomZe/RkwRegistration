@@ -14,9 +14,6 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
-
-use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
-use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
@@ -28,28 +25,11 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class FrontendUserGroupRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class FrontendUserGroupRepository extends AbstractRepository
 {
-    /**
-     * initializeObject
-     *
-     * @return void
-     */
-    public function initializeObject()
-    {
-        /** @var $querySettings Typo3QuerySettings */
-        $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
-
-        // don't add the pid constraint and enable fields
-        $querySettings->setRespectStoragePage(false);
-        $querySettings->setIgnoreEnableFields(true);
-
-        $this->setDefaultQuerySettings($querySettings);
-    }
-
 
     /**
-     * function findUserServices
+     * function findServices
      *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface<\RKW\RkwRegistration\Domain\Model\FrontendUserGroup|null>
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException

@@ -7,8 +7,7 @@ use RKW\RkwMailer\Service\MailService;
 use RKW\RkwRegistration\Domain\Model\BackendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
-use RKW\RkwRegistration\Domain\Model\Registration;
-use RKW\RkwRegistration\Domain\Model\Service;
+use RKW\RkwRegistration\Domain\Model\OptIn;
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -41,20 +40,18 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Handles create user event
      *
-     * @param FrontendUser $frontendUser
-     * @param Registration $registration
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
      * @param mixed $signalInformation
      * @return void
-     * @throws \RKW\RkwMailer\Service\MailException
+     * @throws \RKW\RkwMailer\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function handleCreateUserEvent(FrontendUser $frontendUser, Registration $registration, $signalInformation)
+    public function handleCreateUserEvent(FrontendUser $frontendUser, OptIn $optIn, $signalInformation)
     {
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -68,9 +65,10 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             // send new user an email with token
             $mailService->setTo($frontendUser, array(
                 'marker' => array(
-                    'tokenYes'        => $registration->getTokenYes(),
-                    'tokenNo'         => $registration->getTokenNo(),
-                    'userSha1'        => $registration->getUserSha1(),
+                    'tokenYes'        => $optIn->getTokenYes(),
+                    'tokenNo'         => $optIn->getTokenNo(),
+                    'userSha1'        => $optIn->getTokenUser(), /** @deprecated **/
+                    'tokenUser'       => $optIn->getTokenUser(),
                     'frontendUser'    => $frontendUser,
                     'registrationPid' => intval($settingsDefault['users']['registrationPid']),
                     'pageUid'         => intval($GLOBALS['TSFE']->id),
@@ -98,20 +96,16 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Handles register user event (after user has done his OptIn)
      *
-     * @param FrontendUser $frontendUser
-     * @param Registration $registration
-     * @param string $plaintextPassword
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn|null $optIn
      * @return void
-     * @throws \RKW\RkwMailer\Service\MailException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \RKW\RkwMailer\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function handleRegisterUserEvent(FrontendUser $frontendUser, $plaintextPassword, Registration $registration = null)
+    public function handleRegisterUserEvent(FrontendUser $frontendUser, OptIn $optIn = null)
     {
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -121,11 +115,11 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             /** @var MailService $mailService */
             $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
-            // create OptIn links now and not inside the fluid template, which will be used by the RkwMailer
-            // Reason: Only via this way we get suitable links to the current active dynamic domain
-
+            // create OptIn links here and no more inside the fluid template, which will be used by the RkwMailer
+            // Reason: Only this way we get suitable links to the current active dynamic domain
             /** @var ObjectManager objectManager */
             $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+
             /** @var UriBuilder $uriBuilder */
             $uriBuilder = $objectManager->get(UriBuilder::class);
             $uriLogin = $uriBuilder->reset()
@@ -139,13 +133,11 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
                 $frontendUser,
                 [
                     'marker' => [
-                        'plaintextPasswordForMail'  => $plaintextPassword,
+                        'plaintextPasswordForMail'  => $frontendUser->getTempPlaintextPassword(),
                         'frontendUser'              => $frontendUser,
                         'pageUid'                   => intval($GLOBALS['TSFE']->id),
-                        'loginLink'                 => $uriLogin
-
-                        // old
-                        #'loginPid'                 => intval($settingsDefault['users']['loginPid']),
+                        'loginLink'                 => $uriLogin,
+                        'loginPid'                  => intval($settingsDefault['users']['loginPid']) /** @deprectated */
                     ]
                 ]
             );
@@ -169,20 +161,17 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Handles password reset event
      *
-     * @param FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @param string $plaintextPassword
      * @param mixed $signalInformation
      * @return void
-     * @throws \RKW\RkwMailer\Service\MailException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \RKW\RkwMailer\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function handlePasswordResetEvent(FrontendUser $frontendUser, $plaintextPassword, $signalInformation)
+    public function handlePasswordResetEvent(FrontendUser $frontendUser, string $plaintextPassword, $signalInformation)
     {
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -225,24 +214,28 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Handles register user event
      *
-     * @param BackendUser $admin
-     * @param FrontendUser $frontendUser
-     * @param FrontendUserGroup $frontendUserGroup
-     * @param Service $serviceOptIn
+     * @param \RKW\RkwRegistration\Domain\Model\BackendUser $admin
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
      * @param integer $pid
      * @param mixed $signalInformation
      * @return void
-     * @throws \RKW\RkwMailer\Service\MailException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \RKW\RkwMailer\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function handleAdminServiceEvent(BackendUser $admin, FrontendUser $frontendUser, FrontendUserGroup $frontendUserGroup, Service $serviceOptIn, $pid, $signalInformation)
-    {
+    public function handleAdminServiceEvent(
+        BackendUser $admin,
+        FrontendUser $frontendUser,
+        FrontendUserGroup $frontendUserGroup,
+        OptIn $optIn,
+        int $pid,
+        $signalInformation
+    ) {
+
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         if ($settings['view']['templateRootPaths']) {
@@ -255,10 +248,12 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
                 $admin,
                 [
                     'marker' => [
-                        'tokenYes'          => $serviceOptIn->getTokenYes(),
-                        'tokenNo'           => $serviceOptIn->getTokenNo(),
-                        'serviceSha1'       => $serviceOptIn->getServiceSha1(),
-                        'service'           => $serviceOptIn,
+                        'tokenYes'          => $optIn->getTokenYes(),
+                        'tokenNo'           => $optIn->getTokenNo(),
+                        'serviceSha1'       => $optIn->getTokenUser(), /** @deprecated */
+                        'tokenUser'         => $optIn->getTokenUser(),
+                        'service'           => $optIn, /** @deprecated */
+                        'optIn'             => $optIn,
                         'frontendUser'      => $frontendUser,
                         'frontendUserGroup' => $frontendUserGroup,
                         'backendUser'       => $admin,
@@ -286,20 +281,17 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Handles register user event
      *
-     * @param FrontendUser $frontendUser
-     * @param Service $service
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
      * @param mixed $signalInformation
      * @return void
-     * @throws \RKW\RkwMailer\Service\MailException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \RKW\RkwMailer\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function handleAdminServiceGrantEvent(FrontendUser $frontendUser, Service $service, $signalInformation)
+    public function handleAdminServiceGrantEvent(FrontendUser $frontendUser, OptIn $optIn, $signalInformation): void
     {
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -314,7 +306,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
                 $frontendUser,
                 [
                     'marker' => [
-                        'service'      => $service,
+                        'service'      => $optIn, /** @deprecated */
+                        'optIn'        => $optIn,
                         'frontendUser' => $frontendUser,
                         'pageUid'      => intval($GLOBALS['TSFE']->id),
                         'loginPid'     => intval($settingsDefault['users']['loginPid']),
@@ -342,20 +335,17 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Handles register user event
      *
-     * @param FrontendUser $frontendUser
-     * @param Service $service
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
      * @param mixed $signalInformation
      * @return void
-     * @throws \RKW\RkwMailer\Service\MailException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \RKW\RkwMailer\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function handleAdminServiceDenialEvent(FrontendUser $frontendUser, Service $service, $signalInformation)
+    public function handleAdminServiceDenialEvent(FrontendUser $frontendUser, OptIn $optIn, $signalInformation)
     {
 
         // get settings
@@ -370,7 +360,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
                 $frontendUser,
                 [
                     'marker' => [
-                        'service'      => $service,
+                        'service'      => $optIn, /** @deprecated */
+                        'optIn'        => $optIn,
                         'frontendUser' => $frontendUser,
                         'pageUid'      => intval($GLOBALS['TSFE']->id),
                     ]
@@ -402,7 +393,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
+    protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
     {
         return GeneralUtility::getTyposcriptConfiguration('Rkwregistration', $which);
     }

@@ -18,7 +18,7 @@ namespace RKW\RkwRegistration\Tools;
 /**
  * Class Registration
  *
- * @deprecated This class is deprecated and will be removed soon. Use  KW\RkwRegistration\Register\OptInRegister instead.
+ * @deprecated This class is deprecated and will be removed soon. Use RKW\RkwRegistration\Register\OptInRegister instead.
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
@@ -26,7 +26,7 @@ namespace RKW\RkwRegistration\Tools;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Registration extends \RKW\RkwRegistration\Register\OptInRegister
+class Registration extends \RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration
 {
 
     /**

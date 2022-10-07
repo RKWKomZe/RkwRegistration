@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Validation;
 
 /*
@@ -15,10 +14,9 @@ namespace RKW\RkwRegistration\Validation;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use TYPO3\CMS\Extbase\Error\Error;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
@@ -37,64 +35,44 @@ class UniqueEmailValidator extends AbstractValidator
     /**
      * validation
      *
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser $givenFrontendUser
      * @return boolean
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser $value
      */
-    public function isValid($givenFrontendUser): bool
+    public function isValid($value): bool
     {
 
-        // check if given E-Mail is valid at all
+        // check if given eMail is valid at all
         if (
-            ($email = $givenFrontendUser->getEmail())
-            && (GeneralUtility::validEmail($email))
-        ) {
+            (! $email = $value->getEmail())
+            || (! FrontendUserUtility::isEmailValid($email))
+        ){
+            $this->result->forProperty('email')->addError(
+                new Error(
+                    LocalizationUtility::translate(
+                        'validator.email_invalid',
+                        'rkw_registration'
+                    ), 1434966688
+                )
+            );
 
-            // user may not be able to accept the email address of another person
-            /** @var ObjectManager $objectManager */
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            
-            /** @var FrontendUserRepository $frontendUserRepository */
-            $frontendUserRepository = $objectManager->get(FrontendUserRepository::class);
-
-            // check email is still available
-            if ($frontendUser = $frontendUserRepository->findOneByEmailOrUsernameAlsoInactive($email)) {
-
-
-                // @toDo by MF:
-                // Ist das wirklich logisch, hier bei identischer UID durchzuwinken? Oder sollte man alternativ den eingeloggten
-                // FrontendUser aus der Session holen und abgleichen?
-                
-
-                // for registered User
-                if ($frontendUser->getUid() != $givenFrontendUser->getUid()
-                    || !$givenFrontendUser->getUid()
-                ) {
-
-                    $this->result->forProperty('email')->addError(
-                        new Error(
-                            LocalizationUtility::translate(
-                                'validator.email_alreadyassigned',
-                                'rkw_registration'
-                            ), 1406119134
-                        )
-                    );
-
-                    return false;
-                }
-            }
-
-            return true;
+            return false;
         }
 
-        $this->result->forProperty('email')->addError(
-            new Error(
-                LocalizationUtility::translate(
-                    'validator.email_invalid',
-                    'rkw_registration'
-                ), 1434966688
-            )
-        );
+        // check if given eMail is unique
+        if (! FrontendUserUtility::isUsernameUnique($email, FrontendUserSessionUtility::getLoggedInUser())) {
+            $this->result->forProperty('email')->addError(
+                new Error(
+                    LocalizationUtility::translate(
+                        'validator.email_alreadyassigned',
+                        'rkw_registration'
+                    ), 1406119134
+                )
+            );
 
-        return false;
+            return false;
+        }
+
+        return true;
     }
 }

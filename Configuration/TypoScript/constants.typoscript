@@ -29,8 +29,6 @@ plugin.tx_rkwregistration {
 
         users {
 
-			# cat=plugin.tx_rkwregistration//a; type=integer; label=Storage Pid
-			storagePid =
 
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of login mask
 			loginPid =
@@ -84,7 +82,7 @@ plugin.tx_rkwregistration {
             lifetime =
 
             # cat=plugin.tx_rkwregistration//a; type=integer; label=DEPRECATED! Lifetime of registered anonymous users (default = 7776000 = 90 days)
-            # @toDo @deprecated
+            # @todo @deprecated
             lifetimeAnonymous = 7776000
 
             # cat=plugin.tx_rkwregistration//a; type=integer; label=Lifetime of registered guest users (default = 7776000 = 90 days)
@@ -95,7 +93,7 @@ plugin.tx_rkwregistration {
 
             # cat=plugin.tx_rkwregistration//a; type=string; label=Register mandatory fields
             # values must be comma-separated
-            requiredFormFields = email, firstName, lastName
+            requiredFormFields = email, firstName, lastName, zip
 
             passwordSettings {
                 # cat=plugin.tx_rkwregistration//a; type=integer; label=Minimum password length (default = 8)
