@@ -22,8 +22,6 @@
         <tx_rkwregistration_facebook_url>https://www.facebook.com/lauterbach</tx_rkwregistration_facebook_url>
         <tx_rkwregistration_twitter_url>https://www.twitter.com/lauterbach</tx_rkwregistration_twitter_url>
         <tx_rkwregistration_xing_url>https://www.xing.de/lauterbach</tx_rkwregistration_xing_url>
-        <tx_rkwregistration_facebook_id>12345</tx_rkwregistration_facebook_id>
-        <tx_rkwregistration_twitter_id>12345</tx_rkwregistration_twitter_id>
     </fe_users>
 
     <tx_rkwregistration_domain_model_privacy>

@@ -14,6 +14,7 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\OptIn;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
@@ -75,20 +76,46 @@ class OptInRepository extends AbstractRepository
     /**
      * find expired opt-ins
      *
+     * @param int $daysExpired
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @api Used for cleanup via CLI
      */
-    public function findExpired(): QueryResultInterface
+    public function findExpired(int $daysExpired = 0): QueryResultInterface
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
         $query->getQuerySettings()->setRespectStoragePage(false);
 
-        return $query
-            ->matching(
-                $query->lessThan('endtime', time())
+        return $query->matching(
+            $query->logicalAnd(
+                $query->greaterThan('endtime', 0),
+                $query->lessThanOrEqual('endtime', (time() - ($daysExpired * 24 * 60 * 60)))
             )
-            ->execute();
+
+        )->execute();
     }
+
+
+    /**
+     * Find all pending group-memberships by frontendUser
+     *
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface<\RKW\RkwRegistration\Domain\Model\OptIn|null>
+     */
+    public function findPendingGroupMembershipsByFrontendUser(
+        FrontendUser $frontendUser
+    ): QueryResultInterface
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+
+        return $query->matching(
+            $query->logicalAnd(
+                $query->equals('frontendUserUid', $frontendUser->getUid()),
+                $query->equals('foreignTable', 'fe_groups')
+            )
+        )->execute();
+    }
+
 }

@@ -5,10 +5,10 @@
 
     <f:section name="main">
 
-        <h2><f:translate key="templates_registration_editUser.headline" /></h2>
+        <h2><f:translate key="templates_frontendUser_edit.headline" /></h2>
 
         <f:render partial="FlashMessages" arguments="{_all}" />
-        <f:render partial="FormErrors" arguments="{object:frontendUser}"/>
+        <f:render partial="FormErrors" arguments="{for:frontendUser}"/>
 
         <f:form
             action="update"
@@ -21,12 +21,12 @@
                     <f:render partial="FrontendUser/FormFields" arguments="{_all}" />
 
                     <div class="btn-list btn-list--footer">
-                        <f:link.action pageUid="{welcomePid}" action="index" controller="Registration" class="btn btn--secondary">
-                            <f:translate key="templates_registration_editUser.labelBack"/>
+                        <f:link.action pageUid="{settings.users.welcomePid}" action="index" controller="Registration" class="btn btn--secondary">
+                            <f:translate key="templates_frontendUser_edit.labelBack"/>
                         </f:link.action>
 
                         <button type="submit" class="btn btn--primary">
-                            <f:translate key="templates_registration_editUser.labelSave" />
+                            <f:translate key="templates_frontendUser_edit.labelSave" />
                         </button>
                     </div>
                 </div>

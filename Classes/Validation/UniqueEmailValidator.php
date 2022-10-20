@@ -64,7 +64,7 @@ class UniqueEmailValidator extends AbstractValidator
             $this->result->forProperty('email')->addError(
                 new Error(
                     LocalizationUtility::translate(
-                        'validator.email_alreadyassigned',
+                        'validator.email_already_assigned',
                         'rkw_registration'
                     ), 1406119134
                 )

@@ -76,13 +76,15 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
         $settings = GeneralUtility::getTyposcriptConfiguration('Rkwregistration');
         $this->passwordSettings = $settings['users']['passwordSettings'];
 
-        $this->checkNewPasswordGiven();
         $this->checkOldPasswordGiven();
-        $this->checkOldPasswordValid();
-        $this->checkEquality();
-        $this->checkLength();
-        $this->checkMandatorySigns();
+        $this->checkNewPasswordGiven();
 
+        if ($this->isValid) {
+            $this->checkOldPasswordValid();
+            $this->checkEquality();
+            $this->checkLength();
+            $this->checkMandatorySigns();
+        }
 
         return $this->isValid;
     }

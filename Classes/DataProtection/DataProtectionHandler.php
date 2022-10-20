@@ -1,7 +1,5 @@
 <?php
-
 namespace RKW\RkwRegistration\DataProtection;
-
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -45,12 +43,17 @@ class DataProtectionHandler
      */
     protected $frontendUserRepository;
 
-
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\EncryptedDataRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $encryptedDataRepository;
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     * @TYPO3\CMS\Extbase\Annotation\Inject
+     */
+    protected $persistenceManager;
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManager
@@ -70,7 +73,7 @@ class DataProtectionHandler
      */
     protected $encryptionKey;
 
-    
+
     /***
      * @param string $encryptionKey
      * @return void
@@ -80,33 +83,38 @@ class DataProtectionHandler
         $this->encryptionKey = $encryptionKey;
     }
 
-    
+
     /**
      * Deletes expired and disabled frontend users after x days (only sets deleted = 1)
      *
-     * @param int $deleteExpiredAndDisabledAfterDays
+     * @param int $daysExpired
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     * @return void
+     * @return int
      */
-    public function deleteAllExpiredAndDisabled (int $deleteExpiredAndDisabledAfterDays = 30): void
+    public function deleteAllExpiredAndDisabled (int $daysExpired = 7): int
     {
+        $cnt = 0;
         $settings = $this->getSettings();
-        if (! $deleteExpiredAndDisabledAfterDays) {
-            $deleteExpiredAndDisabledAfterDays = intval($settings['dataProtection']['deleteExpiredAndDisabledAfterDays']) ? intval($settings['dataProtection']['deleteExpiredAndDisabledAfterDays']) : 30;
-        }
 
         if (
-            ($frontendUserList = $this->frontendUserRepository->findExpiredAndDisabledSinceDays($deleteExpiredAndDisabledAfterDays))
+            ($frontendUserList = $this->frontendUserRepository->findExpired($daysExpired))
             && (count($frontendUserList))
         ) {
             /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
             foreach ($frontendUserList as $frontendUser) {
                 $this->frontendUserRepository->remove($frontendUser);
-                $this->getLogger()->log(LogLevel::INFO, sprintf('Deleted expired or disabled user with id %s.', $frontendUser->getUid()));
+                $this->getLogger()->log(LogLevel::INFO, sprintf(
+                    'Deleted expired or disabled user with id %s.',
+                    $frontendUser->getUid())
+                );
+                $cnt++;
             }
+            $this->persistenceManager->persistAll();
         }
+
+        return $cnt;
     }
 
 
@@ -122,20 +130,17 @@ class DataProtectionHandler
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \RKW\RkwRegistration\Exception
-     * @return void
+     * @return bool
      */
-    public function anonymizeAndEncryptAll (int $anonymizeAfterDays = 30): void
+    public function anonymizeAndEncryptAll (int $anonymizeAfterDays = 30): bool
     {
         $settings = $this->getSettings();
         $mappings = $settings['dataProtection']['classes'];
-        if (! $anonymizeAfterDays) {
-            $anonymizeAfterDays = intval($settings['dataProtection']['anonymizeDeletedAfterDays']) ? intval($settings['dataProtection']['anonymizeDeletedAfterDays']) : 30;
-        }
 
         if (
             (is_array($mappings))
             && (count($mappings))
-            && ($frontendUserList = $this->frontendUserRepository->findDeletedSinceDays($anonymizeAfterDays))
+            && ($frontendUserList = $this->frontendUserRepository->findDeleted($anonymizeAfterDays))
             && (count($frontendUserList))
         ) {
 
@@ -200,18 +205,18 @@ class DataProtectionHandler
                                         $adds[] = $encryptedData;
 
                                         $this->getLogger()->log(
-                                            LogLevel::INFO, 
+                                            LogLevel::INFO,
                                             sprintf(
-                                                'Anonymized and encrypted data of model "%s" of user-id %s.', 
-                                                $modelClassName, 
+                                                'Anonymized and encrypted data of model "%s" of user-id %s.',
+                                                $modelClassName,
                                                 $frontendUser->getUid()
                                             )
                                         );
                                     } else {
-                                        $this->getLogger()->log(LogLevel::WARNING, 
+                                        $this->getLogger()->log(LogLevel::WARNING,
                                             sprintf(
-                                                'Could not anonymize and encrypt data of model "%s" of user-id %s.', 
-                                                $modelClassName, 
+                                                'Could not anonymize and encrypt data of model "%s" of user-id %s.',
+                                                $modelClassName,
                                                 $frontendUser->getUid()
                                             )
                                         );
@@ -235,6 +240,7 @@ class DataProtectionHandler
                 foreach ($adds as $data) {
                     $this->encryptedDataRepository->add($data);
                 }
+                $this->persistenceManager->persistAll();
 
                 foreach ($updates as $subArray) {
                     /** @var Repository $repository */
@@ -245,16 +251,21 @@ class DataProtectionHandler
                        $repository->update($data);
                     }
                 }
+                $this->persistenceManager->persistAll();
 
                 $this->getLogger()->log(
-                    LogLevel::INFO, 
+                    LogLevel::INFO,
                     sprintf(
-                        'Saved and updated all data for user-id %s.', 
+                        'Saved and updated all data for user-id %s.',
                         $frontendUser->getUid()
                     )
                 );
             }
+
+            return true;
         }
+
+        return false;
     }
 
 
@@ -411,7 +422,7 @@ class DataProtectionHandler
 
         return [];
     }
-    
+
 
     /**
      * Get frontend user property for given model class name

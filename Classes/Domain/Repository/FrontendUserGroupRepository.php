@@ -14,6 +14,7 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
@@ -29,22 +30,26 @@ class FrontendUserGroupRepository extends AbstractRepository
 {
 
     /**
-     * function findServices
+     * Finds all frontendUserGroups one can acquire a membership for
      *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface<\RKW\RkwRegistration\Domain\Model\FrontendUserGroup|null>
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
-    public function findServices(): QueryResultInterface
+    public function findMembershipable(): QueryResultInterface
     {
         // return all services which do not pass the closingDate or openingDate
         $query = $this->createQuery();
         $query->matching(
             $query->logicalAnd(
                 $query->logicalOr(
-                    $query->greaterThanOrEqual('txRkwregistrationServiceClosingDate', time()),
-                    $query->equals('txRkwregistrationServiceClosingDate', 0)
+                    $query->greaterThanOrEqual('txRkwregistrationMembershipClosingDate', time()),
+                    $query->equals('txRkwregistrationMembershipClosingDate', 0)
                 ),
-                $query->equals('txRkwregistrationIsService', 1)
+                $query->logicalOr(
+                    $query->lessThanOrEqual('txRkwregistrationMembershipOpeningDate', time()),
+                    $query->equals('txRkwregistrationMembershipOpeningDate', 0)
+                ),
+                $query->equals('txRkwregistrationIsMembership', 1)
             )
         );
 

@@ -153,7 +153,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
          */
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check120.xml');
 
-        $this->subject->deleteAllExpiredAndDisabled();
+        $deleted = $this->subject->deleteAllExpiredAndDisabled();
         $this->persistenceManager->persistAll();
 
         /** @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $result*/
@@ -162,6 +162,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
 
         $result = $query->execute()->toArray();
 
+        static::assertCount(2, $deleted);
         static::assertCount(3, $result);
         static::assertEquals(2, $result[0]->getUid());
         static::assertEquals(3, $result[1]->getUid());

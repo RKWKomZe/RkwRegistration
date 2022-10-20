@@ -82,14 +82,16 @@ class PasswordController extends AbstractController
     {
 
         if (
-            ($this->controllerContext->getFlashMessageQueue()->isEmpty())
+            (! $this->getFlashMessageCount())
             && (! $_POST)
         ) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'passwordController.message.enter_email',
+                    'passwordController.notice.new_introduction',
                     $this->extensionName,
-                )
+                ),
+                '',
+                AbstractMessage::NOTICE
             );
         }
     }
@@ -165,9 +167,22 @@ class PasswordController extends AbstractController
         // for logged in users only!
         $this->redirectIfUserNotLoggedIn();
 
+        if (
+            (! $this->getFlashMessageCount())
+            && (! $_POST)
+        ) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate(
+                    'passwordController.notice.edit_introduction', $this->extensionName
+                ),
+                '',
+                AbstractMessage::NOTICE
+            );
+        }
+
         $this->view->assignMultiple(
             [
-                'welcomePid' => intval($this->settings['users']['welcomePid']),
+                'frontendUser' => $this->getFrontendUser(),
             ]
         );
     }
@@ -188,6 +203,7 @@ class PasswordController extends AbstractController
      */
     public function updateAction(array $passwordNew): void
     {
+
         // for logged in users only!
         $this->redirectIfUserNotLoggedIn();
 
@@ -199,7 +215,7 @@ class PasswordController extends AbstractController
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'registrationController.message.update_password', $this->extensionName
+                    'passwordController.message.updated_password', $this->extensionName
                 )
             );
 
@@ -221,7 +237,7 @@ class PasswordController extends AbstractController
         // SOMETHING WENT WRONG
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'registrationController.error.password_not_updated', $this->extensionName
+                'passwordController.error.password_not_updated', $this->extensionName
             ),
             '',
             AbstractMessage::ERROR
@@ -230,8 +246,6 @@ class PasswordController extends AbstractController
         $this->redirect('edit');
 
     }
-
-
 
 }
 

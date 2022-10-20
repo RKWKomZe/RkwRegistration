@@ -20,6 +20,8 @@ use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Domain\Model\OptIn;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use RKW\RkwRegistration\Exception;
+use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
@@ -175,11 +177,24 @@ abstract class AbstractRegistration implements RegistrationInterface
 
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @return self
+     * @throws \RKW\RkwRegistration\Exception
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      */
     public function setFrontendUser(FrontendUser $frontendUser): self
     {
+        // check if a user is logged in. In this case the given user has to be same!
+        if ($frontendUserUid = FrontendUserSessionUtility::getLoggedInUserId()) {
+
+            if ($frontendUser->getUid() != $frontendUserUid) {
+                throw new Exception(
+                    'The given frontendUser is not identical with the user that is currently logged in.',
+                    1666014579
+                );
+            }
+        }
+
         $this->frontendUser = $frontendUser;
         $this->frontendUserToken = '';
         $this->frontendUserPersisted = null;
@@ -204,9 +219,24 @@ abstract class AbstractRegistration implements RegistrationInterface
      *
      * @param string $frontendUserToken
      * @return self
+     * @throws Exception
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     public function setFrontendUserToken(string $frontendUserToken): self
     {
+        // check if a user is logged in. In this case the given user has to be same!
+        if ($frontendUserUid = FrontendUserSessionUtility::getLoggedInUserId()) {
+
+            /** @var \RKW\RkwRegistration\Domain\Model\OptIn optIn */
+            $optIn = $this->optInRepository->findOneByTokenUserIncludingDeleted($frontendUserToken);
+            if ($optIn->getFrontendUserUid() != $frontendUserUid) {
+                throw new Exception(
+                    'The frontendUser that owns the given token is not identical with the user that is currently logged in.',
+                    1666021555
+                );
+            }
+        }
+
         $this->frontendUserToken = $frontendUserToken;
         $this->frontendUserPersisted = null;
         $this->frontendUser = null;
@@ -365,12 +395,13 @@ abstract class AbstractRegistration implements RegistrationInterface
      * Sets the backend users for the approval
      *
      * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser> $backendUsers
-     * @return void
+     * @return self
      * @api
      */
-    public function setApproval(ObjectStorage $backendUsers)
+    public function setApproval(ObjectStorage $backendUsers): self
     {
         $this->approval = $backendUsers;
+        return $this;
     }
 
 

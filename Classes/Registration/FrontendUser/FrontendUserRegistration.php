@@ -24,7 +24,6 @@ use TYPO3\CMS\Core\Log\LogLevel;
  * FrontendUserRegistration
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -51,13 +50,8 @@ class FrontendUserRegistration extends AbstractRegistration
     {
 
         // check for frontendUser-object
-        if (!$this->getFrontendUser()) {
+        if (! $frontendUser = $this->getFrontendUser()) {
             throw new Exception('No frontendUser-object set.', 1434997734);
-        }
-
-        // check if a user is logged in. In this case no registration is needed!
-        if (FrontendUserSessionUtility::getLoggedInUserId()) {
-            throw new Exception('Registration is not necessary for logged in users.', 1659691717);
         }
 
         // Case 1: check if user already exists - no matter if enabled or disabled
@@ -86,8 +80,15 @@ class FrontendUserRegistration extends AbstractRegistration
             return false;
         }
 
+        // check if a user is logged in. In this case no registration is possible!
+        if (FrontendUserSessionUtility::getLoggedInUserId()) {
+            throw new Exception(
+                'It is not possible to register a new user when already logged in.',
+                1659691717
+            );
+        }
+
         // Case 2: if user does not exist yet, we create it and set a temporary password
-        $frontendUser = $this->getFrontendUser();
         $this->frontendUser->setTempPlaintextPassword(PasswordUtility::generatePassword());
         $this->frontendUser->setPassword(PasswordUtility::saltPassword($this->frontendUser->getTempPlaintextPassword()));
 

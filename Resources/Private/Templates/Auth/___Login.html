@@ -5,15 +5,15 @@
 
     <f:section name="main">
 
-        <h2><f:translate key="templates_registration_welcome.headline" arguments="{0: frontendUser.firstName, 1: frontendUser.lastname}" /></h2>
+        <h2><f:translate key="templates_frontendUser_welcome.headline" arguments="{0: frontendUser.firstName, 1: frontendUser.lastname}" /></h2>
 
         <f:render partial="FlashMessages" arguments="{_all}" />
 
         <f:if condition="{services}">
-            <p><f:translate key="templates_registration_welcome.messageServices"/></p>
+            <p><f:translate key="templates_frontendUser_welcome.messageServices"/></p>
             <p>
                 <f:link.action pageUid="{editUserPid}" action="editUser" class="button">
-                    <span><f:translate key="templates_registration_welcome.checkProfile"/></span>
+                    <span><f:translate key="templates_frontendUser_welcome.checkProfile"/></span>
                 </f:link.action>
             </p>
         </f:if>

@@ -2,6 +2,13 @@
     xmlns:rkwRegistration="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
     data-namespace-typo3-fluid="true">
 
+
+    <f:comment><!-- Hidden field for temporary groups --></f:comment>
+    <f:form.hidden
+        property="tempFrontendUserGroup"
+        value="{frontendUser.tempFrontendUserGroup}"
+    />
+
     <div class="form__field width50 break-after">
         <label for="gender">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender" />

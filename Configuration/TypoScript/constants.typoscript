@@ -54,6 +54,9 @@ plugin.tx_rkwregistration {
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of edit password mask
 			editPasswordPid =
 
+			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of groups list
+			groupsListPid =
+
 			# cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of terms & conditions
 			termsPid =
 
@@ -111,15 +114,6 @@ plugin.tx_rkwregistration {
                 groupsOnRegister =
             }
 
-        }
-
-        dataProtection {
-
-            # cat=plugin.tx_rkwregistration//a; type=integer; label=Anonymize and encrypt user data after x days if user is already deleted
-            anonymizeDeletedAfterDays = 30
-
-            # cat=plugin.tx_rkwregistration//a; type=integer; label=Delete expired users after x days if user is expired
-            deleteExpiredAndDisabledAfterDays = 30
         }
 
         titles {

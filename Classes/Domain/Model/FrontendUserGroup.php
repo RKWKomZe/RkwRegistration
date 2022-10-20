@@ -28,68 +28,66 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup
 {
-    
+
     /**
      * @var integer
      */
     protected $crdate;
 
-    
+
     /**
      * @var integer
      */
     protected $tstamp;
 
-    
+
     /**
      * @var bool
      */
     protected $hidden = true;
 
-    
+
     /**
      * @var bool
      */
     protected $deleted = false;
-    
-    
+
+
     /**
      * @var bool
      */
-    protected $txRkwregistrationIsService = false;
-
-    
-    /**
-     * @var integer
-     */
-    protected $txRkwregistrationServiceOpeningDate = 0;
+    protected $txRkwregistrationIsMembership = false;
 
 
     /**
      * @var integer
      */
-    protected $txRkwregistrationServiceClosingDate = 0;
+    protected $txRkwregistrationMembershipOpeningDate = 0;
+
+
+    /**
+     * @var integer
+     */
+    protected $txRkwregistrationMembershipClosingDate = 0;
 
 
     /**
      * @var string
      */
-    protected $txRkwregistrationServiceMandatoryFields = '';
+    protected $txRkwregistrationMembershipMandatoryFields = '';
 
 
     /**
-     * Admins for service
-     *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser>
      */
-    protected $txRkwregistrationServiceAdmins;
-    
-    
+    protected $txRkwregistrationMembershipAdmins;
+
+
     /**
      * @var integer
      */
-    protected $txRkwregistrationServicePid = 0;
-    
+    protected $txRkwregistrationMembershipPid = 0;
+
 
     /**
      * __construct
@@ -114,10 +112,10 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
      */
     protected function initStorageObjects()
     {
-        $this->txRkwregistrationServiceAdmins = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        $this->txRkwregistrationMembershipAdmins = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
     }
-    
-    
+
+
     /**
      * Returns the crdate value
      *
@@ -163,43 +161,43 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
     {
         return $this->deleted;
     }
-    
+
 
     /**
-     * Sets the txRkwregistrationIsService value
+     * Sets the txRkwregistrationIsMembership value
      *
-     * @param bool $txRkwregistrationIsService
+     * @param bool $txRkwregistrationIsMembership
      * @return void
      * @api
      */
-    public function setTxRkwregistrationIsService(bool $txRkwregistrationIsService): void
+    public function setTxRkwregistrationIsMembership(bool $txRkwregistrationIsMembership): void
     {
-        $this->txRkwregistrationIsUserService = $txRkwregistrationIsService;
+        $this->txRkwregistrationIsUserMembership = $txRkwregistrationIsMembership;
     }
 
 
     /**
-     * Returns the txRkwregistrationIsService value
+     * Returns the txRkwregistrationIsMembership value
      *
      * @return bool
      * @api
      */
-    public function getTxRkwregistrationIsService(): bool
+    public function getTxRkwregistrationIsMembership(): bool
     {
-        return $this->txRkwregistrationIsService;
+        return $this->txRkwregistrationIsMembership;
     }
 
 
     /**
-     * Sets the txRkwregistrationServiceOpeningDate value
+     * Sets the txRkwregistrationMembershipOpeningDate value
      *
-     * @param int $txRkwregistrationServiceOpeningDate
+     * @param int $txRkwregistrationMembershipOpeningDate
      * @return void
      * @api
      */
-    public function setTxRkwregistrationServiceOpeningDate(int $txRkwregistrationServiceOpeningDate): void
+    public function setTxRkwregistrationMembershipOpeningDate(int $txRkwregistrationMembershipOpeningDate): void
     {
-        $this->txRkwregistrationServiceOpeningDate = $txRkwregistrationServiceOpeningDate;
+        $this->txRkwregistrationMembershipOpeningDate = $txRkwregistrationMembershipOpeningDate;
     }
 
     /**
@@ -208,59 +206,59 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
      * @return int
      * @api
      */
-    public function getTxRkwregistrationServiceOpeningDate(): int
+    public function getTxRkwregistrationMembershipOpeningDate(): int
     {
-        return $this->txRkwregistrationServiceOpeningDate;
+        return $this->txRkwregistrationMembershipOpeningDate;
     }
 
 
     /**
      * Sets the txRkwregistrationtxRkwregistrationClosingDate value
      *
-     * @param int $txRkwregistrationServiceClosingDate
+     * @param int $txRkwregistrationMembershipClosingDate
      * @return void
      * @api
      */
-    public function setTxRkwregistrationServiceClosingDate(int $txRkwregistrationServiceClosingDate)
+    public function setTxRkwregistrationMembershipClosingDate(int $txRkwregistrationMembershipClosingDate)
     {
-        $this->txRkwregistrationServiceClosingDate = $txRkwregistrationServiceClosingDate;
+        $this->txRkwregistrationMembershipClosingDate = $txRkwregistrationMembershipClosingDate;
     }
 
 
     /**
-     * Returns the txRkwregistrationServiceClosingDate value
+     * Returns the txRkwregistrationMembershipClosingDate value
      *
      * @return int
      * @api
      */
-    public function getTxRkwregistrationServiceClosingDate(): int
+    public function getTxRkwregistrationMembershipClosingDate(): int
     {
-        return $this->txRkwregistrationServiceClosingDate;
+        return $this->txRkwregistrationMembershipClosingDate;
     }
 
 
     /**
-     * Sets the txRkwregistrationServiceMandatoryFields
+     * Sets the txRkwregistrationMembershipMandatoryFields
      *
-     * @param string $txRkwregistrationServiceMandatoryFields
+     * @param string $txRkwregistrationMembershipMandatoryFields
      * @return void
      * @api
      */
-    public function setTxRkwregistrationServiceMandatoryFields(string $txRkwregistrationServiceMandatoryFields): void
+    public function setTxRkwregistrationMembershipMandatoryFields(string $txRkwregistrationMembershipMandatoryFields): void
     {
-        $this->txRkwregistrationServiceMandatoryFields = $txRkwregistrationServiceMandatoryFields;
+        $this->txRkwregistrationMembershipMandatoryFields = $txRkwregistrationMembershipMandatoryFields;
     }
 
 
     /**
-     * Returns the txRkwregistrationServiceMandatoryFields
+     * Returns the txRkwregistrationMembershipMandatoryFields
      *
      * @return string
      * @api
      */
-    public function getTxRkwregistrationServiceMandatoryFields(): string
+    public function getTxRkwregistrationMembershipMandatoryFields(): string
     {
-        return $this->txRkwregistrationServiceMandatoryFields;
+        return $this->txRkwregistrationMembershipMandatoryFields;
     }
 
 
@@ -270,69 +268,69 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
      * @param \RKW\RkwRegistration\Domain\Model\BackendUser $admin
      * @return void
      */
-    public function addTxRkwregistrationServiceAdmins(BackendUser $admin): void
+    public function addTxRkwregistrationMembershipAdmins(BackendUser $admin): void
     {
-        $this->txRkwregistrationServiceAdmins->attach($admin);
+        $this->txRkwregistrationMembershipAdmins->attach($admin);
     }
 
-    
+
     /**
      * Removes a BackendUser
      *
      * @param \RKW\RkwRegistration\Domain\Model\BackendUser $adminToRemove The BackendUser to be removed
      * @return void
      */
-    public function removeTxRkwregistrationServiceAdmins(BackendUser $adminToRemove): void
+    public function removeTxRkwregistrationMembershipAdmins(BackendUser $adminToRemove): void
     {
-        $this->txRkwregistrationServiceAdmins->detach($adminToRemove);
+        $this->txRkwregistrationMembershipAdmins->detach($adminToRemove);
     }
 
-    
+
     /**
-     * Returns the TxRkwregistrationServiceAdmins
+     * Returns the TxRkwregistrationMembershipAdmins
      *
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser> $admins
      */
-    public function getTxRkwregistrationServiceAdmins(): ObjectStorage
+    public function getTxRkwregistrationMembershipAdmins(): ObjectStorage
     {
-        return $this->txRkwregistrationServiceAdmins;
+        return $this->txRkwregistrationMembershipAdmins;
     }
 
-    
+
     /**
-     * Sets the TxRkwregistrationServiceAdmins
+     * Sets the TxRkwregistrationMembershipAdmins
      *
      * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser> $admins
      * @return void
      */
-    public function setTxRkwregistrationServiceAdmins(ObjectStorage $admins): void
+    public function setTxRkwregistrationMembershipAdmins(ObjectStorage $admins): void
     {
-        $this->txRkwregistrationServiceAdmins = $admins;
+        $this->txRkwregistrationMembershipAdmins = $admins;
     }
 
 
     /**
-     * Sets the txRkwregistrationServicePid value
+     * Sets the txRkwregistrationMembershipPid value
      *
-     * @param int $txRkwregistrationServicePid
+     * @param int $txRkwregistrationMembershipPid
      * @return void
      * @api
      */
-    public function setTxRkwregistrationServicePid(int $txRkwregistrationServicePid): void
+    public function setTxRkwregistrationMembershipPid(int $txRkwregistrationMembershipPid): void
     {
-        $this->txRkwregistrationServicePid = $txRkwregistrationServicePid;
+        $this->txRkwregistrationMembershipPid = $txRkwregistrationMembershipPid;
     }
 
 
     /**
-     * Returns the txRkwregistrationServicePid value
+     * Returns the txRkwregistrationMembershipPid value
      *
      * @return int
      * @api
      */
-    public function getTxRkwregistrationServicePid(): int
+    public function getTxRkwregistrationMembershipPid(): int
     {
-        return $this->txRkwregistrationServicePid;
+        return $this->txRkwregistrationMembershipPid;
     }
 
 }

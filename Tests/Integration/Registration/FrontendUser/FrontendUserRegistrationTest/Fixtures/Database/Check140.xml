@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
-    <pages>
-        <uid>1</uid>
-        <pid>0</pid>
-        <title>Rootpage</title>
-        <doktype>1</doktype>
-        <perms_everybody>15</perms_everybody>
-    </pages>
 
     <fe_users>
-        <password>$P$C0NF2OEhmo92K6mOzQz4S8VuaDJEb.1</password>
-        <uid>1</uid>
-        <pid>1</pid>
-        <username>spd@test.de</username>
+        <uid>140</uid>
+        <pid>88</pid>
+        <crdate>10</crdate>
+        <disable>0</disable>
+        <deleted>0</deleted>
+        <username>lauterbach@spd.de</username>
+        <password>test</password>
         <email>lauterbach@spd.de</email>
         <first_name>Karl</first_name>
         <last_name>Lauterbach</last_name>
@@ -28,15 +24,13 @@
         <tx_rkwregistration_title>0</tx_rkwregistration_title>
         <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
         <tx_rkwregistration_mobile>0179/100224557</tx_rkwregistration_mobile>
-        <tx_rkwregistration_facebook_url>https://www.facebook.com/lauterbach</tx_rkwregistration_facebook_url>
-        <tx_rkwregistration_twitter_url>https://www.twitter.com/lauterbach</tx_rkwregistration_twitter_url>
-        <tx_rkwregistration_xing_url>https://www.xing.de/lauterbach</tx_rkwregistration_xing_url>
+        <tx_rkwregistration_register_remote_ip>1.2.3.4</tx_rkwregistration_register_remote_ip>
     </fe_users>
 
     <fe_groups>
-        <uid>1</uid>
-        <pid>1</pid>
-        <title>test</title>
+        <uid>140</uid>
+        <pid>88</pid>
+        <title>Test</title>
     </fe_groups>
 
 </dataset>

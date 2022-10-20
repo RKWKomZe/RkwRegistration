@@ -17,6 +17,9 @@ namespace RKW\RkwRegistration\Controller;
 
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Register\GroupFrontendUser;
+use RKW\RkwRegistration\Utility\FrontendUserGroupUtility;
+use RKW\RkwRegistration\Utility\FrontendUserUtility;
+use RKW\RkwRegistration\Validation\FrontendUserValidator;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -30,7 +33,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ServiceController extends AbstractController
+class FrontendUserGroupController extends AbstractController
 {
     /**
      * Signal name for use in ext_localconf.php
@@ -47,6 +50,13 @@ class ServiceController extends AbstractController
      */
     const SIGNAL_SERVICE_DELETE = 'afterServiceDelete';
 
+    /**
+     * @var \RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration
+     * @TYPO3\CMS\Extbase\Annotation\Inject
+     */
+    protected $frontendUserRegistration;
+
+
 
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
@@ -56,10 +66,10 @@ class ServiceController extends AbstractController
 
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\ServiceRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\OptInRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $serviceRepository;
+    protected $optInRepository;
 
 
     /**
@@ -103,39 +113,105 @@ class ServiceController extends AbstractController
      * action list
      *
      * @return void
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
     public function listAction(): void
     {
-        // for logged in users only!
-        $this->redirectIfUserNotLoggedIn();
+        // only for logged in users!
+        $this->redirectIfUserNotLoggedInOrGuest();
 
-        // check email!
-        $this->redirectIfUserHasNoValidEmail();
+        // check basic fields
+        $this->redirectIfUserHasMissingData();
 
-        // available services
-        $services = $this->frontendUserGroupRepository->findServices();
-        $frontendUser = $this->getFrontendUser();
+        $membershipable = $this->frontendUserGroupRepository->findMembershipable();
+        $membershipsRequested = $this->optInRepository->findPendingGroupMembershipsByFrontendUser($this->getFrontendUser());
 
-        // services which the user already belongs
-        $groupsOfFrontendUser = $frontendUser->getUsergroup();
-
-        // services where the user is waiting for the release
-        $serviceRequests = $this->serviceRepository->findByUser($this->getFrontendUser());
-        $serviceRequestsdmin = $this->serviceRepository->findConfirmedByUser($this->getFrontendUser());
+        if (! count($membershipable)) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate(
+                    'frontendUserGroupController.warning.noMembershipableGroups',
+                    $this->extensionName,
+                ),
+                '',
+                AbstractMessage::WARNING
+            );
+        } else {
+            if (
+                (! $this->getFlashMessageCount())
+                && (! $_POST)
+            ) {
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'frontendUserGroupController.notice.selectGroup',
+                        $this->extensionName,
+                    ),
+                    '',
+                    AbstractMessage::NOTICE
+                );
+            }
+        }
 
         $this->view->assignMultiple(
             [
-                'services'    => $services,
-                'groupsOfFrontendUser'  => $groupsOfFrontendUser,
-                'serviceRequests'      => $serviceRequests,
-                'serviceRequestsAdmin' => $serviceRequestsAdmin,
-                'editUserPid'           => intval($this->settings['users']['editUserPid']),
+                'frontendUser'           => $this->getFrontendUser(),
+                'membershipable'         => $membershipable,
+                'membershipsRequested'   => $membershipsRequested,
             ]
         );
     }
+
+
+    /**
+     * action create
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup
+     * @return void
+     * @throws \RKW\RkwRegistration\Exception
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     */
+    public function createAction(FrontendUserGroup $frontendUserGroup): void
+    {
+        // for logged in users only!
+        $this->redirectIfUserNotLoggedInOrGuest();
+
+        // check if all required fields are set!
+        // to do this, we hypothetically set the new frontendUserGroup and evaluate against it
+        $this->redirectIfUserHasMissingData($frontendUserGroup);
+
+        /** @var \RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration */
+        $this->frontendUserRegistration->setFrontendUser($this->getFrontendUser())
+            ->setData($frontendUserGroup)
+            ->setApproval($frontendUserGroup->getTxRkwregistrationMembershipAdmins())
+            ->setRequest($this->request)
+            ->setCategory('rkwRegistrationGroups')
+            ->startRegistration();
+
+        $this->addFlashMessage(
+            LocalizationUtility::translate(
+                'frontendUserGroupController.message.registrationWatchForEmail',
+                $this->extensionName
+            )
+        );
+
+        $this->redirect('list');
+    }
+
+
+
+
 
 
     /**
@@ -158,101 +234,6 @@ class ServiceController extends AbstractController
         );
     }
 
-
-    /**
-     * action create
-     * creates and processes a user request for a service
-     * If no access restriction and no mandatory fields must be filled, the service
-     * for the users is directly released and the user as userGroup added
-     * Otherwise he has wait for admin grant
-     *
-     * @param FrontendUserGroup $frontendUserGroup
-     * @return void
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     */
-    public function createAction(FrontendUserGroup $frontendUserGroup): void
-    {
-        // for logged in users only!
-        $this->redirectIfUserNotLoggedIn();
-
-        // Get the mandatory fields for the given group?
-        $serviceClass = $this->objectManager->get(GroupFrontendUser::class);
-        $mandatoryFields = $serviceClass->getMandatoryFieldsOfUser($this->getFrontendUser(), $frontendUserGroup);
-
-        // get the admins of the given group (if any)
-        $admins = $frontendUserGroup->getTxRkwregistrationServiceAdmins();
-
-        // if at least on of the two cases matches, we have to use an opt-in
-        // We can not check here if the mandatory fields of the group are filled out by the user
-        // but nevertheless we have to ask him if the data is correct, so that is no real problem here!
-        if (
-            (count($mandatoryFields) > 0)
-            || (count($admins) > 0)
-        ) {
-
-            // create new opt-in for service
-            $newOptIn = $this->serviceRepository->newOptIn(
-                $this->getFrontendUser(),
-                $frontendUserGroup,
-                $this->settings['services']['daysForOptIn']
-            );
-
-            // per default take admin permission for granted
-            $newOptIn->setEnabledByAdmin(1);
-
-            // if there are some admins, ask them for permission instead
-            if (count($admins) > 0) {
-
-                // disable by admin
-                $newOptIn->setEnabledByAdmin(0);
-
-                // dispatcher for e.g. E-Mail
-                foreach ($admins as $admin) {
-                    $this->signalSlotDispatcher->dispatch(
-                        __CLASS__,
-                        self::SIGNAL_ADMIN_SERVICE_REQUEST,
-                        [
-                            $admin,
-                            $this->getFrontendUser(),
-                            $frontendUserGroup,
-                            $newOptIn,
-                            intval($this->settings['services']['adminOptInPid'])
-                        ]
-                    );
-                }
-
-                $this->addFlashMessage(
-                    LocalizationUtility::translate(
-                        'serviceController.message.apply_admin_request' ,
-                        $this->extensionName
-                    )
-                );
-
-                $this->redirect('list');
-            }
-        }
-
-        // if there is nothing to check - we simply add the user-group to the fe-user's
-        $frontendUser = $this->getFrontendUser();
-        $frontendUser->addUsergroup($frontendUserGroup);
-        $this->frontendUserRepository->update($frontendUser);
-
-        $this->addFlashMessage(
-            LocalizationUtility::translate(
-                'serviceController.message.apply_successfull',
-                $this->extensionName
-            )
-        );
-
-        $this->redirect('list');
-    }
 
 
     /**

@@ -14,7 +14,6 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
@@ -26,6 +25,7 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 /**
  * Class AuthController
  *
+ * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
@@ -41,6 +41,9 @@ class AuthController extends AbstractController
      * @param string $flashMessageToInject
      * @return void
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function indexAction(string $flashMessageToInject = ''): void
     {
@@ -48,7 +51,7 @@ class AuthController extends AbstractController
 
         // offer a link for users
         if (
-            ($this->controllerContext->getFlashMessageQueue()->isEmpty())
+            (! $this->getFlashMessageCount())
             && (! $_POST)
         ) {
 
@@ -75,10 +78,12 @@ class AuthController extends AbstractController
 
                 $this->addFlashMessage(
                     LocalizationUtility::translate(
-                        'authController.message.login_message_guest',
+                        'authController.warning.loginMessageGuest',
                         $this->extensionName,
                         [$registerLink]
-                    )
+                    ),
+                    '',
+                    AbstractMessage::WARNING
                 );
 
             // user is logged in as normal user
@@ -86,7 +91,7 @@ class AuthController extends AbstractController
 
                 $this->addFlashMessage(
                     LocalizationUtility::translate(
-                        'authController.message.logged_in',
+                        'authController.message.loggedIn',
                         $this->extensionName,
                         [$frontendUser->getUsername()]
                     )
@@ -125,10 +130,12 @@ class AuthController extends AbstractController
 
                 $this->addFlashMessage(
                     LocalizationUtility::translate(
-                        'authController.message.login_message',
+                        'authController.notice.loginMessage',
                         $this->extensionName,
                         [$registerLink]
-                    )
+                    ),
+                    '',
+                    AbstractMessage::NOTICE
                 );
             }
         }
@@ -139,7 +146,6 @@ class AuthController extends AbstractController
      * action login
      *
      * @param array $login
-     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\LoginValidator", param="login")
      * @return void
      * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
@@ -148,6 +154,7 @@ class AuthController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\LoginValidator", param="login")
      */
     public function loginAction(array $login): void
     {
@@ -183,7 +190,7 @@ class AuthController extends AbstractController
         ) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'authController.error.login_blocked', $this->extensionName,
+                    'authController.error.loginBlocked', $this->extensionName,
                     [$maxErrors]
                 ),
                 '',
@@ -194,7 +201,7 @@ class AuthController extends AbstractController
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'authController.error.wrong_login', $this->extensionName
+                    'authController.error.wrongLogin', $this->extensionName
                 ),
                 '',
                 AbstractMessage::ERROR
@@ -245,7 +252,7 @@ class AuthController extends AbstractController
     {
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'authController.message.logout_message', $this->extensionName
+                'authController.message.logoutMessage', $this->extensionName
             )
         );
 

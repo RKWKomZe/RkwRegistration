@@ -59,18 +59,6 @@ $tempCols = [
 		],
 	],
 
-	'tx_rkwregistration_twitter_id' => [
-        'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_id',
-        'exclude' => 0,
-        'config'=>[
-            'type'=>'input',
-            'size' => 30,
-            'max' => '256',
-            'eval' => 'trim',
-            'default' => 0
-        ],
-    ],
-
     'tx_rkwregistration_twitter_url' => [
         'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_url',
         'exclude' => 0,
@@ -83,17 +71,6 @@ $tempCols = [
             'softref' => 'typolink'
         ],
     ],
-
-    'tx_rkwregistration_facebook_id' => [
-		'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_id',
-		'exclude' => 0,
-		'config'=>[
-			'type'=>'input',
-            'size' => 30,
-            'max' => '256',
-            'eval' => 'trim'
-		],
-	],
 
     'tx_rkwregistration_facebook_url' => [
         'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_url',
@@ -155,34 +132,6 @@ $tempCols = [
         ],
     ],
 
-    // @todo: DEPRECATED! Only needed for backward compatibility
-	'tx_rkwregistration_is_anonymous' => [
-		'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_is_anonymous',
-		'exclude' => 0,
-		'config'=>[
-			'type' => 'check',
-			'readOnly' => 1,
-			'default' => 0,
-			'items' => [
-				'1' => [
-					'0' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_is_anonymous'
-				],
-			],
-		],
-	],
-
-    'tx_rkwregistration_cross_domain_token' => [
-        'config'=>[
-            'type' => 'passthrough',
-        ],
-    ],
-
-    'tx_rkwregistration_cross_domain_token_tstamp' => [
-        'config'=>[
-            'type' => 'passthrough',
-        ],
-    ],
-
     'tx_rkwregistration_data_protection_status' => [
         'config'=>[
             'type' => 'passthrough',
@@ -218,15 +167,12 @@ $tempCols = [
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('fe_users',$tempCols);
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','--div--;LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.socialmedia,tx_rkwregistration_twitter_id', '', '');
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_twitter_url,  tx_rkwregistration_facebook_id, tx_rkwregistration_facebook_url, tx_rkwregistration_xing_url', '', 'after:tx_rkwregistration_twitter_id');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','--div--;LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.socialmedia', '', '');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_twitter_url, tx_rkwregistration_facebook_url, tx_rkwregistration_xing_url', '', 'after:tx_rkwregistration_twitter_id');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_title','','after:title');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_gender','','before:name');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_mobile','','after:telephone');
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_federal_state','','after:city');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_login_error_count','','after:disable');
-
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users',', tx_rkwregistration_register_remote_ip, tx_rkwregistration_language_key','','after:lockToDomain');
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users',', tx_rkwregistration_is_anonymous','','after:lockToDomain');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users',', tx_rkwregistration_privacy','','after:image');
 

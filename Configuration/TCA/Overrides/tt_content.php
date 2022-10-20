@@ -52,8 +52,8 @@ call_user_func(
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
             'RKW.RkwRegistration',
-            'Service',
-            'RKW Registration: Service'
+            'FrontendUserGroup',
+            'RKW Registration: FrontendUserGroup'
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -70,7 +70,7 @@ call_user_func(
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
             'RKW.RkwRegistration',
-            'RkwregistrationInfo',
+            'Info',
             'RKW Registration Info'
         );
 

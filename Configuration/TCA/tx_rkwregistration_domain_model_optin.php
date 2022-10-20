@@ -86,6 +86,16 @@ return [
                 'type' => 'passthrough',
             ],
         ],
+        'foreign_table' => [
+            'config' => [
+                'type' => 'passthrough',
+            ],
+        ],
+        'foreign_uid' => [
+            'config' => [
+                'type' => 'passthrough',
+            ],
+        ],
         'data' => [
             'config' => [
                 'type' => 'passthrough',

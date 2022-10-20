@@ -71,10 +71,7 @@ class RegistrationController extends AbstractController
         // only for logged in users!
         $this->redirectIfUserNotLoggedInOrGuest();
 
-        // check email!
-        $this->redirectIfUserHasNoValidEmail();
-
-        // check basic mandatory fields
+        // check basic fields
         $this->redirectIfUserHasMissingData();
 
         // check if there are new services where the user has fill out mandatory fields

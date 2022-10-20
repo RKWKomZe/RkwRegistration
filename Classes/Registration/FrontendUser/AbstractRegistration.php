@@ -27,6 +27,9 @@ use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use RKW\RkwRegistration\Utility\PasswordUtility;
 use RKW\RkwRegistration\Utility\TitleUtility;
 use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 
 /**
  * Class AbstractRegistration
@@ -121,46 +124,6 @@ abstract class AbstractRegistration extends \RKW\RkwRegistration\Registration\Ab
         return $this;
     }
 
-    /**
-     * Registers new FE-User - only for backwards compatibility!
-     *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser|array $userData
-     * @param boolean $enable dummy variable!
-     * @param mixed $additionalData
-     * @param string $category
-     * @param \TYPO3\CMS\Extbase\Mvc\Request $request
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser
-     * @throws \RKW\RkwRegistration\Exception
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     */
-    public function register(
-        $userData, bool $enable = false, object $additionalData = null, string $category = null, \TYPO3\CMS\Extbase\Mvc\Request $request = null)
-    {
-        // if we get an array we just migrate the data to our object!
-        $frontendUser = $userData;
-        if (is_array($userData)) {
-            /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-            $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Domain\\Model\\FrontendUser');
-            foreach ($userData as $key => $value) {
-                $setter = 'set' . ucfirst(Common::camelize($key));
-                if (method_exists($frontendUser, $setter)) {
-                    $frontendUser->$setter($value);
-                }
-            }
-        }
-
-        if (!$frontendUser instanceof \RKW\RkwRegistration\Domain\Model\FrontendUser) {
-            $this->getLogger()->log(\TYPO3\CMS\Core\Log\LogLevel::ERROR, sprintf('No valid object for registration given.'));
-            throw new \RKW\RkwRegistration\Exception('No valid object given.', 1434997734);
-            //===
-        }
-    }
-
 
     /**
      * Creates an opt-in for a frontendUser
@@ -178,6 +141,8 @@ abstract class AbstractRegistration extends \RKW\RkwRegistration\Registration\Ab
             throw new Exception('The frontendUser-object has to be persisted to create an opt-in.',1659691717);
         }
 
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+
         $settings = $this->getSettings();
         /** @var  $optIn */
         $optIn = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(OptIn::class);
@@ -190,6 +155,20 @@ abstract class AbstractRegistration extends \RKW\RkwRegistration\Registration\Ab
         $optIn->setTokenNo($this->createUniqueRandomString());
         $optIn->setEndtime(strtotime("+" . $settings['users']['daysForOptIn'] . " day", time()));
         $optIn->setAdminApproved(true);
+
+        // set information about table and uid used in data-object
+        // this is needed for e.g. group-registration
+        if (
+            ($data = $this->getData())
+            && ($data instanceOf AbstractEntity)
+        ){
+            $dataMapper = $objectManager->get(DataMapper::class);
+            $tableName = $dataMapper->getDataMap(get_class($this->getData()))->getTableName();
+            $optIn->setForeignTable($tableName);
+            if ($uid = $data->getUid()) {
+                $optIn->setForeignUid($uid);
+            }
+        }
 
         $this->optInRepository->add($optIn);
         $this->persistenceManager->persistAll();
@@ -455,6 +434,7 @@ abstract class AbstractRegistration extends \RKW\RkwRegistration\Registration\Ab
 
         return false;
     }
+
 
     /**
      * sets some basic data to a frontendUser (if not already set)

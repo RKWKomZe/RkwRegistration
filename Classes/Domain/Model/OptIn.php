@@ -96,27 +96,19 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 
 
     /**
-     * starttime
+     * foreignTable
      *
-     * @var integer
+     * @var string
      */
-    protected $starttime = 0;
+    protected $foreignTable = '';
 
 
     /**
-     * endtime
+     * foreignUid
      *
-     * @var integer
+     * @var int
      */
-    protected $endtime = 0;
-
-
-    /**
-     * deleted
-     *
-     * @var bool
-     */
-    protected $deleted = false;
+    protected $foreignUid = 0;
 
 
     /**
@@ -150,6 +142,30 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var string
      */
     protected $_rawdata = '';
+
+
+    /**
+     * starttime
+     *
+     * @var integer
+     */
+    protected $starttime = 0;
+
+
+    /**
+     * endtime
+     *
+     * @var integer
+     */
+    protected $endtime = 0;
+
+
+    /**
+     * deleted
+     *
+     * @var bool
+     */
+    protected $deleted = false;
 
 
     /**
@@ -339,6 +355,53 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $this->category = $category;
     }
 
+
+    /**
+     * Returns the foreignTable
+     *
+     * @return string $foreignTable
+     */
+    public function getForeignTable(): string
+    {
+        return $this->foreignTable;
+    }
+
+
+    /**
+     * Sets the foreignTable
+     *
+     * @param string $foreignTable
+     * @return void
+     */
+    public function setForeignTable(string $foreignTable)
+    {
+        $this->foreignTable = $foreignTable;
+    }
+
+
+    /**
+     * Returns the foreignUid
+     *
+     * @return int $foreignUid
+     */
+    public function getForeignUid(): int
+    {
+        return $this->foreignUid;
+    }
+
+
+    /**
+     * Sets the foreignUid
+     *
+     * @param int $foreignTable
+     * @return void
+     */
+    public function setForeignUid(int $foreignUid)
+    {
+        $this->foreignUid = $foreignUid;
+    }
+
+
     /**
      * Returns the starttime
      *
@@ -347,66 +410,6 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function getStarttime(): int
     {
         return $this->starttime;
-    }
-
-
-    /**
-     * Sets the starttime
-     *
-     * @param int $starttime
-     * @return void
-     */
-    public function setStarttime(int $starttime)
-    {
-        $this->starttime = $starttime;
-    }
-
-
-    /**
-     * Returns the endtime
-     *
-     * @return int $endtime
-     */
-    public function getEndtime(): int
-    {
-        return $this->endtime;
-    }
-
-
-    /**
-     * Sets the endtime
-     *
-     * @param int $endtime
-     * @return void
-     */
-    public function setEndtime(int $endtime)
-    {
-        $this->endtime = $endtime;
-    }
-
-
-    /**
-     * Sets the deleted value
-     *
-     * @param bool $deleted
-     * @return void
-     *
-     */
-    public function setDeleted(bool $deleted): void
-    {
-        $this->deleted = $deleted;
-    }
-
-
-    /**
-     * Returns the deleted value
-     *
-     * @return bool
-     *
-     */
-    public function getDeleted(): bool
-    {
-        return $this->deleted;
     }
 
 
@@ -491,4 +494,64 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
             $this->data = serialize(MarkerReducer::implode(['key' => $data]));
         }
     }
+
+    /**
+     * Sets the starttime
+     *
+     * @param int $starttime
+     * @return void
+     */
+    public function setStarttime(int $starttime)
+    {
+        $this->starttime = $starttime;
+    }
+
+
+    /**
+     * Returns the endtime
+     *
+     * @return int $endtime
+     */
+    public function getEndtime(): int
+    {
+        return $this->endtime;
+    }
+
+
+    /**
+     * Sets the endtime
+     *
+     * @param int $endtime
+     * @return void
+     */
+    public function setEndtime(int $endtime)
+    {
+        $this->endtime = $endtime;
+    }
+
+
+    /**
+     * Sets the deleted value
+     *
+     * @param bool $deleted
+     * @return void
+     *
+     */
+    public function setDeleted(bool $deleted): void
+    {
+        $this->deleted = $deleted;
+    }
+
+
+    /**
+     * Returns the deleted value
+     *
+     * @return bool
+     *
+     */
+    public function getDeleted(): bool
+    {
+        return $this->deleted;
+    }
+
 }

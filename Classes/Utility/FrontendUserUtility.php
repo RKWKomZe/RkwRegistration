@@ -257,8 +257,21 @@ class FrontendUserUtility
 
             /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $userGroup */
             foreach($frontendUser->getUsergroup() as $userGroup) {
-                $mandatoryFields = array_merge($mandatoryFields, FrontendUserGroupUtility::getMandatoryFields($userGroup));
+                $mandatoryFields = array_merge(
+                    $mandatoryFields,
+                    FrontendUserGroupUtility::getMandatoryFields($userGroup)
+                );
             }
+        }
+
+        // also check for temporary groups!
+        if ($frontendUser->getTempFrontendUserGroup()) {
+            $mandatoryFields = array_merge(
+                $mandatoryFields,
+                FrontendUserGroupUtility::getMandatoryFields(
+                    $frontendUser->getTempFrontendUserGroup()
+                )
+            );
         }
 
         return $mandatoryFields;

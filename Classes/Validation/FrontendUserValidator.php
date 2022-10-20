@@ -176,7 +176,7 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
                 $this->result->forProperty($property)->addError(
                     new Error(
                         LocalizationUtility::translate(
-                            'validator_field_notfilled',
+                            'validator_field_not_filled',
                             'rkw_registration'
                         ), 1414595322
                     )

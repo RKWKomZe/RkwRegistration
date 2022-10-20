@@ -15,22 +15,17 @@ namespace RKW\RkwRegistration\Controller;
  */
 
 use RKW\RkwRegistration\Domain\Model\GuestUser;
-use RKW\RkwRegistration\Service\AuthFrontendUserService;
-use RKW\RkwRegistration\Service\AuthService as Authentication;
-use RKW\RkwRegistration\Register\GuestUserRegisterRegister;
-use RKW\RkwRegistration\Utility\RedirectUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
-use Snowflake\Varnish\Hooks\Frontend;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
  * Class AuthGuestController
  *
+ * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
@@ -45,7 +40,6 @@ class AuthGuestController extends AbstractController
      */
     protected $guestUserRegistration;
 
-    
 
     /**
      * action login
@@ -55,7 +49,6 @@ class AuthGuestController extends AbstractController
      * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
@@ -70,7 +63,7 @@ class AuthGuestController extends AbstractController
         if (FrontendUserSessionUtility::isUserLoggedIn()) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'registrationController.error.anonymous_login_impossible',
+                    'authGuestController.error.guestLoginImpossible',
                     $this->extensionName
                 ),
                 '',
@@ -132,7 +125,7 @@ class AuthGuestController extends AbstractController
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'registrationController.error.anonymous_login_impossible',
+                    'authGuestController.error.guestLoginImpossible',
                     $this->extensionName
                 ),
                 '',
@@ -143,7 +136,7 @@ class AuthGuestController extends AbstractController
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'registrationController.error.invalid_anonymous_token',
+                    'authGuestController.error.invalidGuestToken',
                     $this->extensionName
                 ),
                 '',
@@ -170,7 +163,7 @@ class AuthGuestController extends AbstractController
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'registrationController.error.anonymous_login_impossible', $this->extensionName
+                    'authGuestController.error.guestLoginImpossible', $this->extensionName
                 ),
                 '',
                 AbstractMessage::ERROR
@@ -197,7 +190,7 @@ class AuthGuestController extends AbstractController
         // show link with token to anonymous user
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'registrationController.message.guest_link',
+                'authGuestController.message.guestLink',
                 $this->extensionName,
                 [
                     intval(intval($this->settings['users']['guest']['lifetime']) / 60 / 60 / 24),

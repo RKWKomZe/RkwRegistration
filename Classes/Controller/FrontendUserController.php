@@ -16,14 +16,16 @@ namespace RKW\RkwRegistration\Controller;
  */
 
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Utility\TitleUtility;
-use RKW\RkwRegistration\Validation\FrontendUserValidator;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Class FrontendUserController
  *
+ * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @copyright Rkw Kompetenzzentrum
  * @package RKW_RkwRegistration
@@ -50,14 +52,14 @@ class FrontendUserController extends AbstractController
      * action register
      * RKW own register action
      *
-     * @param FrontendUser|null $newFrontendUser
-     * @ignorevalidation $newFrontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser|null $frontendUser
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("frontendUser")
      */
-    public function newAction(FrontendUser $newFrontendUser = null): void
+    public function newAction(FrontendUser $frontendUser = null): void
     {
         // not for already logged-in users!
         if (FrontendUserSessionUtility::getLoggedInUserId()) {
@@ -75,12 +77,25 @@ class FrontendUserController extends AbstractController
             $this->redirect('index');
         }
 
+        if (
+            (! $this->getFlashMessageCount())
+            && (! $_POST)
+        ) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate(
+                    'frontendUserController.notice.new_introduction',
+                    $this->extensionName,
+                ),
+                '',
+                AbstractMessage::NOTICE
+            );
+        }
+
         $titles = $this->titleRepository->findAllOfType(true, false, false);
         $this->view->assignMultiple(
             [
-                'newFrontendUser'   => $newFrontendUser,
-                'termsPid'          => intval($this->settings['users']['termsPid']),
-                'titles'            => $titles
+                'frontendUser'   => $frontendUser,
+                'titles'         => $titles
             ]
         );
     }
@@ -89,7 +104,7 @@ class FrontendUserController extends AbstractController
     /**
      * action create
      *
-     * @param FrontendUser $newFrontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @return void
      * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
@@ -102,20 +117,20 @@ class FrontendUserController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @TYPO3\CMS\Extbase\Annotation\Validate("RKW\RkwRegistration\Validation\FrontendUserValidator", param="newFrontendUser")
-     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\TermsValidator", param="newFrontendUser")
-     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\PrivacyValidator", param="newFrontendUser")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("RKW\RkwRegistration\Validation\FrontendUserValidator", param="frontendUser")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\TermsValidator", param="frontendUser")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\PrivacyValidator", param="frontendUser")
      */
-    public function createAction(FrontendUser $newFrontendUser): void
+    public function createAction(FrontendUser $frontendUser): void
     {
         /** @var \RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration */
-        $this->frontendUserRegistration->setFrontendUser($newFrontendUser)
+        $this->frontendUserRegistration->setFrontendUser($frontendUser)
             ->setRequest($this->request)
             ->startRegistration();
 
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'frontendUserController.message.registration_watch_for_email',
+                'frontendUserController.message.registrationWatchForEmail',
                 $this->extensionName
             )
         );
@@ -145,23 +160,15 @@ class FrontendUserController extends AbstractController
      */
     public function welcomeAction(): void
     {
-
         // only for logged in users!
         $this->redirectIfUserNotLoggedInOrGuest();
 
-        // check email!
-        $this->redirectIfUserHasNoValidEmail();
-
-        // check basic mandatory fields
+        // check fields
         $this->redirectIfUserHasMissingData();
 
         $this->view->assignMultiple(
             [
-                'frontendUser'    => $this->getFrontendUser(),
-                'editUserPid'     => intval($this->settings['users']['editUserPid']),
-                'deleteUserPid'   => intval($this->settings['users']['deleteUserPid']),
-                'editPasswordPid' => intval($this->settings['users']['editPasswordPid']),
-                'logoutPid'       => intval($this->settings['users']['logoutPid']),
+                'frontendUser'    => $this->getFrontendUser()
             ]
         );
     }
@@ -170,24 +177,45 @@ class FrontendUserController extends AbstractController
      * action editUser
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser|null $frontendUser
-     * @TYPO3\CMS\Extbase\Annotation\Validate("RKW\RkwRegistration\Validation\FrontendUserValidator", param="frontendUser")
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup|null $frontendUserGroup
      * @return void
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function editAction(FrontendUser $frontendUser = null): void
+    public function editAction(FrontendUser $frontendUser = null, FrontendUserGroup $frontendUserGroup = null): void
     {
 
         // for logged-in users only!
         $this->redirectIfUserNotLoggedInOrGuest();
 
+        // set temporary usergroup for validation
+        $frontendUser = $frontendUser ?: $this->getFrontendUser();
+        if ($frontendUserGroup) {
+            $frontendUser->setTempFrontendUserGroup($frontendUserGroup);
+        }
+
+        if (
+            (! $this->getFlashMessageCount())
+            && (! $_POST)
+            && (! $frontendUserGroup)
+        ) {
+            $this->addFlashMessage(
+                LocalizationUtility::translate(
+                    'frontendUserController.notice.editIntroduction',
+                    $this->extensionName,
+                ),
+                '',
+                AbstractMessage::NOTICE
+            );
+        }
+
         $titles = $this->titleRepository->findAllOfType(true, false, false);
         $this->view->assignMultiple(
             [
-                'frontendUser' => $frontendUser,
-                'welcomePid'   => intval($this->settings['users']['welcomePid']),
-                'titles' => $titles
+                'frontendUser'  => $frontendUser,
+                'titles'        => $titles
             ]
         );
     }
@@ -195,14 +223,14 @@ class FrontendUserController extends AbstractController
 
     /**
      * action update
-     *
-     * @TYPO3\CMS\Extbase\Annotation\Validate("RKW\RkwRegistration\Validation\FrontendUserValidator", param="frontendUser")
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @TYPO3\CMS\Extbase\Annotation\Validate("RKW\RkwRegistration\Validation\FrontendUserValidator", param="frontendUser")
      */
     public function updateAction(FrontendUser $frontendUser): void
     {
@@ -225,6 +253,22 @@ class FrontendUserController extends AbstractController
                 'frontendUserController.message.update_successful', $this->extensionName
             )
         );
+
+        // redirect back to groups when we were originally redirected from there
+        if (
+            ($this->settings['users']['groupsListPid'])
+            && ($frontendUser->getTempFrontendUserGroup())
+        ){
+            $this->redirect(
+                'create',
+                'FrontendUserGroup',
+                null,
+                [
+                    'frontendUserGroup' => $frontendUser->getTempFrontendUserGroup()
+                ],
+                $this->settings['users']['groupsListPid']
+            );
+        }
 
         if ($this->settings['users']['welcomePid']) {
             $this->redirect(
@@ -253,9 +297,18 @@ class FrontendUserController extends AbstractController
         // for logged-in users only!
         $this->redirectIfUserNotLoggedInOrGuest();
 
+        $this->addFlashMessage(
+            LocalizationUtility::translate(
+                'frontendUserController.warning.show_introduction',
+                $this->extensionName,
+            ),
+            '',
+            AbstractMessage::WARNING
+        );
+
         $this->view->assignMultiple(
             [
-                'welcomePid' => intval($this->settings['users']['welcomePid']),
+                'frontendUser'  => $this->getFrontendUser(),
             ]
         );
     }

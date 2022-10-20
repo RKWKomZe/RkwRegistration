@@ -36,7 +36,7 @@ class FrontendUserGroupUtility
     /**
      * Returns all mandatory properties of user
      *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup $frontendUserGroup\RKW\RkwRegistration\Domain\Model\\RKW\RkwRegistration\Domain\Model\FrontendUserGroup
+     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup $frontendUserGroup
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
@@ -58,7 +58,7 @@ class FrontendUserGroupUtility
         // get mandatory fields
         if (
             ($frontendUserGroup instanceof FrontendUserGroup)
-            && ($mandatoryFieldsTemp = $frontendUserGroup->getTxRkwregistrationServiceMandatoryFields())
+            && ($mandatoryFieldsTemp = $frontendUserGroup->getTxRkwregistrationMembershipMandatoryFields())
         ){
             $mandatoryFieldsTemp = GeneralUtility::trimExplode(',', $mandatoryFieldsTemp);
             foreach($mandatoryFieldsTemp as $field) {

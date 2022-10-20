@@ -4,7 +4,7 @@
     <f:layout name="Default" />
 
     <f:section name="main">
-        <h2><f:translate key="templates_registration_editPassword.headline" /></h2>
+        <h2><f:translate key="templates_password_edit.headline" /></h2>
 
         <f:render partial="FlashMessages" arguments="{_all}" />
         <f:render partial="FormErrors" arguments="{for:frontendUser}" />
@@ -16,12 +16,12 @@
                     <f:render partial="Password/PasswordFormFields" arguments="{_all}" />
 
                     <div class="btn-list btn-list--footer">
-                        <f:link.action pageUid="{welcomePid}" action="index" controller="Registration" class="btn btn--secondary">
-                            <f:translate key="templates_registration_editPassword.labelBack"/>
+                        <f:link.action pageUid="{settings.users.welcomePid}" action="index" controller="Registration" class="btn btn--secondary">
+                            <f:translate key="templates_password_edit.labelBack"/>
                         </f:link.action>
 
                         <button type="submit" class="btn btn--primary">
-                            <f:translate key="templates_registration_editPassword.labelSave" />
+                            <f:translate key="templates_password_edit.labelSave" />
                         </button>
                     </div>
                 </div>

@@ -179,34 +179,6 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     #==============================================================================
 
-    /**
-     * @test
-     * @throws \Exception
-     */
-    public function setFrontendUserNormalizesEmailAndUsername ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given a frontendUser-object
-         * Given this object has a value for the email-property with uppercase set
-         * Given this object has a value for the username-property with uppercase set
-         * When the method is called
-         * Then the email-property is changed to lowercase
-         * Then the username-property is changed to lowercase*
-         */
-
-        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
-        $frontendUser->setEmail('TEST@TEST.DE');
-        $frontendUser->setUsername('TESTER@TEST.DE');
-
-        $this->fixture->setFrontendUser($frontendUser);
-
-        static::assertEquals('test@test.de', $frontendUser->getEmail());
-        static::assertEquals('tester@test.de', $frontendUser->getUsername());
-
-    }
 
 
     /**
@@ -262,6 +234,75 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $this->fixture->setFrontendUser($frontendUser);
 
     }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function setFrontendUserThrowsExceptionIfAnotherUserLoggedIn ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a frontendUser-object
+         * Given this object has a valid value for the email-property set
+         * Given this object has no value for the username-property set
+         * Given another frontendUser is logged in
+         * When the method is called
+         * Then the exception is an instance of \RKW\RkwRegistration\Exception
+         * Then the exception has the code 1666014579
+         */
+        static::expectException(\RKW\RkwRegistration\Exception::class);
+        static::expectExceptionCode(1666014579);
+
+        $this->importDataSet(self::FIXTURE_PATH .'/Database/Check30.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByIdentifier(30);
+        $frontendUserGroup = $this->frontendUserGroupRepository->findByIdentifier(30);
+
+        FrontendSimulatorUtility::simulateFrontendEnvironment(1);
+        FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
+        $frontendUser->setEmail('test@rkw.de');
+
+        $this->fixture->setFrontendUser($frontendUser);
+
+        FrontendSimulatorUtility::resetFrontendEnvironment();
+
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function setFrontendUserNormalizesEmailAndUsername ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a frontendUser-object
+         * Given this object has a value for the email-property with uppercase set
+         * Given this object has a value for the username-property with uppercase set
+         * When the method is called
+         * Then the email-property is changed to lowercase
+         * Then the username-property is changed to lowercase*
+         */
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
+        $frontendUser->setEmail('TEST@TEST.DE');
+        $frontendUser->setUsername('TESTER@TEST.DE');
+
+        $this->fixture->setFrontendUser($frontendUser);
+
+        static::assertEquals('test@test.de', $frontendUser->getEmail());
+        static::assertEquals('tester@test.de', $frontendUser->getUsername());
+
+    }
+
 
     /**
      * @test
@@ -709,6 +750,47 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     #==============================================================================
 
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function setFrontendUserTokenThrowsExceptionIfAnotherUserLoggedIn ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a persisted frontendUser-object
+         * Given this object has a valid value for the email-property set
+         * Given this object has no value for the username-property set
+         * Given a persisted optIn-object
+         * Given the frontendUserUid-property of this object refers to the frontendUser-object
+         * Given this object has a valid token set
+         * Given another frontendUser is logged in
+         * When the method is called with
+         * Then the exception is an instance of \RKW\RkwRegistration\Exception
+         * Then the exception has the code 1666021555
+         */
+        static::expectException(\RKW\RkwRegistration\Exception::class);
+        static::expectExceptionCode(1666021555);
+
+        $this->importDataSet(self::FIXTURE_PATH .'/Database/Check150.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByIdentifier(151);
+        $frontendUserGroup = $this->frontendUserGroupRepository->findByIdentifier(151);
+
+        FrontendSimulatorUtility::simulateFrontendEnvironment(1);
+        FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $this->fixture->setFrontendUserToken('test');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\OptIn $result */
+        $this->fixture->getOptInPersisted();
+
+        FrontendSimulatorUtility::resetFrontendEnvironment();
+
+    }
 
     /**
      * @test
@@ -1350,6 +1432,7 @@ var_dump($result);
          * Scenario:
          *
          * Given a non-persisted frontendUser-object
+         * Given setFrontendUser has been called with this frontendUser-object as parameter
          * When the method is called
          * Then the exception is an instance of \RKW\RkwRegistration\Exception
          * Then the exception has the code 1659691717
@@ -1578,6 +1661,54 @@ var_dump($result);
 
     }
 
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function createOptInSetsForeignTableAndUid ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a persisted frontendUser-object
+         * Given this object has a valid value for the email-property set
+         * Given this object has a valid value for the username-property set
+         * Given setFrontendUser has been called before with the frontendUser-object as parameter
+         * Given setCategory has been called before with a string as parameter
+         * Given setData has been called before with a persisted frontendUserGroup-object with uid = 1 as parameter
+         * Given getOptInPersisted has been called before
+         * Given that call returned null
+         * When the method is called
+         * Then an instance of type \RKW\RkwRegistration\Domain\Model\OptIn is returned
+         * Then this instance has the foreignTable-property set to fe_groups
+         * Then this instance has the foreignUid-property set to 1
+         */
+
+        $this->importDataSet(self::FIXTURE_PATH .'/Database/Check140.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByIdentifier(140);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
+        $frontendUserGroup = $this->frontendUserGroupRepository->findByIdentifier(140);
+
+        $this->fixture->setFrontendUser($frontendUser);
+        $this->fixture->setCategory('test');
+        $this->fixture->setData($frontendUserGroup);
+
+        static::assertNull($this->fixture->getOptInPersisted());
+
+        /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
+        $optIn = $this->fixture->createOptIn();
+
+        static::assertInstanceOf(OptIn::class, $optIn);
+        static::assertEquals('fe_groups', $optIn->getForeignTable());
+        static::assertEquals(140, $optIn->getForeignUid());
+
+
+
+    }
+
     #==============================================================================
 
     /**
@@ -1606,14 +1737,16 @@ var_dump($result);
      * @test
      * @throws \Exception
      */
-    public function startRegistrationThrowsExceptionIfUserLoggedIn ()
+    public function startRegistrationThrowsExceptionIfNewRegistrationForLoggedInUser ()
     {
         /**
          * Scenario:
          *
-         * Given a persisted frontendUser-object
+         * Given a non-persistent frontendUser-object
          * Given this object has a valid value for the email-property set
          * Given this object has a valid value for the username-property set
+         * Given setFrontendUser has been called with this frontendUser-object as parameter
+         * Given setData has not been called before
          * Given a frontendUser is logged in
          * When the method is called
          * Then the exception is an instance of \RKW\RkwRegistration\Exception
@@ -1630,6 +1763,10 @@ var_dump($result);
 
         FrontendSimulatorUtility::simulateFrontendEnvironment(1);
         FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
+        $frontendUser->setEmail('test@rkw.de');
 
         $this->fixture->setFrontendUser($frontendUser);
         $this->fixture->startRegistration();
@@ -1649,6 +1786,7 @@ var_dump($result);
          *
          * Given a persisted frontendUser-object
          * Given this object has a valid value for the email-property set
+         * Given setFrontendUser has been called with this frontendUser-object as parameter
          * Given no additional data is set
          * When the method is called
          * Then false is returned
@@ -1679,6 +1817,7 @@ var_dump($result);
          * Given a persisted frontendUser-object
          * Given this object has a valid value for the email-property set
          * Given this object has a valid value for the username-property set
+         * Given setFrontendUser has been called with this frontendUser-object as parameter
          * Given additional data is set
          * When the method is called
          * Then the password-property is not overridden
@@ -1717,6 +1856,7 @@ var_dump($result);
          * Given a persisted frontendUser-object
          * Given this object has a valid value for the email-property set
          * Given this object has a valid value for the username-property set
+         * Given setFrontendUser has been called with this frontendUser-object as parameter
          * Given additional data is set
          * Given a request-object is set
          * When the method is called
@@ -1759,6 +1899,7 @@ var_dump($result);
          *
          * Given a non-persisted frontendUser-object
          * Given this object has a valid value for the email-property set
+         * Given setFrontendUser has been called with this frontendUser-object as parameter
          * When the method is called
          * Then true is returned
          * Then the frontendUser-object is persisted
@@ -1798,6 +1939,7 @@ var_dump($result);
          *
          * Given a non-persisted frontendUser-object
          * Given this object has a valid value for the email-property set
+         * Given setFrontendUser has been called with this frontendUser-object as parameter
          * Given a request-object is set
          * When the method is called
          * Then true is returned
@@ -2536,6 +2678,9 @@ var_dump($result);
 
         static::assertTrue($this->fixture->endRegistration());
         static::assertFalse(FrontendUserSessionUtility::isUserLoggedIn($frontendUser));
+
+        FrontendSimulatorUtility::resetFrontendEnvironment();
+
 
     }
 

@@ -4,23 +4,21 @@
     <f:layout name="Default" />
 
     <f:section name="main">
-        <h2><f:translate key="templates_registration_deleteUserShow.headline" /></h2>
+        <h2><f:translate key="templates_frontendUser_show.headline" /></h2>
 
         <f:render partial="FlashMessages" arguments="{_all}" />
         <f:render partial="FormErrors" arguments="{for:frontendUser}"/>
 
         <f:form action="delete" name="frontendUser" object="{frontendUser}" class="form-fields">
 
-            <p><f:translate key="templates_registration_deleteUserShow.reallyDelete" /></p>
-
             <div class="btn-list btn-list--footer">
 
-                <f:link.action pageUid="{welcomePid}" action="index" controller="Registration" class="btn btn--secondary">
-                    <f:translate key="templates_registration_deleteUserShow.labelBack"/>
+                <f:link.action pageUid="{settings.users.welcomePid}" action="index" controller="Registration" class="btn btn--secondary">
+                    <f:translate key="templates_frontendUser_show.labelBack"/>
                 </f:link.action>
 
                 <button type="submit" class="btn btn--primary">
-                    <span><f:translate key="templates_registration_deleteUserShow.labelDelete" /></span>
+                    <span><f:translate key="templates_frontendUser_show.labelDelete" /></span>
                 </button>
             </div>
 

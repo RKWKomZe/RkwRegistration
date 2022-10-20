@@ -29,7 +29,7 @@ call_user_func(
             [
                 'Auth' => 'index, login, logout, logoutRedirect',
                 'AuthGuest' => 'login, loginHint',
-                'FrontendUser' => 'index, new, create',
+                'FrontendUser' => 'new, create, index',
                 'Password' => 'new, create',
                 'Registration' => 'optIn',
 
@@ -40,7 +40,7 @@ call_user_func(
             [
                 'Auth' => 'index, login, logout, logoutRedirect',
                 'AuthGuest' => 'login, loginHint',
-                'FrontendUser' => 'index, new, create',
+                'FrontendUser' => 'new, create, index',
                 'Password' => 'new, create',
                 'Registration' => 'optIn',
             ]
@@ -50,11 +50,11 @@ call_user_func(
             'RKW.' . $extKey,
             'LogoutInternal',
             [
-                'Auth' => 'index, logout, logoutRedirect',
+                'Auth' => 'logout, logoutRedirect, index',
             ],
             // non-cacheable actions
             [
-                'Auth' => 'index, logout, logoutRedirect',
+                'Auth' => 'logout, logoutRedirect, index',
             ]
         );
 
@@ -79,12 +79,12 @@ call_user_func(
             'RKW.' . $extKey,
             'FrontendUserWelcome',
             [
-                'FrontendUser' => 'index, welcome',
+                'FrontendUser' => 'welcome, index',
                 'Auth' => 'index'
             ],
             // non-cacheable actions
             [
-                'FrontendUser' => 'index, welcome',
+                'FrontendUser' => 'welcome, index',
                 'Auth' => 'index'
             ]
         );
@@ -93,12 +93,12 @@ call_user_func(
             'RKW.' . $extKey,
             'FrontendUserEdit',
             [
-                'FrontendUser' => 'index, edit, update',
+                'FrontendUser' => 'edit, update, index',
                 'Auth' => 'index'
             ],
             // non-cacheable actions
             [
-                'FrontendUser' => 'index, edit, update',
+                'FrontendUser' => 'edit, update, index',
                 'Auth' => 'index'
             ]
         );
@@ -107,31 +107,30 @@ call_user_func(
             'RKW.' . $extKey,
             'FrontendUserDelete',
             [
-                'FrontendUser' => 'index, show, delete',
+                'FrontendUser' => 'show, delete, index',
                 'Auth' => 'index'
             ],
             // non-cacheable actions
             [
-                'FrontendUser' => 'index, show, delete',
+                'FrontendUser' => 'show, delete, index',
                 'Auth' => 'index'
             ]
         );
 
 
-
-
-
-
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
-            'Service',
+            'FrontendUserGroup',
             [
-                'Service' => 'index, list, show, create, delete, index',
+                'FrontendUserGroup' => 'list, show, create, delete',
+                'Auth' => 'index',
+                'FrontendUser' => 'index'
             ],
             // non-cacheable actions
             [
-                'Service' => 'index, list, show, create, delete, index',
-            ]
+                'FrontendUserGroup' => 'list, show, create, delete',
+                'Auth' => 'index',
+                'FrontendUser' => 'index'            ]
         );
 
         /*
@@ -161,7 +160,7 @@ call_user_func(
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
-            'RkwregistrationInfo',
+            'Info',
             [
                 'Info' => 'index, loginInfo'
             ],
@@ -171,22 +170,12 @@ call_user_func(
             ]
         );
 
-        //=================================================================
-        // Register CommandController
-        //=================================================================
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = 'RKW\\RkwRegistration\\Controller\\CleanupCommandController';
 
         //=================================================================
         // Register Hook for Backend-Delete
         //=================================================================
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][$extKey] = 'RKW\\RkwRegistration\\Hooks\\DatahandlerHook';
 
-        /*
-        if (TYPO3_MODE !== 'BE') {
-            // was needed for dynamic myrkw domains
-            //$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-output'][] = 'RKW\\RkwRegistration\\Hooks\\PseudoBaseUrlHook->hook_contentPostProc';
-        }
-        */
 
         //=================================================================
         // Register Signal-Slots
@@ -196,33 +185,35 @@ call_user_func(
          */
         $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Registration\\OptInRegistration',
-            \RKW\RkwRegistration\Registration\OptInRegistration::SIGNAL_AFTER_CREATING_OPTIN_NEW_USER,
+            'RKW\\RkwRegistration\\Registration\\FrontendUser\\AbstractRegistration',
+            \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::SIGNAL_AFTER_CREATING_OPTIN,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
-            'handleCreateUserEvent'
+            'sendOptInEmail'
         );
 
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Registration\\OptInRegistration',
-            \RKW\RkwRegistration\Registration\OptInRegistration::SIGNAL_AFTER_CREATING_FINAL_USER,
+            'RKW\\RkwRegistration\\Registration\\FrontendUser\\AbstractRegistration',
+            \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::SIGNAL_AFTER_CREATING_OPTIN . 'RkwRegistrationGroups',
             'RKW\\RkwRegistration\\Service\\RkwMailService',
-            'handleRegisterUserEvent'
+            'sendOptInEmailGroup'
         );
 
+
         $signalSlotDispatcher->connect(
-            'RKW\\RkwRegistration\\Registration\\OptInRegistration',
-            \RKW\RkwRegistration\Registration\OptInRegistration::SIGNAL_AFTER_REGISTRATION_COMPLETED,
+            'RKW\\RkwRegistration\\Registration\\FrontendUser\\AbstractRegistration',
+            \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::SIGNAL_AFTER_REGISTRATION_COMPLETED,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
-            'handleRegisterUserEvent'
+            'sendPasswordEmail'
         );
 
         $signalSlotDispatcher->connect(
             'RKW\\RkwRegistration\\Controller\\PasswordController',
             \RKW\RkwRegistration\Controller\PasswordController::SIGNAL_AFTER_USER_PASSWORD_RESET,
             'RKW\\RkwRegistration\\Service\\RkwMailService',
-            'handlePasswordResetEvent'
+            'sendResetPasswordEmail'
         );
 
+        /*
         $signalSlotDispatcher->connect(
             'RKW\\RkwRegistration\\Controller\\ServiceController',
             \RKW\RkwRegistration\Controller\ServiceController::SIGNAL_ADMIN_SERVICE_REQUEST,
@@ -243,7 +234,7 @@ call_user_func(
             'RKW\\RkwRegistration\\Service\\RkwMailService',
             'handleAdminServiceDenialEvent'
         );
-
+*/
         //=================================================================
         // Register Logger
         //=================================================================

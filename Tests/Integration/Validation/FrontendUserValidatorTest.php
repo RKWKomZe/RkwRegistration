@@ -101,7 +101,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function isValidWithAllFilledMandatoryFieldsReturnsTrue ()
+    public function isValidWithCompleteMandatoryFieldsReturnsTrue ()
     {
         /**
          * Scenario:
@@ -170,7 +170,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function isValidWithIncompleteDataReturnFalse ()
+    public function isValidWithIncompleteMandatoryFieldsReturnFalse ()
     {
         /**
          * Scenario:
@@ -197,6 +197,169 @@ class FrontendUserValidatorTest extends FunctionalTestCase
 
         $result = $frontendUserValidator->isValid($frontendUserFormData);
         static::assertFalse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function isValidWithIncompleteMandatoryFieldsForGroupReturnFalse ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a valid configuration of mandatory fields
+         * Given all mandatory fields of that configuration are filled out
+         * Given an email address that has not been used by another user
+         * Given the frontendUser belongs to a frontendUserGroup
+         * Given that frontendUserGroup has an additional mandatory field set
+         * Given that mandatory field is not filled out
+         * When the validator is called
+         * Then false is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
+        $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(20);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUserFormData */
+        $frontendUserFormData = GeneralUtility::makeInstance(FrontendUser::class);
+        $frontendUserFormData->setEmail('test@gmx.de');
+        $frontendUserFormData->setFirstName('FirstName');
+        $frontendUserFormData->setLastName('LastName');
+        $frontendUserFormData->addUsergroup($frontendUserGroup);
+
+        /** @var \RKW\RkwRegistration\Validation\FrontendUserValidator $frontendUserValidator */
+        $frontendUserValidator = $this->objectManager->get(FrontendUserValidator::class);
+
+        // workaround start: for creating $this->result of the validator
+        $frontendUserValidator->validate($frontendUserFormData);
+        // workaround end
+
+        $result = $frontendUserValidator->isValid($frontendUserFormData);
+        static::assertFalse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function isValidWithCompleteMandatoryFieldsForGroupReturnTrue ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a valid configuration of mandatory fields
+         * Given all mandatory fields of that configuration are filled out
+         * Given an email address that has not been used by another user
+         * Given the frontendUser belongs to a frontendUserGroup
+         * Given that frontendUserGroup has an additional mandatory field set
+         * Given that mandatory field is filled out
+         * When the validator is called
+         * Then true is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
+        $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(20);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUserFormData */
+        $frontendUserFormData = GeneralUtility::makeInstance(FrontendUser::class);
+        $frontendUserFormData->setEmail('test@gmx.de');
+        $frontendUserFormData->setFirstName('FirstName');
+        $frontendUserFormData->setLastName('LastName');
+        $frontendUserFormData->addUsergroup($frontendUserGroup);
+        $frontendUserFormData->setTxRkwregistrationFacebookUrl('https://www.facebook.de');
+
+        /** @var \RKW\RkwRegistration\Validation\FrontendUserValidator $frontendUserValidator */
+        $frontendUserValidator = $this->objectManager->get(FrontendUserValidator::class);
+
+        // workaround start: for creating $this->result of the validator
+        $frontendUserValidator->validate($frontendUserFormData);
+        // workaround end
+
+        $result = $frontendUserValidator->isValid($frontendUserFormData);
+        static::assertTrue($result);
+    }
+
+
+    /**
+     * @test
+     */
+    public function isValidWithIncompleteMandatoryFieldsForTemporaryGroupReturnFalse ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a valid configuration of mandatory fields
+         * Given all mandatory fields of that configuration are filled out
+         * Given an email address that has not been used by another user
+         * Given the frontendUser temporarily belongs to a frontendUserGroup
+         * Given that frontendUserGroup has an additional mandatory field set
+         * Given that mandatory field is not filled out
+         * When the validator is called
+         * Then false is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
+        $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(20);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUserFormData */
+        $frontendUserFormData = GeneralUtility::makeInstance(FrontendUser::class);
+        $frontendUserFormData->setEmail('test@gmx.de');
+        $frontendUserFormData->setFirstName('FirstName');
+        $frontendUserFormData->setLastName('LastName');
+        $frontendUserFormData->setTempFrontendUserGroup($frontendUserGroup);
+
+        /** @var \RKW\RkwRegistration\Validation\FrontendUserValidator $frontendUserValidator */
+        $frontendUserValidator = $this->objectManager->get(FrontendUserValidator::class);
+
+        // workaround start: for creating $this->result of the validator
+        $frontendUserValidator->validate($frontendUserFormData);
+        // workaround end
+
+        $result = $frontendUserValidator->isValid($frontendUserFormData);
+        static::assertFalse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function isValidWithCompleteMandatoryFieldsForTemporaryGroupReturnTrue ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a valid configuration of mandatory fields
+         * Given all mandatory fields of that configuration are filled out
+         * Given an email address that has not been used by another user
+         * Given the frontendUser temporarily belongs to a frontendUserGroup
+         * Given that frontendUserGroup has an additional mandatory field set
+         * Given that mandatory field is filled out
+         * When the validator is called
+         * Then true is returned
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
+        $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(20);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUserFormData */
+        $frontendUserFormData = GeneralUtility::makeInstance(FrontendUser::class);
+        $frontendUserFormData->setEmail('test@gmx.de');
+        $frontendUserFormData->setFirstName('FirstName');
+        $frontendUserFormData->setLastName('LastName');
+        $frontendUserFormData->setTempFrontendUserGroup($frontendUserGroup);
+        $frontendUserFormData->setTxRkwregistrationFacebookUrl('https://www.facebook.de');
+
+        /** @var \RKW\RkwRegistration\Validation\FrontendUserValidator $frontendUserValidator */
+        $frontendUserValidator = $this->objectManager->get(FrontendUserValidator::class);
+
+        // workaround start: for creating $this->result of the validator
+        $frontendUserValidator->validate($frontendUserFormData);
+        // workaround end
+
+        $result = $frontendUserValidator->isValid($frontendUserFormData);
+        static::assertTrue($result);
     }
 
     /**

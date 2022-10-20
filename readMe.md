@@ -1,6 +1,6 @@
 # Usage in your own extension
-
-## 1. Generate Opt-In
+## Opt-In
+### 1. Generate Opt-In in your controller
 For a registration with opt-in simple use the example-code below in your controller.
 Please ensure to always load FrontendUserRegistration via ObjectManager
 ```
@@ -23,7 +23,7 @@ you can use the method **setFrontendUserUpdate**. This will update the frontendU
 accepts the opt-in. This way you can be sure that changes to the frontendUser-object only
 happen if authorized.
 
-## 2. Define MailService for Opt-In-Mail
+### 2. Define MailService for Opt-In-Mail
 No you need a MailService class with a defined action for Opt-Ins
 ```
 /**
@@ -80,11 +80,22 @@ public function optIn (
     }
 }
 ```
-## 3. Set Signal-Slot
-Now we need a signal-slot that refers to the defined method for sending mails.
+### 3. Set Signal-Slot
+Now we need a signal-slot that refers to the defined method for sending mails (ext_localconf.php)
+```
+/**
+ * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher
+ */
+$signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+$signalSlotDispatcher->connect(
+    \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::class,
+    \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::SIGNAL_AFTER_CREATING_OPTIN  . 'RkwAlerts',
+    'RKW\\RkwAlerts\\Service\\RkwMailService',
+    'optInAlertUser'
+);
+```
 
-
-## 4. Set Template for Opt-In-Mail
+### 4. Set Template for Opt-In-Mail
 The opt-in-email may look like this:
 ```
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
@@ -95,24 +106,22 @@ The opt-in-email may look like this:
 
 	<!-- PLAINTEXT -->
 	<f:section name="Plaintext"><rkwMailer:plaintextLineBreaks>
-	    <rkwMailer:frontend.translate key="templates_email_optInAlertUser.textOptInLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/>:\n
-	    <rkwMailer:frontend.link action="optIn" controller="Alert" extensionName="rkwAlerts" pluginName="rkwAlerts" absolute="true" pageUid="{pageUid}" additionalParams="{tx_rkwalerts_rkwalerts: {token: optIn.tokenYes, tokenUser: optIn.tokenUser}}" section="rkw-alerts" />\n\n
+	    <rkwMailer:email.translate key="templates_email_optInAlertUser.textOptInLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/>:\n
+	    <rkwMailer:email.uri.action action="optIn" controller="Alert" extensionName="rkwAlerts" pluginName="rkwAlerts" absolute="true" pageUid="{pageUid}" additionalParams="{tx_rkwalerts_rkwalerts: {token: optIn.tokenYes, tokenUser: optIn.tokenUser}}" section="rkw-alerts" />\n\n
 
-        <rkwMailer:frontend.translate key="templates_email_optInAlertUser.textOptOutLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/>:\n
-        <rkwMailer:frontend.link action="optIn" controller="Alert" extensionName="rkwAlerts" pluginName="rkwAlerts" absolute="true" pageUid="{pageUid}" additionalParams="{tx_rkwalerts_rkwalerts: {token: optIn.tokenNo, tokenUser: optIn.tokenUser}}" section="rkw-alerts" />
+        <rkwMailer:email.translate key="templates_email_optInAlertUser.textOptOutLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/>:\n
+        <rkwMailer:email.uri.action action="optIn" controller="Alert" extensionName="rkwAlerts" pluginName="rkwAlerts" absolute="true" pageUid="{pageUid}" additionalParams="{tx_rkwalerts_rkwalerts: {token: optIn.tokenNo, tokenUser: optIn.tokenUser}}" section="rkw-alerts" />
     </rkwMailer:plaintextLineBreaks></f:section>
 
 	<!-- HTML -->
 	<f:section name="Html">
-		<a href="<rkwMailer:frontend.link action='optIn' controller='Alert' extensionName='rkwAlerts' pluginName='rkwAlerts' absolute='true' pageUid='{pageUid}' additionalParams='{tx_rkwalerts_rkwalerts: {token: optIn.tokenYes, tokenUser: optIn.tokenUser}}' section='rkw-alerts' />"><rkwMailer:frontend.translate key="templates_email_optInAlertUser.textOptInLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/></a>
-		<a href="<rkwMailer:frontend.link action='optIn' controller='Alert' extensionName='rkwAlerts' pluginName='rkwAlerts' absolute='true' pageUid='{pageUid}' additionalParams='{tx_rkwalerts_rkwalerts: {token: optIn.tokenNo, tokenUser: optIn.tokenUser}}' section='rkw-alerts' />"><rkwMailer:frontend.translate key="templates_email_optInAlertUser.textOptOutLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/></a>
+		<a href="<rkwMailer:email.uri.action action='optIn' controller='Alert' extensionName='rkwAlerts' pluginName='rkwAlerts' absolute='true' pageUid='{pageUid}' additionalParams='{tx_rkwalerts_rkwalerts: {token: optIn.tokenYes, tokenUser: optIn.tokenUser}}' section='rkw-alerts' />"><rkwMailer:email.translate key="templates_email_optInAlertUser.textOptInLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/></a>
+		<a href="<rkwMailer:email.uri.action action='optIn' controller='Alert' extensionName='rkwAlerts' pluginName='rkwAlerts' absolute='true' pageUid='{pageUid}' additionalParams='{tx_rkwalerts_rkwalerts: {token: optIn.tokenNo, tokenUser: optIn.tokenUser}}' section='rkw-alerts' />"><rkwMailer:email.translate key="templates_email_optInAlertUser.textOptOutLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/></a>
 	</f:section>
 
 </html>
 ```
-## 5.
-
-## 5. Check Opt-In
+### 5. Check Opt-In
 To check the opt-in you can use the following example-code in your contoller:
 ```
 public function optInAction(string $tokenUser, string $token): void
@@ -137,6 +146,53 @@ public function optInAction(string $tokenUser, string $token): void
     }
 }
 ```
+
+### 6. Signal-Slot for extension specific action after opt-in
+We need a second signal-slot in order to do whatever we need to do after the opt-in
+```
+    $signalSlotDispatcher->connect(
+        \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::class,
+        \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::SIGNAL_AFTER_REGISTRATION_COMPLETED . 'RkwAlerts',
+        'RKW\\RkwAlerts\\Alerts\\AlertManager',
+        'saveAlertByRegistration'
+    );
+```
+
+### 7. Method for for the specific action
+Then we need to define the corresponding method:
+```
+    /**
+     * Save alert by registration
+     * Used by SignalSlot
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
+     * @return void
+     * @api Used by SignalSlot
+     */
+    public function saveAlertByRegistration(
+        \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser,
+        \RKW\RkwRegistration\Domain\Model\OptIn $optIn
+    ) {
+
+        if (
+            ($alert = $optIn->getData())
+            && ($alert instanceof \RKW\RkwAlerts\Domain\Model\Alert)
+        ) {
+
+            try {
+                // create alert here
+            } catch (\RKW\RkwAlerts\Exception $exception) {
+                // do nothing here
+            }
+        }
+    }
+```
+## Another usages
+* You can also:
+** Send a confirmation-email after the opt-in was succesfull (Using SIGNAL_AFTER_ALERT_CREATED-Signal-Slot)
+** Delete all extension-specific data if the frontendUser is deleted (Using SIGNAL_AFTER_REGISTRATION_ENDED-Signal-Slot)
+** ... do many other fancy stuff ;-)
 
 # Refactoring changes of RkwRegistration 2021
 

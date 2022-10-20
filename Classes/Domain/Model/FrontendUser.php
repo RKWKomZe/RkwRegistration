@@ -32,6 +32,22 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 {
 
     /**
+     * !!!! THIS SHOULD NEVER BE PERSISTED !!!!
+     *
+     * @var string
+     */
+    protected $tempPlaintextPassword = '';
+
+
+    /**
+     * !!!! THIS SHOULD NEVER BE PERSISTED !!!!
+     *
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup
+     */
+    protected $tempFrontendUserGroup;
+
+
+    /**
      * @var int
      */
     protected $crdate;
@@ -72,13 +88,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     protected $email = '';
 
-
-    /**
-     * !!!! THIS SHOULD NEVER BE PERSISTED !!!!
-     *
-     * @var string
-     */
-    protected $_tempPlaintextPassword = '';
 
 
     /**
@@ -137,12 +146,63 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     protected $txRkwregistrationXingUrl = '';
 
 
-
     /**
      * @var bool
      */
     protected $txRkwregistrationDataProtectionStatus = 0;
 
+
+
+    /**
+     * Gets the plaintext password
+     * !!! SHOULD NEVER BE PERSISTED!!!
+     *
+     * @return string
+     * @api
+     */
+    public function getTempPlaintextPassword(): string
+    {
+        return $this->tempPlaintextPassword;
+    }
+
+
+    /**
+     * Sets the plaintext password
+     * !!! SHOULD NEVER BE PERSISTED!!!
+     *
+     * @param string $tempPlaintextPassword
+     * @api
+     */
+    public function setTempPlaintextPassword(string $tempPlaintextPassword): void
+    {
+        $this->tempPlaintextPassword = $tempPlaintextPassword;
+    }
+
+
+    /**
+     * Gets the tempFrontendUserGroup
+     * !!! SHOULD NEVER BE PERSISTED!!!
+     *
+     * @return \RKW\RkwRegistration\Domain\Model\FrontendUserGroup|null
+     * @api
+     */
+    public function getTempFrontendUserGroup() :? \RKW\RkwRegistration\Domain\Model\FrontendUserGroup
+    {
+        return $this->tempFrontendUserGroup;
+    }
+
+
+    /**
+     * Sets the tempFrontendUserGroup
+     * !!! SHOULD NEVER BE PERSISTED!!!
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $tempFrontendUserGroup
+     * @api
+     */
+    public function setTempFrontendUserGroup(FrontendUserGroup $tempFrontendUserGroup): void
+    {
+        $this->tempFrontendUserGroup = $tempFrontendUserGroup;
+    }
 
 
     /**
@@ -341,31 +401,6 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
         $this->title = $title;
     }
 
-
-    /**
-     * Gets the plaintext password
-     * !!! SHOULD NEVER BE PERSISTED!!!
-     *
-     * @return string
-     * @api
-     */
-    public function getTempPlaintextPassword(): string
-    {
-        return $this->_tempPlaintextPassword;
-    }
-
-
-    /**
-     * Sets the plaintext password
-     * !!! SHOULD NEVER BE PERSISTED!!!
-     *
-     * @param string $tempPlaintextPassword
-     * @api
-     */
-    public function setTempPlaintextPassword(string $tempPlaintextPassword): void
-    {
-        $this->_tempPlaintextPassword = $tempPlaintextPassword;
-    }
 
 
     /**

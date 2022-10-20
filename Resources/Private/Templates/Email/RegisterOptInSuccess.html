@@ -3,29 +3,29 @@
 
 <!-- PLAINTEXT -->
 <f:section name="Plaintext">
-<rkwMailer:recipientSalutation queueRecipient="{queueRecipient}" prependText="<rkwMailer:frontend.translate key='templates_email_registerOptInSuccess.headline' languageKey='{queueRecipient.languageCode}' extensionName='rkwRegistration' />, " fallbackText="<rkwMailer:frontend.translate key='templates_email_registerOptInSuccess.headline' languageKey='{queueRecipient.languageCode}' extensionName='rkwRegistration' />!" appendText="!"/>
+<rkwMailer:recipientSalutation queueRecipient="{queueRecipient}" prependText="<rkwMailer:email.translate key='templates_email_registerOptInSuccess.headline' languageKey='{queueRecipient.languageCode}' extensionName='rkwRegistration' />, " fallbackText="<rkwMailer:email.translate key='templates_email_registerOptInSuccess.headline' languageKey='{queueRecipient.languageCode}' extensionName='rkwRegistration' />!" appendText="!"/>
 
-<rkwMailer:frontend.translate key="templates_email_registerOptInSuccess.teaser" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" />
+<rkwMailer:email.translate key="templates_email_registerOptInSuccess.teaser" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" />
 
-<rkwMailer:frontend.translate key="templates_email_registerOptInSuccess.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/>:
-    <rkwMailer:frontend.translate key="templates_email_registerOptInSuccess.username" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/>: {frontendUser.username}
-    <rkwMailer:frontend.translate key="templates_email_registerOptInSuccess.password" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/>: {plaintextPasswordForMail}
+<rkwMailer:email.translate key="templates_email_registerOptInSuccess.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/>:
+    <rkwMailer:email.translate key="templates_email_registerOptInSuccess.username" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/>: {frontendUser.username}
+    <rkwMailer:email.translate key="templates_email_registerOptInSuccess.password" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/>: {plaintextPasswordForMail}
 
-<rkwMailer:frontend.translate key="templates_email_registerOptInSuccess.text2" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" />
+<rkwMailer:email.translate key="templates_email_registerOptInSuccess.text2" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" />
 
-<rkwMailer:frontend.translate key="templates_email_passwordReset.loginLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" />:
+<rkwMailer:email.translate key="templates_email_passwordReset.loginLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" />:
 {loginLink}
 </f:section>
 
 <!-- HTML -->
 <f:section name="Html">
-	<h1><rkwMailer:recipientSalutation queueRecipient="{queueRecipient}" prependText="<rkwMailer:frontend.translate key='templates_email_registerOptInSuccess.headline' languageKey='{queueRecipient.languageCode}' extensionName='rkwRegistration' />, " fallbackText="<rkwMailer:frontend.translate key='templates_email_registerOptInSuccess.headline' languageKey='{queueRecipient.languageCode}' extensionName='rkwRegistration' />!" appendText="!"/></h1>
-	<p><rkwMailer:frontend.translate key="templates_email_registerOptInSuccess.teaser" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/></p>
+	<h1><rkwMailer:recipientSalutation queueRecipient="{queueRecipient}" prependText="<rkwMailer:email.translate key='templates_email_registerOptInSuccess.headline' languageKey='{queueRecipient.languageCode}' extensionName='rkwRegistration' />, " fallbackText="<rkwMailer:email.translate key='templates_email_registerOptInSuccess.headline' languageKey='{queueRecipient.languageCode}' extensionName='rkwRegistration' />!" appendText="!"/></h1>
+	<p><rkwMailer:email.translate key="templates_email_registerOptInSuccess.teaser" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/></p>
 	<p>
-        <rkwMailer:frontend.translate key="templates_email_registerOptInSuccess.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/>:<br/>
-        <rkwMailer:frontend.translate key="templates_email_registerOptInSuccess.username" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/>: <strong>{frontendUser.username}</strong><br/>
-        <rkwMailer:frontend.translate key="templates_email_registerOptInSuccess.password" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/>: <strong>{plaintextPasswordForMail}</strong>
+        <rkwMailer:email.translate key="templates_email_registerOptInSuccess.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/>:<br/>
+        <rkwMailer:email.translate key="templates_email_registerOptInSuccess.username" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/>: <strong>{frontendUser.username}</strong><br/>
+        <rkwMailer:email.translate key="templates_email_registerOptInSuccess.password" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/>: <strong>{plaintextPasswordForMail}</strong>
     </p>
-	<p><rkwMailer:frontend.translate key="templates_email_registerOptInSuccess.text2" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" /></p>
-    <p><a href="{loginLink}"><rkwMailer:frontend.translate key="templates_email_passwordReset.loginLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" /></a></p>
+	<p><rkwMailer:email.translate key="templates_email_registerOptInSuccess.text2" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" /></p>
+    <p><a href="{loginLink}"><rkwMailer:email.translate key="templates_email_passwordReset.loginLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" /></a></p>
 </f:section>

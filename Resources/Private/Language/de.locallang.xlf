@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <xliff version="1.0">
 	<file source-language="en" datatype="plaintext" original="messages" product-name="rkw_registration" target-language="de" date="2014-06-12T13:49:26Z">
-		<header>
-      <phase-group>
-        <phase tool-id="lokalize-22.03.70" contact-name="Melanie" phase-name="approval-1" process-name="approval" contact-email="berberich@rkw.de" date="2022-02-11"/>
-      </phase-group>
-      <tool tool-id="lokalize-22.03.70" tool-version="22.03.70" tool-name="Lokalize"/>
-    </header>
 		<body>
-
             <!-- tx_rkwregistration_domain_model_frontenduser -->
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser">
 				<source>RKW Registration: FrontendUser</source>
@@ -85,15 +78,9 @@
                 <source>-- Please select --</source>
                 <target>-- Bitte wählen --</target>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_id">
-                <source>Twitter Id</source>
-            </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_url">
                 <source>Twitter URL</source>
                 <target>Twitter- Profil</target>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_id">
-                <source>Facebook Id</source>
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_url">
                 <source>Facebook URL</source>
@@ -130,84 +117,21 @@
 
 
             <!-- Fields of Model/Service -->
-			<trans-unit id="tx_rkwregistration_domain_model_service">
-				<source>RKW Registration: Services</source>
+			<trans-unit id="tx_rkwregistration_domain_model_membership">
+				<source>RKW Registration: Memberships</source>
+				<target>RKW Registration: Mitgliedschaften</target>
 			</trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_service.name">
+            <trans-unit id="tx_rkwregistration_domain_model_membership.name">
                 <source>Name</source>
                 <target>Name</target>
             </trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_service.description">
+			<trans-unit id="tx_rkwregistration_domain_model_membership.description">
 				<source>Description</source>
                 <target>Beschreibung</target>
 			</trans-unit>
 
 
-
-            <!-- Form Errors: Field-Names -->
-            <trans-unit id="form.error.newFrontendUser.salutation">
-                <source>Salutation</source>
-                <target>Anrede</target>
-            </trans-unit>
-            <trans-unit id="form.error.newFrontendUser.title">
-                <source>Title</source>
-                <target>Titel</target>
-            </trans-unit>
-            <trans-unit id="form.error.newFrontendUser.email">
-                <source>E-Mail</source>
-                <target>E-Mail</target>
-            </trans-unit>
-            <trans-unit id="form.error.newFrontendUser.firstName">
-                <source>First Name</source>
-                <target>Vorname</target>
-            </trans-unit>
-            <trans-unit id="form.error.newFrontendUser.lastName">
-                <source>Last Name</source>
-                <target>Nachname</target>
-            </trans-unit>
-            <trans-unit id="form.error.newFrontendUser.company">
-                <source>Company</source>
-                <target>Firma/Organisation</target>
-            </trans-unit>
-            <trans-unit id="form.error.newFrontendUser.address">
-                <source>Address</source>
-                <target>Anschrift</target>
-            </trans-unit>
-            <trans-unit id="form.error.newFrontendUser.zip">
-                <source>ZIP</source>
-                <target>PLZ</target>
-            </trans-unit>
-            <trans-unit id="form.error.newFrontendUser.city">
-                <source>City</source>
-                <target>Ort</target>
-            </trans-unit>
-            <trans-unit id="form.error.newFrontendUser.telephone">
-                <source>Telephone</source>
-                <target>Telefon</target>
-            </trans-unit>
-            <trans-unit id="form.error.newFrontendUser.fax">
-                <source>Fax</source>
-                <target>Fax</target>
-            </trans-unit>
-            <trans-unit id="form.error.newFrontendUser.txRkwregistrationMobile">
-                <source>Mobile</source>
-                <target>Handy</target>
-            </trans-unit>
-            <trans-unit id="form.error.newFrontendUser.www">
-                <source>Website</source>
-                <target>Website</target>
-            </trans-unit>
-            <trans-unit id="form.error.newFrontendUser.txRkwregistrationFacebookUrl">
-                <source>Facebook URL</source>
-                <target>Link zu Facebook- Profil</target>
-            </trans-unit>
-            <trans-unit id="form.error.newFrontendUser.txRkwregistrationTwitterUrl">
-                <source>Twitter URL</source>
-                <target>Link zu Twitter- Profil</target>
-            </trans-unit>
-
-
-
+			<!-- Form-errors -->
             <trans-unit id="form.error.frontendUser.salutation">
                 <source>Salutation</source>
                 <target>Anrede</target>
@@ -270,20 +194,8 @@
             </trans-unit>
 
 
-
-            <!-- Form Errors -->
-            <trans-unit id="form.error.1221560718">
-                <source>Please fill out the field '%s'.</source>
-                <target>Bitte füllen Sie das Feld '%s' aus.</target>
-            </trans-unit>
-            <trans-unit id="form.error.1434966688">
-                <source>Please enter a valid email address.</source>
-                <target>Bitte geben Sie eine gültige E-Mailadresse ein (z.B. service@rkw.de).</target>
-            </trans-unit>
-
-
-
-            <trans-unit id="validator.email_alreadyassigned" approved="yes">
+			<!-- Validators -->
+            <trans-unit id="validator.email_already_assigned" approved="yes">
 				<source>Hm, apparently the email address you entered is already in use by someone else. Please choose another email address.</source>
                 <target state="signed-off" phase-name="approval-1">Hm, offenbar wird die angegebene E-Mail-Adresse bereits von einer anderen Person verwendet. Bitte wählen Sie eine andere E-Mail-Adresse.</target>
 			</trans-unit>
@@ -291,7 +203,7 @@
 				<source>The email address you entered seems to be incomplete. Please check it again.</source>
                 <target>Die angegebene E-Mail-Adresse scheint unvollständig zu sein. Bitte überprüfen Sie diese doch noch mal.</target>
 			</trans-unit>
-            <trans-unit id="validator_field_notfilled">
+            <trans-unit id="validator_field_not_filled">
                 <source>Something is missing: Please fill in the field '%s'.</source>
                 <target>Da fehlt noch was: Bitte füllen Sie das Feld '%s' aus.</target>
             </trans-unit>
@@ -341,53 +253,7 @@
 			</trans-unit>
 
 
-
-            <!-- Registration Controller -->
-            <trans-unit id="registrationController.error.user_already_exists" approved="yes">
-				<source>Hm, apparently the email address you entered is already being used by someone else. Are you perhaps already registered? Then try 'Forgot your password?</source>
-                <target state="signed-off" phase-name="approval-1">Hm, offenbar wird die angegebene E-Mail-Adresse bereits von einer anderen Person verwendet. Sind Sie vielleicht schon registriert? Dann versuchen Sie es doch mal 'Passwort vergessen'.</target>
-			</trans-unit>
-            <trans-unit id="registrationController.message.registration_successfull">
-                <source><![CDATA[Woohoo! You have been successfully registered. The password for login is on its way to you by e-mail. If you do not receive an email from us within the next 2-3 minutes, please check your spam filter. Our <a href="mailto:service@rkw.de">Support</a> will be happy to help you if you have any problems.]]></source>
-                <target><![CDATA[Woohoo! Sie wurden erfolgreich registriert. Das Passwort für den Login ist per E-Mail auf dem Weg zu Ihnen. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
-            </trans-unit>
-            <trans-unit id="frontendUserController.message.registration_watch_for_email">
-                <source><![CDATA[Almost there! To make sure you are really you, we have just sent you an email to the address you provided. Please confirm your registration via the link in the email. If you do not receive an email from us within the next 2-3 minutes, please check your spam filter. Our <a href="mailto:service@rkw.de">Support</a> will be happy to help you if you have any problems.]]></source>
-                <target><![CDATA[Fast geschafft! Um sicherzustellen, dass Sie auch wirklich Sie sind, haben wir Ihnen gerade eine E-Mail an die angegebene Adresse geschickt. Bitte bestätigen Sie über den Link in der E-Mail Ihre Registrierung. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
-            </trans-unit>
-            <trans-unit id="registrationController.message.registration_canceled">
-                <source>Too bad... Your registration was canceled.</source>
-                <target>Schade... Ihre Registrierung wurde abgebrochen.</target>
-            </trans-unit>
-            <trans-unit id="authController.message.logged_in">
-                <source>You are logged in with the e-mail address "%s".</source>
-                <target>Sie sind mit der E-Mailadresse "%s" angemeldet.</target>
-            </trans-unit>
-            <trans-unit id="authController.message.logout_message">
-                <source>It worked! You have been successfully logged out.</source>
-                <target>Das hat geklappt! Sie wurden erfolgreich abgemeldet.</target>
-            </trans-unit>
-            <trans-unit id="authController.message.login_message">
-                <source><![CDATA[Please login here or <a href="%s">register</a> for free.]]></source>
-                <target><![CDATA[Bitte loggen Sie sich ein oder <a href="%s">registrieren Sie sich</a> kostenlos.]]></target>
-            </trans-unit>
-            <trans-unit id="authController.message.login_message_guest">
-                <source><![CDATA[You are currently logged in as a guest. To use this section, you must be logged in as a regular user. <a href="%s">Please log out here</a> and then log in again as a regular user.]]></source>
-                <target><![CDATA[Sie sind derzeit als Gast eingeloggt. Um diesen Bereich nutzen zu können, müssen Sie als regulärer User eingeloggt sein. <a href="%s">Bitte loggen Sie sich hier aus</a> und danach als regulärer User wieder ein.]]></target>
-            </trans-unit>
-            <trans-unit id="registrationController.error.registration_error">
-                <source>Oops, something must have gone wrong. Have you perhaps already confirmed your registration?</source>
-                <target>Upps, da ist wohl etwas schief gelaufen. Haben Sie Ihre Registrierung vielleicht schon bestätigt?</target>
-            </trans-unit>
-            <trans-unit id="registrationController.message.user_not_logged_in">
-                <source>Please log in.</source>
-                <target>Bitte melden Sie sich an.</target>
-            </trans-unit>
-
-
-
-
-            <trans-unit id="loginValidator.error.login_no_username">
+			<trans-unit id="loginValidator.error.login_no_username">
                 <source>No username given. Please enter username.</source>
                 <target>Bitte geben Sie Ihre E-Mail-Adresse ein.</target>
             </trans-unit>
@@ -395,93 +261,24 @@
                 <source>No password given. Please enter password.</source>
                 <target>Bitte geben Sie Ihr Passwort ein.</target>
             </trans-unit>
-            <trans-unit id="authController.error.wrong_login">
-                <source>Wrong username or password.</source>
-                <target>Hm, leider sind E-Mail oder Passwort falsch. Bitte prüfen Sie die Angaben noch mal.</target>
+
+
+            <!-- Abstract Controller -->
+            <trans-unit id="abstractController.warning.missingData">
+                <source>In order for you to be able to use all functions without restrictions, we still need a few details from you. And don't worry: this will all remain between us.</source>
+                <target>Damit Sie alle Funktionen ohne Einschränkungen benutzen können, brauchen wir von Ihnen noch ein paar Angaben. Und keine Sorge: Das bleibt alles unter uns.</target>
             </trans-unit>
-            <trans-unit id="frontendUserController.message.update_successful">
-                <source>Update was successfull.</source>
-                <target>Das hat geklappt! Ihre Profil- Daten wurden aktualisiert.</target>
-            </trans-unit>
-            <trans-unit id="registrationController.error.twitter_unexpected">
-                <source>An unexpected error occurred with Twitter Login. Please try another login.</source>
-                <target><![CDATA[Upps, da ist wohl etwas schief gelaufen! Vermutlich ist einer unserer Entwickler gerade über das Twitter- Kabel gestolpert. Wir versuchen das so schnell wie möglich zu beheben und bitten um etwas Geduld. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen in der Zwischenzeit gerne mit alternativen Zugangsdaten weiter.]]></target>
-            </trans-unit>
-            <trans-unit id="registrationController.message.update_password">
-                <source>Password was updated. Please use this password from now on for login.</source>
-                <target>Perfekt! Ihr Passwort wurde geändert. Bitte benutzen Sie ab sofort das neue Passwort für den Login.</target>
-            </trans-unit>
-            <trans-unit id="registrationController.error.password_not_updated">
-                <source>Password could not be updated. Maybe you did not enter your current password right.</source>
-                <target><![CDATA[Da ist etwas schief gelaufen! Das Passwort konnte nicht geändert werden. Wenden Sie sich bitte an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
-            </trans-unit>
-            <trans-unit id="registrationController.error.delete_wrong_password">
-                <source>Entered password was wrong. Please try again.</source>
-                <target>Da ist was schief gelaufen! Hat sich bei der Eingabe Ihres bisherigen Passworts vielleicht ein Fehler eingeschlichen?</target>
-            </trans-unit>
-            <trans-unit id="registrationController.error.something_went_wrong">
-                <source>Something went wrong.</source>
-                <target><![CDATA[Upps, da ist wohl etwas schief gelaufen! Wenden Sie sich im Zweifel an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
-            </trans-unit>
-            <trans-unit id="frontendUserController.message.delete_successful">
-                <source>Your account has been successfully deleted.</source>
-                <target>Schade, dass Sie uns verlassen. Ihr Profil wurde erfolgreich gelöscht, wir würden uns aber natürlich freuen, wenn Sie uns trotzdem hin und wieder besuchen.</target>
-            </trans-unit>
-            <trans-unit id="registrationController.error.password_empty">
-                <source>Please enter a valid password.</source>
-                <target>Bitte geben Sie Ihr Passwort ein.</target>
-            </trans-unit>
-            <trans-unit id="registrationController.error.user_not_found">
-                <source>User not found.</source>
-                <target><![CDATA[Das hat leider nicht geklappt! Möglicherweise haben Sie sich mit einer anderen E-Mail-Adresse registriert. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen im Zweifelsfall gerne weiter!]]></target>
-            </trans-unit>
-            <trans-unit id="authController.error.login_blocked">
-                <source>Your login was blocked after %s attempts. Please contact support.</source>
-                <target><![CDATA[Nun ist es leider passiert: Aus Sicherheitsgründen wurde Ihr Profil nach %s Fehlversuchen gesperrt. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>, um Ihren Account wieder freizuschalten.]]></target>
-            </trans-unit>
-            <trans-unit id="registrationController.error.accept_terms">
-                <source>You have to accept our terms and conditions to register.</source>
-                <target>Das muss leider sein: Um dieses Angebot nutzen zu können, müssen Sie unseren Nutzungsbedingungen zustimmen.</target>
-            </trans-unit>
-            <trans-unit id="registrationController.error.accept_privacy">
-				<source>The protection of your data is important to us. Therefore we ask you to agree to the storage of your personal data.</source>
-				<target>Der Schutz Ihrer Daten ist uns wichtig. Daher bitten wir Sie, der Speicherung Ihrer persönlichen Daten zuzustimmen.</target>
-			</trans-unit>
-            <trans-unit id="registrationController.error.username_exists">
-                <source>A Login with this E-Mail-Address already exists.</source>
-                <target>Es existiert bereits ein Login mit dieser E-Mail-Adresse. Haben Sie sich eventuell schon einmal registriert?</target>
-            </trans-unit>
-            <trans-unit id="registrationController.error.invalid_socialmedia_login">
-                <source>Login was not possible. It seems like your login has been blocked by an admin.</source>
-                <target><![CDATA[Der Login war leider nicht möglich. Möglicherweise wurde Ihr Login deaktiviert. Bitte kontaktieren Sie unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
-            </trans-unit>
-            <trans-unit id="registrationController.error.xdl_login_error">
-                <source>Login was not completed. Please contact support.</source>
-                <target><![CDATA[Der Login konnte nicht abgeschlossen werden. Bitte wenden Sie sich an den <a href="mailto:service@rkw.de">Support</a>.]]></target>
-            </trans-unit>
-            <trans-unit id="registrationController.error.xdl_logout_error">
-                <source>Logout was not completed. Please contact support.</source>
-                <target><![CDATA[Der Logout konnte nicht abgeschlossen werden. Bitte wenden Sie sich an den <a href="mailto:service@rkw.de">Support</a>.]]></target>
-            </trans-unit>
-            <trans-unit id="registrationController.error.invalid_anonymous_token">
-                <source>The given token is not valid (any more). Please use a new one or contact support.</source>
-                <target>Der Login-Link ist leider ungültig oder abgelaufen. Bitte verwenden Sie einen neuen Gastzugang oder registrieren Sie sich kostenlos.</target>
-            </trans-unit>
-            <trans-unit id="registrationController.error.anonymous_login_impossible">
-                <source>Anonymous login was not possible. If you are already logged in, please log out before using an anonymous login token. </source>
-                <target>Der Login als Gast war nicht möglich. Wenn Sie bereits eingeloggt sind, loggen Sie sich bitte aus, bevor Sie einen Login-Link verwenden.</target>
-            </trans-unit>
-            <trans-unit id="registrationController.message.guest_link">
-                <source><![CDATA[Copy and save the following link. It is valid for %s days.<br><br> %s]]></source>
-                <target><![CDATA[Kopieren Sie den nachstehenden Link und heben Sie ihn gut auf. Nur mit diesem Link können Sie sich zu einem späteren Zeitpunkt erneut einloggen. Der Link ist %s Tage gültig.<br><br> %s]]></target>
-            </trans-unit>
-            <trans-unit id="registrationController.message.xdl_login_hint">
-                <source><![CDATA[You have been logged in via <i>%s</i>. To login into another page of our network, please logout first.]]></source>
-                <target><![CDATA[Sie wurden via <i>%s</i> eingeloggt. Um den Login über eine andere Seite des RKW Netzwerks zu nutzen, loggen Sie sich bitte zunächst aus und rufen Sie anschließend den Login-Bereich über die gewünschte Seite des RKW Netzwerks erneut auf.]]></target>
+            <trans-unit id="abstractController.error.userNotLoggedIn">
+                <source>Please log in.</source>
+                <target>Bitte melden Sie sich an.</target>
             </trans-unit>
 
 
-            <!-- Auth Controller -->
+            <!-- AuthController -->
+            <trans-unit id="authController.notice.loginMessage">
+                <source><![CDATA[Please login here or <a href="%s">register</a> for free.]]></source>
+                <target><![CDATA[Bitte loggen Sie sich ein oder <a href="%s">registrieren Sie sich</a> kostenlos.]]></target>
+            </trans-unit>
             <trans-unit id="authController.message.login_welcome">
                 <source>Welcome! You are logged in with your e-mail-address "%s".</source>
                 <target>Herzlich willkommen! Sie sind mit Ihrer E-Mailadresse "%s" angemeldet.</target>
@@ -490,8 +287,105 @@
                 <source>Welcome! You are logged in as guest.</source>
                 <target>Herzlich willkommen! Sie sind als Gast angemeldet.</target>
             </trans-unit>
+            <trans-unit id="authController.message.loggedIn">
+                <source>You are logged in with the e-mail address "%s".</source>
+                <target>Sie sind mit der E-Mailadresse "%s" angemeldet.</target>
+            </trans-unit>
+            <trans-unit id="authController.message.logoutMessage">
+                <source>Woohoo! You have been successfully logged out.</source>
+                <target>Woohoo! Sie wurden erfolgreich abgemeldet.</target>
+            </trans-unit>
+            <trans-unit id="authController.warning.loginMessageGuest">
+                <source><![CDATA[You are currently logged in as a guest. To use this section, you must be logged in as a regular user. <a href="%s">Please log out here</a> and then log in again as a regular user.]]></source>
+                <target><![CDATA[Sie sind derzeit als Gast eingeloggt. Um diesen Bereich nutzen zu können, müssen Sie als regulärer User eingeloggt sein. <a href="%s">Bitte loggen Sie sich hier aus</a> und danach als regulärer User wieder ein.]]></target>
+            </trans-unit>
+			<trans-unit id="authController.error.wrongLogin">
+				<source>Hm, unfortunately email or password are wrong. Please check the information again.</source>
+				<target>Hm, leider sind E-Mail oder Passwort falsch. Bitte prüfen Sie die Angaben noch mal.</target>
+			</trans-unit>
+			<trans-unit id="authController.error.loginBlocked">
+				<source><![CDATA[Now, unfortunately, it has happened: For security reasons, your profile has been locked after failed %s attempts. Please contact our <a href="mailto:service@rkw.de">Support</a> to unlock your account again.]]></source>
+				<target><![CDATA[Nun ist es leider passiert: Aus Sicherheitsgründen wurde Ihr Profil nach %s Fehlversuchen gesperrt. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>, um Ihren Account wieder freizuschalten.]]></target>
+			</trans-unit>
+
+
+            <!-- AuthGuestController -->
+            <trans-unit id="authGuestController.message.guestLink">
+                <source><![CDATA[Copy the link below and keep it safe. Only with this link you can log in again at a later time. The link is valid %s days.<br><br> %s]]></source>
+                <target><![CDATA[Kopieren Sie den nachstehenden Link und heben Sie ihn gut auf. Nur mit diesem Link können Sie sich zu einem späteren Zeitpunkt erneut einloggen. Der Link ist %s Tage gültig.<br><br> %s]]></target>
+            </trans-unit>
+            <trans-unit id="authGuestController.error.invalidGuestToken">
+                <source>Sorry, the login link is invalid or expired. Please use a new guest account or register for free.</source>
+                <target>Der Login-Link ist leider ungültig oder abgelaufen. Bitte verwenden Sie einen neuen Gastzugang oder registrieren Sie sich kostenlos.</target>
+            </trans-unit>
+            <trans-unit id="authGuestController.error.guestLoginImpossible">
+                <source>Login as guest was not possible. If you are already logged in, please log out before using a login link.</source>
+                <target>Der Login als Gast war nicht möglich. Wenn Sie bereits eingeloggt sind, loggen Sie sich bitte aus, bevor Sie einen Login-Link verwenden.</target>
+            </trans-unit>
+
+
+            <!-- FrontendUserController -->
+			<trans-unit id="frontendUserController.notice.new_introduction">
+                <source>Register here for free.</source>
+                <target>Registrieren Sie sich hier kostenlos.</target>
+            </trans-unit>
+			<trans-unit id="frontendUserController.notice.editIntroduction">
+                <source>Please provide your current contact information below. Voluntary information is marked accordingly.</source>
+                <target>Geben Sie untenstehend bitte Ihre aktuellen Kontaktdaten an. Freiwillige Angaben sind entsprechend gekennzeichnet.</target>
+            </trans-unit>
+  			<trans-unit id="frontendUserController.message.registrationWatchForEmail">
+                <source><![CDATA[Almost there! To make sure you are really you, we have just sent you an email to the address you provided. Please confirm your registration via the link in the email. If you do not receive an email from us within the next 2-3 minutes, please check your spam filter. Our <a href="mailto:service@rkw.de">Support</a> will be happy to help you if you have any problems.]]></source>
+                <target><![CDATA[Fast geschafft! Um sicherzustellen, dass Sie auch wirklich Sie sind, haben wir Ihnen gerade eine E-Mail an die angegebene Adresse geschickt. Bitte bestätigen Sie über den Link in der E-Mail Ihre Registrierung. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
+            </trans-unit>
+			<trans-unit id="frontendUserController.message.update_successful">
+                <source>Woohoo! Your profile data has been updated.</source>
+                <target>Woohoo! Ihre Profil- Daten wurden aktualisiert.</target>
+            </trans-unit>
+            <trans-unit id="frontendUserController.message.delete_successful">
+                <source>It is a pity that you are leaving us. Your profile has been successfully deleted, but of course we would be happy if you still visit us from time to time.</source>
+                <target>Schade, dass Sie uns verlassen. Ihr Profil wurde erfolgreich gelöscht, wir würden uns aber natürlich freuen, wenn Sie uns trotzdem hin und wieder besuchen.</target>
+            </trans-unit>
+            <trans-unit id="frontendUserController.message.delete_successful">
+                <source>It is a pity that you are leaving us. Your profile has been successfully deleted, but of course we would be happy if you still visit us from time to time.</source>
+                <target>Schade, dass Sie uns verlassen. Ihr Profil wurde erfolgreich gelöscht, wir würden uns aber natürlich freuen, wenn Sie uns trotzdem hin und wieder besuchen.</target>
+            </trans-unit>
+			<trans-unit id="frontendUserController.warning.show_introduction">
+                <source>Please note that all your data will be deleted. Do you really want to delete your profile?</source>
+                <target>Bitte beachten Sie, dass alle Ihre Daten gelöscht werden. Möchten Sie Ihr Profil wirklich löschen?</target>
+            </trans-unit>
+
+
+            <!-- FrontendUserGroupController -->
+			<trans-unit id="frontendUserGroupController.warning.noMembershipableGroups">
+                <source>Unfortunately, there are currently no open groups that you can join. Please try again at a later date.</source>
+                <target>Derzeit gibt es leider keine offenen Gruppen, denen Sie beitreten können. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut.</target>
+            </trans-unit>
+			<trans-unit id="frontendUserGroupController.notice.selectGroup">
+				<source>Please select which group you want to join or change your membership status here.</source>
+				<target>Wählen Sie bitte aus, in welcher Gruppe Sie Mitglied werden wollen oder ändern Sie Ihren Mitgliedsstatus hier.</target>
+			</trans-unit>
+  			<trans-unit id="frontendUserGroupController.message.registrationWatchForEmail">
+                <source><![CDATA[Almost there! To make sure you are really you, we have just sent you an email to the address you provided. Please confirm your registration via the link in the email. If you do not receive an email from us within the next 2-3 minutes, please check your spam filter. Our <a href="mailto:service@rkw.de">Support</a> will be happy to help you if you have any problems.]]></source>
+                <target><![CDATA[Fast geschafft! Um sicherzustellen, dass Sie auch wirklich Sie sind, haben wir Ihnen gerade eine E-Mail an die angegebene Adresse geschickt. Bitte bestätigen Sie über den Link in der E-Mail Ihre Registrierung. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
+            </trans-unit>
 
             <!-- Password Controller -->
+			<trans-unit id="passwordController.notice.new_introduction">
+				<source>Please enter the e-mail address of your account here.</source>
+				<target>Bitte geben Sie hier die E-Mail-Adresse Ihres Zugangs ein.</target>
+			</trans-unit>
+			<trans-unit id="passwordController.notice.edit_introduction">
+				<source>Please enter your old password here first and then enter the desired new password twice below.</source>
+				<target>Bitte tragen Sie hier zunächst Ihr altes Passwort und dann darunter zwei Mal das gewünschte neue Passwort ein.</target>
+			</trans-unit>
+			<trans-unit id="passwordController.message.new_password">
+				<source><![CDATA[If a user with this e-mail address exists, we have just emailed you your new password. If you do not receive an email from us within the next 2-3 minutes, please check your spam filter. Our <a href="mailto:service@rkw.de">Support</a> will be happy to help you with any problems.]]></source>
+				<target><![CDATA[Sofern ein Nutzer mit dieser E-Mail Adresse existiert, haben wir Ihnen Ihr neues Passwort soeben per E-Mail zugesendet. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
+			</trans-unit>
+			<trans-unit id="passwordController.message.updated_password">
+				<source>Woohoo! Your password has been changed. Please use the new password for login from now on.</source>
+				<target>Woohoo! Ihr Passwort wurde geändert. Bitte benutzen Sie ab sofort das neue Passwort für den Login.</target>
+			</trans-unit>
             <trans-unit id="passwordController.error.locked_account">
                  <source><![CDATA[For security reasons, your access has been blocked due to repeated incorrect password entry. Please contact our <a href="mailto:service@rkw.de">support</a>.]]></source>
                  <target><![CDATA[Aus Sicherheitsgründen wurde Ihr Zugang aufgrund wiederholt falscher Passworteingabe gesperrt. Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
@@ -500,61 +394,13 @@
 				<source>Please enter your e-mail address.</source>
 				<target>Bitte geben Sie Ihre E-Mail-Adresse ein.</target>
 			</trans-unit>
-            <trans-unit id="passwordController.message.new_password">
-                <source><![CDATA[If a user with this e-mail address exists, we have just emailed you your new password. If you do not receive an email from us within the next 2-3 minutes, please check your spam filter. Our <a href="mailto:service@rkw.de">Support</a> will be happy to help you with any problems.]]></source>
-                <target><![CDATA[Sofern ein Nutzer mit dieser E-Mail Adresse existiert, haben wir Ihnen Ihr neues Passwort soeben per E-Mail zugesendet. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
-            </trans-unit>
-
-			<trans-unit id="passwordController.message.enter_email">
-				<source>Please enter the e-mail address of your account here.</source>
-				<target>Bitte geben Sie hier die E-Mail-Adresse Ihres Zugangs ein.</target>
-			</trans-unit>
-
-
-            <!-- Service Controller -->
-            <trans-unit id="serviceController.message.apply_admin_request">
-                <source>The service you applied to is restricted. The admin of the service will check your request in the next 1-2 days. You will be notified when you can use the service.</source>
-                <target>Fast geschafft! Wir haben Sie für den gewünschten Service registriert. Bevor Sie den Service nutzen können, muss Ihre Anfrage allerdings noch durch einen Admin bestätigt werden. Dies dauert in der Regel 1-2 Werktage. Sie erhalten dann eine entsprechende Info per E-Mail.</target>
-            </trans-unit>
-            <trans-unit id="serviceController.message.apply_successfull">
-                <source>Congratulations! You have been successfully added to our service.</source>
-                <target>Das war ja einfach! Wir haben Sie für den gewünschten Service registriert und wünschen Ihnen viel Spaß bei der Benutzung!</target>
-            </trans-unit>
-            <trans-unit id="serviceController.message.service_optin_successfull" approved="yes">
-                <source>The user has been successfully added to the requested service.</source>
-                <target state="signed-off" phase-name="approval-1">Das hat geklappt! Das Nutzendenkonto wurde erfolgreich für den gewünschten Service freigeschaltet. Eine entsprechende Info ist per E-Mail an die Person unterwegs.</target>
-            </trans-unit>
-            <trans-unit id="serviceController.message.service_optin_canceled" approved="no">
-                <source>The service opt-in request for the user has been denied.</source>
-                <target state="final" phase-name="approval-1">Schade... Das Nutzendenkonto wurde erfolgreich abgelehnt und kann den gewünschten Service nun leider nicht nutzen. Eine entsprechende Info ist per E-Mail an die Person unterwegs.</target>
-            </trans-unit>
-            <trans-unit id="serviceController.error.service_optin_error" approved="no">
-                <source>An error occurred. Please try again.</source>
-                <target state="final" phase-name="approval-1">Da ist etwas schief gelaufen. Haben Sie das Nutzendenkonto vielleicht schon freigeschaltet oder abgelehnt?</target>
-            </trans-unit>
-            <trans-unit id="serviceController.message.service_delete">
-                <source>Successfully deleted service.</source>
-                <target>Wirklich schade... aber wir haben den Service nun für Sie nun, wie gewünscht, deaktiviert. Sie können den Service aber selbstverständlich jederzeit wieder aktivieren.</target>
+            <trans-unit id="passwordController.error.password_not_updated">
+                <source><![CDATA[Something went wrong! The password could not be changed. Please contact our <a href="mailto:service@rkw.de">Support</a>.]]></source>
+                <target><![CDATA[Da ist etwas schief gelaufen! Das Passwort konnte nicht geändert werden. Wenden Sie sich bitte an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
             </trans-unit>
 
 
-
-            <!-- Abstract Controller -->
-            <trans-unit id="abstractController.error.user_not_logged_in">
-                <source>Please log in.</source>
-                <target>Bitte melden Sie sich an.</target>
-            </trans-unit>
-            <trans-unit id="abstractController.message.enter_valid_email">
-                <source>To be able to use all functions you need to complete your profile with some basic data. Please enter at least you e-mail address.</source>
-                <target>Damit Sie alle Funktionen ohne Einschränkungen benutzen können, brauchen wir von Ihnen ein paar Angaben. Bitte geben Sie mindestens Ihre E-Mail-Adresse an. Und keine Sorge: Das bleibt alles unter uns.</target>
-            </trans-unit>
-            <trans-unit id="abstractController.message.enter_mandatory_fields">
-                <source>In order for you to be able to use all functions without restrictions, we still need a few details from you. And don't worry: this will all remain between us.</source>
-                <target>Damit Sie alle Funktionen ohne Einschränkungen benutzen können, brauchen wir von Ihnen noch ein paar Angaben. Und keine Sorge: Das bleibt alles unter uns.</target>
-            </trans-unit>
-
-
-            <!-- Templates/Auth/Index.html -->
+			<!-- Templates/Auth/Index.html -->
             <trans-unit id="templates_auth_index.loginHeadline">
                 <source>Login</source>
                 <target>Anmelden</target>
@@ -588,60 +434,343 @@
             </trans-unit>
 
 
-
-
-            <trans-unit id="templates_service_index.headline">
-                <source>Default Template (Fallback)</source>
+            <!-- Templates/AuthGuest/LoginHint.html -->
+            <trans-unit id="templates_authGuest_loginHint.continue">
+                <source>Continue</source>
+                <target>Fortfahren</target>
             </trans-unit>
 
 
+            <!-- Templates/FrontendUser/Edit.html -->
+            <trans-unit id="templates_frontendUser_edit.headline">
+                <source>Edit Profile</source>
+                <target>Profil bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="templates_frontendUser_edit.labelSave">
+                <source>Save</source>
+                <target>Änderungen speichern</target>
+            </trans-unit>
+            <trans-unit id="templates_frontendUser_edit.labelBack">
+                <source>Back</source>
+                <target>Zurück</target>
+            </trans-unit>
 
-            <!-- Templates/Service/List.html -->
-            <trans-unit id="templates_service_list.headline">
-                <source>Services</source>
-                <target>Alle Services im Überblick</target>
+
+		   <!-- Templates/FrontendUser/Show.html -->
+			<trans-unit id="templates_frontendUser_new.headline">
+				<source>Register</source>
+				<target>Registrieren</target>
+			</trans-unit>
+			<trans-unit id="templates_frontendUser_new.labelRegister">
+				<source>Register</source>
+				<target>Jetzt registrieren</target>
+			</trans-unit>
+			<trans-unit id="templates_frontendUser_new.terms">
+				<source>I accept the terms and conditions.</source>
+				<target>Ich akzeptiere die Nutzungsbedingungen.</target>
+			</trans-unit>
+
+
+    		<!-- Templates/FrontendUser/Show.html -->
+            <trans-unit id="templates_frontendUser_show.headline">
+                <source>Delete Profile</source>
+                <target>Profil löschen</target>
             </trans-unit>
-            <trans-unit id="templates_service_list.joinService">
-                <source>Join Service</source>
-                <target>Jetzt Service nutzen</target>
+            <trans-unit id="templates_frontendUser_show.labelDelete">
+                <source>Yes, please delete</source>
+                <target>Ja, bitte löschen</target>
             </trans-unit>
-            <trans-unit id="templates_service_list.resignService">
-                <source>Resign Service</source>
-                <target>Service beenden</target>
+            <trans-unit id="templates_frontendUser_show.labelBack">
+                <source>No, not after all</source>
+                <target>Nein, doch nicht</target>
             </trans-unit>
-            <trans-unit id="templates_service_list.additionalProfileData">
-                <source>Please check your personal profile to finally join the service.</source>
-                <target>Bitte prüfen Sie Ihre Profildaten auf Vollständigkeit, um diesen Service nutzen zu können.</target>
+
+
+			<!-- Templates/FrontendUser/Welcome.html -->
+			<trans-unit id="templates_frontendUser_welcome.headline">
+				<source>Welcome %s %s!</source>
+				<target>Willkommen %s %s!</target>
+			</trans-unit>
+
+
+       		<!-- Templates/Password/Edit.html -->
+            <trans-unit id="templates_password_edit.headline">
+                <source>Edit Password</source>
+                <target>Passwort ändern</target>
             </trans-unit>
-            <trans-unit id="templates_service_list.checkProfile">
-                <source>Check profile now!</source>
-                <target>Jetzt Profildaten prüfen</target>
+            <trans-unit id="templates_password_edit.labelSave">
+                <source>Save</source>
+                <target>Speichern</target>
             </trans-unit>
-            <trans-unit id="templates_service_list.adminRequestPending" approved="no">
-                <source>Admin request pending.</source>
-                <target state="final" phase-name="approval-1">Bestätigung durch unser Support Team steht noch aus.</target>
+            <trans-unit id="templates_password_edit.labelBack">
+                <source>Back</source>
+                <target>Zurück</target>
             </trans-unit>
-            <trans-unit id="templates_service_list.serviceComingSoon">
+
+
+			 <!-- Templates/Registration/PasswordForgotShow.html -->
+            <trans-unit id="templates_password_new.headline">
+                <source>Request Password</source>
+                <target>Passwort anfordern</target>
+            </trans-unit>
+            <trans-unit id="partials_password_forgot.labelSend">
+                <source>Send new password</source>
+                <target>Neues Passwort senden</target>
+            </trans-unit>
+            <trans-unit id="partials_password_forgot.labelBack">
+                <source>Back</source>
+                <target>Zurück</target>
+            </trans-unit>
+
+
+			<!-- Templates/FrontendUserGroup/List.html -->
+            <trans-unit id="templates_frontendUserGroup_list.headline">
+                <source>All groups at a glance</source>
+                <target>Alle Gruppen im Überblick</target>
+            </trans-unit>
+            <trans-unit id="templates_frontendUserGroup_list.becomeMember">
+                <source>Become a member</source>
+                <target>Mitglied werden</target>
+            </trans-unit>
+            <trans-unit id="templates_frontendUserGroup_list.cancelMembership">
+                <source>Cancel Membership</source>
+                <target>Mitgliedschaft beenden</target>
+            </trans-unit>
+            <trans-unit id="templates_frontendUserGroup_list.membershipRequested" approved="no">
+                <source>Membership requested.</source>
+                <target>Mitgliedschaft beantragt.</target>
+            </trans-unit>
+            <trans-unit id="templates_frontendUserGroup_list.membershipComingSoon">
                 <source>from:</source>
                 <target>verfügbar ab:</target>
             </trans-unit>
-            <trans-unit id="templates_service_list.startNow">
+            <trans-unit id="templates_frontendUserGroup_list.startNow">
                 <source>Start Now</source>
-                <target>Direkt zum Service und loslegen</target>
+                <target>Direkt loslegen</target>
             </trans-unit>
 
 
+            <!-- Partials/LabelSuffix.html -->
+            <trans-unit id="partials_labelSuffix.labelOptional">
+                <source>(Optional)</source>
+                <target>(Optional)</target>
+            </trans-unit>
+            <trans-unit id="partials_labelSuffix.labelRequired">
+                <source>(Required)</source>
+                <target>(Pflichtfeld)</target>
+            </trans-unit>
+
+  			<!-- Templates/Email/OptIn.html -->
+            <trans-unit id="templates_email_optin.headline">
+                <source>Nearly done</source>
+                <target>Fast geschafft</target>
+            </trans-unit>
+            <trans-unit id="templates_email_optin.text1">
+                <source>thank you for registering.</source>
+                <target>Wir freuen uns, dass Sie sich auf unser Website angemeldet haben! Noch ein letzter Klick und Sie können alle Funktionen von "Mein RKW" in vollem Umfang nutzen.</target>
+            </trans-unit>
+            <trans-unit id="templates_email_optin.textOptIn">
+                <source>Click here to finish registration:</source>
+                <target>Um Ihre Registrierung abzuschließen, klicken Sie bitte auf den folgenden Link:</target>
+            </trans-unit>
+            <trans-unit id="templates_email_optin.textOptInLinkLabel">
+                <source>Finish Registration</source>
+                <target>Ja, ich möchte mich registrieren</target>
+            </trans-unit>
+            <trans-unit id="templates_email_optin.textOptOut">
+                <source>Click here to cancel registration:</source>
+                <target>Sie haben es sich anders überlegt? Nach %s Tagen werden Ihre Daten automatisch gelöscht. Um Ihre Daten direkt zu löschen, klicken Sie bitte auf den folgenden Link:</target>
+            </trans-unit>
+            <trans-unit id="templates_email_optin.textOptOutLinkLabel">
+                <source>Cancel Registration</source>
+                <target>Nein, ich möchte mich nicht registrieren</target>
+            </trans-unit>
+
+
+		    <!-- Templates/Email/OptInGroups.html -->
+            <trans-unit id="templates_email_optinGroup.headline">
+                <source>Nearly done</source>
+                <target>Fast geschafft</target>
+            </trans-unit>
+            <trans-unit id="templates_email_optinGroup.text1">
+                <source>thank you for registering.</source>
+                <target>Sie möchten der Gruppe "%s" beitreten.</target>
+            </trans-unit>
+            <trans-unit id="templates_email_optinGroup.textOptIn">
+                <source>Click here to finish registration:</source>
+                <target>Um Ihren Beitritt zu bestätigen, klicken Sie bitte auf den folgenden Link:</target>
+            </trans-unit>
+            <trans-unit id="templates_email_optinGroup.textOptInLinkLabel">
+                <source>Finish Registration</source>
+                <target>Ja, ich möchte der Gruppe beitreten</target>
+            </trans-unit>
+            <trans-unit id="templates_email_optinGroup.textOptOut">
+                <source>Click here to cancel registration:</source>
+                <target>Sie haben es sich anders überlegt? Nach %s Tagen wird Ihr Antrag automatisch gelöscht. Möchten Sie ihn direkt löschen, klicken Sie bitte auf den folgenden Link:</target>
+            </trans-unit>
+            <trans-unit id="templates_email_optinGroup.textOptOutLinkLabel">
+                <source>Cancel Registration</source>
+                <target>Nein, ich möchte der Gruppe nicht beitreten</target>
+            </trans-unit>
+
+            <!-- Subject for e-mails -->
+            <trans-unit id="rkwMailService.optIn.subject">
+                <source>Confirm registration</source>
+                <target>Registrierung bestätigen</target>
+            </trans-unit>
+            <trans-unit id="rkwMailService.optInGroup.subject">
+                <source>Confirm </source>
+                <target>Gruppen-Beitritt bestätigen</target>
+            </trans-unit>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- Registration Controller -->
+            <trans-unit id="registrationController.error.user_already_exists" approved="yes">
+				<source>Hm, apparently the email address you entered is already being used by someone else. Are you perhaps already registered? Then try 'Forgot your password?</source>
+                <target state="signed-off" phase-name="approval-1">Hm, offenbar wird die angegebene E-Mail-Adresse bereits von einer anderen Person verwendet. Sind Sie vielleicht schon registriert? Dann versuchen Sie es doch mal 'Passwort vergessen'.</target>
+			</trans-unit>
+            <trans-unit id="registrationController.message.registration_successfull">
+                <source><![CDATA[Woohoo! You have been successfully registered. The password for login is on its way to you by e-mail. If you do not receive an email from us within the next 2-3 minutes, please check your spam filter. Our <a href="mailto:service@rkw.de">Support</a> will be happy to help you if you have any problems.]]></source>
+                <target><![CDATA[Woohoo! Sie wurden erfolgreich registriert. Das Passwort für den Login ist per E-Mail auf dem Weg zu Ihnen. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
+            </trans-unit>
+
+            <trans-unit id="registrationController.message.registration_canceled">
+                <source>Too bad... Your registration was canceled.</source>
+                <target>Schade... Ihre Registrierung wurde abgebrochen.</target>
+            </trans-unit>
+
+            <trans-unit id="registrationController.error.registration_error">
+                <source>Oops, something must have gone wrong. Have you perhaps already confirmed your registration?</source>
+                <target>Upps, da ist wohl etwas schief gelaufen. Haben Sie Ihre Registrierung vielleicht schon bestätigt?</target>
+            </trans-unit>
+            <trans-unit id="registrationController.message.user_not_logged_in">
+                <source>Please log in.</source>
+                <target>Bitte melden Sie sich an.</target>
+            </trans-unit>
+
+
+
+
+
+
+            <trans-unit id="registrationController.error.twitter_unexpected">
+                <source>An unexpected error occurred with Twitter Login. Please try another login.</source>
+                <target><![CDATA[Upps, da ist wohl etwas schief gelaufen! Vermutlich ist einer unserer Entwickler gerade über das Twitter- Kabel gestolpert. Wir versuchen das so schnell wie möglich zu beheben und bitten um etwas Geduld. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen in der Zwischenzeit gerne mit alternativen Zugangsdaten weiter.]]></target>
+            </trans-unit>
+
+
+
+
+            <trans-unit id="registrationController.error.delete_wrong_password">
+                <source>Entered password was wrong. Please try again.</source>
+                <target>Da ist was schief gelaufen! Hat sich bei der Eingabe Ihres bisherigen Passworts vielleicht ein Fehler eingeschlichen?</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.something_went_wrong">
+                <source>Something went wrong.</source>
+                <target><![CDATA[Upps, da ist wohl etwas schief gelaufen! Wenden Sie sich im Zweifel an unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            </trans-unit>
+
+            <trans-unit id="registrationController.error.password_empty">
+                <source>Please enter a valid password.</source>
+                <target>Bitte geben Sie Ihr Passwort ein.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.user_not_found">
+                <source>User not found.</source>
+                <target><![CDATA[Das hat leider nicht geklappt! Möglicherweise haben Sie sich mit einer anderen E-Mail-Adresse registriert. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen im Zweifelsfall gerne weiter!]]></target>
+            </trans-unit>
+
+            <trans-unit id="registrationController.error.accept_terms">
+                <source>You have to accept our terms and conditions to register.</source>
+                <target>Das muss leider sein: Um dieses Angebot nutzen zu können, müssen Sie unseren Nutzungsbedingungen zustimmen.</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.accept_privacy">
+				<source>The protection of your data is important to us. Therefore we ask you to agree to the storage of your personal data.</source>
+				<target>Der Schutz Ihrer Daten ist uns wichtig. Daher bitten wir Sie, der Speicherung Ihrer persönlichen Daten zuzustimmen.</target>
+			</trans-unit>
+            <trans-unit id="registrationController.error.username_exists">
+                <source>A Login with this E-Mail-Address already exists.</source>
+                <target>Es existiert bereits ein Login mit dieser E-Mail-Adresse. Haben Sie sich eventuell schon einmal registriert?</target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.invalid_socialmedia_login">
+                <source>Login was not possible. It seems like your login has been blocked by an admin.</source>
+                <target><![CDATA[Der Login war leider nicht möglich. Möglicherweise wurde Ihr Login deaktiviert. Bitte kontaktieren Sie unseren <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.xdl_login_error">
+                <source>Login was not completed. Please contact support.</source>
+                <target><![CDATA[Der Login konnte nicht abgeschlossen werden. Bitte wenden Sie sich an den <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            </trans-unit>
+            <trans-unit id="registrationController.error.xdl_logout_error">
+                <source>Logout was not completed. Please contact support.</source>
+                <target><![CDATA[Der Logout konnte nicht abgeschlossen werden. Bitte wenden Sie sich an den <a href="mailto:service@rkw.de">Support</a>.]]></target>
+            </trans-unit>
+
+            <trans-unit id="registrationController.message.xdl_login_hint">
+                <source><![CDATA[You have been logged in via <i>%s</i>. To login into another page of our network, please logout first.]]></source>
+                <target><![CDATA[Sie wurden via <i>%s</i> eingeloggt. Um den Login über eine andere Seite des RKW Netzwerks zu nutzen, loggen Sie sich bitte zunächst aus und rufen Sie anschließend den Login-Bereich über die gewünschte Seite des RKW Netzwerks erneut auf.]]></target>
+            </trans-unit>
+
+
+
+
+
+
+            <!-- Service Controller -->
+            <trans-unit id="membershipController.message.apply_admin_request">
+                <source>The membership you applied to is restricted. The admin of the membership will check your request in the next 1-2 days. You will be notified when you can use the membership.</source>
+                <target>Fast geschafft! Wir haben Sie für den gewünschten Service registriert. Bevor Sie den Service nutzen können, muss Ihre Anfrage allerdings noch durch einen Admin bestätigt werden. Dies dauert in der Regel 1-2 Werktage. Sie erhalten dann eine entsprechende Info per E-Mail.</target>
+            </trans-unit>
+            <trans-unit id="membershipController.message.apply_successfull">
+                <source>Congratulations! You have been successfully added to our membership.</source>
+                <target>Das war ja einfach! Wir haben Sie für den gewünschten Service registriert und wünschen Ihnen viel Spaß bei der Benutzung!</target>
+            </trans-unit>
+            <trans-unit id="membershipController.message.membership_optin_successfull" approved="yes">
+                <source>The user has been successfully added to the requested membership.</source>
+                <target state="signed-off" phase-name="approval-1">Das hat geklappt! Das Nutzendenkonto wurde erfolgreich für den gewünschten Service freigeschaltet. Eine entsprechende Info ist per E-Mail an die Person unterwegs.</target>
+            </trans-unit>
+            <trans-unit id="membershipController.message.membership_optin_canceled" approved="no">
+                <source>The membership opt-in request for the user has been denied.</source>
+                <target state="final" phase-name="approval-1">Schade... Das Nutzendenkonto wurde erfolgreich abgelehnt und kann den gewünschten Service nun leider nicht nutzen. Eine entsprechende Info ist per E-Mail an die Person unterwegs.</target>
+            </trans-unit>
+            <trans-unit id="membershipController.error.membership_optin_error" approved="no">
+                <source>An error occurred. Please try again.</source>
+                <target state="final" phase-name="approval-1">Da ist etwas schief gelaufen. Haben Sie das Nutzendenkonto vielleicht schon freigeschaltet oder abgelehnt?</target>
+            </trans-unit>
+            <trans-unit id="membershipController.message.membership_delete">
+                <source>Successfully deleted membership.</source>
+                <target>Wirklich schade... aber wir haben den Service nun für Sie nun, wie gewünscht, deaktiviert. Sie können den Service aber selbstverständlich jederzeit wieder aktivieren.</target>
+            </trans-unit>
+
+
+
+
+
+
+
+
+
+
             <!-- Templates/Service/Optin.html -->
-            <trans-unit id="templates_service_optIn.headline">
+            <trans-unit id="templates_membership_optIn.headline">
                 <source>Admin Opt-In</source>
             </trans-unit>
 
 
             <!-- Templates/Service/Show.html -->
-            <trans-unit id="templates_service_show.headline">
+            <trans-unit id="templates_membership_show.headline">
                 <source>Show</source>
             </trans-unit>
-            <trans-unit id="templates_service_show.backToList">
+            <trans-unit id="templates_membership_show.backToList">
                 <source>Back to list</source>
             </trans-unit>
 
@@ -653,53 +782,11 @@
             </trans-unit>
 
 
-            <!-- Templates/Registration/DeleteUserShow.html -->
-            <trans-unit id="templates_registration_deleteUserShow.headline">
-                <source>Delete Profile</source>
-                <target>Profil löschen</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_deleteUserShow.reallyDelete">
-                <source>Really delete user? All data will be lost!</source>
-                <target>Möchten Sie Ihr Profil wirklich löschen? Alle Daten werden gelöscht!</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_deleteUserShow.labelDelete">
-                <source>Delete</source>
-                <target>Ja, bitte löschen</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_deleteUserShow.labelBack">
-                <source>Back</source>
-                <target>Nein, doch nicht</target>
-            </trans-unit>
 
 
-            <!-- Templates/Registration/EditPassword.html -->
-            <trans-unit id="templates_registration_editPassword.headline">
-                <source>Edit Password</source>
-                <target>Passwort ändern</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_editPassword.labelSave">
-                <source>Save</source>
-                <target>Speichern</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_editPassword.labelBack">
-                <source>Back</source>
-                <target>Zurück</target>
-            </trans-unit>
 
 
-            <!-- Templates/Registration/EditUser.html -->
-            <trans-unit id="templates_registration_editUser.headline">
-                <source>Edit Profile</source>
-                <target>Profil bearbeiten</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_editUser.labelSave">
-                <source>Save</source>
-                <target>Änderungen speichern</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_editUser.labelBack">
-                <source>Back</source>
-                <target>Zurück</target>
-            </trans-unit>
+
 
 
 
@@ -713,11 +800,7 @@
 
 
 
-            <!-- Templates/Registration/LoginAnonymous.html -->
-            <trans-unit id="templates_authGuest_loginHint.continue">
-                <source>Continue</source>
-                <target>Fortfahren</target>
-            </trans-unit>
+
 
 
             <!-- Templates/Registration/xdlLoginShow.html -->
@@ -745,69 +828,10 @@
             </trans-unit>
 
 
-            <!-- Templates/Registration/PasswordForgotShow.html -->
-            <trans-unit id="templates_password_new.headline">
-                <source>Password forgot</source>
-                <target>Passwort anfordern</target>
-            </trans-unit>
-            <trans-unit id="partials_password_forgot.labelSend">
-                <source>Send password</source>
-                <target>Neues Passwort senden</target>
-            </trans-unit>
-            <trans-unit id="partials_password_forgot.labelBack">
-                <source>Back</source>
-                <target>Zurück</target>
-            </trans-unit>
 
 
-            <!-- Templates/Registration/RegisterShow.html -->
-            <trans-unit id="templates_registration_registerShow.headline">
-                <source>Register</source>
-                <target>Registrieren</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_registerShow.labelRegister">
-                <source>Register</source>
-                <target>Jetzt registrieren</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_registerShow.terms">
-                <source>I accept the terms and conditions.</source>
-                <target>Ich akzeptiere die Nutzungsbedingungen.</target>
-            </trans-unit>
 
 
-            <!-- Templates/Registration/Welcome.html -->
-            <trans-unit id="templates_registration_welcome.headline">
-                <source>Welcome %s %s!</source>
-                <target>Hallo %s %s!</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_welcome.introductionText">
-                <source>What do you wanna do next?</source>
-                <target>Was möchten Sie als nächstes tun?</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_welcome.logout">
-                <source>Logout</source>
-                <target>Ausloggen</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_welcome.editUser">
-                <source>Edit Profile</source>
-                <target>Profil bearbeiten</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_welcome.deleteUser">
-                <source>Delete Profile</source>
-                <target>Profil löschen</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_welcome.editPassword">
-                <source>Change password</source>
-                <target>Passswort ändern</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_welcome.messageServices">
-                <source>There are services pending. Please check or update your profile data to finally enable the pending services.</source>
-                <target>Es warten RKW Services auf Sie. Bitte prüfen Sie Ihre Profildaten auf Vollständigkeit, um die Services nutzen zu können.</target>
-            </trans-unit>
-            <trans-unit id="templates_registration_welcome.checkProfile">
-                <source>Check profile now!</source>
-                <target>Jetzt Profildaten prüfen!</target>
-            </trans-unit>
 
 
             <!-- Templates/Registration/Privacy.html -->
@@ -860,31 +884,6 @@
                 <target>Ja, ich stimme zu, dass das RKW meine persönlichen Daten zur Kontaktaufnahme verwendet. Ferner habe ich die erweiterten Hinweise in der</target>
             </trans-unit>
 
-            <!-- Templates/Email/RegisterOptInRequest.html -->
-            <trans-unit id="templates_email_registerOptInRequest.headline">
-                <source>Nearly done</source>
-                <target>Fast geschafft</target>
-            </trans-unit>
-            <trans-unit id="templates_email_registerOptInRequest.text1">
-                <source>thank you for registering.</source>
-                <target>Wir freuen uns, dass Sie sich auf unser Website angemeldet haben! Noch ein letzter Klick und Sie können alle Funktionen und Services von "Mein RKW" in vollem Umfang nutzen.</target>
-            </trans-unit>
-            <trans-unit id="templates_email_registerOptInRequest.textOptIn">
-                <source>Click here to finish registration:</source>
-                <target>Um Ihre Registrierung abzuschließen, klicken Sie bitte auf den folgenden Link:</target>
-            </trans-unit>
-            <trans-unit id="templates_email_registerOptInRequest.textOptInLinkLabel">
-                <source>Finish Registration</source>
-                <target>Jetzt Registrierung abschließen</target>
-            </trans-unit>
-            <trans-unit id="templates_email_registerOptInRequest.textOptOut">
-                <source>Click here to cancel registration:</source>
-                <target>Sie haben es sich anders überlegt oder haben die Registrierung gar nicht selbst durchgeführt? Um Ihre Daten zu löschen, klicken Sie bitte auf den folgenden Link:</target>
-            </trans-unit>
-            <trans-unit id="templates_email_registerOptInRequest.textOptOutLinkLabel">
-                <source>Cancel Registration</source>
-                <target>Registrierung abbrechen</target>
-            </trans-unit>
 
 
 
@@ -894,7 +893,7 @@
                 <target>Und los geht's</target>
             </trans-unit>
             <trans-unit id="templates_email_registerOptInSuccess.teaser">
-                <source>With the free account for "My RKW" you can now manage all services around the RKW website yourself.</source>
+                <source>With the free account for "My RKW" you can now manage all memberships around the RKW website yourself.</source>
                 <target>Mit dem kostenlosen Account für "Mein RKW" können Sie nun alle Services rund um die RKW Website selbst verwalten – von A wie Alerts bis Z wie ... okay, bis V wie Veranstaltungsanmeldungen ;-)</target>
             </trans-unit>
             <trans-unit id="templates_email_registerOptInSuccess.text1">
@@ -941,42 +940,42 @@
 
 
             <!-- Templates/Email/ServiceOptInAdminRequest.html -->
-            <trans-unit id="templates_email_serviceOptInAdminRequest.headline">
+            <trans-unit id="templates_email_membershipOptInAdminRequest.headline">
                 <source>Hello %s,</source>
                 <target>Hallo %s,</target>
             </trans-unit>
-            <trans-unit id="templates_email_serviceOptInAdminRequest.text1" approved="no">
-                <source>the user %s %s wants to be activated for the following services:.</source>
+            <trans-unit id="templates_email_membershipOptInAdminRequest.text1" approved="no">
+                <source>the user %s %s wants to be activated for the following memberships:.</source>
                 <target state="final" phase-name="approval-1">der oder die Nutzende %s %s möchte für die folgenden RKW Services freigeschaltet werden:</target>
             </trans-unit>
-            <trans-unit id="templates_email_serviceOptInAdminRequest.textOptIn">
-                <source>Click here to activate him for the services:</source>
+            <trans-unit id="templates_email_membershipOptInAdminRequest.textOptIn">
+                <source>Click here to activate him for the memberships:</source>
                 <target>Klicken Sie hier, um Ihn für die obenstehenden RKW Services freizuschalten:</target>
             </trans-unit>
-            <trans-unit id="templates_email_serviceOptInAdminRequest.textOptInLinkLabel" approved="no">
+            <trans-unit id="templates_email_membershipOptInAdminRequest.textOptInLinkLabel" approved="no">
                 <source>Activate User</source>
                 <target state="final" phase-name="approval-1">Nutzendenkonto freischalten</target>
             </trans-unit>
-            <trans-unit id="templates_email_serviceOptInAdminRequest.textOptOut">
-                <source>Click here to cancel activation for the services:</source>
+            <trans-unit id="templates_email_membershipOptInAdminRequest.textOptOut">
+                <source>Click here to cancel activation for the memberships:</source>
                 <target>Klicken Sie hier, um die Freischaltung für die obenstehenden RKW Services zu verweigern:</target>
             </trans-unit>
-            <trans-unit id="templates_email_serviceOptInAdminRequest.textOptOutLinkLabel">
+            <trans-unit id="templates_email_membershipOptInAdminRequest.textOptOutLinkLabel">
                 <source>Cancel activation</source>
                 <target>Freischaltung abbrechen</target>
             </trans-unit>
 
 
             <!-- Templates/Email/ServiceOptInDenial.html -->
-            <trans-unit id="templates_email_serviceOptInDenial.headline">
+            <trans-unit id="templates_email_membershipOptInDenial.headline">
                 <source>Hello %s %s,</source>
                 <target>Schlechte Nachrichten, %s %s!</target>
             </trans-unit>
-            <trans-unit id="templates_email_serviceOptInDenial.text1">
-                <source>your request for activation for the following services was denied:</source>
+            <trans-unit id="templates_email_membershipOptInDenial.text1">
+                <source>your request for activation for the following memberships was denied:</source>
                 <target>Ihre Anfrage zur Freischaltung für die folgenden RKW Services wurde leider abgelehnt:</target>
             </trans-unit>
-            <trans-unit id="templates_email_serviceOptInDenial.text2">
+            <trans-unit id="templates_email_membershipOptInDenial.text2">
                 <source>For questions, please contact our support.</source>
                 <target><![CDATA[Bitte wenden Sie sich an unseren <a href="mailto:service@rkw.de">Support</a> unter service@rkw.de. Wir helfen Ihnen hier gerne weiter.]]></target>
             </trans-unit>
@@ -984,29 +983,25 @@
 
 
             <!-- Templates/Email/ServiceOptInSuccess.html -->
-            <trans-unit id="templates_email_serviceOptInSuccess.headline">
+            <trans-unit id="templates_email_membershipOptInSuccess.headline">
                 <source>Hello %s %s,</source>
                 <target>Gute Nachrichten, %s %s!</target>
             </trans-unit>
-            <trans-unit id="templates_email_serviceOptInSuccess.text1">
-                <source>your request for activation for the following services was successfull:</source>
+            <trans-unit id="templates_email_membershipOptInSuccess.text1">
+                <source>your request for activation for the following memberships was successfull:</source>
                 <target>Sie wurden soeben für die folgenden RKW Services freigeschaltet:</target>
             </trans-unit>
-            <trans-unit id="templates_email_serviceOptInSuccess.text2">
+            <trans-unit id="templates_email_membershipOptInSuccess.text2">
                 <source>For questions, please contact our support.</source>
                 <target>Melden Sie sich hier an, um die freigeschalteten RKW Services nun zu nutzen:</target>
             </trans-unit>
-            <trans-unit id="templates_email_serviceOptInSuccess.loginLabel">
+            <trans-unit id="templates_email_membershipOptInSuccess.loginLabel">
                 <source>To login</source>
                 <target>Zum Login</target>
             </trans-unit>
 
 
-            <!-- Subject for e-mails -->
-            <trans-unit id="rkwMailService.createUserEvent.subject">
-                <source>Confirm registration</source>
-                <target>Registrierung bestätigen</target>
-            </trans-unit>
+
             <trans-unit id="rkwMailService.registerUserEvent.subject">
                 <source>Registration successfull</source>
                 <target>Registrierung erfolgreich</target>
@@ -1048,15 +1043,6 @@
                 <target>(Optional)</target>
             </trans-unit>
 
-            <!-- Partials/Registration/RegisterFormFields.html -->
-            <trans-unit id="partials_labelSuffix.labelOptional">
-                <source>(Optional)</source>
-                <target>(Optional)</target>
-            </trans-unit>
-            <trans-unit id="partials_labelSuffix.labelRequired">
-                <source>(Required)</source>
-                <target>(Pflichtfeld)</target>
-            </trans-unit>
         </body>
 	</file>
 </xliff>
