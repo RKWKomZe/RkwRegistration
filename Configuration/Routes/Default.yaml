@@ -1,0 +1,109 @@
+routeEnhancers:
+  RkwRegistration:
+    type: Extbase
+    namespace: 'tx_rkwregistration_authinternal'
+    routes:
+      - routePath: '/rkw-registration/auth'
+        _controller: 'Auth::index'
+      - routePath: '/rkw-registration/login'
+        _controller: 'Auth::login'
+      - routePath: '/rkw-registration/logout'
+        _controller: 'Auth::logout'
+      - routePath: '/rkw-registration/redirect'
+        _controller: 'Auth::logoutRedirect'
+      - routePath: '/rkw-registration/login-guest/{tokenUser}'
+        _controller: 'AuthGuest::login'
+      - routePath: '/rkw-registration/login-hint'
+        _controller: 'AuthGuest::loginHint'
+      - routePath: '/rkw-registration/user'
+        _controller: 'FrontendUser::index'
+      - routePath: '/rkw-registration/new'
+        _controller: 'FrontendUser::new'
+      - routePath: '/rkw-registration/create'
+        _controller: 'FrontendUser::create'
+      - routePath: '/rkw-registration/new'
+        _controller: 'FrontendUser::new'
+      - routePath: '/rkw-registration/new-password'
+        _controller: 'Password::new'
+      - routePath: '/rkw-registration/create-password'
+        _controller: 'Password::create'
+      - routePath: '/rkw-registration/optin/{tokenUser}/{token}'
+        _controller: 'Registration::optIn'
+    defaultController: 'Auth::index'
+    requirements:
+      tokenUser: '[a-zA-Z0-9]{60}'
+      token: '[a-zA-Z0-9]{60}'
+
+  RkwRegistration1:
+    type: Extbase
+    namespace: 'tx_rkwregistration_logoutinternal'
+    routes:
+      - routePath: '/rkw-registration1/logout'
+        _controller: 'Auth::logout'
+      - routePath: '/rkw-registration1/redirect'
+        _controller: 'Auth::logoutRedirect'
+    defaultController: 'Auth::index'
+
+  RkwRegistration2:
+    type: Extbase
+    namespace: 'tx_rkwregistration_password'
+    routes:
+      - routePath: '/rkw-registration/edit-password'
+        _controller: 'Password::edit'
+      - routePath: '/rkw-registration/update-password'
+        _controller: 'Password::update'
+    defaultController: 'Auth::index'
+
+  RkwRegistration3:
+    type: Extbase
+    namespace: 'tx_rkwregistration_frontenduserwelcome'
+    routes:
+      - routePath: '/rkw-registration/welcome'
+        _controller: 'FrontendUser::welcome'
+    defaultController: 'Auth::index'
+
+  RkwRegistration4:
+    type: Extbase
+    namespace: 'tx_rkwregistration_frontenduseredit'
+    routes:
+      - routePath: '/rkw-registration/edit/{frontendUser}'
+        _controller: 'FrontendUser::edit'
+      - routePath: '/rkw-registration/update/{frontendUser}'
+        _controller: 'FrontendUser::update'
+    defaultController: 'Auth::index'
+    requirements:
+      frontendUser: '[0-9]{1,10000}'
+
+  RkwRegistration5:
+    type: Extbase
+    namespace: 'tx_rkwregistration_frontenduserdelete'
+    routes:
+      - routePath: '/rkw-registration/show'
+        _controller: 'FrontendUser::show'
+      - routePath: '/rkw-registration/delete'
+        _controller: 'FrontendUser::delete'
+    defaultController: 'Auth::index'
+
+  RkwRegistration6:
+    type: Extbase
+    namespace: 'tx_rkwregistration_frontendusergroup'
+    routes:
+      - routePath: '/rkw-registration/group-list'
+        _controller: 'FrontendUserGroup::list'
+      - routePath: '/rkw-registration/group-show/{frontendUserGroup}'
+        _controller: 'FrontendUserGroup::show'
+      - routePath: '/rkw-registration/group-create/{frontendUserGroup}'
+        _controller: 'FrontendUserGroup::create'
+      - routePath: '/rkw-registration/group-delete/{frontendUserGroup}'
+        _controller: 'FrontendUserGroup::delete'
+    defaultController: 'Auth::index'
+    requirements:
+      frontendUserGroup: '[0-9]{1,10000}'
+
+  RkwRegistration7:
+    type: Extbase
+    namespace: 'tx_rkwregistration_info'
+    routes:
+      - routePath: '/rkw-registration/logininfo'
+        _controller: 'Info::loginInfo'
+    defaultController: 'Info::index'
