@@ -135,7 +135,7 @@ class PasswordValidatorTest extends FunctionalTestCase
 
         $result = $passwordValidator->isValid($formInputArray);
 
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
     /**
@@ -167,7 +167,7 @@ class PasswordValidatorTest extends FunctionalTestCase
 
         $result = $passwordValidator->isValid($formInputArray);
 
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
     /**
@@ -199,7 +199,7 @@ class PasswordValidatorTest extends FunctionalTestCase
 
         $result = $passwordValidator->isValid($formInputArray);
 
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
 
@@ -233,7 +233,7 @@ class PasswordValidatorTest extends FunctionalTestCase
 
         $result = $passwordValidator->isValid($formInputArray);
 
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
 
@@ -268,7 +268,7 @@ class PasswordValidatorTest extends FunctionalTestCase
 
         $result = $passwordValidator->isValid($formInputArray);
 
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
 
@@ -304,7 +304,7 @@ class PasswordValidatorTest extends FunctionalTestCase
 
         $result = $passwordValidator->isValid($formInputArray);
 
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
 
@@ -340,7 +340,7 @@ class PasswordValidatorTest extends FunctionalTestCase
 
         $result = $passwordValidator->isValid($formInputArray);
 
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
     /**
@@ -376,7 +376,7 @@ class PasswordValidatorTest extends FunctionalTestCase
 
         $result = $passwordValidator->isValid($formInputArray);
 
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
     /**
@@ -412,7 +412,7 @@ class PasswordValidatorTest extends FunctionalTestCase
 
         $result = $passwordValidator->isValid($formInputArray);
 
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
     /**
@@ -449,7 +449,7 @@ class PasswordValidatorTest extends FunctionalTestCase
 
         $result = $passwordValidator->isValid($formInputArray);
 
-        static::assertTrue($result);
+        self::assertTrue($result);
     }
 
 

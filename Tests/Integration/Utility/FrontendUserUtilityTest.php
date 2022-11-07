@@ -101,7 +101,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         ];
 
         $frontendUserObject = FrontendUserUtility::convertArrayToObject($frontendUserArray);
-        static::assertInstanceOf(FrontendUser::class, $frontendUserObject);
+        self::assertInstanceOf(FrontendUser::class, $frontendUserObject);
     }
 
 
@@ -123,7 +123,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUserArray = [];
 
         $frontendUserObject = FrontendUserUtility::convertArrayToObject($frontendUserArray);
-        static::assertInstanceOf(FrontendUser::class, $frontendUserObject);
+        self::assertInstanceOf(FrontendUser::class, $frontendUserObject);
     }
 
 
@@ -150,9 +150,9 @@ class FrontendUserUtilityTest extends FunctionalTestCase
 
         $frontendUserObject = FrontendUserUtility::convertArrayToObject($frontendUserArray);
 
-        static::assertEquals($frontendUserArray['firstName'], $frontendUserObject->getFirstName());
-        static::assertEquals($frontendUserArray['lastName'], $frontendUserObject->getLastName());
-        static::assertEquals($frontendUserArray['email'], $frontendUserObject->getEmail());
+        self::assertEquals($frontendUserArray['firstName'], $frontendUserObject->getFirstName());
+        self::assertEquals($frontendUserArray['lastName'], $frontendUserObject->getLastName());
+        self::assertEquals($frontendUserArray['email'], $frontendUserObject->getEmail());
     }
 
 
@@ -183,10 +183,10 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUser->setZip(123456);
 
         $result = FrontendUserUtility::convertObjectToArray($frontendUser);
-        static::assertIsArray($result);
-        static::assertCount(38, $result);
-        static::assertEquals('test', $result['username']);
-        static::assertEquals(123456, $result['zip']);
+        self::assertIsArray($result);
+        self::assertCount(38, $result);
+        self::assertEquals('test', $result['username']);
+        self::assertEquals(123456, $result['zip']);
     }
 
     /**
@@ -213,10 +213,10 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUser->setZip(123456);
 
         $result = FrontendUserUtility::convertObjectToArray($frontendUser, true);
-        static::assertIsArray($result);
-        static::assertCount(2, $result);
-        static::assertEquals('test', $result['username']);
-        static::assertEquals(123456, $result['zip']);
+        self::assertIsArray($result);
+        self::assertCount(2, $result);
+        self::assertEquals('test', $result['username']);
+        self::assertEquals(123456, $result['zip']);
     }
 
     /**
@@ -241,10 +241,10 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUser->setZip(123456);
 
         $result = FrontendUserUtility::convertObjectToArray($frontendUser, true);
-        static::assertIsArray($result);
-        static::assertCount(2, $result);
-        static::assertEquals('test', $result['username']);
-        static::assertEquals(123456, $result['zip']);
+        self::assertIsArray($result);
+        self::assertCount(2, $result);
+        self::assertEquals('test', $result['username']);
+        self::assertEquals(123456, $result['zip']);
     }
 
     #==============================================================================
@@ -264,7 +264,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          */
 
         $email = 'test@test.de';
-        static::assertTrue(FrontendUserUtility::isEmailValid($email));
+        self::assertTrue(FrontendUserUtility::isEmailValid($email));
     }
 
 
@@ -283,7 +283,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          */
 
         $email = 'test@test';
-        static::assertFalse(FrontendUserUtility::isEmailValid($email));
+        self::assertFalse(FrontendUserUtility::isEmailValid($email));
     }
 
     /**
@@ -301,10 +301,10 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          */
 
         $email = 'test@facebook.com';
-        static::assertFalse(FrontendUserUtility::isEmailValid($email));
+        self::assertFalse(FrontendUserUtility::isEmailValid($email));
 
         $email = 'test@twitter.com';
-        static::assertFalse(FrontendUserUtility::isEmailValid($email));
+        self::assertFalse(FrontendUserUtility::isEmailValid($email));
     }
 
     #==============================================================================
@@ -324,7 +324,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          */
 
         $this->importDataSet(self::FIXTURE_PATH  . '/Database/Check10.xml');
-        static::assertFalse(FrontendUserUtility::isUsernameUnique('lauterbach@spd.de'));
+        self::assertFalse(FrontendUserUtility::isUsernameUnique('lauterbach@spd.de'));
     }
 
     /**
@@ -346,7 +346,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(10);
 
-        static::assertTrue(FrontendUserUtility::isUsernameUnique('lauterbach@spd.de', $frontendUser));
+        self::assertTrue(FrontendUserUtility::isUsernameUnique('lauterbach@spd.de', $frontendUser));
     }
 
     /**
@@ -364,7 +364,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          */
 
         $this->importDataSet(self::FIXTURE_PATH  . '/Database/Check10.xml');
-        static::assertFalse(FrontendUserUtility::isUsernameUnique('lauterbachUsername@spd.de'));
+        self::assertFalse(FrontendUserUtility::isUsernameUnique('lauterbachUsername@spd.de'));
     }
 
     /**
@@ -386,7 +386,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(10);
 
-        static::assertTrue(FrontendUserUtility::isUsernameUnique('lauterbachUsername@spd.de', $frontendUser));
+        self::assertTrue(FrontendUserUtility::isUsernameUnique('lauterbachUsername@spd.de', $frontendUser));
     }
 
 
@@ -405,7 +405,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          */
 
         $this->importDataSet(self::FIXTURE_PATH  . '/Database/Check10.xml');
-        static::assertTrue(FrontendUserUtility::isUsernameUnique('scholz@spd.de'));
+        self::assertTrue(FrontendUserUtility::isUsernameUnique('scholz@spd.de'));
     }
 
     #==============================================================================
@@ -430,7 +430,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
         $frontendUser->setPassword('$P$C0NF2OEhmo92K6mOzQz4S8VuaDJEb.1'); //Password = testtest
 
-        static::assertFalse(FrontendUserUtility::isPasswordValid($frontendUser, 'blaböa'));
+        self::assertFalse(FrontendUserUtility::isPasswordValid($frontendUser, 'blaböa'));
     }
 
 
@@ -454,7 +454,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
         $frontendUser->setPassword('$P$C0NF2OEhmo92K6mOzQz4S8VuaDJEb.1'); //Password = testtest
 
-        static::assertTrue(FrontendUserUtility::isPasswordValid($frontendUser, 'testtest'));
+        self::assertTrue(FrontendUserUtility::isPasswordValid($frontendUser, 'testtest'));
     }
 
 
@@ -488,7 +488,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
 
-        static::assertEquals(10 ,FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
+        self::assertEquals(10 ,FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
     }
     /**
      * @test
@@ -509,7 +509,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
 
-        static::assertEquals(8 ,FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
+        self::assertEquals(8 ,FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
     }
 
     /**
@@ -532,7 +532,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
         $frontendUser->setTxRkwregistrationLoginErrorCount(5);
 
-        static::assertEquals(3 ,FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
+        self::assertEquals(3 ,FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
     }
 
     /**
@@ -555,7 +555,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
         $frontendUser->setTxRkwregistrationLoginErrorCount(10);
 
-        static::assertEquals(0 ,FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
+        self::assertEquals(0 ,FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
     }
 
     #==============================================================================
@@ -583,7 +583,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
             ]
         );
 
-        static::assertEquals(10 ,FrontendUserUtility::getRemainingLoginAttemptsNumeric(0));
+        self::assertEquals(10 ,FrontendUserUtility::getRemainingLoginAttemptsNumeric(0));
     }
     /**
      * @test
@@ -599,7 +599,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          * Then the functions returns the maximum number of possible login attempts from typoscript-configuration
          */
 
-        static::assertEquals(8 ,FrontendUserUtility::getRemainingLoginAttemptsNumeric(0));
+        self::assertEquals(8 ,FrontendUserUtility::getRemainingLoginAttemptsNumeric(0));
     }
 
     /**
@@ -616,7 +616,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          * Then the functions returns the remaining number of possible login attempts from typoscript-configuration
          */
 
-        static::assertEquals(3 ,FrontendUserUtility::getRemainingLoginAttemptsNumeric(5));
+        self::assertEquals(3 ,FrontendUserUtility::getRemainingLoginAttemptsNumeric(5));
     }
 
     /**
@@ -633,7 +633,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          * Then zero is returned
          */
 
-        static::assertEquals(0 ,FrontendUserUtility::getRemainingLoginAttemptsNumeric(10));
+        self::assertEquals(0 ,FrontendUserUtility::getRemainingLoginAttemptsNumeric(10));
     }
 
     #==============================================================================
@@ -664,8 +664,8 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         );
 
         $result = FrontendUserUtility::getMandatoryFields();
-        static::assertIsArray($result);
-        static::assertEmpty($result);
+        self::assertIsArray($result);
+        self::assertEmpty($result);
     }
 
     /**
@@ -686,10 +686,10 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          */
 
         $result = FrontendUserUtility::getMandatoryFields();
-        static::assertIsArray($result);
-        static::assertCount(2, $result);
-        static::assertEquals('firstName', $result[0]);
-        static::assertEquals('lastName', $result[1]);
+        self::assertIsArray($result);
+        self::assertCount(2, $result);
+        self::assertEquals('firstName', $result[0]);
+        self::assertEquals('lastName', $result[1]);
     }
 
     /**
@@ -719,14 +719,14 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByUid(20);
 
         $result = FrontendUserUtility::getMandatoryFields($frontendUser);
-        static::assertIsArray($result);
-        static::assertCount(6, $result);
-        static::assertEquals('firstName', $result[0]);
-        static::assertEquals('lastName', $result[1]);
-        static::assertEquals('email', $result[2]);
-        static::assertEquals('middleName', $result[3]);
-        static::assertEquals('zip', $result[4]);
-        static::assertEquals('city', $result[5]);
+        self::assertIsArray($result);
+        self::assertCount(6, $result);
+        self::assertEquals('firstName', $result[0]);
+        self::assertEquals('lastName', $result[1]);
+        self::assertEquals('email', $result[2]);
+        self::assertEquals('middleName', $result[3]);
+        self::assertEquals('zip', $result[4]);
+        self::assertEquals('city', $result[5]);
     }
 
     #==============================================================================

@@ -119,7 +119,7 @@ class AuthController extends AbstractController
                         ->setUseCacheHash(false)
                         ->setArguments(
                             [
-                                'tx_rkwregistration_register' => [
+                                'tx_rkwregistration_authinternal' => [
                                     'controller' => 'FrontendUser',
                                     'action'     => 'new',
                                 ],

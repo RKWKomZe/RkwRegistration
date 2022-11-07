@@ -135,11 +135,11 @@ class PrivacyHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\Privacy $result */
         $result = $privacyHandler->addPrivacyDataForOptIn($request, $frontendUser, $registration, 'hello');
 
-        static::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
+        self::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
         // the frontendUser is set
-        static::assertEquals($frontendUser->getUid(), $result->getFrontendUser()->getUid());
+        self::assertEquals($frontendUser->getUid(), $result->getFrontendUser()->getUid());
         // before final saving: We only have a reference to the registration-table
-        static::assertEquals('tx_rkwregistration_domain_model_registration', $result->getForeignTable());
+        self::assertEquals('tx_rkwregistration_domain_model_registration', $result->getForeignTable());
     }
 
 
@@ -223,11 +223,11 @@ class PrivacyHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\Privacy $result */
         $result = $privacyHandler->addPrivacyDataForOptInFinal($request, $frontendUser, $registration, 'hello');
 
-        static::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
+        self::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
         // the frontendUser is set
-        static::assertEquals($frontendUser->getUid(), $result->getFrontendUser()->getUid());
+        self::assertEquals($frontendUser->getUid(), $result->getFrontendUser()->getUid());
         // after final saving: We only have a reference to the origin data-table (here: event)
-        static::assertEquals('tx_rkwevents_domain_model_eventreservation', $result->getForeignTable());
+        self::assertEquals('tx_rkwevents_domain_model_eventreservation', $result->getForeignTable());
     }
 
 
@@ -269,11 +269,11 @@ class PrivacyHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\Privacy $result */
         $result = $privacyHandler->addPrivacyDataForOptInFinal($request, $frontendUser, $registration, 'hello');
 
-        static::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
+        self::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
         // the frontendUser is set
-        static::assertEquals($frontendUser->getUid(), $result->getFrontendUser()->getUid());
+        self::assertEquals($frontendUser->getUid(), $result->getFrontendUser()->getUid());
         // after final saving: We only have a reference to the origin data-table (here: event)
-        static::assertEquals(null, $result->getForeignTable());
+        self::assertEquals(null, $result->getForeignTable());
     }
 
 
@@ -313,11 +313,11 @@ class PrivacyHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\Privacy $result */
         $result = $privacyHandler->addPrivacyData($request, $frontendUser, $eventReservation, 'hello');
 
-        static::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
+        self::assertInstanceOf('RKW\RkwRegistration\Domain\Model\Privacy', $result);
         // the frontendUser is set
-        static::assertEquals($frontendUser->getUid(), $result->getFrontendUser()->getUid());
+        self::assertEquals($frontendUser->getUid(), $result->getFrontendUser()->getUid());
         // after final saving: We only have a reference to the origin data-table (here: event)
-        static::assertEquals('tx_rkwevents_domain_model_eventreservation', $result->getForeignTable());
+        self::assertEquals('tx_rkwevents_domain_model_eventreservation', $result->getForeignTable());
     }
 
 

@@ -7,8 +7,8 @@
 
 
     <!-- PLAINTEXT -->
-    <f:section name="Plaintext"><rkwMailer:plaintextLineBreaks>
-        <rkwMailer:recipientSalutation queueRecipient="{queueRecipient}"
+    <f:section name="Plaintext"><rkwMailer:email.plaintextLineBreaks>
+        <rkwMailer:email.recipientSalutation queueRecipient="{queueRecipient}"
                                        prependText="{rkwMailer:email.translate(key:'templates_email_optin.headline', languageKey:'{queueRecipient.languageCode}', extensionName:'rkwRegistration')}, "
                                        appendText="!"
                                        fallbackText="{rkwMailer:email.translate(key:'templates_email_optin.headline', languageKey='{queueRecipient.languageCode}', extensionName:'rkwRegistration)}!"
@@ -25,13 +25,13 @@
         <rkwMailer:email.uri.action action="optIn" controller="Registration" extensionName="rkwRegistration" pluginName="register"
                                  absolute="true" noCacheHash="TRUE" pageUid="{settings.users.registrationPid}"
                                  additionalParams="{tx_rkwregistration_register: {token: tokenNo, user: userSha1}}" />
-    </rkwMailer:plaintextLineBreaks></f:section>
+    </rkwMailer:email.plaintextLineBreaks></f:section>
 
 
     <!-- HTML -->
     <f:section name="Html">
         <h1>
-            <rkwMailer:recipientSalutation queueRecipient="{queueRecipient}"
+            <rkwMailer:email.recipientSalutation queueRecipient="{queueRecipient}"
                                            prependText="{rkwMailer:email.translate(key:'templates_email_optin.headline', languageKey:'{queueRecipient.languageCode}', extensionName:'rkwRegistration')}, "
                                            appendText="!"
                                            fallbackText="{rkwMailer:email.translate(key:'templates_email_optin.headline', languageKey='{queueRecipient.languageCode}', extensionName:'rkwRegistration)}!"

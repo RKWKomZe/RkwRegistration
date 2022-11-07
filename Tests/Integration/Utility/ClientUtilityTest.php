@@ -79,7 +79,7 @@ class ClientUtilityTest extends FunctionalTestCase
          * Then localhost is returned
          */
 
-        static::assertEquals('127.0.0.1', ClientUtility::getIp());
+        self::assertEquals('127.0.0.1', ClientUtility::getIp());
     }
 
     /**
@@ -97,7 +97,7 @@ class ClientUtilityTest extends FunctionalTestCase
          */
 
         $_SERVER['REMOTE_ADDR'] = '1.1.2.1';
-        static::assertEquals('1.1.2.1', ClientUtility::getIp());
+        self::assertEquals('1.1.2.1', ClientUtility::getIp());
     }
 
     /**
@@ -115,7 +115,7 @@ class ClientUtilityTest extends FunctionalTestCase
          */
 
         $_SERVER['REMOTE_ADDR'] = '1.1.2.1, 2.2.1.2, 3.3.2.3';
-        static::assertEquals('1.1.2.1', ClientUtility::getIp());
+        self::assertEquals('1.1.2.1', ClientUtility::getIp());
     }
 
     #==============================================================================

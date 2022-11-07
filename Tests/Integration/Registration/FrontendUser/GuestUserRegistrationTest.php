@@ -156,7 +156,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         $guestUser->setEmail('test@test.de');
         $this->fixture->setFrontendUser($guestUser);
 
-        static::assertInstanceOf(GuestUserRepository::class, $this->fixture->getContextAwareFrontendUserRepository());
+        self::assertInstanceOf(GuestUserRepository::class, $this->fixture->getContextAwareFrontendUserRepository());
     }
 
     #==============================================================================
@@ -173,7 +173,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
          * Then getFrontendUser returns an instance of \RKW\RkwRegistration\Domain\Model\GuestUser
          */
 
-        static::assertInstanceOf(GuestUser::class, $this->fixture->getFrontendUser());
+        self::assertInstanceOf(GuestUser::class, $this->fixture->getFrontendUser());
     }
 
     #==============================================================================
@@ -204,8 +204,8 @@ class GuestUserRegistrationTest extends FunctionalTestCase
 
         $this->fixture->setFrontendUser($guestUser);
 
-        static::assertNotEquals('test@test.de', $guestUser->getUsername());
-        static::assertStringNotContainsString('@', $guestUser->getUsername());
+        self::assertNotEquals('test@test.de', $guestUser->getUsername());
+        self::assertStringNotContainsString('@', $guestUser->getUsername());
 
         $arrayOfNames = [];
         for ($i = 1; $i <= 10000; $i++) {
@@ -213,10 +213,10 @@ class GuestUserRegistrationTest extends FunctionalTestCase
             $this->fixture->setFrontendUser($guestUser);
             $username = $guestUser->getUsername();
 
-            static::assertNotContains($username, $arrayOfNames);
+            self::assertNotContains($username, $arrayOfNames);
             $arrayOfNames[] = $guestUser->getUsername();
         }
-        static::assertEmpty($guestUser->getEmail());
+        self::assertEmpty($guestUser->getEmail());
 
     }
 
@@ -239,7 +239,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         $guestUser = GeneralUtility::makeInstance(GuestUser::class);
 
         $this->fixture->setFrontendUser($guestUser);
-        static::assertEquals('ru', $guestUser->getTxRkwregistrationLanguageKey());
+        self::assertEquals('ru', $guestUser->getTxRkwregistrationLanguageKey());
 
     }
 
@@ -263,7 +263,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         $guestUser->setTxRkwregistrationLanguageKey('it');
 
         $this->fixture->setFrontendUser($guestUser);
-        static::assertEquals('it', $guestUser->getTxRkwregistrationLanguageKey());
+        self::assertEquals('it', $guestUser->getTxRkwregistrationLanguageKey());
     }
 
 
@@ -287,7 +287,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         $guestUser->setCrdate(10);
 
         $this->fixture->setFrontendUser($guestUser);
-        static::assertGreaterThan(time() -5, $guestUser->getCrdate());
+        self::assertGreaterThan(time() -5, $guestUser->getCrdate());
 
     }
 
@@ -312,7 +312,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         $guestUser = $this->guestUserRepository->findByIdentifier(10);
 
         $this->fixture->setFrontendUser($guestUser);
-        static::assertEquals(10, $guestUser->getCrdate());
+        self::assertEquals(10, $guestUser->getCrdate());
 
     }
 
@@ -337,7 +337,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         $guestUser->setDisable(0);
 
         $this->fixture->setFrontendUser($guestUser);
-        static::assertEquals(1, $guestUser->getDisable());
+        self::assertEquals(1, $guestUser->getDisable());
 
     }
 
@@ -362,7 +362,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         $guestUser = $this->guestUserRepository->findByIdentifier(10);
 
         $this->fixture->setFrontendUser($guestUser);
-        static::assertEquals(0, $guestUser->getDisable());
+        self::assertEquals(0, $guestUser->getDisable());
 
     }
 
@@ -388,7 +388,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         $guestUser->setTxRkwregistrationRegisterRemoteIp('10');
 
         $this->fixture->setFrontendUser($guestUser);
-        static::assertEquals('127.0.0.1', $guestUser->getTxRkwregistrationRegisterRemoteIp());
+        self::assertEquals('127.0.0.1', $guestUser->getTxRkwregistrationRegisterRemoteIp());
 
     }
 
@@ -413,7 +413,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         $guestUser = $this->guestUserRepository->findByIdentifier(10);
 
         $this->fixture->setFrontendUser($guestUser);
-        static::assertEquals('1.2.3.4', $guestUser->getTxRkwregistrationRegisterRemoteIp());
+        self::assertEquals('1.2.3.4', $guestUser->getTxRkwregistrationRegisterRemoteIp());
 
     }
 
@@ -437,7 +437,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         $guestUser->setEndtime(10);
 
         $this->fixture->setFrontendUser($guestUser);
-        static::assertGreaterThanOrEqual(time() + (intval(7 * 24 * 60 * 60) -5), $guestUser->getEndtime());
+        self::assertGreaterThanOrEqual(time() + (intval(7 * 24 * 60 * 60) -5), $guestUser->getEndtime());
 
     }
 
@@ -464,7 +464,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         $guestUser->setEndtime($time);
 
         $this->fixture->setFrontendUser($guestUser);
-        static::assertEquals($time, $guestUser->getEndtime());
+        self::assertEquals($time, $guestUser->getEndtime());
 
     }
 
@@ -490,12 +490,12 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         $guestUser = $this->guestUserRepository->findByIdentifier(10);
 
         $this->fixture->setFrontendUser($guestUser);
-        static::assertInstanceOf(GuestUser::class, $this->fixture->getFrontendUserPersisted());
+        self::assertInstanceOf(GuestUser::class, $this->fixture->getFrontendUserPersisted());
 
         $guestUser = GeneralUtility::makeInstance(GuestUser::class);
 
         $this->fixture->setFrontendUser($guestUser);
-        static::assertNull($this->fixture->getFrontendUserPersisted());
+        self::assertNull($this->fixture->getFrontendUserPersisted());
 
     }
 
@@ -521,7 +521,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         $this->fixture->setFrontendUserToken('test');
         $this->fixture->setFrontendUser($guestUser);
 
-        static::assertEmpty($this->fixture->getFrontendUserToken());
+        self::assertEmpty($this->fixture->getFrontendUserToken());
 
     }
     /**
@@ -553,12 +553,12 @@ class GuestUserRegistrationTest extends FunctionalTestCase
 
         /** @var \RKW\RkwRegistration\Domain\Model\OptIn $OptIn */
         $optIn = $this->optInRepository->findByIdentifier(20);
-        static::assertEquals($optIn, $result);
+        self::assertEquals($optIn, $result);
 
         $guestUser = GeneralUtility::makeInstance(GuestUser::class);
 
         $this->fixture->setFrontendUser($guestUser);
-        static::assertNull($this->fixture->getOptInPersisted());
+        self::assertNull($this->fixture->getOptInPersisted());
 
     }
     #==============================================================================

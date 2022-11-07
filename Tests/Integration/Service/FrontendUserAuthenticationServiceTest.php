@@ -112,7 +112,7 @@ class FrontendUserAuthenticationServiceTest extends FunctionalTestCase
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByIdentifier(10);
-        static::assertEquals(1, $frontendUser->getTxRkwregistrationLoginErrorCount());
+        self::assertEquals(1, $frontendUser->getTxRkwregistrationLoginErrorCount());
 
         $_POST['logintype'] = 'login';
         $_POST['user'] = $frontendUser->getUsername();
@@ -121,15 +121,15 @@ class FrontendUserAuthenticationServiceTest extends FunctionalTestCase
         $authService = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         $authService->start();
 
-        static::assertTrue($authService->loginFailure);
-        static::assertFalse($authService->loginSessionStarted);
+        self::assertTrue($authService->loginFailure);
+        self::assertFalse($authService->loginSessionStarted);
 
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $persistenceManager->clearState();
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByIdentifier(10);
-        static::assertEquals(2, $frontendUser->getTxRkwregistrationLoginErrorCount());
+        self::assertEquals(2, $frontendUser->getTxRkwregistrationLoginErrorCount());
 
         FrontendSimulatorUtility::resetFrontendEnvironment();
     }
@@ -157,7 +157,7 @@ class FrontendUserAuthenticationServiceTest extends FunctionalTestCase
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByIdentifier(10);
-        static::assertEquals(1, $frontendUser->getTxRkwregistrationLoginErrorCount());
+        self::assertEquals(1, $frontendUser->getTxRkwregistrationLoginErrorCount());
 
         $_POST['logintype'] = 'login';
         $_POST['user'] = $frontendUser->getUsername();
@@ -166,15 +166,15 @@ class FrontendUserAuthenticationServiceTest extends FunctionalTestCase
         $authService = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         $authService->start();
 
-        static::assertFalse($authService->loginFailure);
-        static::assertTrue($authService->loginSessionStarted);
+        self::assertFalse($authService->loginFailure);
+        self::assertTrue($authService->loginSessionStarted);
 
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $persistenceManager->clearState();
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByIdentifier(10);
-        static::assertEquals(0, $frontendUser->getTxRkwregistrationLoginErrorCount());
+        self::assertEquals(0, $frontendUser->getTxRkwregistrationLoginErrorCount());
 
         FrontendSimulatorUtility::resetFrontendEnvironment();
     }

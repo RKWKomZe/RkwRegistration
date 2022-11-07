@@ -122,8 +122,8 @@ class GuestUserAuthenticationServiceTest extends FunctionalTestCase
         $authService = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         $authService->start();
 
-        static::assertTrue($authService->loginFailure);
-        static::assertFalse($authService->loginSessionStarted);
+        self::assertTrue($authService->loginFailure);
+        self::assertFalse($authService->loginSessionStarted);
 
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $persistenceManager->clearState();
@@ -162,8 +162,8 @@ class GuestUserAuthenticationServiceTest extends FunctionalTestCase
         $authService = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         $authService->start();
 
-        static::assertTrue($authService->loginFailure);
-        static::assertFalse($authService->loginSessionStarted);
+        self::assertTrue($authService->loginFailure);
+        self::assertFalse($authService->loginSessionStarted);
 
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $persistenceManager->clearState();
@@ -203,8 +203,8 @@ class GuestUserAuthenticationServiceTest extends FunctionalTestCase
         $authService = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         $authService->start();
 
-        static::assertTrue($authService->loginFailure);
-        static::assertFalse($authService->loginSessionStarted);
+        self::assertTrue($authService->loginFailure);
+        self::assertFalse($authService->loginSessionStarted);
 
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $persistenceManager->clearState();
@@ -244,8 +244,8 @@ class GuestUserAuthenticationServiceTest extends FunctionalTestCase
         $authService = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         $authService->start();
 
-        static::assertFalse($authService->loginFailure);
-        static::assertTrue($authService->loginSessionStarted);
+        self::assertFalse($authService->loginFailure);
+        self::assertTrue($authService->loginSessionStarted);
 
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $persistenceManager->clearState();

@@ -133,6 +133,24 @@ call_user_func(
                 'FrontendUser' => 'index'            ]
         );
 
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
+            'Info',
+            [
+                'Info' => 'index, loginInfo'
+            ],
+            // non-cacheable actions
+            [
+                'Info' => 'index, loginInfo'
+            ]
+        );
+
+
+        /** @todo set routes for the following plugins - but only if they are still needed! */
+
+
+
         /*
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
@@ -158,17 +176,6 @@ call_user_func(
             ]
         );
 
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'RKW.' . $extKey,
-            'Info',
-            [
-                'Info' => 'index, loginInfo'
-            ],
-            // non-cacheable actions
-            [
-                'Info' => 'index, loginInfo'
-            ]
-        );
 
 
         //=================================================================

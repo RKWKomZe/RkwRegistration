@@ -190,7 +190,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
                         'frontendUser'              => $frontendUser,
                         'pageUid'                   => intval($GLOBALS['TSFE']->id),
                         'loginLink'                 => $uriLogin,
-                        'loginPid'                  => intval($settingsDefault['users']['loginPid']) /** @deprectated */
+                        'loginPid'                  => intval($settingsDefault['users']['loginPid']) /** @deprecated */
                     ]
                 ]
             );

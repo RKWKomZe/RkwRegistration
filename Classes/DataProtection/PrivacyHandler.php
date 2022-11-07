@@ -182,7 +182,7 @@ class PrivacyHandler implements \TYPO3\CMS\Core\SingletonInterface
                     $dataMapper->getDataMap(get_class($referenceObject))->getTableName(),
                     FILTER_SANITIZE_STRING
                 ));
-                $privacy->setForeignUid($referenceObject->getUid());
+                $privacy->setForeignUid($referenceObject->getUid() ?? 0);
 
                 // additional: Set registration, if $referenceObject is of type \RKW\RkwRegistration\Domain\Model\Registration
                 // -> we need to set this to identify it on successful optIn (for creating a parent-relationship)

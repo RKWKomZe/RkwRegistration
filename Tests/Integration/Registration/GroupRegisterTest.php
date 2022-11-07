@@ -135,7 +135,7 @@ class GroupRegisterTest extends FunctionalTestCase
 
         $requiredFields = $register->getMandatoryFieldsOfGroup($frontendUserGroup);
 
-        static::assertEquals("something", $requiredFields[0]);
+        self::assertEquals("something", $requiredFields[0]);
     }
 
 
@@ -160,18 +160,18 @@ class GroupRegisterTest extends FunctionalTestCase
         $serviceRegistration->setValidUntil(time() + 60);
 
         // before: The user owns one usergroup with UID 55
-        static::assertEquals(count($serviceRegistration->getUser()->getUsergroup()), 1);
+        self::assertEquals(count($serviceRegistration->getUser()->getUsergroup()), 1);
 
         // Service
         /** @var GroupFrontendUser $register */
         $register = $this->objectManager->get(GroupFrontendUser::class);
         $result = $register->checkTokens($serviceRegistration->getTokenYes(), '', $serviceRegistration->getServiceSha1());
 
-        static::assertEquals(1, $result);
+        self::assertEquals(1, $result);
         // after: The new service related usergroup with UID 1 is added
-        static::assertEquals(count($serviceRegistration->getUser()->getUsergroup()), 2);
+        self::assertEquals(count($serviceRegistration->getUser()->getUsergroup()), 2);
         // service registration dataset is now deleted
-        static::assertNull($serviceRegistration = $this->serviceRepository->findByIdentifier(1));
+        self::assertNull($serviceRegistration = $this->serviceRepository->findByIdentifier(1));
     }
 
 
@@ -199,9 +199,9 @@ class GroupRegisterTest extends FunctionalTestCase
         $register = $this->objectManager->get(GroupFrontendUser::class);
         $result = $register->checkTokens($serviceRegistration->getTokenYes(), '', $serviceRegistration->getServiceSha1());
 
-        static::assertEquals(0, $result);
+        self::assertEquals(0, $result);
         // service registration dataset is now deleted
-        static::assertNull($serviceRegistration = $this->serviceRepository->findByIdentifier(1));
+        self::assertNull($serviceRegistration = $this->serviceRepository->findByIdentifier(1));
     }
 
 
@@ -233,7 +233,7 @@ class GroupRegisterTest extends FunctionalTestCase
         $register = $this->objectManager->get(GroupFrontendUser::class);
         $result = $register->checkTokens($serviceRegistration->getTokenYes(), '', $serviceRegistration->getServiceSha1());
 
-        static::assertEquals(0, $result);
+        self::assertEquals(0, $result);
 
     }
 
@@ -260,18 +260,18 @@ class GroupRegisterTest extends FunctionalTestCase
         $serviceRegistration->setValidUntil(time() + 60);
 
         // before: The user owns one usergroup
-        static::assertEquals(count($serviceRegistration->getUser()->getUsergroup()), 1);
+        self::assertEquals(count($serviceRegistration->getUser()->getUsergroup()), 1);
 
         // Service
         /** @var GroupFrontendUser $register */
         $register = $this->objectManager->get(GroupFrontendUser::class);
         $result = $register->checkTokens('', $serviceRegistration->getTokenNo(), $serviceRegistration->getServiceSha1());
 
-        static::assertEquals(2, $result);
+        self::assertEquals(2, $result);
         // after: No group was added
-        static::assertEquals(count($serviceRegistration->getUser()->getUsergroup()), 1);
+        self::assertEquals(count($serviceRegistration->getUser()->getUsergroup()), 1);
         // service registration dataset is now deleted
-        static::assertNull($serviceRegistration = $this->serviceRepository->findByIdentifier(1));
+        self::assertNull($serviceRegistration = $this->serviceRepository->findByIdentifier(1));
     }
 
 
@@ -299,7 +299,7 @@ class GroupRegisterTest extends FunctionalTestCase
         $register = $this->objectManager->get(GroupFrontendUser::class);
         $result = $register->addUserToAllGrantedGroups($frontendUser);
 
-        static::assertEquals(1, $result);
+        self::assertEquals(1, $result);
     }
 
 
@@ -325,7 +325,7 @@ class GroupRegisterTest extends FunctionalTestCase
         $register = $this->objectManager->get(GroupFrontendUser::class);
         $result = $register->addUserToAllGrantedGroups($frontendUser);
 
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
 

@@ -114,8 +114,8 @@ class AuthFrontendUserServiceTest extends FunctionalTestCase
         $authFrontendUserService->setLoginData('lauterbach@spd.de', 'secret');
         $result = $authFrontendUserService->getUser();
 
-        static::assertArrayHasKey('uid', $result);
-        static::assertEquals(1, $result['uid']);
+        self::assertArrayHasKey('uid', $result);
+        self::assertEquals(1, $result['uid']);
     }
 
 
@@ -142,7 +142,7 @@ class AuthFrontendUserServiceTest extends FunctionalTestCase
         $authFrontendUserService->setLoginData('spd@test.de', 'secret');
         $result = $authFrontendUserService->getUser();
 
-        static::assertEmpty($result);
+        self::assertEmpty($result);
     }
 
 
@@ -169,7 +169,7 @@ class AuthFrontendUserServiceTest extends FunctionalTestCase
         $authFrontendUserService->setLoginData('sdfhuiaowehuvndfghzr', 'secret');
         $result = $authFrontendUserService->getUser();
 
-        static::assertEmpty($result);
+        self::assertEmpty($result);
     }
 
 
@@ -198,7 +198,7 @@ class AuthFrontendUserServiceTest extends FunctionalTestCase
         $result = $authFrontendUserService->authUser($frontendUserArray);
 
         // 200 = success
-        static::assertEquals(200, $result);
+        self::assertEquals(200, $result);
     }
 
 
@@ -254,7 +254,7 @@ class AuthFrontendUserServiceTest extends FunctionalTestCase
         $result = $authFrontendUserService->authGuest('lfrb0u4ih3k7azqv8yc2');
 
         // 200 = success
-        static::assertInstanceOf('RKW\RkwRegistration\Domain\Model\GuestUser', $result);
+        self::assertInstanceOf('RKW\RkwRegistration\Domain\Model\GuestUser', $result);
     }
 
 
@@ -281,7 +281,7 @@ class AuthFrontendUserServiceTest extends FunctionalTestCase
         $result = $authFrontendUserService->authGuest('lfrb0u4ih3k7azqv8yc2');
 
         // false = fail
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
 
@@ -305,7 +305,7 @@ class AuthFrontendUserServiceTest extends FunctionalTestCase
 
         // shows that the user really exists
         $frontendUser = $this->frontendUserRepository->findByEmail($emailAddress)->getFirst();
-        static::assertInstanceOf('RKW\RkwRegistration\Domain\Model\FrontendUser', $frontendUser);
+        self::assertInstanceOf('RKW\RkwRegistration\Domain\Model\FrontendUser', $frontendUser);
 
         // Service
         /** @var AuthFrontendUserService $authFrontendUserService */
@@ -314,7 +314,7 @@ class AuthFrontendUserServiceTest extends FunctionalTestCase
         $result = $authFrontendUserService->authGuest($emailAddress);
 
         // token not found
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
 

@@ -102,7 +102,7 @@ class TitleUtilityTest extends FunctionalTestCase
 
         $result = $this->titleRepository->findByName($someTitle)->getFirst();
 
-        static::assertEquals($someTitle, $result->getName());
+        self::assertEquals($someTitle, $result->getName());
     }
 
 
@@ -132,7 +132,7 @@ class TitleUtilityTest extends FunctionalTestCase
 
         $countAfterFunction = $this->titleRepository->findByName($alreadyExistingTitle->getName())->count();
 
-        static::assertEquals($countBeforeFunction, $countAfterFunction);
+        self::assertEquals($countBeforeFunction, $countAfterFunction);
     }
 
 

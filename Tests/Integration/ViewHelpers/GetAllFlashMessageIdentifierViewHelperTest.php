@@ -100,12 +100,12 @@ class GetAllFlashMessageIdentifierViewHelperTest extends FunctionalTestCase
         $result = $viewHelper->render();
 
         foreach ($result as $item) {
-            static::assertStringStartsWith('extbase.flashmessages.tx_rkwregistration_', $item);
-            static::assertStringEndsNotWith('extbase.flashmessages.tx_rkwregistration_', $item);
+            self::assertStringStartsWith('extbase.flashmessages.tx_rkwregistration_', $item);
+            self::assertStringEndsNotWith('extbase.flashmessages.tx_rkwregistration_', $item);
         }
 
         $expectedCount = 10;
-        static::assertGreaterThanOrEqual($expectedCount, $result);
+        self::assertGreaterThanOrEqual($expectedCount, $result);
     }
 
 

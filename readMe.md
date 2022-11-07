@@ -105,13 +105,13 @@ The opt-in-email may look like this:
 	<f:layout name="Email/{mailType}" />
 
 	<!-- PLAINTEXT -->
-	<f:section name="Plaintext"><rkwMailer:plaintextLineBreaks>
+	<f:section name="Plaintext"><rkwMailer:email.plaintextLineBreaks>
 	    <rkwMailer:email.translate key="templates_email_optInAlertUser.textOptInLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/>:\n
 	    <rkwMailer:email.uri.action action="optIn" controller="Alert" extensionName="rkwAlerts" pluginName="rkwAlerts" absolute="true" pageUid="{pageUid}" additionalParams="{tx_rkwalerts_rkwalerts: {token: optIn.tokenYes, tokenUser: optIn.tokenUser}}" section="rkw-alerts" />\n\n
 
         <rkwMailer:email.translate key="templates_email_optInAlertUser.textOptOutLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwAlerts"/>:\n
         <rkwMailer:email.uri.action action="optIn" controller="Alert" extensionName="rkwAlerts" pluginName="rkwAlerts" absolute="true" pageUid="{pageUid}" additionalParams="{tx_rkwalerts_rkwalerts: {token: optIn.tokenNo, tokenUser: optIn.tokenUser}}" section="rkw-alerts" />
-    </rkwMailer:plaintextLineBreaks></f:section>
+    </rkwMailer:email.plaintextLineBreaks></f:section>
 
 	<!-- HTML -->
 	<f:section name="Html">

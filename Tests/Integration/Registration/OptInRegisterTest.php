@@ -136,18 +136,18 @@ class OptInRegisterTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser());
 
-        static::assertTrue($frontendUser->getDisable() === 0);
+        self::assertTrue($frontendUser->getDisable() === 0);
 
         $result = $this->optInRegister->process($register->getTokenYes(), '', $register->getUserSha1());
 
-        static::assertTrue($result === 1);
-        static::assertTrue($frontendUser->getDisable() === 0);
+        self::assertTrue($result === 1);
+        self::assertTrue($frontendUser->getDisable() === 0);
         // And check that the feUser entry is still in database
         $frontendUserFromDb = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser());
-        static::assertNotNull($frontendUserFromDb);
+        self::assertNotNull($frontendUserFromDb);
         // the new disable value is also persistent now
-        static::assertTrue($frontendUserFromDb->getDisable() === 0);
-        static::assertNull($this->registrationRepository->findByIdentifier(1));
+        self::assertTrue($frontendUserFromDb->getDisable() === 0);
+        self::assertNull($this->registrationRepository->findByIdentifier(1));
     }
 
 
@@ -177,18 +177,18 @@ class OptInRegisterTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser());
 
-        static::assertTrue($frontendUser->getDisable() === 1);
+        self::assertTrue($frontendUser->getDisable() === 1);
 
         $result = $this->optInRegister->process($register->getTokenYes(), '', $register->getUserSha1());
 
-        static::assertTrue($result === 1);
-        static::assertTrue($frontendUser->getDisable() === 0);
+        self::assertTrue($result === 1);
+        self::assertTrue($frontendUser->getDisable() === 0);
         // And check that the feUser entry is still in database
         $frontendUserFromDb = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser());
-        static::assertNotNull($frontendUserFromDb);
+        self::assertNotNull($frontendUserFromDb);
         // the new disable value is also persistent now
-        static::assertTrue($frontendUserFromDb->getDisable() === 0);
-        static::assertNull($this->registrationRepository->findByIdentifier(1));
+        self::assertTrue($frontendUserFromDb->getDisable() === 0);
+        self::assertNull($this->registrationRepository->findByIdentifier(1));
     }
 
 
@@ -221,10 +221,10 @@ class OptInRegisterTest extends FunctionalTestCase
 
         $result = $this->optInRegister->process('', $register->getTokenNo(), $register->getUserSha1());
 
-        static::assertTrue($result === 2);
+        self::assertTrue($result === 2);
         // but the database entry is completely deleted (because disabled users are removed when using token "No")
-        static::assertNotNull($this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser()));
-        static::assertNull($this->registrationRepository->findByIdentifier(1));
+        self::assertNotNull($this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser()));
+        self::assertNull($this->registrationRepository->findByIdentifier(1));
     }
 
 
@@ -254,7 +254,7 @@ class OptInRegisterTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser());
 
-        static::assertTrue($frontendUser->getDisable() === 1);
+        self::assertTrue($frontendUser->getDisable() === 1);
 
         $result = $this->optInRegister->process('', $register->getTokenNo(), $register->getUserSha1());
 
@@ -262,12 +262,12 @@ class OptInRegisterTest extends FunctionalTestCase
         $persistenceManager->persistAll();
         $persistenceManager->clearState();
 
-        static::assertTrue($result === 2);
+        self::assertTrue($result === 2);
         // the given dataset is still disabled
-        static::assertTrue($frontendUser->getDisable() === 1);
+        self::assertTrue($frontendUser->getDisable() === 1);
         // but the database entry is completely deleted (because disabled users are removed when using token "No")
-        static::assertNull($this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser()));
-        static::assertNull($this->registrationRepository->findByIdentifier(1));
+        self::assertNull($this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser()));
+        self::assertNull($this->registrationRepository->findByIdentifier(1));
     }
 
 
@@ -297,16 +297,16 @@ class OptInRegisterTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser());
 
-        static::assertTrue($frontendUser->getDisable() === 1);
+        self::assertTrue($frontendUser->getDisable() === 1);
 
         $result = $this->optInRegister->process('thisTokenIsBullshit', '', $register->getUserSha1());
 
-        static::assertTrue($result === 0);
+        self::assertTrue($result === 0);
         // the given dataset is still disabled
-        static::assertTrue($frontendUser->getDisable() === 1);
+        self::assertTrue($frontendUser->getDisable() === 1);
         // but nothing is happen. User and registration still exist in database
-        static::assertNotNull($this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser()));
-        static::assertNotNull($this->registrationRepository->findByIdentifier(1));
+        self::assertNotNull($this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser()));
+        self::assertNotNull($this->registrationRepository->findByIdentifier(1));
     }
 
 
@@ -336,16 +336,16 @@ class OptInRegisterTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser());
 
-        static::assertTrue($frontendUser->getDisable() === 1);
+        self::assertTrue($frontendUser->getDisable() === 1);
 
         $result = $this->optInRegister->process('', 'thisTokenIsBullshit', $register->getUserSha1());
 
-        static::assertTrue($result === 0);
+        self::assertTrue($result === 0);
         // the given dataset is still disabled
-        static::assertTrue($frontendUser->getDisable() === 1);
+        self::assertTrue($frontendUser->getDisable() === 1);
         // but nothing is happen. User and registration still exist in database
-        static::assertNotNull($this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser()));
-        static::assertNotNull($this->registrationRepository->findByIdentifier(1));
+        self::assertNotNull($this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser()));
+        self::assertNotNull($this->registrationRepository->findByIdentifier(1));
     }
 
 
@@ -377,9 +377,9 @@ class OptInRegisterTest extends FunctionalTestCase
 
         $result = $this->optInRegister->process('', 'thisTokenIsBullshit', $register->getUserSha1());
 
-        static::assertTrue($result === 400);
-        static::assertNull($this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser()));
-        static::assertNull($this->registrationRepository->findByIdentifier(1));
+        self::assertTrue($result === 400);
+        self::assertNull($this->frontendUserRepository->findByUidAlsoInactiveNonGuest($register->getUser()));
+        self::assertNull($this->registrationRepository->findByIdentifier(1));
     }
 
 
@@ -399,7 +399,7 @@ class OptInRegisterTest extends FunctionalTestCase
 
         $result = $this->optInRegister->process('something', '', 'whatEver :)');
 
-        static::assertTrue($result === 500);
+        self::assertTrue($result === 500);
     }
 
 
@@ -422,19 +422,19 @@ class OptInRegisterTest extends FunctionalTestCase
         ];
 
         // email does not exists
-        static::assertNull($this->frontendUserRepository->findByEmail($userData['email'])->getFirst());
+        self::assertNull($this->frontendUserRepository->findByEmail($userData['email'])->getFirst());
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
         $result = $this->optInRegister->register($userData);
 
-        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
-        static::assertEquals($userData['email'], $result->getUsername());
+        self::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
+        self::assertEquals($userData['email'], $result->getUsername());
         // with UID -> successfully persisted
-        static::assertNotNull($result->getUid());
+        self::assertNotNull($result->getUid());
         // disabled
-        static::assertEquals(1, $result->getDisable());
+        self::assertEquals(1, $result->getDisable());
         // additional: Query from DB
-        static::assertNotNull($this->frontendUserRepository->findOneByEmailOrUsernameAlsoInactive($userData['email']));
+        self::assertNotNull($this->frontendUserRepository->findOneByEmailOrUsernameAlsoInactive($userData['email']));
     }
 
 
@@ -456,19 +456,19 @@ class OptInRegisterTest extends FunctionalTestCase
         ];
 
         // email does not exists
-        static::assertNull($this->frontendUserRepository->findByEmail($userData['email'])->getFirst());
+        self::assertNull($this->frontendUserRepository->findByEmail($userData['email'])->getFirst());
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
         $result = $this->optInRegister->register($userData, true);
 
-        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
-        static::assertEquals($userData['email'], $result->getUsername());
+        self::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
+        self::assertEquals($userData['email'], $result->getUsername());
         // with UID -> successfully persisted
-        static::assertNotNull($result->getUid());
+        self::assertNotNull($result->getUid());
         // enabled
-        static::assertEquals(0, $result->getDisable());
+        self::assertEquals(0, $result->getDisable());
         // additional: query from db
-        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $this->frontendUserRepository->findByEmail($userData['email'])->getFirst());
+        self::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $this->frontendUserRepository->findByEmail($userData['email'])->getFirst());
     }
 
 
@@ -519,19 +519,19 @@ class OptInRegisterTest extends FunctionalTestCase
         $existingFrontendUser = $this->frontendUserRepository->findByIdentifier(1);
 
         // email does not exists
-        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $existingFrontendUser);
-        static::assertEquals(0, $existingFrontendUser->getDisable());
+        self::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $existingFrontendUser);
+        self::assertEquals(0, $existingFrontendUser->getDisable());
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
         $result = $this->optInRegister->register(['email' => $existingFrontendUser->getEmail()]);
 
-        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
+        self::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
 
         // still enabled. It's not an unimportant check, because new user would be disabled by default
-        static::assertEquals(0, $result->getDisable());
+        self::assertEquals(0, $result->getDisable());
 
         // still the same UID
-        static::assertEquals($existingFrontendUser->getUid(), $result->getUid());
+        self::assertEquals($existingFrontendUser->getUid(), $result->getUid());
     }
 
 
@@ -555,18 +555,18 @@ class OptInRegisterTest extends FunctionalTestCase
         $existingFrontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest(1);
 
         // email does not exists
-        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $existingFrontendUser);
-        static::assertEquals(1, $existingFrontendUser->getDisable());
+        self::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $existingFrontendUser);
+        self::assertEquals(1, $existingFrontendUser->getDisable());
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
         $result = $this->optInRegister->register(['email' => $existingFrontendUser->getEmail()]);
 
-        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
+        self::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
         // still disabled. Is a not unimportant check, because new user would be disabled by default
-        static::assertEquals(1, $result->getDisable());
+        self::assertEquals(1, $result->getDisable());
 
         // still the same UID
-        static::assertEquals($existingFrontendUser->getUid(), $result->getUid());
+        self::assertEquals($existingFrontendUser->getUid(), $result->getUid());
     }
 
 
@@ -590,18 +590,18 @@ class OptInRegisterTest extends FunctionalTestCase
         $existingFrontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest(1);
 
         // email does not exists
-        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $existingFrontendUser);
-        static::assertEquals(1, $existingFrontendUser->getDisable());
+        self::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $existingFrontendUser);
+        self::assertEquals(1, $existingFrontendUser->getDisable());
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
         $result = $this->optInRegister->register(['email' => $existingFrontendUser->getEmail()], true);
 
-        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
+        self::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
         // now enabled
-        static::assertEquals(0, $result->getDisable());
+        self::assertEquals(0, $result->getDisable());
 
         // still the same UID
-        static::assertEquals($existingFrontendUser->getUid(), $result->getUid());
+        self::assertEquals($existingFrontendUser->getUid(), $result->getUid());
     }
 
 
@@ -637,13 +637,13 @@ class OptInRegisterTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
         $result = $this->optInRegister->register(['email' => $existingFrontendUser->getEmail()], true, $additionalData, $categoryName);
 
-        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
+        self::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
 
         /** @var \RKW\RkwRegistration\Domain\Model\Registration $newRegistration */
         $newRegistration = $this->registrationRepository->findByCategory($categoryName)->getFirst();
         // compare given and saved additionalData array
         $diff = array_diff($additionalData, $newRegistration->getData());
-        static::assertCount(0, $diff);
+        self::assertCount(0, $diff);
 
     }
 
@@ -678,16 +678,16 @@ class OptInRegisterTest extends FunctionalTestCase
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
         $result = $this->optInRegister->register($userData, false, $additionalData, $categoryName);
-        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
-        static::assertEquals(1, $result->getDisable());
+        self::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
+        self::assertEquals(1, $result->getDisable());
         // now persisted (user got a uid)
-        static::assertNotNull($result->getUid());
+        self::assertNotNull($result->getUid());
 
         /** @var \RKW\RkwRegistration\Domain\Model\Registration $newRegistration */
         $newRegistration = $this->registrationRepository->findByCategory($categoryName)->getFirst();
         // compare given and saved additionalData array
         $diff = array_diff($additionalData, $newRegistration->getData());
-        static::assertCount(0, $diff);
+        self::assertCount(0, $diff);
     }
 
 
@@ -725,17 +725,17 @@ class OptInRegisterTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
         $result = $this->optInRegister->register(['email' => $existingFrontendUser->getEmail()], true, $additionalData, $categoryName);
 
-        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
+        self::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
 
         /** @var \RKW\RkwRegistration\Domain\Model\Registration $newRegistration */
         $newRegistration = $this->registrationRepository->findByCategory($categoryName)->getFirst();
         // compare given and saved additionalData array
         /** @var \RKW\RkwRegistration\Domain\Model\Title $savedAdditionalData */
         $savedAdditionalData = $newRegistration->getData();
-        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\Title', $savedAdditionalData);
-        static::assertEquals($titleName, $savedAdditionalData->getName());
+        self::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\Title', $savedAdditionalData);
+        self::assertEquals($titleName, $savedAdditionalData->getName());
         // is NOT persistent yet as object itself
-        static::assertNull($savedAdditionalData->getUid());
+        self::assertNull($savedAdditionalData->getUid());
     }
 
 
@@ -773,7 +773,7 @@ class OptInRegisterTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
         $result = $this->optInRegister->register(['email' => $existingFrontendUser->getEmail()], true, $additionalData, $categoryName);
 
-        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
+        self::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\FrontendUser', $result);
 
         /** @var \RKW\RkwRegistration\Domain\Model\Registration $newRegistration */
         $newRegistration = $this->registrationRepository->findByCategory($categoryName)->getFirst();
@@ -782,11 +782,11 @@ class OptInRegisterTest extends FunctionalTestCase
         $savedAdditionalData = $newRegistration->getData();
 
         //still deleted
-        static::assertEquals(1, $savedAdditionalData->getDeleted());
-        static::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\Title', $savedAdditionalData);
-        static::assertEquals($titleName, $savedAdditionalData->getName());
+        self::assertEquals(1, $savedAdditionalData->getDeleted());
+        self::assertInstanceOf('\RKW\RkwRegistration\Domain\Model\Title', $savedAdditionalData);
+        self::assertEquals($titleName, $savedAdditionalData->getName());
         // is NOT persistent yet as object itself
-        static::assertNull($savedAdditionalData->getUid());
+        self::assertNull($savedAdditionalData->getUid());
     }
 
 

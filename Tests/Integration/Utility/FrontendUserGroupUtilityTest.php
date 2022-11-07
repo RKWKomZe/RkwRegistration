@@ -92,8 +92,8 @@ class FrontendUserGroupUtilityTest extends FunctionalTestCase
 
         $frontendUserGroup = GeneralUtility::makeInstance(FrontendUserGroup::class);
         $result = FrontendUserGroupUtility::getMandatoryFields($frontendUserGroup);
-        static::assertIsArray($result);
-        static::assertEmpty($result);
+        self::assertIsArray($result);
+        self::assertEmpty($result);
     }
 
     /**
@@ -118,10 +118,10 @@ class FrontendUserGroupUtilityTest extends FunctionalTestCase
         $frontendUserGroup->setTxRkwregistrationServiceMandatoryFields('hamptyDamty, first_name, LastName');
 
         $result = FrontendUserGroupUtility::getMandatoryFields($frontendUserGroup);
-        static::assertIsArray($result);
-        static::assertCount(2, $result);
-        static::assertEquals('firstName', $result[0]);
-        static::assertEquals('lastName', $result[1]);
+        self::assertIsArray($result);
+        self::assertCount(2, $result);
+        self::assertEquals('firstName', $result[0]);
+        self::assertEquals('lastName', $result[1]);
     }
 
     #==============================================================================

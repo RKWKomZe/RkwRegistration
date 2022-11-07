@@ -122,7 +122,7 @@ class FrontendUserTest extends FunctionalTestCase
         $this->frontendUser->setLastName("Musterfrau");
         $this->frontendUser->setTxRkwregistrationTitle($this->title);
 
-        static::assertEquals($fixture, $this->frontendUser->getTxRkwregistrationTitle()->getName());
+        self::assertEquals($fixture, $this->frontendUser->getTxRkwregistrationTitle()->getName());
 
     }
 

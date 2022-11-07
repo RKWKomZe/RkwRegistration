@@ -134,7 +134,7 @@ class UniqueEmailValidatorTest extends FunctionalTestCase
 
         $result = $uniqueEmailValidator->isValid($frontendUser);
 
-        static::assertFalse($result);
+        self::assertFalse($result);
 
     }
 
@@ -170,7 +170,7 @@ class UniqueEmailValidatorTest extends FunctionalTestCase
 
         $result = $uniqueEmailValidator->isValid($frontendUser);
 
-        static::assertTrue($result);
+        self::assertTrue($result);
     }
 
 
@@ -202,7 +202,7 @@ class UniqueEmailValidatorTest extends FunctionalTestCase
 
         $result = $uniqueEmailValidator->isValid($frontendUser);
 
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
 
@@ -234,7 +234,7 @@ class UniqueEmailValidatorTest extends FunctionalTestCase
 
         $result = $uniqueEmailValidator->isValid($frontendUser);
 
-        static::assertTrue($result);
+        self::assertTrue($result);
     }
 
     #==============================================================================

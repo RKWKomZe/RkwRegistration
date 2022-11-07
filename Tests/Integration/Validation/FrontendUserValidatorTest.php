@@ -127,7 +127,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         // workaround end
 
         $result = $frontendUserValidator->isValid($frontendUserFormData);
-        static::assertTrue($result);
+        self::assertTrue($result);
     }
 
     /**
@@ -164,7 +164,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         // workaround end
 
         $result = $frontendUserValidator->isValid($frontendUserFormData);
-        static::assertTrue($result);
+        self::assertTrue($result);
     }
 
     /**
@@ -196,7 +196,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         // workaround end
 
         $result = $frontendUserValidator->isValid($frontendUserFormData);
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
     /**
@@ -236,7 +236,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         // workaround end
 
         $result = $frontendUserValidator->isValid($frontendUserFormData);
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
     /**
@@ -277,7 +277,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         // workaround end
 
         $result = $frontendUserValidator->isValid($frontendUserFormData);
-        static::assertTrue($result);
+        self::assertTrue($result);
     }
 
 
@@ -318,7 +318,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         // workaround end
 
         $result = $frontendUserValidator->isValid($frontendUserFormData);
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
     /**
@@ -359,7 +359,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         // workaround end
 
         $result = $frontendUserValidator->isValid($frontendUserFormData);
-        static::assertTrue($result);
+        self::assertTrue($result);
     }
 
     /**
@@ -392,7 +392,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         // workaround end
 
         $result = $frontendUserValidator->isValid($frontendUserFormData);
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
     /**
@@ -435,7 +435,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         // workaround end
 
         $result = $frontendUserValidator->isValid($frontendUserFormData);
-        static::assertTrue($result);
+        self::assertTrue($result);
 
         FrontendSimulatorUtility::resetFrontendEnvironment();
     }
@@ -470,7 +470,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
 
         $result = $frontendUserValidator->isValid($frontendUserFormData);
 
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
 
@@ -505,7 +505,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
 
         $result = $frontendUserValidator->isValid($frontendUserFormData);
 
-        static::assertTrue($result);
+        self::assertTrue($result);
     }
 
 
@@ -540,7 +540,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
 
         $result = $frontendUserValidator->isValid($frontendUserFormData);
 
-        static::assertFalse($result);
+        self::assertFalse($result);
     }
 
 

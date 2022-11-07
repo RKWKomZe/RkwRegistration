@@ -173,7 +173,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser->setEmail('test@test.de');
         $this->fixture->setFrontendUser($frontendUser);
 
-        static::assertInstanceOf(FrontendUserRepository::class, $this->fixture->getContextAwareFrontendUserRepository());
+        self::assertInstanceOf(FrontendUserRepository::class, $this->fixture->getContextAwareFrontendUserRepository());
     }
 
 
@@ -298,8 +298,8 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
         $this->fixture->setFrontendUser($frontendUser);
 
-        static::assertEquals('test@test.de', $frontendUser->getEmail());
-        static::assertEquals('tester@test.de', $frontendUser->getUsername());
+        self::assertEquals('test@test.de', $frontendUser->getEmail());
+        self::assertEquals('tester@test.de', $frontendUser->getUsername());
 
     }
 
@@ -325,7 +325,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser->setEmail('test@test.de');
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertEquals('test@test.de', $frontendUser->getUsername());
+        self::assertEquals('test@test.de', $frontendUser->getUsername());
 
     }
 
@@ -350,7 +350,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser->setEmail('test@test.de');
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertEquals('ru', $frontendUser->getTxRkwregistrationLanguageKey());
+        self::assertEquals('ru', $frontendUser->getTxRkwregistrationLanguageKey());
 
     }
 
@@ -376,7 +376,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser->setTxRkwregistrationLanguageKey('it');
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertEquals('it', $frontendUser->getTxRkwregistrationLanguageKey());
+        self::assertEquals('it', $frontendUser->getTxRkwregistrationLanguageKey());
     }
 
 
@@ -402,7 +402,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser->setCrdate(10);
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertGreaterThan(time() -5, $frontendUser->getCrdate());
+        self::assertGreaterThan(time() -5, $frontendUser->getCrdate());
 
     }
 
@@ -429,7 +429,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByIdentifier(10);
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertEquals(10, $frontendUser->getCrdate());
+        self::assertEquals(10, $frontendUser->getCrdate());
 
     }
 
@@ -456,7 +456,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser->setDisable(0);
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertEquals(1, $frontendUser->getDisable());
+        self::assertEquals(1, $frontendUser->getDisable());
 
     }
 
@@ -483,7 +483,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByIdentifier(10);
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertEquals(0, $frontendUser->getDisable());
+        self::assertEquals(0, $frontendUser->getDisable());
 
     }
 
@@ -509,7 +509,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser->setTxRkwregistrationRegisterRemoteIp('10');
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertEquals('127.0.0.1', $frontendUser->getTxRkwregistrationRegisterRemoteIp());
+        self::assertEquals('127.0.0.1', $frontendUser->getTxRkwregistrationRegisterRemoteIp());
 
     }
 
@@ -535,7 +535,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByIdentifier(10);
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertEquals('1.2.3.4', $frontendUser->getTxRkwregistrationRegisterRemoteIp());
+        self::assertEquals('1.2.3.4', $frontendUser->getTxRkwregistrationRegisterRemoteIp());
 
     }
 
@@ -561,7 +561,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser->setEndtime(10);
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertGreaterThanOrEqual(time() + (intval(7 * 24 * 60 * 60) -5), $frontendUser->getEndtime());
+        self::assertGreaterThanOrEqual(time() + (intval(7 * 24 * 60 * 60) -5), $frontendUser->getEndtime());
 
     }
 
@@ -590,7 +590,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser->setEndtime($time);
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertEquals($time, $frontendUser->getEndtime());
+        self::assertEquals($time, $frontendUser->getEndtime());
 
     }
 
@@ -616,7 +616,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser->setPid(2222);
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertEquals(99, $frontendUser->getPid());
+        self::assertEquals(99, $frontendUser->getPid());
 
     }
 
@@ -643,7 +643,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByIdentifier(10);
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertEquals(88, $frontendUser->getPid());
+        self::assertEquals(88, $frontendUser->getPid());
     }
 
 
@@ -670,13 +670,13 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByIdentifier(10);
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertSame($frontendUser, $this->fixture->getFrontendUserPersisted());
+        self::assertSame($frontendUser, $this->fixture->getFrontendUserPersisted());
 
         $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
         $frontendUser->setEmail('my@test.de');
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertNull($this->fixture->getFrontendUserPersisted());
+        self::assertNull($this->fixture->getFrontendUserPersisted());
 
     }
 
@@ -703,7 +703,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $this->fixture->setFrontendUserToken('test');
         $this->fixture->setFrontendUser($frontendUser);
 
-        static::assertEmpty($this->fixture->getFrontendUserToken());
+        self::assertEmpty($this->fixture->getFrontendUserToken());
 
     }
     /**
@@ -738,13 +738,13 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
         /** @var \RKW\RkwRegistration\Domain\Model\OptIn $OptIn */
         $optIn = $this->optInRepository->findByIdentifier(40);
-        static::assertEquals($optIn, $result);
+        self::assertEquals($optIn, $result);
 
         $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
         $frontendUser->setEmail('my@test.de');
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertNull($this->fixture->getOptInPersisted());
+        self::assertNull($this->fixture->getOptInPersisted());
 
     }
 
@@ -815,7 +815,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $this->fixture->setFrontendUser($frontendUser);
         $this->fixture->setFrontendUserToken('abcdef');
 
-        static::assertNull($this->fixture->getFrontendUser());
+        self::assertNull($this->fixture->getFrontendUser());
 
     }
 
@@ -842,10 +842,10 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByIdentifier(10);
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertSame($frontendUser, $this->fixture->getFrontendUserPersisted());
+        self::assertSame($frontendUser, $this->fixture->getFrontendUserPersisted());
 
         $this->fixture->setFrontendUserToken('abcdef');
-        static::assertNull($this->fixture->getFrontendUserPersisted());
+        self::assertNull($this->fixture->getFrontendUserPersisted());
 
     }
 
@@ -879,10 +879,10 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
         /** @var \RKW\RkwRegistration\Domain\Model\OptIn $OptIn */
         $optIn = $this->optInRepository->findByIdentifier(40);
-        static::assertEquals($optIn, $result);
+        self::assertEquals($optIn, $result);
 
         $this->fixture->setFrontendUserToken('abcdef');
-        static::assertNull($this->fixture->getOptInPersisted());
+        self::assertNull($this->fixture->getOptInPersisted());
 
     }
 
@@ -913,10 +913,10 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $this->fixture->setFrontendUserUpdate($frontendUser);
         $result = $this->fixture->getFrontendUserUpdate();
 
-        static::assertIsArray($result);
-        static::assertCount(2, $result);
-        static::assertEquals('test', $result['city']);
-        static::assertEquals(123456, $result['zip']);
+        self::assertIsArray($result);
+        self::assertCount(2, $result);
+        self::assertEquals('test', $result['city']);
+        self::assertEquals(123456, $result['zip']);
 
     }
 
@@ -944,10 +944,10 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $this->fixture->setFrontendUserUpdate($frontendUser);
         $result = $this->fixture->getFrontendUserUpdate();
 
-        static::assertIsArray($result);
-        static::assertCount(2, $result);
-        static::assertEquals('test', $result['city']);
-        static::assertEquals(123456, $result['zip']);
+        self::assertIsArray($result);
+        self::assertCount(2, $result);
+        self::assertEquals('test', $result['city']);
+        self::assertEquals(123456, $result['zip']);
     }
 
     /**
@@ -975,8 +975,8 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $this->fixture->setFrontendUserUpdate($frontendUser);
         $result = $this->fixture->getFrontendUserUpdate();
 var_dump($result);
-        static::assertIsArray($result);
-        static::assertCount(0, $result);
+        self::assertIsArray($result);
+        self::assertCount(0, $result);
     }
 
     #==============================================================================
@@ -1017,8 +1017,8 @@ var_dump($result);
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
         $result = $this->fixture->getFrontendUserPersisted();
 
-        static::assertSame($frontendUserDatabase, $result);
-        static::assertEquals(0, $result->getEndtime());
+        self::assertSame($frontendUserDatabase, $result);
+        self::assertEquals(0, $result->getEndtime());
 
     }
 
@@ -1057,7 +1057,7 @@ var_dump($result);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUserDatabase */
         $frontendUserDatabase = $this->frontendUserRepository->findByIdentifier(10);
-        static::assertEquals($frontendUserDatabase, $result);
+        self::assertEquals($frontendUserDatabase, $result);
 
     }
 
@@ -1097,7 +1097,7 @@ var_dump($result);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUserDatabase */
         $frontendUserDatabase = $this->frontendUserRepository->findByIdentifierIncludingDisabled(20);
-        static::assertEquals($frontendUserDatabase, $result);
+        self::assertEquals($frontendUserDatabase, $result);
     }
 
     /**
@@ -1138,7 +1138,7 @@ var_dump($result);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUserDatabase */
         $frontendUserDatabase = $this->frontendUserRepository->findByIdentifier(10);
-        static::assertEquals($frontendUserDatabase, $result);
+        self::assertEquals($frontendUserDatabase, $result);
     }
 
 
@@ -1181,7 +1181,7 @@ var_dump($result);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUserDatabase */
         $frontendUserDatabase = $this->frontendUserRepository->findByIdentifierIncludingDisabled(20);
-        static::assertEquals($frontendUserDatabase, $result);
+        self::assertEquals($frontendUserDatabase, $result);
     }
 
     /**
@@ -1215,7 +1215,7 @@ var_dump($result);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUserDatabase */
         $frontendUserDatabase = $this->frontendUserRepository->findByIdentifier(40);
-        static::assertEquals($frontendUserDatabase, $result);
+        self::assertEquals($frontendUserDatabase, $result);
     }
 
     /**
@@ -1250,7 +1250,7 @@ var_dump($result);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUserDatabase */
         $frontendUserDatabase = $this->frontendUserRepository->findByIdentifierIncludingDisabled(50);
-        static::assertEquals($frontendUserDatabase, $result);
+        self::assertEquals($frontendUserDatabase, $result);
     }
 
     /**
@@ -1285,7 +1285,7 @@ var_dump($result);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUserDatabase */
         $frontendUserDatabase = $this->frontendUserRepository->findByIdentifierIncludingDisabled(90);
-        static::assertEquals($frontendUserDatabase, $result);
+        self::assertEquals($frontendUserDatabase, $result);
     }
 
     /**
@@ -1315,7 +1315,7 @@ var_dump($result);
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
         $result = $this->fixture->getFrontendUserPersisted();
 
-        static::assertNull($result);
+        self::assertNull($result);
     }
 
     #==============================================================================
@@ -1351,7 +1351,7 @@ var_dump($result);
 
         /** @var \RKW\RkwRegistration\Domain\Model\OptIn $OptIn */
         $optIn = $this->optInRepository->findByIdentifier(40);
-        static::assertEquals($optIn, $result);
+        self::assertEquals($optIn, $result);
     }
 
     /**
@@ -1386,7 +1386,7 @@ var_dump($result);
 
         /** @var \RKW\RkwRegistration\Domain\Model\OptIn $OptIn */
         $optIn = $this->optInRepository->findByIdentifierIncludingDeleted(90);
-        static::assertEquals($optIn, $result);
+        self::assertEquals($optIn, $result);
     }
 
 
@@ -1417,7 +1417,7 @@ var_dump($result);
         /** @var \RKW\RkwRegistration\Domain\Model\OptIn $result */
         $result = $this->fixture->getOptInPersisted();
 
-        static::assertNull($result);
+        self::assertNull($result);
     }
 
     #==============================================================================
@@ -1497,24 +1497,24 @@ var_dump($result);
         /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
         $optInReturn = $this->fixture->createOptIn();
 
-        static::assertInstanceOf(OptIn::class, $optInReturn);
+        self::assertInstanceOf(OptIn::class, $optInReturn);
 
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $persistenceManager->clearState();
 
         /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
         $optIn = $this->optInRepository->findByIdentifier(1);
-        static::assertEquals($optInReturn->getUid(), $optIn->getUid());
+        self::assertEquals($optInReturn->getUid(), $optIn->getUid());
 
-        static::assertEquals(10, $optIn->getFrontendUserUid());
-        static::assertEquals(['city' => 'Herborn', 'zip' => '35745'], $optIn->getFrontendUserUpdate());
-        static::assertEquals('test', $optIn->getCategory());
-        static::assertEquals(['TestenKey' => 'TestenValue'], $optIn->getData());
-        static::assertNotEmpty($optIn->getTokenUser());
-        static::assertNotEmpty($optIn->getTokenYes());
-        static::assertNotEmpty($optIn->getTokenNo());
-        static::assertGreaterThan(time() + (intval(7 * 24 * 60 * 60) -5), $optIn->getEndtime());
-        static::assertTrue($optIn->getAdminApproved());
+        self::assertEquals(10, $optIn->getFrontendUserUid());
+        self::assertEquals(['city' => 'Herborn', 'zip' => '35745'], $optIn->getFrontendUserUpdate());
+        self::assertEquals('test', $optIn->getCategory());
+        self::assertEquals(['TestenKey' => 'TestenValue'], $optIn->getData());
+        self::assertNotEmpty($optIn->getTokenUser());
+        self::assertNotEmpty($optIn->getTokenYes());
+        self::assertNotEmpty($optIn->getTokenNo());
+        self::assertGreaterThan(time() + (intval(7 * 24 * 60 * 60) -5), $optIn->getEndtime());
+        self::assertTrue($optIn->getAdminApproved());
 
 
     }
@@ -1554,8 +1554,8 @@ var_dump($result);
         /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
         $optIn = $this->fixture->createOptIn();
 
-        static::assertInstanceOf(OptIn::class, $optIn);
-        static::assertNotEmpty($optIn->getUid());
+        self::assertInstanceOf(OptIn::class, $optIn);
+        self::assertNotEmpty($optIn->getUid());
 
         self::assertEquals(1, $this->privacyRepository->countAll());
 
@@ -1593,13 +1593,13 @@ var_dump($result);
         $this->fixture->setCategory('test');
         $this->fixture->setData(['TestenKey' => 'TestenValue']);
 
-        static::assertNull($this->fixture->getOptInPersisted());
+        self::assertNull($this->fixture->getOptInPersisted());
 
         /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
         $optIn = $this->fixture->createOptIn();
 
-        static::assertInstanceOf(OptIn::class, $optIn);
-        static::assertSame($optIn, $this->fixture->getOptInPersisted());
+        self::assertInstanceOf(OptIn::class, $optIn);
+        self::assertSame($optIn, $this->fixture->getOptInPersisted());
 
 
     }
@@ -1645,19 +1645,19 @@ var_dump($result);
         /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
         $optInReturn = $this->fixture->createOptIn();
 
-        static::assertInstanceOf(OptIn::class, $optInReturn);
+        self::assertInstanceOf(OptIn::class, $optInReturn);
 
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $persistenceManager->clearState();
 
         /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
         $optIn = $this->optInRepository->findByIdentifier(1);
-        static::assertEquals($optInReturn->getUid(), $optIn->getUid());
+        self::assertEquals($optInReturn->getUid(), $optIn->getUid());
 
-        static::assertEquals(100, $optIn->getFrontendUserUid());
-        static::assertNotEmpty($optIn->getAdminTokenYes());
-        static::assertNotEmpty($optIn->getAdminTokenNo());
-        static::assertFalse($optIn->getAdminApproved());
+        self::assertEquals(100, $optIn->getFrontendUserUid());
+        self::assertNotEmpty($optIn->getAdminTokenYes());
+        self::assertNotEmpty($optIn->getAdminTokenNo());
+        self::assertFalse($optIn->getAdminApproved());
 
     }
 
@@ -1696,14 +1696,14 @@ var_dump($result);
         $this->fixture->setCategory('test');
         $this->fixture->setData($frontendUserGroup);
 
-        static::assertNull($this->fixture->getOptInPersisted());
+        self::assertNull($this->fixture->getOptInPersisted());
 
         /** @var \RKW\RkwRegistration\Domain\Model\OptIn $optIn */
         $optIn = $this->fixture->createOptIn();
 
-        static::assertInstanceOf(OptIn::class, $optIn);
-        static::assertEquals('fe_groups', $optIn->getForeignTable());
-        static::assertEquals(140, $optIn->getForeignUid());
+        self::assertInstanceOf(OptIn::class, $optIn);
+        self::assertEquals('fe_groups', $optIn->getForeignTable());
+        self::assertEquals(140, $optIn->getForeignUid());
 
 
 
@@ -2673,11 +2673,11 @@ var_dump($result);
         $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(30);
 
         FrontendSimulatorUtility::simulateFrontendEnvironment(1);
-        static::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
+        self::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
         $this->fixture->setFrontendUser($frontendUser);
 
-        static::assertTrue($this->fixture->endRegistration());
-        static::assertFalse(FrontendUserSessionUtility::isUserLoggedIn($frontendUser));
+        self::assertTrue($this->fixture->endRegistration());
+        self::assertFalse(FrontendUserSessionUtility::isUserLoggedIn($frontendUser));
 
         FrontendSimulatorUtility::resetFrontendEnvironment();
 
@@ -2708,7 +2708,7 @@ var_dump($result);
         $frontendUser = $this->frontendUserRepository->findByUid(10);
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertTrue($this->fixture->endRegistration());
+        self::assertTrue($this->fixture->endRegistration());
 
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $persistenceManager->clearState();
@@ -2743,7 +2743,7 @@ var_dump($result);
         $frontendUser = $this->frontendUserRepository->findByIdentifierIncludingDisabled(20);
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertFalse($this->fixture->endRegistration());
+        self::assertFalse($this->fixture->endRegistration());
 
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $persistenceManager->clearState();
@@ -2781,7 +2781,7 @@ var_dump($result);
         $frontendUser->setEmail('merz@cdu.de');
 
         $this->fixture->setFrontendUser($frontendUser);
-        static::assertTrue($this->fixture->endRegistration());
+        self::assertTrue($this->fixture->endRegistration());
 
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $persistenceManager->clearState();
@@ -2819,7 +2819,7 @@ var_dump($result);
         $frontendUser = $this->frontendUserRepository->findByIdentifier(1);
 
         // BEFORE
-        static::assertEquals(0, $frontendUser->getDeleted());
+        self::assertEquals(0, $frontendUser->getDeleted());
 
         // Service
         /** @var FrontendUserRegister $register */
@@ -2828,7 +2828,7 @@ var_dump($result);
 
         // AFTER
         // now removed!
-        static::assertEquals(1, $frontendUser->getDeleted());
+        self::assertEquals(1, $frontendUser->getDeleted());
     }
 
 
@@ -2853,7 +2853,7 @@ var_dump($result);
         $frontendUser = $this->frontendUserRepository->findByUidAlsoInactiveNonGuest(1);
 
         // BEFORE
-        static::assertEquals(0, $frontendUser->getDeleted());
+        self::assertEquals(0, $frontendUser->getDeleted());
 
         // Service
         /** @var FrontendUserRegister $register */
@@ -2862,7 +2862,7 @@ var_dump($result);
 
         // AFTER
         // now removed!
-        static::assertEquals(1, $frontendUser->getDeleted());
+        self::assertEquals(1, $frontendUser->getDeleted());
     }
 
 
@@ -2886,7 +2886,7 @@ var_dump($result);
         $frontendUser->setUsername('someNewFrontendUser@gmx.de');
 
         // BEFORE
-        static::assertEquals(0, $frontendUser->getDeleted());
+        self::assertEquals(0, $frontendUser->getDeleted());
 
         // Service
         /** @var FrontendUserRegister $register */
@@ -2894,7 +2894,7 @@ var_dump($result);
         $register->delete();
 
         // AFTER
-        static::assertEquals(1, $frontendUser->getDeleted());
+        self::assertEquals(1, $frontendUser->getDeleted());
     }
 
 
@@ -2923,11 +2923,11 @@ var_dump($result);
         $register->delete();
 
         // AFTER
-        static::assertEquals(1, $register->getFrontendUser()->getDeleted());
+        self::assertEquals(1, $register->getFrontendUser()->getDeleted());
 
         // Attention: This is NOT the user from the given array; its a completely new created one
-        static::assertEquals('someNewFrontendUser@gmx.de', $dataArray['email']);
-        static::assertNotEquals($register->getFrontendUser()->getEmail(), $dataArray['email']);
+        self::assertEquals('someNewFrontendUser@gmx.de', $dataArray['email']);
+        self::assertNotEquals($register->getFrontendUser()->getEmail(), $dataArray['email']);
     }
 
 
@@ -2958,10 +2958,10 @@ var_dump($result);
         $register->delete();
 
         // AFTER
-        static::assertEquals(1, $register->getFrontendUser()->getDeleted());
+        self::assertEquals(1, $register->getFrontendUser()->getDeleted());
 
         // Attention: This is NOT the user from the given array; its a completely new created one
-        static::assertNotEquals($register->getFrontendUser()->getEmail(), $dataArray['email']);
+        self::assertNotEquals($register->getFrontendUser()->getEmail(), $dataArray['email']);
     }
 
 
@@ -2992,8 +2992,8 @@ var_dump($result);
         // first feGroup has ID 55; the second feGroup has ID 56
         $i = 0;
         foreach ($newFrontendUser->getUsergroup() as $group) {
-            static::assertInstanceOf(FrontendUserGroup::class, $group);
-            static::assertEquals(55 + $i, $group->getUid());
+            self::assertInstanceOf(FrontendUserGroup::class, $group);
+            self::assertEquals(55 + $i, $group->getUid());
             $i++;
         }
 
@@ -3029,8 +3029,8 @@ var_dump($result);
         // first feGroup has ID 55; the second feGroup has ID 56
         $i = 0;
         foreach ($frontendUser->getUsergroup() as $group) {
-            static::assertInstanceOf(FrontendUserGroup::class, $group);
-            static::assertEquals(55 + $i, $group->getUid());
+            self::assertInstanceOf(FrontendUserGroup::class, $group);
+            self::assertEquals(55 + $i, $group->getUid());
             $i++;
         }
 
@@ -3066,8 +3066,8 @@ var_dump($result);
         // first feGroup has ID 55; the second feGroup has ID 56
         $i = 0;
         foreach ($frontendUser->getUsergroup() as $group) {
-            static::assertInstanceOf(FrontendUserGroup::class, $group);
-            static::assertEquals(55 + $i, $group->getUid());
+            self::assertInstanceOf(FrontendUserGroup::class, $group);
+            self::assertEquals(55 + $i, $group->getUid());
             $i++;
         }
 
@@ -3098,11 +3098,11 @@ var_dump($result);
         $register = $this->objectManager->get(FrontendUserRegister::class, $guestUser);
         $register->setUserGroups();
 
-        static::assertInstanceOf(GuestUser::class, $guestUser);
+        self::assertInstanceOf(GuestUser::class, $guestUser);
 
         foreach ($guestUser->getUsergroup() as $group) {
-            static::assertInstanceOf(FrontendUserGroup::class, $group);
-            static::assertEquals(56, $group->getUid());
+            self::assertInstanceOf(FrontendUserGroup::class, $group);
+            self::assertEquals(56, $group->getUid());
         }
     }
 
@@ -3126,7 +3126,7 @@ var_dump($result);
 
         $requiredFields = $register->getMandatoryFields();
 
-        static::assertNotEmpty($requiredFields);
+        self::assertNotEmpty($requiredFields);
     }
 
 
@@ -3170,7 +3170,7 @@ var_dump($result);
             }
          */
 
-        static::assertEquals("something", $requiredFields[3]);
+        self::assertEquals("something", $requiredFields[3]);
     }
 
 

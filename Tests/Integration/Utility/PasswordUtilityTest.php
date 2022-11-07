@@ -105,8 +105,8 @@ class PasswordUtilityTest extends FunctionalTestCase
 
         $result = $utility->generatePassword($individualLength);
 
-        static::assertInternalType('string', $result);
-        static::assertTrue(strlen($result) == $individualLength);
+        self::assertInternalType('string', $result);
+        self::assertTrue(strlen($result) == $individualLength);
     }
 
 
@@ -130,8 +130,8 @@ class PasswordUtilityTest extends FunctionalTestCase
 
         $result = $utility::generatePassword();
 
-        static::assertInternalType('string', $result);
-        static::assertTrue(strlen($result) == PasswordUtility::PASSWORD_DEFAULT_LENGTH);
+        self::assertInternalType('string', $result);
+        self::assertTrue(strlen($result) == PasswordUtility::PASSWORD_DEFAULT_LENGTH);
     }
 
 
@@ -156,8 +156,8 @@ class PasswordUtilityTest extends FunctionalTestCase
 
         $result = $utility->generatePassword($individualLength);
 
-        static::assertInternalType('string', $result);
-        static::assertTrue(strlen($result) == PasswordUtility::PASSWORD_MAX_LENGTH);
+        self::assertInternalType('string', $result);
+        self::assertTrue(strlen($result) == PasswordUtility::PASSWORD_MAX_LENGTH);
     }
 
 
@@ -185,8 +185,8 @@ class PasswordUtilityTest extends FunctionalTestCase
         do {
             $result = $utility->generatePassword($individualLength);
 
-            static::assertInternalType('string', $result);
-            static::assertTrue(strlen($result) == PasswordUtility::PASSWORD_MIN_LENGTH);
+            self::assertInternalType('string', $result);
+            self::assertTrue(strlen($result) == PasswordUtility::PASSWORD_MIN_LENGTH);
 
             $individualLength++;
         } while ($individualLength <= PasswordUtility::PASSWORD_MIN_LENGTH);
@@ -213,7 +213,7 @@ class PasswordUtilityTest extends FunctionalTestCase
 
         $result = $utility->generatePassword();
 
-        static::assertTrue(ctype_alnum($result));
+        self::assertTrue(ctype_alnum($result));
     }
 
 
@@ -236,7 +236,7 @@ class PasswordUtilityTest extends FunctionalTestCase
 
         $result = $utility->generatePassword(PasswordUtility::PASSWORD_DEFAULT_LENGTH, true);
 
-        static::assertFalse(ctype_alnum($result));
+        self::assertFalse(ctype_alnum($result));
     }
 
 
@@ -261,8 +261,8 @@ class PasswordUtilityTest extends FunctionalTestCase
 
         $result = $utility::saltPassword($customPassword);
 
-        static::assertInternalType('string', $result);
-        static::assertNotEquals($result, $customPassword);
+        self::assertInternalType('string', $result);
+        self::assertNotEquals($result, $customPassword);
     }
 
 
@@ -284,7 +284,7 @@ class PasswordUtilityTest extends FunctionalTestCase
          */
 
 
-        static::assertTrue(true);
+        self::assertTrue(true);
     }
 
 

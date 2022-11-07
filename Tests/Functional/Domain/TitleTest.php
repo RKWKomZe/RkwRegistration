@@ -246,7 +246,7 @@ class TitleTest extends FunctionalTestCase
         $this->frontendUser->setTxRkwregistrationTitle($this->title);
         $this->frontendUser->setTxRkwregistrationLanguageKey('de');
 
-        static::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText($checkIncludedInSalutation = true));
+        self::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText($checkIncludedInSalutation = true));
 
     }
 
@@ -266,7 +266,7 @@ class TitleTest extends FunctionalTestCase
         $this->frontendUser->setTxRkwregistrationTitle($this->title);
         $this->frontendUser->setTxRkwregistrationLanguageKey('de');
 
-        static::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText());
+        self::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText());
 
     }
 
@@ -282,7 +282,7 @@ class TitleTest extends FunctionalTestCase
         $this->frontendUser->setTxRkwregistrationGender(0);
         $this->frontendUser->setTxRkwregistrationLanguageKey('de');
 
-        static::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText());
+        self::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText());
 
     }
 
@@ -294,7 +294,7 @@ class TitleTest extends FunctionalTestCase
         $this->title->setName("Dr. med.");
         $this->title->setIsIncludedInSalutation(true);
 
-        static::assertTrue($this->title->getIsIncludedInSalutation());
+        self::assertTrue($this->title->getIsIncludedInSalutation());
     }
 
     /**
@@ -314,7 +314,7 @@ class TitleTest extends FunctionalTestCase
         $this->frontendUser->setTxRkwregistrationGender(0);
         $this->frontendUser->setTxRkwregistrationLanguageKey('de');
 
-        static::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText($checkIncludedInSalutation = true));
+        self::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText($checkIncludedInSalutation = true));
 
     }
 
@@ -339,7 +339,7 @@ class TitleTest extends FunctionalTestCase
         $this->frontendUser->setTxRkwregistrationGender(0);
         $this->frontendUser->setTxRkwregistrationLanguageKey('de');
 
-        static::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText($checkIncludedInSalutation = true));
+        self::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText($checkIncludedInSalutation = true));
 
     }
 
@@ -365,7 +365,7 @@ class TitleTest extends FunctionalTestCase
         $this->frontendUser->setTxRkwregistrationGender(1);
         $this->frontendUser->setTxRkwregistrationLanguageKey('de');
 
-        static::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText($checkIncludedInSalutation = true));
+        self::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText($checkIncludedInSalutation = true));
 
     }
 
@@ -390,7 +390,7 @@ class TitleTest extends FunctionalTestCase
         $this->frontendUser->setTxRkwregistrationGender(1);
         $this->frontendUser->setTxRkwregistrationLanguageKey('de');
 
-        static::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText($checkIncludedInSalutation = true));
+        self::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText($checkIncludedInSalutation = true));
 
     }
 
@@ -408,7 +408,7 @@ class TitleTest extends FunctionalTestCase
         $this->frontendUser->setTxRkwregistrationTitle($this->title);
         $this->frontendUser->setTxRkwregistrationLanguageKey('de');
 
-        static::assertEquals('Max Mustermann', $this->frontendUser->getName());
+        self::assertEquals('Max Mustermann', $this->frontendUser->getName());
 
     }
 

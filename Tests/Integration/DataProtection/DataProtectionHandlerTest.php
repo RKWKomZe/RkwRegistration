@@ -162,11 +162,11 @@ class DataProtectionHandlerTest extends FunctionalTestCase
 
         $result = $query->execute()->toArray();
 
-        static::assertCount(2, $deleted);
-        static::assertCount(3, $result);
-        static::assertEquals(2, $result[0]->getUid());
-        static::assertEquals(3, $result[1]->getUid());
-        static::assertEquals(5, $result[2]->getUid());
+        self::assertCount(2, $deleted);
+        self::assertCount(3, $result);
+        self::assertEquals(2, $result[0]->getUid());
+        self::assertEquals(3, $result[1]->getUid());
+        self::assertEquals(5, $result[2]->getUid());
 
 
     }
@@ -199,19 +199,19 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
 
-        static::assertEquals('anonymous1@rkw.de', $frontendUser->getUsername());
-        static::assertEquals('anonymous1@rkw.de', $frontendUser->getEmail());
-        static::assertEquals(1, $frontendUser->getTxRkwregistrationDataProtectionStatus());
+        self::assertEquals('anonymous1@rkw.de', $frontendUser->getUsername());
+        self::assertEquals('anonymous1@rkw.de', $frontendUser->getEmail());
+        self::assertEquals(1, $frontendUser->getTxRkwregistrationDataProtectionStatus());
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(1);
 
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
-        static::assertEquals($frontendUser, $encryptedData->getFrontendUser());
-        static::assertEquals(hash('sha256', 'lauterbach@spd.de'), $encryptedData->getSearchKey());
-        static::assertEquals('fe_users', $encryptedData->getForeignTable());
-        static::assertEquals(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getForeignClass());
-        static::assertEquals(1, $encryptedData->getForeignUid());
+        self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        self::assertEquals($frontendUser, $encryptedData->getFrontendUser());
+        self::assertEquals(hash('sha256', 'lauterbach@spd.de'), $encryptedData->getSearchKey());
+        self::assertEquals('fe_users', $encryptedData->getForeignTable());
+        self::assertEquals(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getForeignClass());
+        self::assertEquals(1, $encryptedData->getForeignUid());
 
 
 
@@ -247,7 +247,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
         $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
 
-        static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
+        self::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(2);
@@ -255,19 +255,19 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
 
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
-        static::assertEquals($frontendUser, $encryptedData->getFrontendUser());
-        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
-        static::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
-        static::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
-        static::assertEquals(1, $encryptedData->getForeignUid());
+        self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        self::assertEquals($frontendUser, $encryptedData->getFrontendUser());
+        self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
+        self::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
+        self::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
+        self::assertEquals(1, $encryptedData->getForeignUid());
 
 
         /** @var \RKW\RkwRegistration\Domain\Model\Privacy $privacy */
         $privacy  = $this->privacyRepository->findByUid(1);
 
-        static::assertEquals('127.0.0.1', $privacy->getIpAddress());
-        static::assertEquals('Anonymous 1.0', $privacy->getUserAgent());
+        self::assertEquals('127.0.0.1', $privacy->getIpAddress());
+        self::assertEquals('Anonymous 1.0', $privacy->getUserAgent());
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(3);
@@ -275,11 +275,11 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
 
-        static::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
-        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
-        static::assertEquals(1, $encryptedData->getForeignUid());
-        static::assertEquals('tx_rkwregistration_domain_model_privacy', $encryptedData->getForeignTable());
-        static::assertEquals('RKW\RkwRegistration\Domain\Model\Privacy', $encryptedData->getForeignClass());
+        self::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
+        self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
+        self::assertEquals(1, $encryptedData->getForeignUid());
+        self::assertEquals('tx_rkwregistration_domain_model_privacy', $encryptedData->getForeignTable());
+        self::assertEquals('RKW\RkwRegistration\Domain\Model\Privacy', $encryptedData->getForeignClass());
 
     }
 
@@ -309,7 +309,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
         $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
 
-        static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
+        self::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(2);
@@ -317,12 +317,12 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
 
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
-        static::assertEquals($frontendUser, $encryptedData->getFrontendUser());
-        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
-        static::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
-        static::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
-        static::assertEquals(1, $encryptedData->getForeignUid());
+        self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        self::assertEquals($frontendUser, $encryptedData->getFrontendUser());
+        self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
+        self::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
+        self::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
+        self::assertEquals(1, $encryptedData->getForeignUid());
 
     }
 
@@ -352,7 +352,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
         $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
 
-        static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
+        self::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(2);
@@ -360,12 +360,12 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
 
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
-        static::assertEquals($frontendUser, $encryptedData->getFrontendUser());
-        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
-        static::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
-        static::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
-        static::assertEquals(1, $encryptedData->getForeignUid());
+        self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        self::assertEquals($frontendUser, $encryptedData->getFrontendUser());
+        self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
+        self::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
+        self::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
+        self::assertEquals(1, $encryptedData->getForeignUid());
 
     }
 
@@ -395,7 +395,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
         $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
 
-        static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
+        self::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(2);
@@ -403,12 +403,12 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
 
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
-        static::assertEquals($frontendUser, $encryptedData->getFrontendUser());
-        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
-        static::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
-        static::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
-        static::assertEquals(1, $encryptedData->getForeignUid());
+        self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        self::assertEquals($frontendUser, $encryptedData->getFrontendUser());
+        self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
+        self::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
+        self::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
+        self::assertEquals(1, $encryptedData->getForeignUid());
 
     }
 
@@ -461,7 +461,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\BackendUser $backendUser */
         $backendUser = $this->backendUserRepository->findByUid(1);
 
-        static::assertFalse($this->subject->anonymizeObject($backendUser, $frontendUser));
+        self::assertFalse($this->subject->anonymizeObject($backendUser, $frontendUser));
     }
 
     /**
@@ -483,28 +483,28 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
 
-        static::assertTrue($this->subject->anonymizeObject($frontendUser, $frontendUser));
+        self::assertTrue($this->subject->anonymizeObject($frontendUser, $frontendUser));
 
-        static::assertEquals('anonymous1@rkw.de', $frontendUser->getUsername());
-        static::assertEquals('anonymous1@rkw.de', $frontendUser->getEmail());
-        static::assertEquals('Anonymous', $frontendUser->getFirstName());
-        static::assertEquals('Anonymous', $frontendUser->getLastName());
-        static::assertEquals('Anonymous Anonymous', $frontendUser->getName());
-        static::assertEquals('', $frontendUser->getCompany());
-        static::assertEquals('', $frontendUser->getAddress());
-        static::assertEquals('', $frontendUser->getZip());
-        static::assertEquals('', $frontendUser->getCity());
-        static::assertEquals('', $frontendUser->getTelephone());
-        static::assertEquals('', $frontendUser->getFax());
-        static::assertEquals('', $frontendUser->getTitle());
-        static::assertEquals('', $frontendUser->getWww());
-        static::assertEquals(99, $frontendUser->getTxRkwregistrationGender());
-        static::assertEquals('', $frontendUser->getTxRkwregistrationMobile());
-        static::assertEquals('', $frontendUser->getTxRkwregistrationFacebookUrl());
-        static::assertEquals('', $frontendUser->getTxRkwregistrationTwitterUrl());
-        static::assertEquals('', $frontendUser->getTxRkwregistrationXingUrl());
-        static::assertEquals(0, $frontendUser->getTxRkwregistrationTwitterId());
-        static::assertEquals('', $frontendUser->getTxRkwregistrationFacebookId());
+        self::assertEquals('anonymous1@rkw.de', $frontendUser->getUsername());
+        self::assertEquals('anonymous1@rkw.de', $frontendUser->getEmail());
+        self::assertEquals('Anonymous', $frontendUser->getFirstName());
+        self::assertEquals('Anonymous', $frontendUser->getLastName());
+        self::assertEquals('Anonymous Anonymous', $frontendUser->getName());
+        self::assertEquals('', $frontendUser->getCompany());
+        self::assertEquals('', $frontendUser->getAddress());
+        self::assertEquals('', $frontendUser->getZip());
+        self::assertEquals('', $frontendUser->getCity());
+        self::assertEquals('', $frontendUser->getTelephone());
+        self::assertEquals('', $frontendUser->getFax());
+        self::assertEquals('', $frontendUser->getTitle());
+        self::assertEquals('', $frontendUser->getWww());
+        self::assertEquals(99, $frontendUser->getTxRkwregistrationGender());
+        self::assertEquals('', $frontendUser->getTxRkwregistrationMobile());
+        self::assertEquals('', $frontendUser->getTxRkwregistrationFacebookUrl());
+        self::assertEquals('', $frontendUser->getTxRkwregistrationTwitterUrl());
+        self::assertEquals('', $frontendUser->getTxRkwregistrationXingUrl());
+        self::assertEquals(0, $frontendUser->getTxRkwregistrationTwitterId());
+        self::assertEquals('', $frontendUser->getTxRkwregistrationFacebookId());
 
     }
 
@@ -561,15 +561,15 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByUid(1);
 
-        static::assertTrue($this->subject->anonymizeObject($shippingAddress, $frontendUser));
-        static::assertEquals(99, $shippingAddress->getGender());
-        static::assertEquals('Anonymous', $shippingAddress->getFirstName());
-        static::assertEquals('Anonymous', $shippingAddress->getLastName());
-        static::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
-        static::assertEquals('', $shippingAddress->getCompany());
-        static::assertEquals('', $shippingAddress->getAddress());
-        static::assertEquals('', $shippingAddress->getZip());
-        static::assertEquals('', $shippingAddress->getCity());
+        self::assertTrue($this->subject->anonymizeObject($shippingAddress, $frontendUser));
+        self::assertEquals(99, $shippingAddress->getGender());
+        self::assertEquals('Anonymous', $shippingAddress->getFirstName());
+        self::assertEquals('Anonymous', $shippingAddress->getLastName());
+        self::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
+        self::assertEquals('', $shippingAddress->getCompany());
+        self::assertEquals('', $shippingAddress->getAddress());
+        self::assertEquals('', $shippingAddress->getZip());
+        self::assertEquals('', $shippingAddress->getCity());
 
     }
 
@@ -621,22 +621,22 @@ class DataProtectionHandlerTest extends FunctionalTestCase
 
         $encryptedData = $this->subject->encryptObject($frontendUser, $frontendUser);
 
-        static::assertEquals('spd@test.de', $frontendUser->getUsername());
-        static::assertEquals('lauterbach@spd.de', $frontendUser->getEmail());
+        self::assertEquals('spd@test.de', $frontendUser->getUsername());
+        self::assertEquals('lauterbach@spd.de', $frontendUser->getEmail());
 
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
 
         $encryptedDataArray = $encryptedData->getEncryptedData();
 
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
-        static::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
-        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
-        static::assertEquals(1, $encryptedData->getForeignUid());
-        static::assertEquals('fe_users', $encryptedData->getForeignTable());
-        static::assertEquals('RKW\RkwRegistration\Domain\Model\FrontendUser', $encryptedData->getForeignClass());
+        self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
+        self::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
+        self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
+        self::assertEquals(1, $encryptedData->getForeignUid());
+        self::assertEquals('fe_users', $encryptedData->getForeignTable());
+        self::assertEquals('RKW\RkwRegistration\Domain\Model\FrontendUser', $encryptedData->getForeignClass());
 
-        static::assertCount(22, $encryptedDataArray);
-        static::assertEquals(49, strlen($encryptedDataArray['username']));
+        self::assertCount(22, $encryptedDataArray);
+        self::assertEquals(49, strlen($encryptedDataArray['username']));
 
     }
 
@@ -696,22 +696,22 @@ class DataProtectionHandlerTest extends FunctionalTestCase
 
         $encryptedData = $this->subject->encryptObject($shippingAddress, $frontendUser);
 
-        static::assertEquals('Karl', $shippingAddress->getFirstName());
-        static::assertEquals('Lauterbach', $shippingAddress->getLastName());
+        self::assertEquals('Karl', $shippingAddress->getFirstName());
+        self::assertEquals('Lauterbach', $shippingAddress->getLastName());
 
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
         $encryptedDataArray = $encryptedData->getEncryptedData();
 
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
-        static::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
-        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
-        static::assertEquals(1, $encryptedData->getForeignUid());
-        static::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
-        static::assertEquals('RKW\RkwRegistration\Domain\Model\ShippingAddress', $encryptedData->getForeignClass());
+        self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
+        self::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
+        self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
+        self::assertEquals(1, $encryptedData->getForeignUid());
+        self::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
+        self::assertEquals('RKW\RkwRegistration\Domain\Model\ShippingAddress', $encryptedData->getForeignClass());
 
-        static::assertCount(7, $encryptedDataArray);
-        static::assertEquals(49, strlen($encryptedDataArray['firstName']));
-        static::assertEquals(49, strlen($encryptedDataArray['lastName']));
+        self::assertCount(7, $encryptedDataArray);
+        self::assertEquals(49, strlen($encryptedDataArray['firstName']));
+        self::assertEquals(49, strlen($encryptedDataArray['lastName']));
 
     }
 
@@ -771,22 +771,22 @@ class DataProtectionHandlerTest extends FunctionalTestCase
 
         $encryptedData = $this->subject->encryptObject($privacy, $frontendUser);
 
-        static::assertEquals('172.28.128.1', $privacy->getIpAddress());
-        static::assertEquals('Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0', $privacy->getUserAgent());
+        self::assertEquals('172.28.128.1', $privacy->getIpAddress());
+        self::assertEquals('Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0', $privacy->getUserAgent());
 
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
+        self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
         $encryptedDataArray = $encryptedData->getEncryptedData();
 
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
-        static::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
-        static::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
-        static::assertEquals(1, $encryptedData->getForeignUid());
-        static::assertEquals('tx_rkwregistration_domain_model_privacy', $encryptedData->getForeignTable());
-        static::assertEquals('RKW\RkwRegistration\Domain\Model\Privacy', $encryptedData->getForeignClass());
+        self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
+        self::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
+        self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
+        self::assertEquals(1, $encryptedData->getForeignUid());
+        self::assertEquals('tx_rkwregistration_domain_model_privacy', $encryptedData->getForeignTable());
+        self::assertEquals('RKW\RkwRegistration\Domain\Model\Privacy', $encryptedData->getForeignClass());
 
-        static::assertCount(2, $encryptedDataArray);
-        static::assertEquals(49, strlen($encryptedDataArray['ipAddress']));
-        static::assertEquals(133, strlen($encryptedDataArray['userAgent']));
+        self::assertCount(2, $encryptedDataArray);
+        self::assertEquals(49, strlen($encryptedDataArray['ipAddress']));
+        self::assertEquals(133, strlen($encryptedDataArray['userAgent']));
 
     }
 
@@ -813,7 +813,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(1);
 
-        static::assertNull($this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
+        self::assertNull($this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
 
     }
 
@@ -839,7 +839,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(1);
 
-        static::assertNull($this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
+        self::assertNull($this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
     }
 
     /**
@@ -863,7 +863,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(1);
 
-        static::assertNull($this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
+        self::assertNull($this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
     }
 
     /**
@@ -894,27 +894,27 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
         $result = $this->subject->decryptObject($encryptedData, 'lauterbach@spd.de');
 
-        static::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
-        static::assertEquals($frontendUser->getUid(), $result->getUid());
-        static::assertEquals('spd@test.de', $result->getUsername());
-        static::assertEquals('lauterbach@spd.de', $result->getEmail());
-        static::assertEquals('Karl', $result->getFirstName());
-        static::assertEquals('Lauterbach', $result->getLastName());
-        static::assertEquals('SPD', $result->getCompany());
-        static::assertEquals('Straßenring 123', $result->getAddress());
-        static::assertEquals('10969', $result->getZip());
-        static::assertEquals('Hamburg', $result->getCity());
-        static::assertEquals('069/1346', $result->getTelephone());
-        static::assertEquals('069/123456789', $result->getFax());
-        static::assertEquals('Dr. Prof.', $result->getTitle());
-        static::assertEquals('https://www.spd.de', $result->getWww());
-        static::assertEquals(1, $result->getTxRkwregistrationGender());
-        static::assertEquals('0179/100224557', $result->getTxRkwregistrationMobile());
-        static::assertEquals('https://www.facebook.com/lauterbach', $result->getTxRkwregistrationFacebookUrl());
-        static::assertEquals('https://www.twitter.com/lauterbach', $result->getTxRkwregistrationTwitterUrl());
-        static::assertEquals('https://www.xing.de/lauterbach', $result->getTxRkwregistrationXingUrl());
-        static::assertEquals('12345', $result->getTxRkwregistrationFacebookId());
-        static::assertEquals('12345', $result->getTxRkwregistrationTwitterId());
+        self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
+        self::assertEquals($frontendUser->getUid(), $result->getUid());
+        self::assertEquals('spd@test.de', $result->getUsername());
+        self::assertEquals('lauterbach@spd.de', $result->getEmail());
+        self::assertEquals('Karl', $result->getFirstName());
+        self::assertEquals('Lauterbach', $result->getLastName());
+        self::assertEquals('SPD', $result->getCompany());
+        self::assertEquals('Straßenring 123', $result->getAddress());
+        self::assertEquals('10969', $result->getZip());
+        self::assertEquals('Hamburg', $result->getCity());
+        self::assertEquals('069/1346', $result->getTelephone());
+        self::assertEquals('069/123456789', $result->getFax());
+        self::assertEquals('Dr. Prof.', $result->getTitle());
+        self::assertEquals('https://www.spd.de', $result->getWww());
+        self::assertEquals(1, $result->getTxRkwregistrationGender());
+        self::assertEquals('0179/100224557', $result->getTxRkwregistrationMobile());
+        self::assertEquals('https://www.facebook.com/lauterbach', $result->getTxRkwregistrationFacebookUrl());
+        self::assertEquals('https://www.twitter.com/lauterbach', $result->getTxRkwregistrationTwitterUrl());
+        self::assertEquals('https://www.xing.de/lauterbach', $result->getTxRkwregistrationXingUrl());
+        self::assertEquals('12345', $result->getTxRkwregistrationFacebookId());
+        self::assertEquals('12345', $result->getTxRkwregistrationTwitterId());
 
     }
 
@@ -934,7 +934,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
          * When I try to fetch the propertyMap for this model-class
          * Then an empty array is returned
          */
-        static::assertEmpty($this->subject->getPropertyMapByModelClassName('Test\Model'));
+        self::assertEmpty($this->subject->getPropertyMapByModelClassName('Test\Model'));
     }
 
     /**
@@ -954,8 +954,8 @@ class DataProtectionHandlerTest extends FunctionalTestCase
          */
 
         $result = $this->subject->getPropertyMapByModelClassName('RKW\RkwRegistration\Domain\Model\FrontendUser');
-        static::assertIsArray( $result);
-        static::assertEquals($result['username'], 'anonymous{UID}@rkw.de');
+        self::assertIsArray( $result);
+        self::assertEquals($result['username'], 'anonymous{UID}@rkw.de');
 
     }
 
@@ -976,7 +976,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
          * When I try to fetch the frontendUserGetter for this model-class
          * Then empty is returned
          */
-        static::assertEmpty($this->subject->getFrontendUserPropertyByModelClassName('Test\Model'));
+        self::assertEmpty($this->subject->getFrontendUserPropertyByModelClassName('Test\Model'));
     }
 
 
@@ -997,7 +997,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
          * When I try to fetch the frontendUserGetter for this model-class
          * Then empty is returned
          */
-        static::assertEmpty($this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\BackendUser'));
+        self::assertEmpty($this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\BackendUser'));
     }
 
 
@@ -1018,7 +1018,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
          * When I try to fetch the frontendUserGetter for this model-class
          * Then empty is returned
         */
-        static::assertEmpty($this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\Service'));
+        self::assertEmpty($this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\Service'));
     }
 
     /**
@@ -1037,7 +1037,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
          * When I try to fetch the frontendUserGetter for this model-class
          * Then the corresponding frontendUserGetter is returned
          */
-        static::assertEquals('frontendUser', $this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\ShippingAddress'));
+        self::assertEquals('frontendUser', $this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\ShippingAddress'));
     }
 
     //===================================================================
@@ -1055,7 +1055,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
          * When I try to fetch the repository for this model-class
          * Then null is returned
          */
-        static::assertNull($this->subject->getRepositoryByModelClassName('Test\Model'));
+        self::assertNull($this->subject->getRepositoryByModelClassName('Test\Model'));
     }
 
 
@@ -1072,7 +1072,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
          * When I try to fetch the repository for this model-class
          * Then the corresponding repository is returned
          */
-        static::assertInstanceOf(
+        self::assertInstanceOf(
             \RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository::class,
             $this->subject->getRepositoryByModelClassName('RKW\RkwRegistration\Domain\Model\ShippingAddress')
         );

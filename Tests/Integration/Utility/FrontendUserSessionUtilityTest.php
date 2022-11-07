@@ -123,18 +123,18 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
         $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(10);
 
-        static::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
+        self::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
 
-        static::assertNotNull($GLOBALS['TSFE']->fe_user);
-        static::assertInstanceOf(FrontendUserAuthentication::class, $GLOBALS['TSFE']->fe_user);
-        static::assertEquals($frontendUser->getUid(), $GLOBALS['TSFE']->fe_user->user[$GLOBALS['TSFE']->fe_user->userid_column]);
-        static::assertNotEmpty($GLOBALS['TSFE']->fe_user->id);
+        self::assertNotNull($GLOBALS['TSFE']->fe_user);
+        self::assertInstanceOf(FrontendUserAuthentication::class, $GLOBALS['TSFE']->fe_user);
+        self::assertEquals($frontendUser->getUid(), $GLOBALS['TSFE']->fe_user->user[$GLOBALS['TSFE']->fe_user->userid_column]);
+        self::assertNotEmpty($GLOBALS['TSFE']->fe_user->id);
 
         /** @var \TYPO3\CMS\Core\Context\Context $context */
         $context = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Context::class);
-        static::assertNotNull($context->getAspect('frontend.user'));
-        static::assertInstanceOf(UserAspect::class, $context->getAspect('frontend.user'));
-        static::assertEquals($frontendUser->getUid(), $context->getPropertyFromAspect('frontend.user', 'id'));
+        self::assertNotNull($context->getAspect('frontend.user'));
+        self::assertInstanceOf(UserAspect::class, $context->getAspect('frontend.user'));
+        self::assertEquals($frontendUser->getUid(), $context->getPropertyFromAspect('frontend.user', 'id'));
 
     }
 
@@ -164,8 +164,8 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
         $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(10);
 
-        static::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
-        static::assertFalse(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
+        self::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
+        self::assertFalse(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
 
     }
 
@@ -203,18 +203,18 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
         $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(10);
 
-        static::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
-        static::assertTrue(FrontendUserSessionUtility::logout());
+        self::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
+        self::assertTrue(FrontendUserSessionUtility::logout());
 
-        static::assertNotNull($GLOBALS['TSFE']->fe_user);
-        static::assertInstanceOf(FrontendUserAuthentication::class, $GLOBALS['TSFE']->fe_user);
-        static::assertEquals(0, $GLOBALS['TSFE']->fe_user->user[$GLOBALS['TSFE']->fe_user->userid_column]);
+        self::assertNotNull($GLOBALS['TSFE']->fe_user);
+        self::assertInstanceOf(FrontendUserAuthentication::class, $GLOBALS['TSFE']->fe_user);
+        self::assertEquals(0, $GLOBALS['TSFE']->fe_user->user[$GLOBALS['TSFE']->fe_user->userid_column]);
 
         /** @var \TYPO3\CMS\Core\Context\Context $context */
         $context = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Context::class);
-        static::assertNotNull($context->getAspect('frontend.user'));
-        static::assertInstanceOf(UserAspect::class, $context->getAspect('frontend.user'));
-        static::assertEquals(0, $context->getPropertyFromAspect('frontend.user', 'id'));
+        self::assertNotNull($context->getAspect('frontend.user'));
+        self::assertInstanceOf(UserAspect::class, $context->getAspect('frontend.user'));
+        self::assertEquals(0, $context->getPropertyFromAspect('frontend.user', 'id'));
 
     }
 
@@ -234,7 +234,7 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
          * Then false is returned
          */
 
-        static::assertFalse(FrontendUserSessionUtility::logout());
+        self::assertFalse(FrontendUserSessionUtility::logout());
     }
 
 
@@ -265,8 +265,8 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
         $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(10);
 
-        static::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
-        static::assertEquals($frontendUser->getUid(), FrontendUserSessionUtility::getLoggedInUserId());
+        self::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
+        self::assertEquals($frontendUser->getUid(), FrontendUserSessionUtility::getLoggedInUserId());
     }
 
 
@@ -285,7 +285,7 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
          * Then zero is returned
          */
 
-        static::assertEquals(0, FrontendUserSessionUtility::getLoggedInUserId());
+        self::assertEquals(0, FrontendUserSessionUtility::getLoggedInUserId());
     }
 
     #====================================================================================================
@@ -315,8 +315,8 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
         $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(10);
 
-        static::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
-        static::assertTrue(FrontendUserSessionUtility::isUserLoggedIn($frontendUser));
+        self::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
+        self::assertTrue(FrontendUserSessionUtility::isUserLoggedIn($frontendUser));
     }
 
 
@@ -349,8 +349,8 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
         $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(10);
 
-        static::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
-        static::assertFalse(FrontendUserSessionUtility::isUserLoggedIn($frontendUserTwo));
+        self::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
+        self::assertFalse(FrontendUserSessionUtility::isUserLoggedIn($frontendUserTwo));
 
     }
 
