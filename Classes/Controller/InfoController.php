@@ -20,24 +20,24 @@ namespace RKW\RkwRegistration\Controller;
  *
 
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class InfoController extends ControllerAbstract
+class InfoController extends AbstractController
 {
 
     /**
      * Returns personal info of user, used via AJAX
      *
      * @return void
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
-    public function loginInfoAction()
+    public function loginInfoAction(): void
     {
          $this->view->assignMultiple(
             [
-                'frontendUser' => $this->getFrontendUser(),
-                'logoutPid'    => intval($this->settings['users']['logoutPid']),
+                'frontendUser' => $this->getFrontendUser()
             ]
         );
     }

@@ -1,0 +1,24 @@
+plugin.tx_rkwregistration  {
+    persistence {
+        // cat=plugin.tx_rkwshop_rkwshop//a; type=string; label=Default storage PID
+        storagePid = 1
+    }
+
+    settings {
+         users {
+            maxLoginErrors = 8
+            storagePid = 99
+            languageKeyOnRegister = ru
+            requiredFormFields = hamptyDamty, first_name, LastName
+        }
+    }
+}
+
+// for cronjob
+module.tx_rkwregistration < plugin.tx_rkwregistration
+
+page = PAGE
+page {
+    10 = TEXT
+    10.value = Hallo Welt!
+}

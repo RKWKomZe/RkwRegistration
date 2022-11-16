@@ -1,0 +1,30 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true">
+
+    <f:layout name="Default" />
+
+    <f:section name="main">
+        <h2><f:translate key="templates_frontendUser_show.headline" /></h2>
+
+        <f:render partial="FlashMessages" arguments="{_all}" />
+        <f:render partial="FormErrors" arguments="{for:frontendUser}"/>
+
+        <f:form action="delete" name="frontendUser" object="{frontendUser}" class="form-fields">
+
+            <div class="btn-list btn-list--footer">
+
+                <f:link.action pageUid="{settings.welcomePid}" action="index" controller="Registration" class="btn btn--secondary">
+                    <f:translate key="templates_frontendUser_show.labelBack"/>
+                </f:link.action>
+
+                <button type="submit" class="btn btn--primary">
+                    <span><f:translate key="templates_frontendUser_show.labelDelete" /></span>
+                </button>
+            </div>
+
+        </f:form>
+
+    </f:section>
+
+</html>
+

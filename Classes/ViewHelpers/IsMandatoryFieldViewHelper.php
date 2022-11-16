@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\ViewHelpers;
 
 /*
@@ -15,34 +14,47 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Utility\FrontendUserUtility;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+
 /**
  * IsMandatoryFieldViewHelper
  *
- * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKWKompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class IsMandatoryFieldViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class IsMandatoryFieldViewHelper extends AbstractViewHelper
 {
+
     /**
-     * @param string $fieldName
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @return boolean
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * Initialize arguments.
+     *
+     * @throws \TYPO3Fluid\Fluid\Core\ViewHelper\Exception
      */
-    public function render($fieldName, $frontendUser = null)
+    public function initializeArguments()
     {
-
-        /** @var \RKW\RkwRegistration\Tools\Service $register */
-        $register = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwRegistration\\Tools\\Service');
-        $requiredFields = $register->getMandatoryFieldsOfUser($frontendUser);
-
-        return in_array($fieldName, $requiredFields);
-        //===
-
+        parent::initializeArguments();
+        $this->registerArgument('fieldName', 'string', 'Name of field that is to check.', true);
+        $this->registerArgument('frontendUser', FrontendUser::class, 'The frontendUser-object that is to check.', false, null);
     }
 
+    /**
+     * @return int
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function render(): int
+    {
 
+        /** @var string $fieldName */
+        $fieldName = $this->arguments['fieldName'];
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->arguments['frontendUser'];
+
+        $mandatoryFields = FrontendUserUtility::getMandatoryFields($frontendUser);
+        return in_array($fieldName, $mandatoryFields);
+    }
 }

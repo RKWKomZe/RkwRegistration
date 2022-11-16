@@ -17,9 +17,8 @@ namespace RKW\RkwRegistration\Domain\Model;
 /**
  * Class Title
  *
- * @author Maximilian Fäßler <maximilian@faesslerweb.de>
- * @copyright Fäßler Web UG
- * @package RKW_RkwRegistration
+ * @author Christian Dilger <c.dilger@addorange.de>
+ * @copyright RKW Kompetenzzentrum
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
@@ -41,13 +40,14 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @var integer
      */
-    protected $hidden;
+    protected $hidden = 0;
 
 
     /**
      * @var integer
      */
-    protected $deleted;
+    protected $deleted = 0;
+
 
     /**
      * name
@@ -56,12 +56,14 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $name = '';
 
+
     /**
      * nameFemale
      *
      * @var string
      */
     protected $nameFemale = '';
+
 
     /**
      * nameLong
@@ -70,12 +72,14 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $nameLong = '';
 
+
     /**
      * nameFemaleLong
      *
      * @var string
      */
     protected $nameFemaleLong = '';
+
 
     /**
      * isTitleAfter
@@ -84,12 +88,14 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $isTitleAfter = false;
 
+
     /**
      * isIncludedInSalutation
      *
      * @var boolean
      */
     protected $isIncludedInSalutation = false;
+
 
     /**
      * isChecked
@@ -98,17 +104,17 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $isChecked = false;
 
+
+
     /**
      * Returns the crdate value
      *
      * @return integer
      * @api
      */
-    public function getCrdate()
+    public function getCrdate(): int
     {
-
         return $this->crdate;
-        //===
     }
 
 
@@ -118,19 +124,19 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @return integer
      * @api
      */
-    public function getTstamp()
+    public function getTstamp(): int
     {
         return $this->tstamp;
-        //===
     }
+
 
     /**
      * Sets the hidden value
      *
-     * @param integer $hidden
+     * @param bool $hidden
      * @api
      */
-    public function setHidden($hidden)
+    public function setHidden(bool $hidden): void
     {
         $this->hidden = $hidden;
     }
@@ -139,22 +145,22 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the hidden value
      *
-     * @return integer
+     * @return bool
      * @api
      */
-    public function getHidden()
+    public function getHidden(): bool
     {
         return $this->hidden;
-        //===
     }
+
 
     /**
      * Sets the deleted value
      *
-     * @param integer $deleted
+     * @param bool$deleted
      * @api
      */
-    public function setDeleted($deleted)
+    public function setDeleted(bool $deleted): void
     {
         $this->deleted = $deleted;
     }
@@ -163,13 +169,12 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the deleted value
      *
-     * @return integer
+     * @return bool
      * @api
      */
-    public function getDeleted()
+    public function getDeleted(): bool
     {
         return $this->deleted;
-        //===
     }
 
 
@@ -178,10 +183,11 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string $name
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
+
 
     /**
      * Sets the name
@@ -189,20 +195,22 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param string $name
      * @return void
      */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
+
 
     /**
      * Returns the female variant of the name
      *
      * @return string $nameFemale
      */
-    public function getNameFemale()
+    public function getNameFemale(): string
     {
         return $this->nameFemale;
     }
+
 
     /**
      * Sets the female variant of the name
@@ -210,20 +218,22 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param string $nameFemale
      * @return void
      */
-    public function setNameFemale($nameFemale)
+    public function setNameFemale(string $nameFemale): void
     {
         $this->nameFemale = $nameFemale;
     }
+
 
     /**
      * Returns the nameLong
      *
      * @return string $nameLong
      */
-    public function getNameLong()
+    public function getNameLong(): string
     {
         return $this->nameLong;
     }
+
 
     /**
      * Sets the nameLong
@@ -231,20 +241,22 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param string $nameLong
      * @return void
      */
-    public function setNameLong($nameLong)
+    public function setNameLong(string $nameLong): void
     {
         $this->nameLong = $nameLong;
     }
+
 
     /**
      * Returns the long female variant of the name
      *
      * @return string $nameFemaleLong
      */
-    public function getNameFemaleLong()
+    public function getNameFemaleLong(): string
     {
         return $this->nameFemaleLong;
     }
+
 
     /**
      * Sets the long female variant of the name
@@ -252,20 +264,22 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param string $nameFemaleLong
      * @return void
      */
-    public function setNameFemaleLong($nameFemaleLong)
+    public function setNameFemaleLong(string $nameFemaleLong): void
     {
         $this->nameFemaleLong = $nameFemaleLong;
     }
+
 
     /**
      * Returns the isTitleAfter
      *
      * @return boolean $isTitleAfter
      */
-    public function getIsTitleAfter()
+    public function getIsTitleAfter(): bool
     {
         return $this->isTitleAfter;
     }
+
 
     /**
      * Sets the isTitleAfter
@@ -273,20 +287,22 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param boolean $isTitleAfter
      * @return void
      */
-    public function setIsTitleAfter($isTitleAfter)
+    public function setIsTitleAfter(bool $isTitleAfter): void
     {
         $this->isTitleAfter = $isTitleAfter;
     }
+
 
     /**
      * Returns the isIncludedInSalutation
      *
      * @return boolean $isIncludedInSalutation
      */
-    public function getIsIncludedInSalutation()
+    public function getIsIncludedInSalutation(): bool
     {
         return $this->isIncludedInSalutation;
     }
+
 
     /**
      * Sets the isIncludedInSalutation
@@ -294,17 +310,18 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param boolean $isIncludedInSalutation
      * @return void
      */
-    public function setIsIncludedInSalutation($isIncludedInSalutation)
+    public function setIsIncludedInSalutation(bool $isIncludedInSalutation): void
     {
         $this->isIncludedInSalutation = $isIncludedInSalutation;
     }
 
+
     /**
      * Returns the isChecked
      *
-     * @return booelan $isChecked
+     * @return bool $isChecked
      */
-    public function getIsChecked()
+    public function getIsChecked(): bool
     {
         return $this->isChecked;
     }
@@ -315,7 +332,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param boolean $isChecked
      * @return void
      */
-    public function setIsChecked($isChecked)
+    public function setIsChecked(bool $isChecked): void
     {
         $this->isChecked = $isChecked;
     }

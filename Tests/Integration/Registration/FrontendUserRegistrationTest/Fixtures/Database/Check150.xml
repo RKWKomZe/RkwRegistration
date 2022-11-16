@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <fe_users>
+        <uid>150</uid>
+        <pid>88</pid>
+        <crdate>10</crdate>
+        <disable>0</disable>
+        <deleted>0</deleted>
+        <username>lauterbach@spd.de</username>
+        <password>test</password>
+        <email>lauterbach@spd.de</email>
+    </fe_users>
+
+    <fe_users>
+        <uid>151</uid>
+        <pid>88</pid>
+        <crdate>10</crdate>
+        <disable>0</disable>
+        <deleted>0</deleted>
+        <username>merkel@cdu.de</username>
+        <password>test</password>
+        <email>merkel@cdu.de</email>
+    </fe_users>
+
+    <fe_groups>
+        <uid>151</uid>
+        <pid>88</pid>
+        <title>Test</title>
+    </fe_groups>
+
+    <tx_rkwregistration_domain_model_optin>
+        <uid>150</uid>
+        <pid>88</pid>
+        <frontend_user_uid>150</frontend_user_uid>
+        <token_user>test</token_user>
+    </tx_rkwregistration_domain_model_optin>
+
+</dataset>

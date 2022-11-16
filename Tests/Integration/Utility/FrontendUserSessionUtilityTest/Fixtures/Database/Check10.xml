@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <fe_users>
+        <uid>10</uid>
+        <pid>1</pid>
+        <username>spd@test.de</username>
+        <email>lauterbach@spd.de</email>
+    </fe_users>
+
+    <fe_users>
+        <uid>20</uid>
+        <pid>1</pid>
+        <username>cdu@test.de</username>
+        <email>merz@cdu.de</email>
+    </fe_users>
+
+    <fe_groups>
+        <uid>10</uid>
+        <pid>1</pid>
+        <title>test</title>
+    </fe_groups>
+</dataset>

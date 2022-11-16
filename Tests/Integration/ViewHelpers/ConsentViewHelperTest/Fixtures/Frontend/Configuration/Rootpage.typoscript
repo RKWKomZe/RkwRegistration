@@ -1,0 +1,19 @@
+module.tx_rkwregistration {
+    settings {
+
+        # cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of terms of use
+        termsPid = 2
+
+        # cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of terms & conditions
+        terms2Pid = 3
+    }
+}
+
+plugin.tx_rkwregistration < module.tx_rkwregistration
+
+
+page = PAGE
+page {
+    10 = TEXT
+    10.value = Hallo Welt!
+}

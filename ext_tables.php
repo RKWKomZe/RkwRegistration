@@ -8,24 +8,25 @@ call_user_func(
         // Add tables
         //=================================================================
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages(
-            'tx_rkwregistration_domain_model_privacy'
+            'tx_rkwregistration_domain_model_optin'
         );
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages(
-            'tx_rkwregistration_domain_model_registration'
+            'tx_rkwregistration_domain_model_consent'
         );
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages(
-            'tx_rkwregistration_domain_model_service'
+            'tx_rkwregistration_domain_model_encrypteddata'
+        );
+
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages(
+            'tx_rkwregistration_domain_model_title'
         );
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages(
             'tx_rkwregistration_domain_model_shippingaddress'
         );
 
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages(
-            'tx_rkwregistration_domain_model_title'
-        );
 
 
     },

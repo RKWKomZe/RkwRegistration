@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <fe_users>
+        <uid>120</uid>
+        <pid>1</pid>
+        <username>spd@test.de</username>
+        <email>lauterbach@spd.de</email>
+        <first_name />
+        <last_name />
+        <company />
+        <address />
+        <zip>10969</zip>
+        <city>Hamburg</city>
+        <tx_rkwregistration_gender>0</tx_rkwregistration_gender>
+        <tx_rkwregistration_title>0</tx_rkwregistration_title>
+        <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
+        <endtime>432000</endtime>
+    </fe_users>
+
+    <fe_users>
+        <uid>121</uid>
+        <pid>1</pid>
+        <username>spd@test.de</username>
+        <email>lauterbach@spd.de</email>
+        <first_name />
+        <last_name />
+        <company />
+        <address />
+        <zip>10969</zip>
+        <city>Hamburg</city>
+        <tx_rkwregistration_gender>0</tx_rkwregistration_gender>
+        <tx_rkwregistration_title>0</tx_rkwregistration_title>
+        <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
+        <endtime>2144611536</endtime>
+    </fe_users>
+
+    <fe_users>
+        <uid>123</uid>
+        <pid>1</pid>
+        <username>spd@test.de</username>
+        <email>lauterbach@spd.de</email>
+        <first_name />
+        <last_name />
+        <company />
+        <address />
+        <zip>10969</zip>
+        <city>Hamburg</city>
+        <tx_rkwregistration_gender>0</tx_rkwregistration_gender>
+        <tx_rkwregistration_title>0</tx_rkwregistration_title>
+        <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
+        <tstamp>432000</tstamp>
+    </fe_users>
+
+    <fe_users>
+        <uid>124</uid>
+        <pid>1</pid>
+        <username>spd@test.de</username>
+        <email>lauterbach@spd.de</email>
+        <first_name />
+        <last_name />
+        <company />
+        <address />
+        <zip>10969</zip>
+        <city>Hamburg</city>
+        <tx_rkwregistration_gender>0</tx_rkwregistration_gender>
+        <tx_rkwregistration_title>0</tx_rkwregistration_title>
+        <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
+        <tstamp>432000</tstamp>
+        <disable>1</disable>
+    </fe_users>
+
+    <fe_users>
+        <uid>125</uid>
+        <pid>1</pid>
+        <username>spd@test.de</username>
+        <email>lauterbach@spd.de</email>
+        <first_name />
+        <last_name />
+        <company />
+        <address />
+        <zip>10969</zip>
+        <city>Hamburg</city>
+        <tx_rkwregistration_gender>0</tx_rkwregistration_gender>
+        <tx_rkwregistration_title>0</tx_rkwregistration_title>
+        <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
+        <tstamp>2144611536</tstamp>
+        <disable>1</disable>
+    </fe_users>
+</dataset>

@@ -1,38 +1,77 @@
 <?php
 defined('TYPO3_MODE') || die('Access denied.');
 
-//=================================================================
-// Register Plugin
-//=================================================================
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'RKW.RkwRegistration',
-    'Rkwregistration',
-    'RKW Registration'
-);
+call_user_func(
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'RKW.RkwRegistration',
-    'RkwregistrationAjax',
-    'RKW Registration Ajax'
-);
+    function () {
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'RKW.RkwRegistration',
-    'RkwregistrationInfo',
-    'RKW Registration Info'
-);
+        //=================================================================
+        // Register Plugins
+        //=================================================================
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+            'RkwRegistration',
+            'AuthInternal',
+            'RKW Registration: Login'
+        );
 
-//=================================================================
-// Add Flexform
-//=================================================================
-$extKey = 'rkw_registration';
-$extensionName = strtolower(\TYPO3\CMS\Core\Utility\GeneralUtility::underscoredToUpperCamelCase($extKey));
-$pluginName = strtolower('Rkwregistration');
-$pluginSignature = $extensionName.'_'.$pluginName;
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+            'RKW.RkwRegistration',
+            'LogoutInternal',
+            'RKW Registration: Logout'
+        );
 
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature] = 'layout,select_key,pages';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $pluginSignature,
-    'FILE:EXT:'.$extKey . '/Configuration/FlexForms/Registration.xml'
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+            'RKW.RkwRegistration',
+            'Password',
+            'RKW Registration: Passwort'
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+            'RKW.RkwRegistration',
+            'FrontendUserWelcome',
+            'RKW Registration: Willkommen'
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+            'RKW.RkwRegistration',
+            'FrontendUserEdit',
+            'RKW Registration: FrontendUser (editieren)'
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+            'RKW.RkwRegistration',
+            'FrontendUserDelete',
+            'RKW Registration: FrontendUser (löschen)'
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+            'RKW.RkwRegistration',
+            'FrontendUserGroup',
+            'RKW Registration: FrontendUserGroup'
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+            'RKW.RkwRegistration',
+            'ServiceOptIn',
+            'RKW Registration: Service (OptIn)'
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+            'RKW.RkwRegistration',
+            'RkwregistrationAjax',
+            'RKW Registration Ajax'
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+            'RKW.RkwRegistration',
+            'Info',
+            'RKW Registration Info'
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+            'RKW.RkwRegistration',
+            'GoBack',
+            'RKW Registration: Zurück (Redirect-URL)'
+        );
+    }
 );

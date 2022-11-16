@@ -1,0 +1,61 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:rkwRegistration="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
+    data-namespace-typo3-fluid="true">
+
+    <f:layout name="Default" />
+
+     <f:section name="main">
+
+         <h2><f:translate key="templates_frontendUserGroup_list.headline" /></h2>
+         <f:render partial="FlashMessages" arguments="{_all}" />
+
+         <f:if condition="{membershipable}">
+             <table class="responsive-table responsive-table--background" >
+                <f:for each="{membershipable}" as="frontendUserGroup" iteration="iterator">
+                    <tr>
+                        <td>
+                            <h3 class="h4">{frontendUserGroup.title}</h3>
+                            <p>{frontendUserGroup.description}</p>
+
+                           
+
+                            <f:if condition="{rkwRegistration:frontendUserGroups.isUserInGroup(frontendUserGroup:frontendUserGroup, frontendUser:frontendUser)}">
+                                <f:then>
+                                    <div class="btn-list">
+                                        <f:if condition="{frontendUserGroup.txRkwregistrationServicePid}">
+                                            <f:link.page pageUid="{frontendUserGroup.txRkwregistrationServicePid}"  class="btn btn--primary">
+                                                <f:translate key="templates_frontendUserGroup_list.startNow" />
+                                            </f:link.page>
+                                        </f:if>
+                                        <f:link.action action="delete" arguments="{frontendUserGroup: frontendUserGroup}" class="btn btn--secondary">
+                                            <f:translate key="templates_frontendUserGroup_list.cancelMembership" />
+                                        </f:link.action>
+                                    </div>
+                                </f:then>
+                                <f:else>
+                                    
+                                    <f:if condition="{rkwRegistration:frontendUserGroups.isMembershipRequested(frontendUserGroup:frontendUserGroup, membershipsRequested:membershipsRequested)}">
+                                        <f:then>
+                                            <div class="btn-list">
+                                                <button class="btn btn--primary btn--disabled" disabled>
+                                                    <f:translate key="templates_frontendUserGroup_list.membershipRequested" />
+                                                </button>
+                                            </div>
+                                        </f:then>
+                                        <f:else>
+                                            <div class="btn-list">
+                                                <f:link.action action="create" arguments="{frontendUserGroup: frontendUserGroup}" class="btn btn--primary">
+                                                    <f:translate key="templates_frontendUserGroup_list.becomeMember" />
+                                                </f:link.action>
+                                            </div>
+                                        </f:else>
+                                    </f:if>
+                                </f:else>
+                            </f:if>
+                        </td>
+                    </tr>
+                </f:for>
+            </table>
+         </f:if>
+    </f:section>
+</html>

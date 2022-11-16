@@ -1,0 +1,39 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:rkwRegistration="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
+    data-namespace-typo3-fluid="true">
+
+    <f:layout name="Default" />
+    <f:section name="main">
+
+        <f:render partial="FlashMessages" arguments="{_all}" />
+        <f:render partial="FormErrors" arguments="{for:frontendUser}" />
+
+        <f:security.ifAuthenticated>
+            <f:else>
+                <div class="alternatives">
+                    <div class="alternatives__item">
+                        <h3 class="h4"><f:translate key="templates_auth_index.loginHeadline" /></h3>
+                        <f:render partial="Auth/Login" arguments="{_all}" />
+                    </div>
+
+                    <div class="alternatives__item alternatives__item--between">
+                        <f:translate key="templates_auth_index.orHeadline" />
+                    </div>
+
+                    <div class="alternatives__item">
+                        <h3 class="h4"><f:translate key="templates_auth_index.registerHeadline" /></h3>
+                        <f:link.action
+                            class="btn btn--secondary"
+                            action="new"
+                            controller="FrontendUser"
+                            pageUid="{settings.registrationPid}"
+                        >
+                            <f:translate key="templates_auth_index.registerNow" />
+                        </f:link.action>
+                    </div>
+                </div>
+            </f:else>
+        </f:security.ifAuthenticated>
+
+    </f:section>
+</html>

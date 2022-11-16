@@ -23,7 +23,7 @@
         <label for="firstName">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.first_name" />
             <f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='firstName' /> == 0">
-                <span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
+                <span class="optional">&nbsp;<f:translate key="partials_labelSuffix.labelOptional" /></span>
             </f:if>
         </label>
         <f:form.textfield
@@ -37,7 +37,7 @@
         <label for="lastName">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.last_name" />
             <f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='lastName' /> == 0">
-                <span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
+                <span class="optional">&nbsp;<f:translate key="partials_labelSuffix.labelOptional" /></span>
             </f:if>
         </label>
         <f:form.textfield
@@ -51,7 +51,7 @@
         <label for="email">
             <f:translate key="tx_rkwregistration_domain_model_frontenduser.email" />
             <f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='email' /> == 0">
-                <span class="optional">&nbsp;<f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
+                <span class="optional">&nbsp;<f:translate key="partials_labelSuffix.labelOptional" /></span>
             </f:if>
         </label>
         <f:form.textfield

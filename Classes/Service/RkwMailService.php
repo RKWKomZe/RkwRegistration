@@ -2,9 +2,6 @@
 
 namespace RKW\RkwRegistration\Service;
 
-use \RKW\RkwBasics\Helper\Common;
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,59 +15,65 @@ use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwBasics\Utility\GeneralUtility;
+use RKW\RkwMailer\Service\MailService;
+use RKW\RkwMailer\Utility\FrontendLocalizationUtility;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\OptIn;
+use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+
 /**
  * RkwMailService
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
 {
     /**
-     * Handles create user event
+     * Handles optIn-event
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
-     * @param mixed $signalInformation
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
      * @return void
-     * @throws \RKW\RkwMailer\Service\MailException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \RKW\RkwMailer\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function handleCreateUserEvent(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, \RKW\RkwRegistration\Domain\Model\Registration $registration, $signalInformation)
+    public function sendOptInEmail(FrontendUser $frontendUser, OptIn $optIn)
     {
-
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $settingsDefault = $this->getSettings();
+
         if ($settings['view']['templateRootPaths']) {
 
-            /** @var \RKW\RkwMailer\Service\MailService $mailService */
-            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
+            /** @var MailService $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
             // send new user an email with token
             $mailService->setTo($frontendUser, array(
                 'marker' => array(
-                    'tokenYes'        => $registration->getTokenYes(),
-                    'tokenNo'         => $registration->getTokenNo(),
-                    'userSha1'        => $registration->getUserSha1(),
+                    'tokenYes'        => $optIn->getTokenYes(),
+                    'tokenNo'         => $optIn->getTokenNo(),
+                    'tokenUser'       => $optIn->getTokenUser(),
                     'frontendUser'    => $frontendUser,
-                    'registrationPid' => intval($settingsDefault['users']['registrationPid']),
+                    'settings'        => $settingsDefault,
                     'pageUid'         => intval($GLOBALS['TSFE']->id),
                 ),
             ));
 
             $mailService->getQueueMail()->setSubject(
                 \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
-                    'rkwMailService.createUserEvent.subject',
+                    'rkwMailService.optIn.subject',
                     'rkw_registration',
                     null,
                     $frontendUser->getTxRkwregistrationLanguageKey()
@@ -78,54 +81,52 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             );
 
             $mailService->getQueueMail()->addTemplatePaths($settings['view']['templateRootPaths']);
-            $mailService->getQueueMail()->setPlaintextTemplate('Email/RegisterOptInRequest');
-            $mailService->getQueueMail()->setHtmlTemplate('Email/RegisterOptInRequest');
+            $mailService->getQueueMail()->setPlaintextTemplate('Email/OptIn');
+            $mailService->getQueueMail()->setHtmlTemplate('Email/OptIn');
             $mailService->send();
         }
-
     }
 
+
+
     /**
-     * Handles register user event
+     * Handles register user event (after user has done his OptIn)
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Registration $registration
-     * @param string $plaintextPassword
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
      * @return void
-     * @throws \RKW\RkwMailer\Service\MailException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \RKW\RkwMailer\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function handleRegisterUserEvent(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, $plaintextPassword, \RKW\RkwRegistration\Domain\Model\Registration $registration = null)
+    public function sendConfirmationEmail(FrontendUser $frontendUser, OptIn $optIn)
     {
-
-
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $settingsDefault = $this->getSettings();
         if ($settings['view']['templateRootPaths']) {
 
-            /** @var \RKW\RkwMailer\Service\MailService $mailService */
-            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
+            /** @var MailService $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
             // send new user an email with token
-            $mailService->setTo($frontendUser, array(
-                'marker' => array(
-                    'plaintextPasswordForMail' => $plaintextPassword,
-                    'frontendUser'             => $frontendUser,
-                    'pageUid'                  => intval($GLOBALS['TSFE']->id),
-                    'loginPid'                 => intval($settingsDefault['users']['loginPid']),
-                ),
-            ));
+            $mailService->setTo(
+                $frontendUser,
+                [
+                    'marker' => [
+                        'plaintextPasswordForMail'  => $frontendUser->getTempPlaintextPassword(),
+                        'frontendUser'              => $frontendUser,
+                        'pageUid'                   => intval($GLOBALS['TSFE']->id),
+                        'settings'                  => $settingsDefault,
+                    ]
+                ]
+            );
 
             $mailService->getQueueMail()->setSubject(
                 \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
-                    'rkwMailService.registerUserEvent.subject',
+                    'rkwMailService.confirmation.subject',
                     'rkw_registration',
                     null,
                     $frontendUser->getTxRkwregistrationLanguageKey()
@@ -133,55 +134,337 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             );
 
             $mailService->getQueueMail()->addTemplatePaths($settings['view']['templateRootPaths']);
-            $mailService->getQueueMail()->setPlaintextTemplate('Email/RegisterOptInSuccess');
-            $mailService->getQueueMail()->setHtmlTemplate('Email/RegisterOptInSuccess');
+            $mailService->getQueueMail()->setPlaintextTemplate('Email/Confirmation');
+            $mailService->getQueueMail()->setHtmlTemplate('Email/Confirmation');
             $mailService->send();
         }
-
     }
+
+
+    /**
+     * Handles optIn-event for groups
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
+     * @param mixed $signalInformation
+     * @return void
+     * @throws \RKW\RkwMailer\Exception
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function sendGroupOptInEmail(FrontendUser $frontendUser, OptIn $optIn)
+    {
+        // get settings
+        $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $settingsDefault = $this->getSettings();
+
+        if ($settings['view']['templateRootPaths']) {
+
+            /** @var MailService $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
+
+            // send new user an email with token
+            $mailService->setTo($frontendUser, array(
+                'marker' => array(
+                    'tokenYes'          => $optIn->getTokenYes(),
+                    'tokenNo'           => $optIn->getTokenNo(),
+                    'tokenUser'         => $optIn->getTokenUser(),
+                    'frontendUser'      => $frontendUser,
+                    'frontendUserGroup' => $optIn->getData(),
+                    'settings'          => $settingsDefault,
+                    'pageUid'           => intval($GLOBALS['TSFE']->id),
+                ),
+            ));
+
+            $mailService->getQueueMail()->setSubject(
+                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
+                    'rkwMailService.group.optIn.subject',
+                    'rkw_registration',
+                    null,
+                    $frontendUser->getTxRkwregistrationLanguageKey()
+                )
+            );
+
+            $mailService->getQueueMail()->addTemplatePaths($settings['view']['templateRootPaths']);
+            $mailService->getQueueMail()->setPlaintextTemplate('Email/Group/OptIn');
+            $mailService->getQueueMail()->setHtmlTemplate('Email/Group/OptIn');
+            $mailService->send();
+        }
+    }
+
+
+    /**
+     * Handles optIn-event for group-admins
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser> $approvals
+     * @return void
+     * @throws \RKW\RkwMailer\Exception
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function sendGroupOptInEmailAdmin(FrontendUser $frontendUser, OptIn $optIn, ObjectStorage $approvals)
+    {
+        // get settings
+        $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $settingsDefault = $this->getSettings();
+
+        if (
+            ($settings['view']['templateRootPaths'])
+            && (count($approvals))
+        ){
+
+            /** @var MailService $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
+
+            /** @var \RKW\RkwRegistration\Domain\Model\BackendUser $backendUser */
+            foreach ($approvals as $backendUser) {
+
+                // send new user an email with token
+                $mailService->setTo($backendUser, array(
+                    'marker' => array(
+                        'tokenYes' => $optIn->getAdminTokenYes(),
+                        'tokenNo' => $optIn->getAdminTokenNo(),
+                        'tokenUser' => $optIn->getTokenUser(),
+                        'frontendUser' => $frontendUser,
+                        'backendUser'  => $backendUser,
+                        'frontendUserGroup' => $optIn->getData(),
+                        'settings' => $settingsDefault,
+                        'pageUid' => intval($GLOBALS['TSFE']->id),
+                    ),
+                    'subject' => FrontendLocalizationUtility::translate(
+                        'rkwMailService.group.optInAdmin.subject',
+                        'rkw_registration',
+                        null,
+                        $backendUser->getLang()
+                    ),
+                ));
+            }
+
+            $mailService->getQueueMail()->setSubject(
+                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
+                    'rkwMailService.group.optInAdmin.subject',
+                    'rkw_registration',
+                    null,
+                )
+            );
+
+            $mailService->getQueueMail()->addTemplatePaths($settings['view']['templateRootPaths']);
+            $mailService->getQueueMail()->setPlaintextTemplate('Email/Group/OptInAdmin');
+            $mailService->getQueueMail()->setHtmlTemplate('Email/Group/OptInAdmin');
+            $mailService->send();
+        }
+    }
+
+
+    /**
+     * Handles completion-event for groups
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
+     * @return void
+     * @throws \RKW\RkwMailer\Exception
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function sendGroupConfirmationEmail(FrontendUser $frontendUser, OptIn $optIn)
+    {
+        // get settings
+        $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $settingsDefault = $this->getSettings();
+
+        if ($settings['view']['templateRootPaths']) {
+
+            /** @var MailService $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
+
+            // send new user an email with token
+            $mailService->setTo($frontendUser, array(
+                'marker' => array(
+                    'frontendUser'      => $frontendUser,
+                    'frontendUserGroup' => $optIn->getData(),
+                    'settings'          => $settingsDefault,
+                    'pageUid'           => intval($GLOBALS['TSFE']->id),
+                ),
+            ));
+
+            $mailService->getQueueMail()->setSubject(
+                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
+                    'rkwMailService.group.confirmation.subject',
+                    'rkw_registration',
+                    null,
+                    $frontendUser->getTxRkwregistrationLanguageKey()
+                )
+            );
+
+            $mailService->getQueueMail()->addTemplatePaths($settings['view']['templateRootPaths']);
+            $mailService->getQueueMail()->setPlaintextTemplate('Email/Group/Confirmation');
+            $mailService->getQueueMail()->setHtmlTemplate('Email/Group/Confirmation');
+            $mailService->send();
+        }
+    }
+
+
+    /**
+     * Handles optIn-withdraw-event for group-admins
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser> $approvals
+     * @return void
+     * @throws \RKW\RkwMailer\Exception
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function sendGroupOptInWithdrawEmailAdmin (FrontendUser $frontendUser, OptIn $optIn, ObjectStorage $approvals)
+    {
+        // get settings
+        $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $settingsDefault = $this->getSettings();
+
+        if (
+            ($settings['view']['templateRootPaths'])
+            && (count($approvals))
+        ){
+
+            /** @var MailService $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
+
+            /** @var \RKW\RkwRegistration\Domain\Model\BackendUser $backendUser */
+            foreach ($approvals as $backendUser) {
+
+                // send new user an email with token
+                $mailService->setTo($backendUser, array(
+                    'marker' => array(
+                        'frontendUser' => $frontendUser,
+                        'backendUser'  => $backendUser,
+                        'frontendUserGroup' => $optIn->getData(),
+                        'settings' => $settingsDefault,
+                        'pageUid' => intval($GLOBALS['TSFE']->id),
+                    ),
+                    'subject' => FrontendLocalizationUtility::translate(
+                        'rkwMailService.group.optInWithdrawAdmin.subject',
+                        'rkw_registration',
+                        null,
+                        $backendUser->getLang()
+                    ),
+                ));
+            }
+
+            $mailService->getQueueMail()->setSubject(
+                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
+                    'rkwMailService.group.optInWithdrawAdmin.subject',
+                    'rkw_registration',
+                    null,
+                )
+            );
+
+            $mailService->getQueueMail()->addTemplatePaths($settings['view']['templateRootPaths']);
+            $mailService->getQueueMail()->setPlaintextTemplate('Email/Group/OptInWithdrawAdmin');
+            $mailService->getQueueMail()->setHtmlTemplate('Email/Group/OptInWithdrawAdmin');
+            $mailService->send();
+        }
+    }
+
+
+    /**
+     * Handles optIn-denial-event for groups
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
+     * @return void
+     * @throws \RKW\RkwMailer\Exception
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function sendGroupOptInDenialEmail (FrontendUser $frontendUser, OptIn $optIn)
+    {
+        // get settings
+        $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $settingsDefault = $this->getSettings();
+
+        if ($settings['view']['templateRootPaths']) {
+
+            /** @var MailService $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
+
+            // send new user an email with token
+            $mailService->setTo($frontendUser, array(
+                'marker' => array(
+                    'frontendUser'      => $frontendUser,
+                    'frontendUserGroup' => $optIn->getData(),
+                    'settings'          => $settingsDefault,
+                    'pageUid'           => intval($GLOBALS['TSFE']->id),
+                ),
+            ));
+
+            $mailService->getQueueMail()->setSubject(
+                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
+                    'rkwMailService.group.optInDenial.subject',
+                    'rkw_registration',
+                    null,
+                    $frontendUser->getTxRkwregistrationLanguageKey()
+                )
+            );
+
+            $mailService->getQueueMail()->addTemplatePaths($settings['view']['templateRootPaths']);
+            $mailService->getQueueMail()->setPlaintextTemplate('Email/Group/OptInDenial');
+            $mailService->getQueueMail()->setHtmlTemplate('Email/Group/OptInDenial');
+            $mailService->send();
+        }
+    }
+
 
     /**
      * Handles password reset event
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @param string $plaintextPassword
-     * @param mixed $signalInformation
      * @return void
-     * @throws \RKW\RkwMailer\Service\MailException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \RKW\RkwMailer\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function handlePasswordResetEvent(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, $plaintextPassword, $signalInformation)
+    public function sendResetPasswordEmail(FrontendUser $frontendUser, string $plaintextPassword)
     {
-
-
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $settingsDefault = $this->getSettings();
 
         if ($settings['view']['templateRootPaths']) {
 
-            /** @var \RKW\RkwMailer\Service\MailService $mailService */
-            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
+            /** @var MailService $mailService */
+            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(MailService::class);
 
             // send new user an email with token
-            $mailService->setTo($frontendUser, array(
-                'marker' => array(
-                    'plaintextPasswordForMail' => $plaintextPassword,
-                    'frontendUser'             => $frontendUser,
-                    'pageUid'                  => intval($GLOBALS['TSFE']->id),
-                    'loginPid'                 => intval($settingsDefault['users']['loginPid']),
-                ),
-            ));
+            $mailService->setTo(
+                $frontendUser,
+                [
+                    'marker' => [
+                        'plaintextPasswordForMail' => $plaintextPassword,
+                        'frontendUser'             => $frontendUser,
+                        'settings'                 => $settingsDefault,
+                        'pageUid'                  => intval($GLOBALS['TSFE']->id),
+                    ],
+                ]
+            );
 
             $mailService->getQueueMail()->setSubject(
                 \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
-                    'rkwMailService.passwordResetEvent.subject',
+                    'rkwMailService.resetPassword.subject',
                     'rkw_registration',
                     null,
                     $frontendUser->getTxRkwregistrationLanguageKey()
@@ -192,177 +475,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
             $mailService->getQueueMail()->setPlaintextTemplate('Email/PasswordReset');
             $mailService->getQueueMail()->setHtmlTemplate('Email/PasswordReset');
             $mailService->send();
-
         }
-
-    }
-
-    /**
-     * Handles register user event
-     *
-     * @param \RKW\RkwRegistration\Domain\Model\BackendUser $admin
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup
-     * @param \RKW\RkwRegistration\Domain\Model\Service $serviceOptIn
-     * @param integer $pid
-     * @param mixed $signalInformation
-     * @return void
-     * @throws \RKW\RkwMailer\Service\MailException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     */
-    public function handleAdminServiceEvent(\RKW\RkwRegistration\Domain\Model\BackendUser $admin, \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup, \RKW\RkwRegistration\Domain\Model\Service $serviceOptIn, $pid, $signalInformation)
-    {
-
-        // get settings
-        $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-        if ($settings['view']['templateRootPaths']) {
-
-            /** @var \RKW\RkwMailer\Service\MailService $mailService */
-            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
-
-            // send new user an email with token
-            $mailService->setTo($admin, array(
-                'marker' => array(
-                    'tokenYes'          => $serviceOptIn->getTokenYes(),
-                    'tokenNo'           => $serviceOptIn->getTokenNo(),
-                    'serviceSha1'       => $serviceOptIn->getServiceSha1(),
-                    'service'           => $serviceOptIn,
-                    'frontendUser'      => $frontendUser,
-                    'frontendUserGroup' => $frontendUserGroup,
-                    'backendUser'       => $admin,
-                    'pageUid'           => intval($pid),
-                ),
-            ));
-
-            $mailService->getQueueMail()->setSubject(
-                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
-                    'rkwMailService.adminServiceEvent.subject',
-                    'rkw_registration',
-                    null,
-                    $admin->getLang()
-                )
-            );
-
-            $mailService->getQueueMail()->addTemplatePaths($settings['view']['templateRootPaths']);
-            $mailService->getQueueMail()->setPlaintextTemplate('Email/ServiceOptInAdminRequest');
-            $mailService->getQueueMail()->setHtmlTemplate('Email/ServiceOptInAdminRequest');
-            $mailService->send();
-        }
-
-    }
-
-    /**
-     * Handles register user event
-     *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Service $service
-     * @param mixed $signalInformation
-     * @return void
-     * @throws \RKW\RkwMailer\Service\MailException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     */
-    public function handleAdminServiceGrantEvent(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, \RKW\RkwRegistration\Domain\Model\Service $service, $signalInformation)
-    {
-
-        // get settings
-        $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-        $settingsDefault = $this->getSettings();
-        if ($settings['view']['templateRootPaths']) {
-
-            /** @var \RKW\RkwMailer\Service\MailService $mailService */
-            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
-
-            // send new user an email with token
-            $mailService->setTo($frontendUser, array(
-                'marker' => array(
-                    'service'      => $service,
-                    'frontendUser' => $frontendUser,
-                    'pageUid'      => intval($GLOBALS['TSFE']->id),
-                    'loginPid'     => intval($settingsDefault['users']['loginPid']),
-                ),
-            ));
-
-            $mailService->getQueueMail()->setSubject(
-                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
-                    'rkwMailService.adminServiceGrantEvent.subject',
-                    'rkw_registration',
-                    null,
-                    $frontendUser->getTxRkwregistrationLanguageKey()
-                )
-            );
-
-            $mailService->getQueueMail()->addTemplatePaths($settings['view']['templateRootPaths']);
-            $mailService->getQueueMail()->setPlaintextTemplate('Email/ServiceOptInSuccess');
-            $mailService->getQueueMail()->setHtmlTemplate('Email/ServiceOptInSuccess');
-            $mailService->send();
-
-        }
-
-    }
-
-
-    /**
-     * Handles register user event
-     *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @param \RKW\RkwRegistration\Domain\Model\Service $service
-     * @param mixed $signalInformation
-     * @return void
-     * @throws \RKW\RkwMailer\Service\MailException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     */
-    public function handleAdminServiceDenialEvent(\RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser, \RKW\RkwRegistration\Domain\Model\Service $service, $signalInformation)
-    {
-
-        // get settings
-        $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-        if ($settings['view']['templateRootPaths']) {
-
-            /** @var \RKW\RkwMailer\Service\MailService $mailService */
-            $mailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('RKW\\RkwMailer\\Service\\MailService');
-
-            // send new user an email with token
-            $mailService->setTo($frontendUser, array(
-                'marker' => array(
-                    'service'      => $service,
-                    'frontendUser' => $frontendUser,
-                    'pageUid'      => intval($GLOBALS['TSFE']->id),
-                ),
-            ));
-
-            $mailService->getQueueMail()->setSubject(
-                \RKW\RkwMailer\Utility\FrontendLocalizationUtility::translate(
-                    'rkwMailService.adminServiceDenialEvent.subject',
-                    'rkw_registration',
-                    null,
-                    $frontendUser->getTxRkwregistrationLanguageKey()
-                )
-            );
-
-            $mailService->getQueueMail()->addTemplatePaths($settings['view']['templateRootPaths']);
-            $mailService->getQueueMail()->setPlaintextTemplate('Email/ServiceOptInDenial');
-            $mailService->getQueueMail()->setHtmlTemplate('Email/ServiceOptInDenial');
-            $mailService->send();
-        }
-
     }
 
 
@@ -373,9 +486,8 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
+    protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
     {
-        return Common::getTyposcriptConfiguration('Rkwregistration', $which);
-        //===
+        return GeneralUtility::getTyposcriptConfiguration('Rkwregistration', $which);
     }
 }

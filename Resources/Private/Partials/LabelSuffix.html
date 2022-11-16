@@ -12,10 +12,10 @@
 
     <f:if condition="<rkwRegistration:isMandatoryField frontendUser='{frontendUser}' fieldName='{field}' />">
         <f:then>
-            <span class="is-required"><f:translate key="partials_registration_registerFormFields.labelRequired" /></span>
+            <span class="is-required"><f:translate key="partials_labelSuffix.labelRequired" /></span>
         </f:then>
         <f:else>
-            <span class="is-optional"><f:translate key="partials_registration_registerFormFields.labelOptional" /></span>
+            <span class="is-optional"><f:translate key="partials_labelSuffix.labelOptional" /></span>
         </f:else>
     </f:if>
 </html>

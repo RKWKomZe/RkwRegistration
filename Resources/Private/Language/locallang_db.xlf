@@ -3,24 +3,15 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2014-06-12T13:49:26Z" product-name="rkw_registration">
 		<header/>
 		<body>
-
-            <!-- tx_rkwregistration_domain_model_encrypteddata -->
+ 			<!-- tx_rkwregistration_domain_model_encrypteddata -->
             <trans-unit id="tx_rkwregistration_domain_model_encrypteddata">
-                <source>RKW Registration: Encrypted Data</source>
+                <source>RKW Registration: Encrypted Data (Data Protection)</source>
             </trans-unit>
-
 
             <!-- tx_rkwregistration_domain_model_registration -->
-            <trans-unit id="tx_rkwregistration_domain_model_registration">
-                <source>RKW Registration: Registration (Opt-In)</source>
+            <trans-unit id="tx_rkwregistration_domain_model_optin">
+                <source>RKW Registration: Opt-In</source>
             </trans-unit>
-
-
-            <!-- tx_rkwregistration_domain_model_service -->
-            <trans-unit id="tx_rkwregistration_domain_model_service">
-                <source>RKW Registration: Service (Opt-In)</source>
-            </trans-unit>
-
 
             <!-- tx_rkwregistration_domain_model_frontenduser -->
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser">
@@ -28,21 +19,6 @@
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.socialmedia">
                 <source>Social Media</source>
-            </trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by">
-				<source>Registered By</source>
-			</trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.rkw">
-                <source>RKW</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.facebook">
-                <source>Facebook</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.twitter">
-                <source>Twitter</source>
-            </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by.I.xing">
-                <source>Xing</source>
             </trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_mobile">
 				<source>Mobile</source>
@@ -59,14 +35,8 @@
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_gender.I.99">
                 <source>Not set</source>
             </trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_id">
-				<source>Twitter Id</source>
-			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_twitter_url">
 				<source>Twitter URL</source>
-			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_id">
-				<source>Facebook Id</source>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_facebook_url">
 				<source>Facebook URL</source>
@@ -74,114 +44,119 @@
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_xing_url">
 				<source>XING URL</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_registered_by">
-				<source>Registered By</source>
-			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_register_remote_ip">
 				<source>Register Remote Ip</source>
-			</trans-unit>
+            </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_login_error_count">
                 <source>Login Error Count</source>
             </trans-unit>
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_language_key">
                 <source>Language Key</source>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser">
-				<source>RKW WePstra: Anonymous User</source>
-			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_is_anonymous">
-				<source>Anonymous User</source>
-			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_privacy">
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.neutral">
+                <source>Please choose</source>
+            </trans-unit>
+          	<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_consent">
 				<source>Consent to data protection</source>
 			</trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontenduser.title">
-    			<source>Title (overridden)</source>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.title">
+				<source>Title (overridden)</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title">
-				<source>Title</source>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.consent_terms">
+				<target>Einwilligung zu Nutzungsbedingungen erteilt</target>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.neutral">
-				<source>Please choose</source>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.consent_marketing">
+				<target>Einwilligung zum Marketing erteilt</target>
 			</trans-unit>
-
 
 
             <!-- tx_rkwregistration_domain_model_frontendusergroup -->
-            <trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_is_service">
-                <source>Service</source>
+            <trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_is_membership">
+                <source>Membership</source>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_is_service.I.enabled">
-                <source>Is Service</source>
+            <trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_is_membership.I.enabled">
+                <source>Group allows membership via the frontend</source>
             </trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_service_opening_date">
-				<source>Startdate for Service</source>
+			<trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_membership_opening_date">
+				<source>Start date for possibility of membership</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_service_closing_date">
-				<source>Enddate for Service</source>
+			<trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_membership_closing_date">
+				<source>End date for possibility of membership</source>
 			</trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_service_mandatory_fields">
-                <source>Mandatory Fields in FE-User for Service</source>
+            <trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_membership_mandatory_fields">
+                <source>Mandatory fields in FE-User for membership</source>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_service_admins">
-                <source>Service Admins</source>
+            <trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_membership_admins">
+                <source>Admins for the approval of a membership</source>
             </trans-unit>
-            <trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_service_pid">
-                <source>Page of Activated Service</source>
+            <trans-unit id="tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_membership_pid">
+                <source>Link to the group when unlocked</source>
             </trans-unit>
 
 
-            <!-- tx_rkwregistration_domain_model_privacy -->
-            <trans-unit id="tx_rkwregistration_domain_model_privacy">
+            <!-- tx_rkwregistration_domain_model_consent -->
+            <trans-unit id="tx_rkwregistration_domain_model_consent">
                 <source>RKW Registration: Privacy</source>
             </trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.frontend_user">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.frontend_user">
 				<source>FrontendUser</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.registration">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.registration">
 				<source>Registration</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.child">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.child">
 				<source>Child</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.crdate">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.crdate">
 				<source>Create date</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.foreign_table">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.foreign_table">
 				<source>Foreign table</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.foreign_uid">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.foreign_uid">
 				<source>Foreign uid</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.ip_address">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.ip_address">
 				<source>Ip address</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.user_agent">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.user_agent">
 				<source>UserAgent</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.extension_name">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.extension_name">
 				<source>Extension name</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.plugin_name">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.plugin_name">
 				<source>Plugin name</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.controller_name">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.controller_name">
 				<source>Controller name</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.action_name">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.action_name">
 				<source>Action name</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.comment">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.comment">
 				<source>Comment</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.server_host">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.server_host">
 				<source>Server host name</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.server_uri">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.server_uri">
 				<source>Server URI</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.server_referer_url">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.server_referer_url">
 				<source>Server referer</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_consent.consent_privacy">
+				<source>Consent to data storage</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_consent.consent_terms">
+				<source>Consent to Terms of Use given</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_consent.consent_marketing">
+				<source>Consent to marketing given</source>
 			</trans-unit>
 
 
@@ -232,6 +207,7 @@
 				<source>City</source>
 			</trans-unit>
 
+
 			<!-- tx_rkwregistration_domain_model_title -->
 			<trans-unit id="tx_rkwregistration_domain_model_title">
 				<source>RKW Registration: Title</source>
@@ -242,74 +218,21 @@
 			<trans-unit id="tx_rkwregistration_domain_model_title.name_long">
 				<source>Name long</source>
 			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.name_female">
+				<source>Name (female)</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.name_female_long">
+				<source>Name long (female)</source>
+			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_title.is_title_after">
 				<source>Is title after</source>
 			</trans-unit>
-
-
-            <!-- Flexform Registration-->
-            <trans-unit id="flexform.registration.sheetTitle">
-                <source>Behavior</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.action">
-                <source>Plugin standard action</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.action.I.register">
-                <source>Register</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.action.I.login">
-                <source>Login / Register</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.action.I.logout">
-                <source>Logout</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.action.I.loginTwitterApi">
-                <source>Login Twitter API</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.action.I.welcome">
-                <source>Welcome</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.action.I.editUser">
-                <source>Edit User</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.action.I.deleteUser">
-                <source>Delete User</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.action.I.editPassword">
-                <source>Edit Password</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.action.I.service">
-                <source>Service</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.action.I.serviceAdmin">
-                <source>Service Admin Opt-In</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.action.I.loginExternal">
-                <source>Login / Register / Anonymous Login / Logout / XDL (External)</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.action.I.logoutExternal">
-                <source>Logout / XDL (External)</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.doXdl">
-                <source>Do XDL</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.loginPid">
-                <source>Login Pid</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.redirectPidAfterXdlLogin">
-                <source>Redirect Pid After XDL Login</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.redirectPidAfterXdlLogout">
-                <source>Redirect Pid After XDL Logout</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.allowAnonymousLogin">
-                <source>Allow Anonmyous Login</source>
-            </trans-unit>
-            <trans-unit id="flexform.registration.anonymousRedirectPid">
-                <source>Redirect Pid After Anonymous Login</source>
-            </trans-unit>
-
-
+			<trans-unit id="tx_rkwregistration_domain_model_title.is_included_in_salutation">
+			    <source>Is included in salutation</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_title.is_checked">
+			    <source>Title is approved</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
