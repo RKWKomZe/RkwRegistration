@@ -2,7 +2,7 @@
 <dataset>
 
     <fe_users>
-        <uid>1</uid>
+        <uid>70</uid>
         <pid>1</pid>
         <username>spd@test.de</username>
         <email>lauterbach@spd.de</email>
@@ -21,7 +21,7 @@
 
 
     <tx_rkwregistration_domain_model_shippingaddress>
-        <uid>1</uid>
+        <uid>70</uid>
         <pid>100000</pid>
         <gender>1</gender>
         <first_name>Karl</first_name>
@@ -30,7 +30,7 @@
         <address>Straßenring 123</address>
         <zip>10969</zip>
         <city>Hamburg</city>
-        <frontend_user>1</frontend_user>
+        <frontend_user>70</frontend_user>
     </tx_rkwregistration_domain_model_shippingaddress>
 
 </dataset>

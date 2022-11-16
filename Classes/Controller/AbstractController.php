@@ -18,7 +18,6 @@ use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
-use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use RKW\RkwRegistration\Validation\FrontendUserValidator;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
@@ -32,7 +31,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -176,13 +175,13 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
             AbstractMessage::ERROR
         );
 
-        if ($this->settings['users']['loginPid']) {
+        if ($this->settings['loginPid']) {
             $this->redirect(
                 'index',
                 'Auth',
                 null,
                 [],
-                $this->settings['users']['loginPid']
+                $this->settings['loginPid']
             );
         }
 
@@ -214,6 +213,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
             if ($frontendUserGroup) {
                 $insecureFrontendUser->setTempFrontendUserGroup($frontendUserGroup);
             }
+
             $frontendUserValidator = $this->objectManager->get(FrontendUserValidator::class);
             $frontendUserValidator->validate($insecureFrontendUser);
 
@@ -228,7 +228,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
                     AbstractMessage::WARNING
                 );
 
-                 if ($this->settings['users']['editUserPid']) {
+                 if ($this->settings['editUserPid']) {
                     $this->redirect(
                         'edit',
                         'FrontendUser',
@@ -237,7 +237,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
                             'frontendUser' => $this->getFrontendUser(),
                             'frontendUserGroup' => $frontendUserGroup
                         ],
-                        $this->settings['users']['editUserPid']
+                        $this->settings['editUserPid']
                     );
                 }
 

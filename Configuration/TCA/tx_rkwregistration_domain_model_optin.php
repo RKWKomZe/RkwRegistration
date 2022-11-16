@@ -16,10 +16,10 @@ return [
 		'iconfile' => 'EXT:rkw_registration/Resources/Public/Icons/tx_rkwregistration_domain_model_optin.gif'
 	],
 	'interface' => [
-		'showRecordFieldList' => 'frontend_user_uid, frontend_user_update, token_user, token_yes, token_no, admin_token_yes, admin_token_no, category, approved, admin_approved, data',
+		'showRecordFieldList' => 'frontend_user_uid, frontend_user_update, admins, token_user, token_yes, token_no, admin_token_yes, admin_token_no, category, approved, admin_approved, data',
 	],
 	'types' => [
-		'1' => ['showitem' => 'frontend_user_uid, frontend_user_update, token_user, token_yes, token_no, admin_token_yes, admin_token_no, category, approved, admin_approved, data, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'],
+		'1' => ['showitem' => 'frontend_user_uid, frontend_user_update, admins, token_user, token_yes, token_no, admin_token_yes, admin_token_no, category, approved, admin_approved, data, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access, starttime, endtime'],
 	],
 	'palettes' => [
 		'1' => ['showitem' => ''],
@@ -44,6 +44,12 @@ return [
         'frontend_user_update' => [
             'config' => [
                 'type' => 'passthrough',
+            ],
+        ],
+        'admins' => [
+            'config' => [
+                'type' => 'passthrough',
+                'foreign_table' => 'fe_groups',
             ],
         ],
 		'token_user' => [

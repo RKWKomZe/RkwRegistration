@@ -59,11 +59,17 @@
             <trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_title.I.neutral">
                 <source>Please choose</source>
             </trans-unit>
-          	<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_privacy">
+          	<trans-unit id="tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_consent">
 				<source>Consent to data protection</source>
 			</trans-unit>
 			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.title">
 				<source>Title (overridden)</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.consent_terms">
+				<target>Einwilligung zu Nutzungsbedingungen erteilt</target>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_frontenduser.consent_marketing">
+				<target>Einwilligung zum Marketing erteilt</target>
 			</trans-unit>
 
 
@@ -91,57 +97,66 @@
             </trans-unit>
 
 
-            <!-- tx_rkwregistration_domain_model_privacy -->
-            <trans-unit id="tx_rkwregistration_domain_model_privacy">
+            <!-- tx_rkwregistration_domain_model_consent -->
+            <trans-unit id="tx_rkwregistration_domain_model_consent">
                 <source>RKW Registration: Privacy</source>
             </trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.frontend_user">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.frontend_user">
 				<source>FrontendUser</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.registration">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.registration">
 				<source>Registration</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.child">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.child">
 				<source>Child</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.crdate">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.crdate">
 				<source>Create date</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.foreign_table">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.foreign_table">
 				<source>Foreign table</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.foreign_uid">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.foreign_uid">
 				<source>Foreign uid</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.ip_address">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.ip_address">
 				<source>Ip address</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.user_agent">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.user_agent">
 				<source>UserAgent</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.extension_name">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.extension_name">
 				<source>Extension name</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.plugin_name">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.plugin_name">
 				<source>Plugin name</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.controller_name">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.controller_name">
 				<source>Controller name</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.action_name">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.action_name">
 				<source>Action name</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.comment">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.comment">
 				<source>Comment</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.server_host">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.server_host">
 				<source>Server host name</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.server_uri">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.server_uri">
 				<source>Server URI</source>
 			</trans-unit>
-			<trans-unit id="tx_rkwregistration_domain_model_privacy.server_referer_url">
+			<trans-unit id="tx_rkwregistration_domain_model_consent.server_referer_url">
 				<source>Server referer</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_consent.consent_privacy">
+				<source>Consent to data storage</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_consent.consent_terms">
+				<source>Consent to Terms of Use given</source>
+			</trans-unit>
+			<trans-unit id="tx_rkwregistration_domain_model_consent.consent_marketing">
+				<source>Consent to marketing given</source>
 			</trans-unit>
 
 

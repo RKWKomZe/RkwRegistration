@@ -14,12 +14,12 @@
     <fe_groups>
         <uid>20</uid>
         <title>Test 20</title>
-        <tx_rkwregistration_service_mandatory_fields>email, middle_name</tx_rkwregistration_service_mandatory_fields>
+        <tx_rkwregistration_membership_mandatory_fields>email, middle_name</tx_rkwregistration_membership_mandatory_fields>
     </fe_groups>
 
     <fe_groups>
         <uid>21</uid>
         <title>Test 21</title>
-        <tx_rkwregistration_service_mandatory_fields>zip, city</tx_rkwregistration_service_mandatory_fields>
+        <tx_rkwregistration_membership_mandatory_fields>zip, city</tx_rkwregistration_membership_mandatory_fields>
     </fe_groups>
 </dataset>

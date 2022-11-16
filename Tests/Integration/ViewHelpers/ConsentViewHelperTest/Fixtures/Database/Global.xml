@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <pages>
+        <uid>1</uid>
+        <pid>0</pid>
+        <title>Rootpage</title>
+        <doktype>1</doktype>
+        <perms_everybody>15</perms_everybody>
+    </pages>
+
+    <pages>
+        <uid>2</uid>
+        <pid>1</pid>
+        <title>Terms 1</title>
+        <slug>terms-1</slug>
+        <doktype>1</doktype>
+        <perms_everybody>15</perms_everybody>
+    </pages>
+
+    <pages>
+        <uid>3</uid>
+        <pid>1</pid>
+        <title>Terms 2</title>
+        <slug>terms-2</slug>
+        <doktype>1</doktype>
+        <perms_everybody>15</perms_everybody>
+    </pages>
+</dataset>

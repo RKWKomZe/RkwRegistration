@@ -14,18 +14,20 @@ namespace RKW\RkwRegistration\Tests\Integration\Utility;
  */
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Register\FrontendUserRegister;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * FrontendUserUtilityTest
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -45,6 +47,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
      * @var string[]
      */
     protected $testExtensionsToLoad = [
+        'typo3conf/ext/rkw_ajax',
         'typo3conf/ext/rkw_basics',
         'typo3conf/ext/rkw_registration',
     ];
@@ -68,6 +71,8 @@ class FrontendUserUtilityTest extends FunctionalTestCase
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
             ]
         );
+
+        FrontendSimulatorUtility::simulateFrontendEnvironment(1);
 
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -183,8 +188,9 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUser->setZip(123456);
 
         $result = FrontendUserUtility::convertObjectToArray($frontendUser);
+
         self::assertIsArray($result);
-        self::assertCount(38, $result);
+        self::assertCount(40, $result);
         self::assertEquals('test', $result['username']);
         self::assertEquals(123456, $result['zip']);
     }
@@ -313,18 +319,18 @@ class FrontendUserUtilityTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function isUsernameUniqueChecksExistingEmailAndReturnsFalse ()
+    public function isUsernameUniqueChecksExistingEmailAndReturnsTrue ()
     {
         /**
          * Scenario:
          *
          * Given is an email-address that is already in use as email in an frontendUser object
          * When the method is called with that email as parameter
-         * Then the function returns false
+         * Then the function returns true
          */
 
         $this->importDataSet(self::FIXTURE_PATH  . '/Database/Check10.xml');
-        self::assertFalse(FrontendUserUtility::isUsernameUnique('lauterbach@spd.de'));
+        self::assertTrue(FrontendUserUtility::isUsernameUnique('lauterbach@spd.de'));
     }
 
     /**
@@ -472,8 +478,11 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          * Given that frontendUser has made no login attempts before
          * Given there is no configuration for the maximum number of login errors
          * When the method is called with that frontendUser as parameter
-         * Then the functions returns the maximum number of possible login attempts from typoscript-configuration
+         * Then the functions returns the maximum number of possible login attempts from php-script
          */
+
+        FrontendSimulatorUtility::resetFrontendEnvironment();
+
         $this->setUpFrontendRootPage(
             1,
             [
@@ -481,15 +490,19 @@ class FrontendUserUtilityTest extends FunctionalTestCase
                 'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
+                self::FIXTURE_PATH . '/Frontend/Configuration/RootpageMinimal.typoscript',
             ]
         );
 
+        FrontendSimulatorUtility::simulateFrontendEnvironment(1);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
 
         self::assertEquals(10 ,FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
+
     }
+
     /**
      * @test
      * @throws \Exception
@@ -509,7 +522,8 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
 
-        self::assertEquals(8 ,FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
+        self::assertEquals(8, FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
+
     }
 
     /**
@@ -528,11 +542,13 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          * Then the functions returns the remaining number of possible login attempts from typoscript-configuration
          */
 
+
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
         $frontendUser->setTxRkwregistrationLoginErrorCount(5);
 
         self::assertEquals(3 ,FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
+
     }
 
     /**
@@ -556,6 +572,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUser->setTxRkwregistrationLoginErrorCount(10);
 
         self::assertEquals(0 ,FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
+
     }
 
     #==============================================================================
@@ -571,8 +588,11 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          *
          * Given there is no configuration for the maximum number of login errors
          * When the method is called with value 0 as parameter
-         * Then the functions returns the maximum number of possible login attempts from typoscript-configuration
+         * Then the functions returns the maximum number of possible login attempts from php-script
          */
+
+        FrontendSimulatorUtility::resetFrontendEnvironment();
+
         $this->setUpFrontendRootPage(
             1,
             [
@@ -580,11 +600,17 @@ class FrontendUserUtilityTest extends FunctionalTestCase
                 'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
+                self::FIXTURE_PATH . '/Frontend/Configuration/RootpageMinimal.typoscript',
+
             ]
         );
 
+        FrontendSimulatorUtility::simulateFrontendEnvironment(1);
+
+
         self::assertEquals(10 ,FrontendUserUtility::getRemainingLoginAttemptsNumeric(0));
     }
+
     /**
      * @test
      * @throws \Exception
@@ -617,6 +643,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          */
 
         self::assertEquals(3 ,FrontendUserUtility::getRemainingLoginAttemptsNumeric(5));
+
     }
 
     /**
@@ -642,7 +669,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
      * @test
      * @throws \Exception
      */
-    public function getMandatoryFieldsReturnsEmptyArrayIfNothingConfigured()
+    public function getMandatoryFieldsReturnsEmailIfNothingConfigured()
     {
         /**
          * Scenario:
@@ -650,8 +677,10 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          * Given there is no configuration for the mandatory fields
          * When the method is called without parameter
          * Then an array is returned
-         * Then this array is empty
+         * Then this array contains only the property-name "email"
          */
+
+        FrontendSimulatorUtility::resetFrontendEnvironment();
 
         $this->setUpFrontendRootPage(
             1,
@@ -660,12 +689,17 @@ class FrontendUserUtilityTest extends FunctionalTestCase
                 'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
+                self::FIXTURE_PATH . '/Frontend/Configuration/RootpageMinimal.typoscript',
             ]
         );
 
+        FrontendSimulatorUtility::simulateFrontendEnvironment(1);
+
         $result = FrontendUserUtility::getMandatoryFields();
         self::assertIsArray($result);
-        self::assertEmpty($result);
+        self::assertCount(1, $result);
+        self::assertEquals('email', $result[0]);
+
     }
 
     /**
@@ -683,13 +717,17 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          * When the method is called without a parameter
          * Then an array is returned
          * Then this array contains the two valid property-names
+         * Then this array additionally contains the email
          */
 
         $result = FrontendUserUtility::getMandatoryFields();
+
         self::assertIsArray($result);
-        self::assertCount(2, $result);
-        self::assertEquals('firstName', $result[0]);
-        self::assertEquals('lastName', $result[1]);
+        self::assertCount(3, $result);
+        self::assertEquals('email', $result[0]);
+        self::assertEquals('firstName', $result[1]);
+        self::assertEquals('lastName', $result[2]);
+
     }
 
     /**
@@ -712,6 +750,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
          * Then this array contains six property-names
          */
 
+
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $this->importDataSet(self::FIXTURE_PATH  . '/Database/Check20.xml');
 
@@ -719,14 +758,16 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByUid(20);
 
         $result = FrontendUserUtility::getMandatoryFields($frontendUser);
-        self::assertIsArray($result);
+
         self::assertCount(6, $result);
-        self::assertEquals('firstName', $result[0]);
-        self::assertEquals('lastName', $result[1]);
-        self::assertEquals('email', $result[2]);
+        self::assertEquals('email', $result[0]);
+        self::assertEquals('firstName', $result[1]);
+        self::assertEquals('lastName', $result[2]);
         self::assertEquals('middleName', $result[3]);
         self::assertEquals('zip', $result[4]);
         self::assertEquals('city', $result[5]);
+
+
     }
 
     #==============================================================================
@@ -736,6 +777,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
      */
     protected function teardown(): void
     {
+        FrontendSimulatorUtility::resetFrontendEnvironment();
         parent::tearDown();
     }
 

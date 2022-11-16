@@ -18,7 +18,6 @@ use RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
-use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup as FrontendUserGroupCore;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -38,7 +37,6 @@ class FrontendUserGroupUtility
      *
      * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup $frontendUserGroup
      * @return array
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public static function getMandatoryFields(FrontendUserGroupCore $frontendUserGroup): array
     {
@@ -71,7 +69,5 @@ class FrontendUserGroupUtility
 
         return $mandatoryFields;
     }
-
-
 
 }

@@ -2,7 +2,7 @@
 <dataset>
 
     <fe_users>
-        <uid>1</uid>
+        <uid>40</uid>
         <pid>1</pid>
         <username>spd@test.de</username>
         <email>lauterbach@spd.de</email>
@@ -21,7 +21,7 @@
 
 
     <tx_rkwregistration_domain_model_shippingaddress>
-        <uid>1</uid>
+        <uid>40</uid>
         <pid>1</pid>
         <gender>1</gender>
         <first_name>Karl</first_name>
@@ -30,18 +30,18 @@
         <address>Straßenring 123</address>
         <zip>10969</zip>
         <city>Hamburg</city>
-        <frontend_user>1</frontend_user>
+        <frontend_user>40</frontend_user>
     </tx_rkwregistration_domain_model_shippingaddress>
 
 
-    <tx_rkwregistration_domain_model_privacy>
-        <uid>1</uid>
+    <tx_rkwregistration_domain_model_consent>
+        <uid>40</uid>
         <pid>1</pid>
-        <frontend_user>1</frontend_user>
+        <frontend_user>40</frontend_user>
         <foreign_table>tx_rkw_test</foreign_table>
         <foreign_uid>0</foreign_uid>
         <ip_address>172.28.128.1</ip_address>
         <user_agent>Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0</user_agent>
-    </tx_rkwregistration_domain_model_privacy>
+    </tx_rkwregistration_domain_model_consent>
 
 </dataset>

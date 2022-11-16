@@ -15,7 +15,6 @@ $tempCols = [
             ],
         ],
     ],
-
 	'tx_rkwregistration_membership_opening_date' => [
 		'label'=>'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontendusergroup.tx_rkwregistration_membership_opening_date',
 		'exclude' => 0,

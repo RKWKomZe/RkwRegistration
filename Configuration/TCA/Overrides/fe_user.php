@@ -132,20 +132,33 @@ $tempCols = [
         ],
     ],
 
+    'tx_rkwregistration_consent_terms' => [
+        'exclude' => 1,
+        'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.consent_terms',
+        'config' => [
+            'type' => 'check',
+        ],
+    ],
+
+    'tx_rkwregistration_consent_marketing' => [
+        'exclude' => 1,
+        'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.consent_marketing',
+        'config' => [
+            'type' => 'check',
+        ],
+    ],
+
     'tx_rkwregistration_data_protection_status' => [
         'config'=>[
             'type' => 'passthrough',
         ],
     ],
-
-	# this entry is to show the users privacy entries in backend
-	# this field does not exist in the database, because this is not necessary. This uni-directional relation works fine
-	'tx_rkwregistration_privacy' => [
+    'tx_rkwregistration_consent' => [
 		'exclude' => 1,
-		'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_privacy',
+		'label' => 'LLL:EXT:rkw_registration/Resources/Private/Language/locallang_db.xlf:tx_rkwregistration_domain_model_frontenduser.tx_rkwregistration_consent',
 		'config' => [
 			'type' => 'inline',
-			'foreign_table' => 'tx_rkwregistration_domain_model_privacy',
+			'foreign_table' => 'tx_rkwregistration_domain_model_consent',
 			'foreign_field' => 'frontend_user',
 			'foreign_match_fields' => [
 				'parent' => 0
@@ -174,5 +187,5 @@ $tempCols = [
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_mobile','','after:telephone');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users','tx_rkwregistration_login_error_count','','after:disable');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users',', tx_rkwregistration_register_remote_ip, tx_rkwregistration_language_key','','after:lockToDomain');
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users',', tx_rkwregistration_privacy','','after:image');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users',', tx_rkwregistration_consent_terms, tx_rkwregistration_consent_marketing, tx_rkwregistration_consent','','after:image');
 

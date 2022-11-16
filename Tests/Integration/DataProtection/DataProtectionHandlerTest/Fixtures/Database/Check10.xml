@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
     <be_users>
-        <uid>1</uid>
+        <uid>10</uid>
         <pid>1</pid>
         <username>admin</username>
         <email>admin@rkw.de</email>
     </be_users>
 
     <fe_users>
-        <uid>1</uid>
+        <uid>10</uid>
         <pid>1</pid>
         <username>spd@test.de</username>
         <email>lauterbach@spd.de</email>

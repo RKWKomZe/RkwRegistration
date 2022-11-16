@@ -14,12 +14,8 @@ namespace RKW\RkwRegistration\Tests\Integration\Utility;
  */
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
-use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-use RKW\RkwRegistration\Register\FrontendUserRegister;
 use RKW\RkwRegistration\Utility\FrontendUserGroupUtility;
-use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -27,7 +23,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  * FrontendUserGroupUtilityTest
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -43,6 +39,7 @@ class FrontendUserGroupUtilityTest extends FunctionalTestCase
      * @var string[]
      */
     protected $testExtensionsToLoad = [
+        'typo3conf/ext/rkw_ajax',
         'typo3conf/ext/rkw_basics',
         'typo3conf/ext/rkw_registration',
     ];
@@ -114,8 +111,9 @@ class FrontendUserGroupUtilityTest extends FunctionalTestCase
          * Then this array contains the two valid property-names
          */
 
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
         $frontendUserGroup = GeneralUtility::makeInstance(FrontendUserGroup::class);
-        $frontendUserGroup->setTxRkwregistrationServiceMandatoryFields('hamptyDamty, first_name, LastName');
+        $frontendUserGroup->setTxRkwregistrationMembershipMandatoryFields('hamptyDamty, first_name, LastName');
 
         $result = FrontendUserGroupUtility::getMandatoryFields($frontendUserGroup);
         self::assertIsArray($result);

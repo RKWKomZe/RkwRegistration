@@ -17,9 +17,8 @@ namespace RKW\RkwRegistration\Domain\Model;
 /**
  * Class Title
  *
- * @author Maximilian Fäßler <maximilian@faesslerweb.de>
- * @copyright Fäßler Web UG
- * @package RKW_RkwRegistration
+ * @author Christian Dilger <c.dilger@addorange.de>
+ * @copyright RKW Kompetenzzentrum
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */

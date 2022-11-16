@@ -22,7 +22,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
  * Class LoginValidator
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  * @todo write a fucking test
@@ -45,7 +45,7 @@ class LoginValidator extends AbstractValidator
             $this->result->forProperty('username')->addError(
                 new Error(
                     LocalizationUtility::translate(
-                        'loginValidator.error.login_no_username',
+                        'loginValidator.error.login_noUsername',
                         'rkw_registration'
                     ), 1649340637
                 )

@@ -15,15 +15,14 @@ namespace RKW\RkwRegistration\Domain\Model;
  */
 
 use RKW\RkwBasics\Persistence\MarkerReducer;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 
 /**
  * OptIn
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -45,6 +44,12 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var string
      */
     protected $frontendUserUpdate = '';
+
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser>
+     */
+    protected $admins;
 
 
     /**
@@ -114,17 +119,17 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * approved
      *
-     * @var bool
+     * @var int
      */
-    protected $approved = false;
+    protected $approved = 0;
 
 
     /**
      * adminApproved
      *
-     * @var bool
+     * @var int
      */
-    protected $adminApproved = false;
+    protected $adminApproved = 0;
 
 
     /**
@@ -166,6 +171,31 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var bool
      */
     protected $deleted = false;
+
+
+
+    /**
+     * __construct
+     */
+    public function __construct()
+    {
+        // Do not remove the next line: It would break the functionality
+        $this->initStorageObjects();
+    }
+
+
+    /**
+     * Initializes all ObjectStorage properties
+     * Do not modify this method!
+     * It will be rewritten on each save in the extension builder
+     * You may modify the constructor of this class instead
+     *
+     * @return void
+     */
+    protected function initStorageObjects()
+    {
+        $this->admins = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+    }
 
 
     /**
@@ -215,6 +245,57 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function setFrontendUserUpdate(array $frontendUserUpdate): void
     {
         $this->frontendUserUpdate = serialize($frontendUserUpdate);
+    }
+
+
+    /**
+     * Adds a backendUser for the admins
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\BackendUser for the admins $backendUser
+     * @return void
+     * @api
+     */
+    public function addAdmins(BackendUser $backendUser): void
+    {
+        $this->admins->attach($backendUser);
+    }
+
+
+    /**
+     * Removes a backendUser for the admins
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\BackendUser $backendUser
+     * @return void
+     * @api
+     */
+    public function removeAdmins(BackendUser $backendUser): void
+    {
+        $this->admins->detach($backendUser);
+    }
+
+
+    /**
+     * Returns the backend users for the admins
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser>
+     * @api
+     */
+    public function getAdmins(): ObjectStorage
+    {
+        return $this->admins;
+    }
+
+
+    /**
+     * Sets the backend users for the admins
+     *
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser> $backendUsers
+     * @return void
+     * @api
+     */
+    public function setAdmins(ObjectStorage $backendUsers): void
+    {
+        $this->admins = $backendUsers;
     }
 
 
@@ -416,9 +497,9 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the approved
      *
-     * @return bool $approved
+     * @return int $approved
      */
-    public function getApproved(): bool
+    public function getApproved(): int
     {
         return $this->approved;
     }
@@ -427,10 +508,10 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the approved
      *
-     * @param bool $approved
+     * @param int $approved
      * @return void
      */
-    public function setApproved(bool $approved): void
+    public function setApproved(int $approved): void
     {
         $this->approved = $approved;
     }
@@ -439,9 +520,9 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the adminApproved
      *
-     * @return bool $adminApproved
+     * @return int $adminApproved
      */
-    public function getAdminApproved(): bool
+    public function getAdminApproved(): int
     {
         return $this->adminApproved;
     }
@@ -450,10 +531,10 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the adminApproved
      *
-     * @param bool $adminApproved
+     * @param int $adminApproved
      * @return void
      */
-    public function setAdminApproved(bool $adminApproved): void
+    public function setAdminApproved(int $adminApproved): void
     {
         $this->adminApproved = $adminApproved;
     }
@@ -467,10 +548,11 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function getData()
     {
         if ($this->data) {
-
             if (! $this->_dataRaw) {
-                $tempData = MarkerReducer::explode(unserialize($this->data));
-                $this->_dataRaw = $tempData['key'];
+                if ($unserialized = unserialize($this->data)) {
+                    $tempData = MarkerReducer::explode($unserialized);
+                    $this->_dataRaw = $tempData['key'];
+                }
             }
 
             return $this->_dataRaw;

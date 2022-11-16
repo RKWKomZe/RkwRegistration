@@ -28,17 +28,25 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
  * FrontendUserTest
  *
  * @author Christian Dilger <c.dilger@addorange.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * @todo rework!
  */
 class FrontendUserTest extends FunctionalTestCase
 {
 
     /**
+     * @const
+     */
+    const FIXTURE_PATH = __DIR__ . '/FrontendUserTest/Fixtures';
+
+
+    /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
+        'typo3conf/ext/rkw_ajax',
         'typo3conf/ext/rkw_basics',
         'typo3conf/ext/rkw_registration',
     ];
@@ -85,7 +93,7 @@ class FrontendUserTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->importDataSet(__DIR__ . '/FrontendUserTest/Fixtures/Database/Pages.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Global.xml');
 
         $this->setUpFrontendRootPage(
             1,

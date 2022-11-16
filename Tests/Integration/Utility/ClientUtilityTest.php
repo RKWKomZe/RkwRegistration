@@ -22,7 +22,7 @@ use RKW\RkwRegistration\Utility\ClientUtility;
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -37,6 +37,7 @@ class ClientUtilityTest extends FunctionalTestCase
      * @var string[]
      */
     protected $testExtensionsToLoad = [
+        'typo3conf/ext/rkw_ajax',
         'typo3conf/ext/rkw_basics',
         'typo3conf/ext/rkw_registration',
     ];
@@ -114,7 +115,7 @@ class ClientUtilityTest extends FunctionalTestCase
          * Then the first IP in $_SERVER['HTTP_X_FORWARDED_FOR']  is returned
          */
 
-        $_SERVER['REMOTE_ADDR'] = '1.1.2.1, 2.2.1.2, 3.3.2.3';
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '1.1.2.1, 2.2.1.2, 3.3.2.3';
         self::assertEquals('1.1.2.1', ClientUtility::getIp());
     }
 

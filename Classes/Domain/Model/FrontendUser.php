@@ -23,7 +23,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
@@ -36,7 +36,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      *
      * @var string
      */
-    protected $tempPlaintextPassword = '';
+    protected $_tempPlaintextPassword = '';
 
 
     /**
@@ -44,7 +44,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      *
      * @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup
      */
-    protected $tempFrontendUserGroup;
+    protected $_tempFrontendUserGroup;
 
 
     /**
@@ -147,9 +147,21 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 
 
     /**
-     * @var bool
+     * @var int
      */
     protected $txRkwregistrationDataProtectionStatus = 0;
+
+
+    /**
+     * @var bool
+     */
+    protected $txRkwregistrationConsentTerms = 0;
+
+
+    /**
+     * @var bool
+     */
+    protected $txRkwregistrationConsentMarketing = 0;
 
 
 
@@ -162,7 +174,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     public function getTempPlaintextPassword(): string
     {
-        return $this->tempPlaintextPassword;
+        return $this->_tempPlaintextPassword;
     }
 
 
@@ -175,7 +187,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     public function setTempPlaintextPassword(string $tempPlaintextPassword): void
     {
-        $this->tempPlaintextPassword = $tempPlaintextPassword;
+        $this->_tempPlaintextPassword = $tempPlaintextPassword;
     }
 
 
@@ -188,7 +200,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     public function getTempFrontendUserGroup() :? \RKW\RkwRegistration\Domain\Model\FrontendUserGroup
     {
-        return $this->tempFrontendUserGroup;
+        return $this->_tempFrontendUserGroup;
     }
 
 
@@ -201,7 +213,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     public function setTempFrontendUserGroup(FrontendUserGroup $tempFrontendUserGroup): void
     {
-        $this->tempFrontendUserGroup = $tempFrontendUserGroup;
+        $this->_tempFrontendUserGroup = $tempFrontendUserGroup;
     }
 
 
@@ -706,6 +718,52 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     public function getTxRkwregistrationDataProtectionStatus(): int
     {
         return $this->txRkwregistrationDataProtectionStatus;
+    }
+
+
+    /**
+     * Sets the txRkwregistrationConsentTerms value
+     *
+     * @param bool $txRkwregistrationConsentTerms
+     * @return void
+     *
+     */
+    public function setTxRkwregistrationConsentTerms(bool $txRkwregistrationConsentTerms): void
+    {
+        $this->txRkwregistrationConsentTerms = $txRkwregistrationConsentTerms;
+    }
+
+
+    /**
+     * Returns the txRkwregistrationConsentTerms value
+     * @return bool
+     */
+    public function getTxRkwregistrationConsentTerms(): bool
+    {
+        return $this->txRkwregistrationConsentTerms;
+    }
+
+
+    /**
+     * Sets the txRkwregistrationConsentMarketing value
+     *
+     * @param bool $txRkwregistrationConsentMarketing
+     * @return void
+     *
+     */
+    public function setTxRkwregistrationConsentMarketing(bool $txRkwregistrationConsentMarketing): void
+    {
+        $this->txRkwregistrationConsentMarketing = $txRkwregistrationConsentMarketing;
+    }
+
+
+    /**
+     * Returns the txRkwregistrationConsentMarketing value
+     * @return bool
+     */
+    public function getTxRkwregistrationConsentMarketing(): bool
+    {
+        return $this->txRkwregistrationConsentMarketing;
     }
 
 

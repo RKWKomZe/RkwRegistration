@@ -20,7 +20,7 @@ namespace RKW\RkwRegistration\Domain\Model;
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -31,7 +31,7 @@ class BackendUser extends \TYPO3\CMS\Extbase\Domain\Model\BackendUser
      */
     protected $lang = 'en';
 
-    
+
     /**
      * Gets the lang of the user
      *
@@ -42,7 +42,7 @@ class BackendUser extends \TYPO3\CMS\Extbase\Domain\Model\BackendUser
         $this->lang = $lang;
     }
 
-    
+
     /**
      * Gets the lang of the user
      *
@@ -52,6 +52,5 @@ class BackendUser extends \TYPO3\CMS\Extbase\Domain\Model\BackendUser
     {
         return $this->lang;
     }
-
 
 }

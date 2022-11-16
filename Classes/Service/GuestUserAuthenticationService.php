@@ -16,7 +16,7 @@ namespace RKW\RkwRegistration\Service;
 
 use RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
-use RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration;
+use RKW\RkwRegistration\Registration\AbstractRegistration;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use RKW\RkwRegistration\Utility\PasswordUtility;
 use TYPO3\CMS\Core\Authentication\AbstractUserAuthentication;
@@ -30,7 +30,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
  * Class FrontendUserAuthenticationService
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -168,7 +168,7 @@ class GuestUserAuthenticationService extends \TYPO3\CMS\Core\Authentication\Auth
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
+    protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
     {
         return GeneralUtility::getTyposcriptConfiguration('Rkwregistration', $which);
     }
@@ -183,5 +183,4 @@ class GuestUserAuthenticationService extends \TYPO3\CMS\Core\Authentication\Auth
         return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
     }
 
-
-    }
+}

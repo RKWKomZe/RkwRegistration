@@ -24,12 +24,13 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
  * Class TitleUtility
  *
  * @author Christian Dilger <c.dilger@addorange.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class TitleUtility
 {
+
     /**
      * Returns \RKW\RkwRegistration\Domain\Model\Title instance
      *
@@ -39,7 +40,7 @@ class TitleUtility
      * @return Title
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
-    public static function extractTxRegistrationTitle($title = '', $settings = [])
+    public static function extractTxRegistrationTitle($title = '', $settings = []): Title
     {
         /** @var ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -51,7 +52,6 @@ class TitleUtility
         if (!$txRegistrationTitle && $title !== '') {
 
             $txRegistrationTitle = GeneralUtility::makeInstance(Title::class);
-            $txRegistrationTitle->setPid(intval($settings['titles']['storagePid']));
             $txRegistrationTitle->setName($title);
 
             $persistenceManager = $objectManager->get(PersistenceManager::class);

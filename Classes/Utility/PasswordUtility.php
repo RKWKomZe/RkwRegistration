@@ -14,20 +14,19 @@ namespace RKW\RkwRegistration\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Exception;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
-use TYPO3\CMS\Saltedpasswords\Salt\SaltFactory;
-use TYPO3\CMS\Saltedpasswords\Utility\SaltedPasswordsUtility;
+use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory;
 
 /**
  * Class Password
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -90,29 +89,32 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
     }
 
 
-
     /**
      * Encrypt a password
      *
      * @param string $plaintextPassword
      * @return string
+     * @throws \TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException
      */
     public static function saltPassword(string $plaintextPassword): string
     {
         // fallback: If something went wrong, at least something should be set
         $saltedPassword = $plaintextPassword;
+        if (ExtensionManagementUtility::isLoaded('saltedpasswords')) {
 
-        if (
-            ExtensionManagementUtility::isLoaded('saltedpasswords')
-            && SaltedPasswordsUtility::isUsageEnabled('FE')
-        ) {
-            $objSalt = SaltFactory::getSaltingInstance(null);
-            if (is_object($objSalt)) {
+            try {
+                /** @var \TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory $passwordHashFactory */
+                $passwordHashFactory = GeneralUtility::makeInstance( PasswordHashFactory::class);
+                $objSalt = $passwordHashFactory->getDefaultHashInstance('FE');
+                if (! is_object($objSalt)) {
+                    throw new Exception('SaltFactory is not an object!');
+                }
                 $saltedPassword = $objSalt->getHashedPassword($plaintextPassword);
-            } else {
+            } catch (\Exception $e) {
+
                 self::getLogger()->log(
                     LogLevel::ERROR,
-                    'The password cannot be encrypted. SaltFactory is not an object!'
+                    sprintf('The password cannot be encrypted: %s', $e->getMessage())
                 );
             }
         } else {
@@ -126,39 +128,13 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
     }
 
 
-    /**
-     * Generates a salted password for the user
-     *
-     * @deprecated This function will be removed soon. Use generatePassword and saltPassword instead
-     * @param FrontendUser $frontendUser
-     * @param string $plaintextPassword
-     * @return string
-     */
-    public static function generate(
-        FrontendUser $frontendUser,
-        string $plaintextPassword = ''
-    ): string {
-
-        trigger_error('This method "' . __METHOD__ . '" is deprecated and will be removed soon. Do not use it anymore.', E_USER_DEPRECATED);
-
-        if (!$plaintextPassword) {
-            $plaintextPassword = self::generatePassword();
-        }
-
-        $saltedPassword = self::saltPassword($plaintextPassword);
-        $frontendUser->setPassword($saltedPassword);
-
-        return $plaintextPassword;
-    }
-
-
 
     /**
      * Returns logger instance
      *
      * @return \TYPO3\CMS\Core\Log\Logger
      */
-    protected static function getLogger()
+    protected static function getLogger(): \TYPO3\CMS\Core\Log\Logger
     {
         return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
     }

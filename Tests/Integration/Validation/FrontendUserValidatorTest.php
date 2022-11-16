@@ -44,6 +44,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
      * @var string[]
      */
     protected $testExtensionsToLoad = [
+        'typo3conf/ext/rkw_ajax',
         'typo3conf/ext/rkw_basics',
         'typo3conf/ext/rkw_registration'
     ];
@@ -83,6 +84,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
             ]
         );
 
+        FrontendSimulatorUtility::simulateFrontendEnvironment(1);
 
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager objectManager */
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -133,7 +135,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function isValidWithNoFilledFieldsAndWithoutMandatoryFieldsReturnsTrue ()
+    public function isValidWithEmailOnlyAndWithoutMandatoryFieldsConfiguredReturnsTrue ()
     {
         /**
          * Scenario:
@@ -144,6 +146,8 @@ class FrontendUserValidatorTest extends FunctionalTestCase
          * Then true is returned
          */
 
+        FrontendSimulatorUtility::resetFrontendEnvironment();
+
         $this->setUpFrontendRootPage(
             1,
             [
@@ -153,8 +157,11 @@ class FrontendUserValidatorTest extends FunctionalTestCase
             ]
         );
 
+        FrontendSimulatorUtility::simulateFrontendEnvironment(1);
+
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUserFormData */
         $frontendUserFormData = GeneralUtility::makeInstance(FrontendUser::class);
+        $frontendUserFormData->setEmail('test@gmx.de');
 
         /** @var \RKW\RkwRegistration\Validation\FrontendUserValidator $frontendUserValidator */
         $frontendUserValidator = $this->objectManager->get(FrontendUserValidator::class);
@@ -483,6 +490,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
          * Scenario:
          *
          * Given a valid configuration of mandatory fields
+         * Given a valid email-address
          * Given a correct zip
          * Given all mandatory fields are filled
          * When the validator function is called
@@ -491,7 +499,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUserFormData */
         $frontendUserFormData = GeneralUtility::makeInstance(FrontendUser::class);
-        $frontendUserFormData->setEmail('lauterbach');
+        $frontendUserFormData->setEmail('lauterbach@spd.de');
         $frontendUserFormData->setFirstName('Först naime');
         $frontendUserFormData->setLastName('Säcond naime');
         $frontendUserFormData->setZip(35745);
@@ -518,6 +526,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
          * Scenario:
          *
          * Given a valid configuration of mandatory fields
+         * Given a valid email-address
          * Given an incorrect zip
          * Given all mandatory fields are filled
          * When the validator function is called
@@ -526,7 +535,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUserFormData */
         $frontendUserFormData = GeneralUtility::makeInstance(FrontendUser::class);
-        $frontendUserFormData->setEmail('lauterbach');
+        $frontendUserFormData->setEmail('lauterbach@spd.de');
         $frontendUserFormData->setFirstName('Först naime');
         $frontendUserFormData->setLastName('Säcond naime');
         $frontendUserFormData->setZip(35);
@@ -549,6 +558,8 @@ class FrontendUserValidatorTest extends FunctionalTestCase
      */
     protected function teardown(): void
     {
+
+        FrontendSimulatorUtility::resetFrontendEnvironment();
         parent::tearDown();
     }
 

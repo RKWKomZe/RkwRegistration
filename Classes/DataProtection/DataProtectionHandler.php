@@ -25,13 +25,14 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
 use RKW\RkwBasics\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Class DataProtectionHandler
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -313,7 +314,7 @@ class DataProtectionHandler
      * @throws \RKW\RkwRegistration\Exception
      * @return \RKW\RkwRegistration\Domain\Model\EncryptedData|null
      */
-    public function encryptObject(AbstractEntity $object, FrontendUser $frontendUser)
+    public function encryptObject(AbstractEntity $object, FrontendUser $frontendUser) :? EncryptedData
     {
         if ($object->_isNew()) {
             throw new Exception('Given object is not persisted.');
@@ -365,11 +366,11 @@ class DataProtectionHandler
      **
      * @param \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData
      * @param string $email
-     * @return AbstractEntity|null
+     * @return \TYPO3\CMS\Extbase\DomainObject\AbstractEntity|null
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \RKW\RkwRegistration\Exception
      */
-    public function decryptObject(EncryptedData $encryptedData, string $email)
+    public function decryptObject(EncryptedData $encryptedData, string $email) :? AbstractEntity
     {
         if (
             (class_exists($encryptedData->getForeignClass()))
@@ -561,9 +562,9 @@ class DataProtectionHandler
      * @param \TYPO3\CMS\Extbase\Persistence\Repository $repository
      * @param string $property
      * @param integer $uid
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    protected function getRepositoryResults(Repository $repository, string $property, int $uid)
+    protected function getRepositoryResults(Repository $repository, string $property, int $uid): QueryResultInterface
     {
         $query  = $repository->createQuery();
         $query->getQuerySettings()->setIncludeDeleted(true);
@@ -586,7 +587,7 @@ class DataProtectionHandler
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
+    protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
     {
         return GeneralUtility::getTyposcriptConfiguration('rkwregistration', $which);
     }

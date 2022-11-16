@@ -26,7 +26,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -50,7 +50,7 @@ class UniqueEmailValidator extends AbstractValidator
             $this->result->forProperty('email')->addError(
                 new Error(
                     LocalizationUtility::translate(
-                        'validator.email_invalid',
+                        'validator.emailInvalid',
                         'rkw_registration'
                     ), 1434966688
                 )
@@ -64,7 +64,7 @@ class UniqueEmailValidator extends AbstractValidator
             $this->result->forProperty('email')->addError(
                 new Error(
                     LocalizationUtility::translate(
-                        'validator.email_already_assigned',
+                        'validator.emailAlreadyAssigned',
                         'rkw_registration'
                     ), 1406119134
                 )

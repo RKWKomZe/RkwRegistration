@@ -25,7 +25,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * Class PasswordController
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -62,11 +62,11 @@ class PasswordController extends AbstractController
                 null,
                 [
                     'flashMessageToInject' => LocalizationUtility::translate(
-                        'passwordController.error.locked_account',
+                        'passwordController.error.lockedAccount',
                         $this->extensionName
                     )
                 ],
-                $this->settings['users']['loginPid']
+                $this->settings['loginPid']
             );
         }
     }
@@ -87,7 +87,7 @@ class PasswordController extends AbstractController
         ) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'passwordController.notice.new_introduction',
+                    'passwordController.notice.newIntroduction',
                     $this->extensionName,
                 ),
                 '',
@@ -114,7 +114,7 @@ class PasswordController extends AbstractController
         if (!$username) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'passwordController.error.no_username', $this->extensionName
+                    'passwordController.error.noUsername', $this->extensionName
                 ),
                 '',
                 AbstractMessage::ERROR
@@ -144,13 +144,13 @@ class PasswordController extends AbstractController
         // Either user exists or not: Send user back with message
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'passwordController.message.new_password', $this->extensionName
+                'passwordController.message.newPassword', $this->extensionName
             )
         );
 
         $this->redirect(
             'index',
-            'Auth'
+            'Auth',
         );
     }
 
@@ -173,7 +173,7 @@ class PasswordController extends AbstractController
         ) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'passwordController.notice.edit_introduction', $this->extensionName
+                    'passwordController.notice.editIntroduction', $this->extensionName
                 ),
                 '',
                 AbstractMessage::NOTICE
@@ -215,18 +215,18 @@ class PasswordController extends AbstractController
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'passwordController.message.updated_password', $this->extensionName
+                    'passwordController.message.updatedPassword', $this->extensionName
                 )
             );
 
             // redirect
-            if ($this->settings['users']['welcomePid']) {
+            if ($this->settings['welcomePid']) {
                 $this->redirect(
                     'index',
                     'Registration',
                     null,
                     null,
-                    $this->settings['users']['welcomePid']
+                    $this->settings['welcomePid']
                 );
             }
 
@@ -237,7 +237,7 @@ class PasswordController extends AbstractController
         // SOMETHING WENT WRONG
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'passwordController.error.password_not_updated', $this->extensionName
+                'passwordController.error.passwordNotUpdated', $this->extensionName
             ),
             '',
             AbstractMessage::ERROR

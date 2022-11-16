@@ -1,4 +1,3 @@
-
 // #########################################################
 // Extbase Configuration
 // #########################################################
@@ -159,13 +158,15 @@ config.tx_extbase.persistence {
         #===============================================
 
 		# very important to set the storagePid explicit - otherwise it will add to the pid of related objects
-		RKW\RkwRegistration\Domain\Model\Privacy {
-		//	newRecordStoragePid = {$plugin.tx_rkwregistration.persistence.storagePid}
+		RKW\RkwRegistration\Domain\Model\Consent {
+			newRecordStoragePid = {$plugin.tx_rkwregistration.persistence.storagePid}
 		}
+
+        #===============================================
 
         # very important to set the storagePid explicit - otherwise it will add to the pid of related objects
         RKW\RkwRegistration\Domain\Model\Title {
-         //   newRecordStoragePid = {$plugin.tx_rkwregistration.settings.titles.storagePid}
+            newRecordStoragePid = {$plugin.tx_rkwregistration.persistence.storagePid}
         }
 	}
 }
@@ -173,7 +174,6 @@ config.tx_extbase.persistence {
 // #########################################################
 // Plugin Configuration
 // #########################################################
-
 plugin.tx_rkwregistration {
 
 	view {
@@ -207,40 +207,34 @@ plugin.tx_rkwregistration {
 
 	settings {
 
-		version = {$plugin.tx_rkwregistration.settings.version}
-        users {
-            loginPid = {$plugin.tx_rkwregistration.settings.users.loginPid}
-            logoutPid = {$plugin.tx_rkwregistration.settings.users.logoutPid}
-            registrationPid = {$plugin.tx_rkwregistration.settings.users.registrationPid}
-            welcomePid = {$plugin.tx_rkwregistration.settings.users.welcomePid}
-            editUserPid = {$plugin.tx_rkwregistration.settings.users.editUserPid}
-            deleteUserPid = {$plugin.tx_rkwregistration.settings.users.deleteUserPid}
-            groupsListPid = {$plugin.tx_rkwregistration.settings.users.groupsListPid}
-            editPasswordPid = {$plugin.tx_rkwregistration.settings.users.editPasswordPid}
-            termsPid = {$plugin.tx_rkwregistration.settings.users.termsPid}
-            privacyPid = {$plugin.tx_rkwregistration.settings.users.privacyPid}
+        loginPid = {$plugin.tx_rkwregistration.settings.loginPid}
+        logoutPid = {$plugin.tx_rkwregistration.settings.logoutPid}
+        registrationPid = {$plugin.tx_rkwregistration.settings.registrationPid}
+        welcomePid = {$plugin.tx_rkwregistration.settings.welcomePid}
+        editUserPid = {$plugin.tx_rkwregistration.settings.editUserPid}
+        groupsListPid = {$plugin.tx_rkwregistration.settings.groupsListPid}
+        termsPid = {$plugin.tx_rkwregistration.settings.termsPid}
+        terms2Pid = {$plugin.tx_rkwregistration.settings.terms2Pid}
+        privacyPid = {$plugin.tx_rkwregistration.settings.privacyPid}
+        marketingPid = {$plugin.tx_rkwregistration.settings.marketingPid}
 
-            # @todo @deprecated
-            lifetimeAnonymous = {$plugin.tx_rkwregistration.settings.users.lifetimeAnonymous}
-            #lifetimeGuest = {$plugin.tx_rkwregistration.settings.users.lifetimeGuest}
+        users {
+
             lifetime = {$plugin.tx_rkwregistration.settings.users.lifetime}
             loginText = {$plugin.tx_rkwregistration.settings.users.loginText}
-            loginExternalPid = {$plugin.tx_rkwregistration.settings.users.loginExternalPid}
 
             anonymizeAfterDays = {$plugin.tx_rkwregistration.settings.users.anonymizeAfterDays}
             groupsOnRegister = {$plugin.tx_rkwregistration.settings.users.groupsOnRegister}
             languageKeyOnRegister = {$plugin.tx_rkwregistration.settings.users.languageKeyOnRegister}
             daysForOptIn = {$plugin.tx_rkwregistration.settings.users.daysForOptIn}
             maxLoginErrors = {$plugin.tx_rkwregistration.settings.users.maxLoginErrors}
-
-            # values must be comma-separated
             requiredFormFields = {$plugin.tx_rkwregistration.settings.users.requiredFormFields}
 
             # security settings for password changes by the user
             passwordSettings {
-            minLength = {$plugin.tx_rkwregistration.settings.users.passwordSettings.minLength}
-            maxLength = {$plugin.tx_rkwregistration.settings.users.passwordSettings.maxLength}
-            alphaNum = {$plugin.tx_rkwregistration.settings.users.passwordSettings.alphaNum}
+                minLength = {$plugin.tx_rkwregistration.settings.users.passwordSettings.minLength}
+                maxLength = {$plugin.tx_rkwregistration.settings.users.passwordSettings.maxLength}
+                alphaNum = {$plugin.tx_rkwregistration.settings.users.passwordSettings.alphaNum}
             }
 
             guest {
@@ -292,7 +286,7 @@ plugin.tx_rkwregistration {
                     }
                 }
 
-                RKW\RkwRegistration\Domain\Model\Privacy {
+                RKW\RkwRegistration\Domain\Model\Consent {
                     mappingField = frontendUser
                     fields {
                         ipAddress = 127.0.0.1
@@ -333,16 +327,7 @@ plugin.tx_rkwregistration {
                     }
                 }
             }
-    }
-
-    titles {
-      storagePid = {$plugin.tx_rkwregistration.settings.titles.storagePid}
-    }
-
-		services {
-      adminOptInPid = {$plugin.tx_rkwregistration.settings.services.adminOptInPid}
-      daysForOptIn = {$plugin.tx_rkwregistration.settings.services.daysForOptIn}
-		}
+        }
 	}
 }
 
@@ -362,8 +347,7 @@ plugin.tx_rkwregistration_registrationinfo < plugin.tx_rkwregistration
 // for cronjob
 module.tx_rkwregistration < plugin.tx_rkwregistration
 
-
-# Add jquery if not disabled
+// Add jquery if not disabled
 [globalVar = LIT:1 = {$plugin.tx_rkwregistration.settings.includeJQuery}]
 	page.includeJSFooterlibs.jquery = EXT:rkw_registration/Resources/Public/Scripts/jquery-1.11.1.min.js
 [global]

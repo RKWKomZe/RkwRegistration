@@ -22,7 +22,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * OptInRepository
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -34,6 +34,7 @@ class OptInRepository extends AbstractRepository
      *
      * @param int $uid
      * @return \RKW\RkwRegistration\Domain\Model\OptIn|null
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * implicitly tested
      */
     public function findByIdentifierIncludingDeleted(int $uid): ?OptIn
@@ -43,7 +44,13 @@ class OptInRepository extends AbstractRepository
         $query->getQuerySettings()->setIgnoreEnableFields(true);
 
         $optIn = $query->matching(
-            $query->equals('uid', $uid)
+            $query->logicalAnd(
+                $query->equals('uid', $uid),
+                $query->logicalOr(
+                    $query->equals('endtime',0),
+                    $query->greaterThan('endtime',time())
+                )
+            )
         )->setLimit(1)
             ->execute();
 
@@ -56,6 +63,7 @@ class OptInRepository extends AbstractRepository
      *
      * @param string $tokenUser
      * @return \RKW\RkwRegistration\Domain\Model\OptIn|null
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * implicitly tested
      */
     public function findOneByTokenUserIncludingDeleted(string $tokenUser): ?OptIn
@@ -65,7 +73,41 @@ class OptInRepository extends AbstractRepository
         $query->getQuerySettings()->setIgnoreEnableFields(true);
 
         $optIn = $query->matching(
-            $query->equals('tokenUser', $tokenUser)
+            $query->logicalAnd(
+                $query->equals('tokenUser', $tokenUser),
+                $query->logicalOr(
+                    $query->equals('endtime',0),
+                    $query->greaterThan('endtime',time())
+                )
+            )
+        )->setLimit(1)
+            ->execute();
+
+        return $optIn->getFirst();
+    }
+
+    /**
+     * Finds optIns by tokenUser even if they are deleted
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @return \RKW\RkwRegistration\Domain\Model\OptIn|null
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * implicitly tested
+     */
+    public function findOneByFrontendUserIncludingDeleted(FrontendUser $frontendUser): ?OptIn
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setIncludeDeleted(true);
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+
+        $optIn = $query->matching(
+            $query->logicalAnd(
+                $query->equals('frontendUserUid', $frontendUser->getUid()),
+                $query->logicalOr(
+                    $query->equals('endtime',0),
+                    $query->greaterThan('endtime',time())
+                )
+            )
         )->setLimit(1)
             ->execute();
 
@@ -102,6 +144,7 @@ class OptInRepository extends AbstractRepository
      *
      * @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface<\RKW\RkwRegistration\Domain\Model\OptIn|null>
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
     public function findPendingGroupMembershipsByFrontendUser(
         FrontendUser $frontendUser
@@ -113,7 +156,11 @@ class OptInRepository extends AbstractRepository
         return $query->matching(
             $query->logicalAnd(
                 $query->equals('frontendUserUid', $frontendUser->getUid()),
-                $query->equals('foreignTable', 'fe_groups')
+                $query->equals('foreignTable', 'fe_groups'),
+                $query->logicalOr(
+                    $query->equals('endtime',0),
+                    $query->greaterThan('endtime',time())
+                )
             )
         )->execute();
     }

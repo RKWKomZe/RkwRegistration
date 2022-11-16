@@ -8,7 +8,7 @@ Please ensure to always load FrontendUserRegistration via ObjectManager
 $frontendUser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(FrontendUser::class);
 $frontendUser->setEmail($email);
 
-/** @var \RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration $registration */
+/** @var \RKW\RkwRegistration\Registration\FrontendUserRegistration $registration */
 $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
 $registration = $objectManager->get(FrontendUserRegistration::class);
 $registration->setFrontendUser($frontendUser)
@@ -86,11 +86,11 @@ Now we need a signal-slot that refers to the defined method for sending mails (e
 /**
  * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher
  */
-$signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+$signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
 $signalSlotDispatcher->connect(
-    \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::class,
-    \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::SIGNAL_AFTER_CREATING_OPTIN  . 'RkwAlerts',
-    'RKW\\RkwAlerts\\Service\\RkwMailService',
+    RKW\RkwRegistration\Registration\AbstractRegistration::class,
+    RKW\RkwRegistration\Registration\AbstractRegistration::SIGNAL_AFTER_CREATING_OPTIN  . 'RkwAlerts',
+    RKW\RkwAlerts\Service\RkwMailService::class,
     'optInAlertUser'
 );
 ```
@@ -126,7 +126,7 @@ To check the opt-in you can use the following example-code in your contoller:
 ```
 public function optInAction(string $tokenUser, string $token): void
 {
-    /** @var \RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration $registration */
+    /** @var \RKW\RkwRegistration\Registration\FrontendUserRegistration $registration */
     $registration = $this->objectManager->get(FrontendUserRegistration::class);
     $result = $registration->setFrontendUserToken($tokenUser)
         ->setCategory('rkwAlerts')
@@ -151,8 +151,8 @@ public function optInAction(string $tokenUser, string $token): void
 We need a second signal-slot in order to do whatever we need to do after the opt-in
 ```
     $signalSlotDispatcher->connect(
-        \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::class,
-        \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::SIGNAL_AFTER_REGISTRATION_COMPLETED . 'RkwAlerts',
+        RKW\RkwRegistration\Registration\AbstractRegistration::class,
+        \RKW\RkwRegistration\Registration\AbstractRegistration::SIGNAL_AFTER_REGISTRATION_COMPLETED . 'RkwAlerts',
         'RKW\\RkwAlerts\\Alerts\\AlertManager',
         'saveAlertByRegistration'
     );
@@ -188,59 +188,76 @@ Then we need to define the corresponding method:
         }
     }
 ```
-## Another usages
+## Another use-cases
 * You can also:
-** Send a confirmation-email after the opt-in was succesfull (Using SIGNAL_AFTER_ALERT_CREATED-Signal-Slot)
+** Send a confirmation-email after the opt-in was successful (Using SIGNAL_AFTER_ALERT_CREATED-Signal-Slot)
 ** Delete all extension-specific data if the frontendUser is deleted (Using SIGNAL_AFTER_REGISTRATION_ENDED-Signal-Slot)
 ** ... do many other fancy stuff ;-)
 
-# Refactoring changes of RkwRegistration 2021
+# Consent (Privacy, Terms, Marketing)
+The extension has a ViewHelper and validators to obtain consent to privacy, terms of use and advanced marketing.
+In order to obtain the consents, only the corresponding ViewHelper must be used in the own extension. As soon as an opt-in is carried out, the corresponding consents are automatically documented and stored in the database. The consents granted are recorded accordingly with the associated data (IP address, browser, etc.). In addition, the consent to the terms of use and to marketing is stored in the FrontendUser, as these consents are usually page-wide and independent of the respective context of the consent.
+## 1. In Fluid
+The following code can be used to obtain the appropriate consent. It is important that the ViewHelper is used within a form and that the FormErrors are also returned via Fluid.
+```
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	xmlns:rkwRegistration="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
+	xmlns:rkwAjax="http://typo3.org/ns/RKW/RkwAjax/ViewHelpers"
+	data-namespace-typo3-fluid="true">
 
-## update script
-Execute the update script in InstallTool to change automatically plugin names in database
+	<f:form action="create" name="alert" object="{alert}">
 
-## beware of old templates
-Some links seem not to be correct? The dynamic base uri does not work? You don't see expected flash messages?
-Then you should check, if an old fluid template is responsible for this behavior and compare it's content to the rewritten templates!
+        [...]
 
-## change existing signal slots in third party extensions. Example below
-**from**
+        <rkwRegistration:consent type="terms" />
+        <rkwRegistration:consent type="privacy" key="default" />
+        <rkwRegistration:consent type="marketing" />
+
+        [...]
+
+	</f:form>
+</html>
 ```
-$signalSlotDispatcher->connect(
-    \RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration::class,
-    \RKW\RkwRegistration\Register\OptInRegister::SIGNAL_AFTER_CREATING_OPTIN_EXISTING_USER . 'RkwEvents',
-    'RKW\\RkwEvents\\Service\\RkwMailService',
-    'optInRequest'
-);
+## 2. In the controller
+Only the corresponding validators are included here. They always refer to the form object.
 ```
-**to**
+    /**
+     * action create
+     *
+     * @param \RKW\RkwAlerts\Domain\Model\Alert $alert
+     * @param string $email
+     * @return void
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\TermsValidator", param="alert")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\PrivacyValidator", param="alert")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\MarketingValidator", param="alert")
+     */
+    public function createAction(
+        \RKW\RkwAlerts\Domain\Model\Alert $alert,
+        string $email = ''
+    ): void {
+
+        [...]
 ```
-$signalSlotDispatcher->connect(
-    'RKW\\RkwRegistration\\Service\\OptInService',
-    \RKW\RkwRegistration\Service\OptInService::SIGNAL_AFTER_CREATING_OPTIN_EXISTING_USER . 'RkwEvents',
-    'RKW\\RkwEvents\\Service\\RkwMailService',
-    'optInRequest'
-);
+An opt-in procedure is usually not carried out for logged-in frontend users. If you still want to record the time of consent for a registration, you can achieve this with the following code:
+```
+    \RKW\RkwRegistration\DataProtection\ConsentHandler::add(
+        $request,
+        $frontendUser,
+        $alert,
+        'new alert'
+    );
 ```
 
-## using of dynamic "My RKW" domains
-### create in backend new domain entries of the "Mein RKW" page
-note the new fields in tab "Mein RKW" to set the related main page URI and forwarding options on login and logout
-### adjust the RealUrl configuration. Just copy the standard domain settings to it's dynamic sibling. Local example:
+# Upgrade to v9.5
+
+## Update Database
 ```
-$TYPO3_CONF_VARS['EXTCONF']['realurl']['mein-rkw-kompetenzzentrum.rkw.local'] = $TYPO3_CONF_VARS['EXTCONF']['realurl']['mein.rkw.local'];
-```
-### set cookie domain in install tool. Local example:
-```
-'cookieDomain' => '.rkw.local',
-'cookieSameSite' => 'lax',
-```
-#### for more complex using take a look to the description of [SYS][cookieDomain]:
-The result of the match is used as the domain for the cookie. eg.
-```
-/\.(example1|example2)\.com$/
-```
-or
-```
-/\.(example1\.com)|(example2\.net)$/
+RENAME TABLE `tx_rkwregistration_domain_model_privacy` TO `tx_rkwregistration_domain_model_consent`;
+ALTER TABLE `tx_rkwregistration_domain_model_consent` CHANGE `registration_user_sha1` `frontend_user_token` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '';
+ALTER TABLE `tx_rkwregistration_domain_model_consent` ADD `consent_privacy` INT DEFAULT 0 NOT NULL;
+ALTER TABLE `tx_rkwregistration_domain_model_consent` ADD `consent_terms` INT DEFAULT 0 NOT NULL;
+ALTER TABLE `tx_rkwregistration_domain_model_consent` ADD `consent_marketing` INT DEFAULT 0 NOT NULL;
+UPDATE `tx_rkwregistration_domain_model_consent` SET `consent_privacy` = 1;
 ```

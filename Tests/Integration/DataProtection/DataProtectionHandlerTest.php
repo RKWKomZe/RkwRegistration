@@ -5,11 +5,11 @@ namespace RKW\RkwRegistration\Tests\Integration\DataProtection;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
 use RKW\RkwRegistration\DataProtection\DataProtectionHandler;
-use RKW\RkwRegistration\Domain\Model\Privacy;
+use RKW\RkwRegistration\Domain\Model\Consent;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\BackendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository;
-use RKW\RkwRegistration\Domain\Repository\PrivacyRepository;
+use RKW\RkwRegistration\Domain\Repository\ConsentRepository;
 use RKW\RkwRegistration\Domain\Repository\EncryptedDataRepository;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -31,7 +31,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
  * DataProtectionHandlerTest
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -46,6 +46,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
      * @var string[]
      */
     protected $testExtensionsToLoad = [
+        'typo3conf/ext/rkw_ajax',
         'typo3conf/ext/rkw_basics',
         'typo3conf/ext/rkw_registration',
     ];
@@ -75,9 +76,9 @@ class DataProtectionHandlerTest extends FunctionalTestCase
     private $shippingAddressRepository = null;
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\PrivacyRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\ConsentRepository
      */
-    private $privacyRepository = null;
+    private $consentRepository = null;
 
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\EncryptedDataRepository
@@ -122,7 +123,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->frontendUserRepository = $this->objectManager->get(FrontendUserRepository::class);
         $this->backendUserRepository = $this->objectManager->get(BackendUserRepository::class);
         $this->shippingAddressRepository = $this->objectManager->get(ShippingAddressRepository::class);
-        $this->privacyRepository = $this->objectManager->get(PrivacyRepository::class);
+        $this->consentRepository = $this->objectManager->get(ConsentRepository::class);
         $this->encryptedDataRepository = $this->objectManager->get(EncryptedDataRepository::class);
 
         $this->subject->setEncryptionKey('o4uSZ0oo4zTFIIoN2NkuBBwyS6Lv3v/EYVObucPHcW8=');
@@ -162,11 +163,11 @@ class DataProtectionHandlerTest extends FunctionalTestCase
 
         $result = $query->execute()->toArray();
 
-        self::assertCount(2, $deleted);
+        self::assertEquals(2, $deleted);
         self::assertCount(3, $result);
-        self::assertEquals(2, $result[0]->getUid());
-        self::assertEquals(3, $result[1]->getUid());
-        self::assertEquals(5, $result[2]->getUid());
+        self::assertEquals(121, $result[0]->getUid());
+        self::assertEquals(123, $result[1]->getUid());
+        self::assertEquals(125, $result[2]->getUid());
 
 
     }
@@ -197,10 +198,10 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->persistenceManager->persistAll();
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(30);
 
-        self::assertEquals('anonymous1@rkw.de', $frontendUser->getUsername());
-        self::assertEquals('anonymous1@rkw.de', $frontendUser->getEmail());
+        self::assertEquals('anonymous' . $frontendUser->getUid() . '@rkw.de', $frontendUser->getUsername());
+        self::assertEquals('anonymous' . $frontendUser->getUid() . '@rkw.de', $frontendUser->getEmail());
         self::assertEquals(1, $frontendUser->getTxRkwregistrationDataProtectionStatus());
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
@@ -211,8 +212,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         self::assertEquals(hash('sha256', 'lauterbach@spd.de'), $encryptedData->getSearchKey());
         self::assertEquals('fe_users', $encryptedData->getForeignTable());
         self::assertEquals(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getForeignClass());
-        self::assertEquals(1, $encryptedData->getForeignUid());
-
+        self::assertEquals($frontendUser->getUid(), $encryptedData->getForeignUid());
 
 
     }
@@ -231,13 +231,13 @@ class DataProtectionHandlerTest extends FunctionalTestCase
          *
          * Given there is a frontend user
          * Given this frontend user has a shipping address
-         * Given this frontend user has privacy data according to his order
+         * Given this frontend user has consent data according to his order
          * Given the frontend user has been deleted since more days then configured for anonymization
          * When I anonymize all deleted users
          * Then the shipping address of the frontend user is anonymised
          * Then the shipping address of the frontend user is encrypted
-         * Then the shipping address of the privacy data is anonymised
-         * Then the shipping address of the privacy data is encrypted
+         * Then the shipping address of the consent data is anonymised
+         * Then the shipping address of the consent data is encrypted
          */
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check40.xml');
 
@@ -245,7 +245,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->persistenceManager->persistAll();
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
-        $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
+        $shippingAddress  = $this->shippingAddressRepository->findByUid(40);
 
         self::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
 
@@ -253,33 +253,32 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $encryptedData = $this->encryptedDataRepository->findByUid(2);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(40);
 
         self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
         self::assertEquals($frontendUser, $encryptedData->getFrontendUser());
         self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
         self::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
         self::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
-        self::assertEquals(1, $encryptedData->getForeignUid());
+        self::assertEquals($shippingAddress->getUid(), $encryptedData->getForeignUid());
 
+        /** @var \RKW\RkwRegistration\Domain\Model\Consent $consent */
+        $consent  = $this->consentRepository->findByUid(40);
 
-        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $privacy */
-        $privacy  = $this->privacyRepository->findByUid(1);
-
-        self::assertEquals('127.0.0.1', $privacy->getIpAddress());
-        self::assertEquals('Anonymous 1.0', $privacy->getUserAgent());
+        self::assertEquals('127.0.0.1', $consent->getIpAddress());
+        self::assertEquals('Anonymous 1.0', $consent->getUserAgent());
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
         $encryptedData = $this->encryptedDataRepository->findByUid(3);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(40);
 
-        self::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
+        self::assertEquals($frontendUser->getUid(), $encryptedData->getFrontendUser()->getUid());
         self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
-        self::assertEquals(1, $encryptedData->getForeignUid());
-        self::assertEquals('tx_rkwregistration_domain_model_privacy', $encryptedData->getForeignTable());
-        self::assertEquals('RKW\RkwRegistration\Domain\Model\Privacy', $encryptedData->getForeignClass());
+        self::assertEquals($consent->getUid(), $encryptedData->getForeignUid());
+        self::assertEquals('tx_rkwregistration_domain_model_consent', $encryptedData->getForeignTable());
+        self::assertEquals('RKW\RkwRegistration\Domain\Model\Consent', $encryptedData->getForeignClass());
 
     }
 
@@ -307,7 +306,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->persistenceManager->persistAll();
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
-        $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
+        $shippingAddress  = $this->shippingAddressRepository->findByUid(50);
 
         self::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
 
@@ -315,14 +314,14 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $encryptedData = $this->encryptedDataRepository->findByUid(2);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(50);
 
         self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
         self::assertEquals($frontendUser, $encryptedData->getFrontendUser());
         self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
         self::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
         self::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
-        self::assertEquals(1, $encryptedData->getForeignUid());
+        self::assertEquals($shippingAddress->getUid(), $encryptedData->getForeignUid());
 
     }
 
@@ -350,7 +349,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->persistenceManager->persistAll();
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
-        $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
+        $shippingAddress  = $this->shippingAddressRepository->findByUid(60);
 
         self::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
 
@@ -358,14 +357,14 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $encryptedData = $this->encryptedDataRepository->findByUid(2);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(60);
 
         self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
         self::assertEquals($frontendUser, $encryptedData->getFrontendUser());
         self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
         self::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
         self::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
-        self::assertEquals(1, $encryptedData->getForeignUid());
+        self::assertEquals($shippingAddress->getUid(), $encryptedData->getForeignUid());
 
     }
 
@@ -393,7 +392,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->persistenceManager->persistAll();
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
-        $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
+        $shippingAddress  = $this->shippingAddressRepository->findByUid(70);
 
         self::assertEquals('Anonymous Anonymous', $shippingAddress->getFullName());
 
@@ -401,14 +400,14 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $encryptedData = $this->encryptedDataRepository->findByUid(2);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(70);
 
         self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
         self::assertEquals($frontendUser, $encryptedData->getFrontendUser());
         self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
         self::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
         self::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
-        self::assertEquals(1, $encryptedData->getForeignUid());
+        self::assertEquals($shippingAddress->getUid(), $encryptedData->getForeignUid());
 
     }
 
@@ -456,10 +455,10 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(10);
 
         /** @var \RKW\RkwRegistration\Domain\Model\BackendUser $backendUser */
-        $backendUser = $this->backendUserRepository->findByUid(1);
+        $backendUser = $this->backendUserRepository->findByUid(10);
 
         self::assertFalse($this->subject->anonymizeObject($backendUser, $frontendUser));
     }
@@ -481,12 +480,12 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check11.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(11);
 
         self::assertTrue($this->subject->anonymizeObject($frontendUser, $frontendUser));
 
-        self::assertEquals('anonymous1@rkw.de', $frontendUser->getUsername());
-        self::assertEquals('anonymous1@rkw.de', $frontendUser->getEmail());
+        self::assertEquals('anonymous' . $frontendUser->getUid() . '@rkw.de', $frontendUser->getUsername());
+        self::assertEquals('anonymous' . $frontendUser->getUid() . '@rkw.de', $frontendUser->getEmail());
         self::assertEquals('Anonymous', $frontendUser->getFirstName());
         self::assertEquals('Anonymous', $frontendUser->getLastName());
         self::assertEquals('Anonymous Anonymous', $frontendUser->getName());
@@ -503,8 +502,6 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         self::assertEquals('', $frontendUser->getTxRkwregistrationFacebookUrl());
         self::assertEquals('', $frontendUser->getTxRkwregistrationTwitterUrl());
         self::assertEquals('', $frontendUser->getTxRkwregistrationXingUrl());
-        self::assertEquals(0, $frontendUser->getTxRkwregistrationTwitterId());
-        self::assertEquals('', $frontendUser->getTxRkwregistrationFacebookId());
 
     }
 
@@ -528,7 +525,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(10);
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
         $shippingAddress = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class);
@@ -556,10 +553,10 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
-        $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
+        $shippingAddress  = $this->shippingAddressRepository->findByUid(20);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(20);
 
         self::assertTrue($this->subject->anonymizeObject($shippingAddress, $frontendUser));
         self::assertEquals(99, $shippingAddress->getGender());
@@ -617,7 +614,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(10);
 
         $encryptedData = $this->subject->encryptObject($frontendUser, $frontendUser);
 
@@ -629,13 +626,13 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $encryptedDataArray = $encryptedData->getEncryptedData();
 
         self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
-        self::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
+        self::assertEquals($frontendUser->getUid(), $encryptedData->getFrontendUser()->getUid());
         self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
-        self::assertEquals(1, $encryptedData->getForeignUid());
+        self::assertEquals($frontendUser->getUid(), $encryptedData->getForeignUid());
         self::assertEquals('fe_users', $encryptedData->getForeignTable());
         self::assertEquals('RKW\RkwRegistration\Domain\Model\FrontendUser', $encryptedData->getForeignClass());
 
-        self::assertCount(22, $encryptedDataArray);
+        self::assertCount(20, $encryptedDataArray);
         self::assertEquals(49, strlen($encryptedDataArray['username']));
 
     }
@@ -660,7 +657,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(20);
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
         $shippingAddress = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class);
@@ -689,10 +686,10 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\ShippingAddress $shippingAddress */
-        $shippingAddress  = $this->shippingAddressRepository->findByUid(1);
+        $shippingAddress  = $this->shippingAddressRepository->findByUid(20);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(20);
 
         $encryptedData = $this->subject->encryptObject($shippingAddress, $frontendUser);
 
@@ -703,9 +700,9 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $encryptedDataArray = $encryptedData->getEncryptedData();
 
         self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
-        self::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
+        self::assertEquals($frontendUser->getUid(), $encryptedData->getFrontendUser()->getUid());
         self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
-        self::assertEquals(1, $encryptedData->getForeignUid());
+        self::assertEquals($shippingAddress->getUid(), $encryptedData->getForeignUid());
         self::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
         self::assertEquals('RKW\RkwRegistration\Domain\Model\ShippingAddress', $encryptedData->getForeignClass());
 
@@ -728,21 +725,21 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         /**
          * Scenario:
          *
-         * Given there is a non persisted privacy data
+         * Given there is a non persisted consent data
          * When I encrypt the shipping address
          * Then an error is thrown
          */
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check25.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(25);
 
-        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $privacy*/
-        $privacy = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\Privacy::class);
+        /** @var \RKW\RkwRegistration\Domain\Model\Consent $consent*/
+        $consent = GeneralUtility::makeInstance(\RKW\RkwRegistration\Domain\Model\Consent::class);
 
         static::expectException(\RKW\RkwRegistration\Exception::class);
 
-        $this->subject->encryptObject($privacy, $frontendUser);
+        $this->subject->encryptObject($consent, $frontendUser);
 
     }
 
@@ -763,26 +760,26 @@ class DataProtectionHandlerTest extends FunctionalTestCase
          */
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check25.xml');
 
-        /** @var \RKW\RkwRegistration\Domain\Model\Privacy $privacy */
-        $privacy  = $this->privacyRepository->findByUid(1);
+        /** @var \RKW\RkwRegistration\Domain\Model\Consent $consent */
+        $consent  = $this->consentRepository->findByUid(25);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(25);
 
-        $encryptedData = $this->subject->encryptObject($privacy, $frontendUser);
+        $encryptedData = $this->subject->encryptObject($consent, $frontendUser);
 
-        self::assertEquals('172.28.128.1', $privacy->getIpAddress());
-        self::assertEquals('Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0', $privacy->getUserAgent());
+        self::assertEquals('172.28.128.1', $consent->getIpAddress());
+        self::assertEquals('Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0', $consent->getUserAgent());
 
         self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\EncryptedData::class, $encryptedData);
         $encryptedDataArray = $encryptedData->getEncryptedData();
 
         self::assertInstanceOf(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getFrontendUser());
-        self::assertEquals(1, $encryptedData->getFrontendUser()->getUid());
+        self::assertEquals($frontendUser->getUid(), $encryptedData->getFrontendUser()->getUid());
         self::assertEquals(hash('sha256', $frontendUser->getEmail()), $encryptedData->getSearchKey());
-        self::assertEquals(1, $encryptedData->getForeignUid());
-        self::assertEquals('tx_rkwregistration_domain_model_privacy', $encryptedData->getForeignTable());
-        self::assertEquals('RKW\RkwRegistration\Domain\Model\Privacy', $encryptedData->getForeignClass());
+        self::assertEquals($consent->getUid(), $encryptedData->getForeignUid());
+        self::assertEquals('tx_rkwregistration_domain_model_consent', $encryptedData->getForeignTable());
+        self::assertEquals('RKW\RkwRegistration\Domain\Model\Consent', $encryptedData->getForeignClass());
 
         self::assertCount(2, $encryptedDataArray);
         self::assertEquals(49, strlen($encryptedDataArray['ipAddress']));
@@ -811,7 +808,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check80.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
-        $encryptedData = $this->encryptedDataRepository->findByUid(1);
+        $encryptedData = $this->encryptedDataRepository->findByUid(80);
 
         self::assertNull($this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
 
@@ -837,7 +834,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check90.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
-        $encryptedData = $this->encryptedDataRepository->findByUid(1);
+        $encryptedData = $this->encryptedDataRepository->findByUid(90);
 
         self::assertNull($this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
     }
@@ -861,7 +858,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check100.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
-        $encryptedData = $this->encryptedDataRepository->findByUid(1);
+        $encryptedData = $this->encryptedDataRepository->findByUid(100);
 
         self::assertNull($this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
     }
@@ -886,10 +883,10 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH . '/Database/Check110.xml');
 
         /** @var \RKW\RkwRegistration\Domain\Model\EncryptedData $encryptedData */
-        $encryptedData = $this->encryptedDataRepository->findByUid(1);
+        $encryptedData = $this->encryptedDataRepository->findByUid(110);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-        $frontendUser = $this->frontendUserRepository->findByUid(1);
+        $frontendUser = $this->frontendUserRepository->findByUid(110);
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $result */
         $result = $this->subject->decryptObject($encryptedData, 'lauterbach@spd.de');
@@ -913,8 +910,6 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         self::assertEquals('https://www.facebook.com/lauterbach', $result->getTxRkwregistrationFacebookUrl());
         self::assertEquals('https://www.twitter.com/lauterbach', $result->getTxRkwregistrationTwitterUrl());
         self::assertEquals('https://www.xing.de/lauterbach', $result->getTxRkwregistrationXingUrl());
-        self::assertEquals('12345', $result->getTxRkwregistrationFacebookId());
-        self::assertEquals('12345', $result->getTxRkwregistrationTwitterId());
 
     }
 

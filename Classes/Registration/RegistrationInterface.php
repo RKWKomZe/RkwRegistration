@@ -17,8 +17,6 @@ namespace RKW\RkwRegistration\Registration;
 use RKW\RkwRegistration\Domain\Model\BackendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\OptIn;
-use RKW\RkwRegistration\Utility\FrontendUserUtility;
-use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -26,7 +24,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  * Class RegistrationInterface
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -170,8 +168,35 @@ interface RegistrationInterface
      */
     public function setData($data): self;
 
+
     /**
-     * Registers a frontendUser or Service
+     * @return string
+     */
+    public function getCategory(): string;
+
+
+    /**
+     * @var string $category
+     * @return self
+     */
+    public function setCategory(string $category): self;
+
+
+    /**
+     * Creates an opt-in for a frontendUser
+     *
+     * @return \RKW\RkwRegistration\Domain\Model\OptIn
+     * @throws \Exception
+     * @throws \RKW\RkwRegistration\Exception
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
+     * @api
+     */
+    public function createOptIn(): OptIn;
+
+
+    /**
+     * Registers a frontendUser
      *
      * @return bool
      * @api
@@ -180,7 +205,7 @@ interface RegistrationInterface
 
 
     /**
-     * Completes the registration of the frontendUser or his service
+     * Completes the registration of the frontendUser
      *
      * @return bool
      * @api
@@ -189,7 +214,7 @@ interface RegistrationInterface
 
 
     /**
-     * Cancels the registration of the frontendUser or his service
+     * Cancels the registration of the frontendUser
      *
      * @return bool
      * @api
@@ -198,7 +223,7 @@ interface RegistrationInterface
 
 
     /**
-     * End the registration of the frontendUser or his service
+     * End the registration of the frontendUser
      *
      * @return bool
      * @api

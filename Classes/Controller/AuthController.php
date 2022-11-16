@@ -27,7 +27,7 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -62,7 +62,7 @@ class AuthController extends AbstractController
                 /** @var UriBuilder $uriBuilder */
                 $uriBuilder = $this->objectManager->get(UriBuilder::class);
                 $registerLink = $uriBuilder->reset()
-                    ->setTargetPageUid(intval($this->settings['users']['logoutPid']))
+                    ->setTargetPageUid(intval($this->settings['logoutPid']))
                     ->setUseCacheHash(false)
                     ->setArguments(
                         [
@@ -70,7 +70,7 @@ class AuthController extends AbstractController
                                 'action' => 'logout',
                                 'redirectAction' => 'index',
                                 'redirectController' => 'Auth',
-                                'pageUid' => intval($this->settings['users']['loginPid'])
+                                'pageUid' => intval($this->settings['loginPid'])
                             ],
                         ]
                     )
@@ -97,25 +97,25 @@ class AuthController extends AbstractController
                     )
                 );
 
-                if ($this->settings['users']['welcomePid']) {
+                if ($this->settings['welcomePid']) {
                     $this->redirect(
                         'welcome',
                         'FrontendUser',
                         null,
                         null,
-                        $this->settings['users']['welcomePid']
+                        $this->settings['welcomePid']
                     );
                 }
 
             // offer a registration link for not logged-in users
             } else if (! $this->getFrontendUser()) {
 
-                if ($this->settings['users']['registrationPid']) {
+                if ($this->settings['registrationPid']) {
 
                     /** @var UriBuilder $uriBuilder */
                     $uriBuilder = $this->objectManager->get(UriBuilder::class);
                     $registerLink = $uriBuilder->reset()
-                        ->setTargetPageUid(intval($this->settings['users']['registrationPid']))
+                        ->setTargetPageUid(intval($this->settings['registrationPid']))
                         ->setUseCacheHash(false)
                         ->setArguments(
                             [
@@ -169,13 +169,13 @@ class AuthController extends AbstractController
             !$authService->loginFailure
             && $authService->loginSessionStarted
         ) {
-            if ($this->settings['users']['welcomePid']) {
+            if ($this->settings['welcomePid']) {
                 $this->redirect(
                     'welcome',
                     'FrontendUser',
                     null,
                     null,
-                    $this->settings['users']['welcomePid']
+                    $this->settings['welcomePid']
                 );
             }
 
@@ -257,13 +257,13 @@ class AuthController extends AbstractController
         );
 
         // redirect to login page (including message)
-        if ($this->settings['users']['loginPid']) {
+        if ($this->settings['loginPid']) {
             $this->redirect(
                 'index',
                 null,
                 null,
                 ['logoutMessage' => 1],
-                $this->settings['users']['loginPid']
+                $this->settings['loginPid']
             );
         }
 

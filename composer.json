@@ -4,7 +4,7 @@
     "description": "Extension for registration of FE-Users and FE-Usergroups",
     "homepage": "https://www.rkw-kompetenzzentrum.de",
     "license": ["GPL-2.0+"],
-    "keywords": ["TYPO3 CMS", "RKW", "Register", "Registration", "FE-User", "Login", "Cross-Domain Login"],
+    "keywords": ["TYPO3 CMS", "RKW", "Register", "Registration", "Frontend Users", "User Groups", "Login"],
     "support": {
         "email": "developer@steffenkroggel.de"
     },
@@ -26,9 +26,9 @@
         "php": ">=7.4",
         "ext-openssl" : "*",
         "typo3/cms-core": "~9.5.0",
-        "rkw/rkw-basics": "~9.5.0 || dev-feature/upgrade9.5",
-        "rkw/rkw-mailer": "~9.5.0 || dev-feature/upgrade9.5",
-        "rkw/rkw-ajax": "~9.5.0 || dev-feature/upgrade9.5"
+        "rkw/rkw-basics": "~9.5.0",
+        "rkw/rkw-mailer": "~9.5.0",
+        "rkw/rkw-ajax": "~9.5.0"
     },
     "autoload": {
         "psr-4": {

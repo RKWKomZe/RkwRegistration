@@ -9,12 +9,6 @@ call_user_func(
         // Register Plugins
         //=================================================================
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-            'RKW.RkwRegistration',
-            'Register',
-            'RKW Registration: Registrierung'
-        );
-
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
             'RkwRegistration',
             'AuthInternal',
             'RKW Registration: Login'

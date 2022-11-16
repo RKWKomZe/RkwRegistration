@@ -1,5 +1,5 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-    xmlns:vh="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
+    xmlns:rkwRegistration="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
     data-namespace-typo3-fluid="true">
 
     <f:layout name="Default" />
@@ -14,33 +14,9 @@
                 <div class="form flex flex-basis-6 full-width-medium space-between">
                     <f:render partial="Registration/RegisterFormFields" arguments="{_all}" />
 
-                    <div class="form__field">
-                        <f:form.checkbox
-                            class="checkbox"
-                            id="terms"
-                            name="terms"
-                            value="1"
-                        />
-                        <label for="terms" class="checkbox-label">
-                            <span class="text-smaller">
-                                <f:link.page pageUid="{settings.users.termsPid}" target="_blank">
-                                    <f:translate key="templates_frontendUser_new.terms" />
-                                </f:link.page>
-                            </span>
-                        </label>
-                    </div>
-
-                    <div class="form__field">
-                        <f:form.checkbox
-                            class="checkbox"
-                            id="privacy"
-                            name="privacy"
-                            value="1"
-                        />
-                        <label for="privacy" class="checkbox-label">
-                            <vh:privacyText textVersion="registration"/>
-                        </label>
-                    </div>
+                    <rkwRegistration:consent type="terms"/>
+                    <rkwRegistration:consent key="registration" type="privacy"/>
+                    <rkwRegistration:consent type="marketing"/>
 
                     <button type="submit" class="btn btn--primary full-width-narrow">
                         <span><f:translate key="templates_frontendUser_new.labelRegister" /></span>

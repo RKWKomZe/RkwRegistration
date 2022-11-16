@@ -27,7 +27,7 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
  * Class GetAllFlashMessageIdentifierViewHelper
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -42,6 +42,7 @@ class GetAllFlashMessageIdentifierViewHelperTest extends FunctionalTestCase
      * @var string[]
      */
     protected $testExtensionsToLoad = [
+        'typo3conf/ext/rkw_ajax',
         'typo3conf/ext/rkw_basics',
         'typo3conf/ext/rkw_registration'
     ];
@@ -56,7 +57,7 @@ class GetAllFlashMessageIdentifierViewHelperTest extends FunctionalTestCase
 
         parent::setUp();
 
-        $this->importDataSet(__DIR__ . '/GetAllFlashMessageIdentifierViewHelperTest/Fixtures/Database/Global.xml');
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Global.xml');
         $this->setUpFrontendRootPage(
             1,
             [
@@ -72,11 +73,14 @@ class GetAllFlashMessageIdentifierViewHelperTest extends FunctionalTestCase
         $this->standAloneViewHelper = $this->objectManager->get(StandaloneView::class);
         $this->standAloneViewHelper->setTemplateRootPaths(
             [
-                0 => __DIR__ . '/GetAllFlashMessageIdentifierViewHelperTest/Fixtures/Frontend/Templates'
+                0 => self::FIXTURE_PATH . '/Frontend/Templates'
             ]
         );
 
     }
+
+    #==============================================================================
+
 
     /**
      * @test
@@ -84,14 +88,12 @@ class GetAllFlashMessageIdentifierViewHelperTest extends FunctionalTestCase
     public function renderReturnsArrayWithFlashMessageIdentifiers ()
     {
 
-         // @todo: Eigentlich ein UNIT Test, anstatt Integration?
-
         /**
          * Scenario:
          *
          * Given ViewHelper reads the extensions TypoScript
          * When the ViewHelper is rendered
-         * Then an list (array) of flashMessage identifiers is returned
+         * Then a list (array) of flashMessage identifiers is returned
          */
 
         /** @var GetAllFlashMessageIdentifierViewHelper $viewHelper */
@@ -108,6 +110,7 @@ class GetAllFlashMessageIdentifierViewHelperTest extends FunctionalTestCase
         self::assertGreaterThanOrEqual($expectedCount, $result);
     }
 
+    #==============================================================================
 
     /**
      * TearDown

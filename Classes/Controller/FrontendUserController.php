@@ -27,7 +27,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -35,7 +35,7 @@ class FrontendUserController extends AbstractController
 {
 
     /**
-     * @var \RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration
+     * @var \RKW\RkwRegistration\Registration\FrontendUserRegistration
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $frontendUserRegistration;
@@ -57,6 +57,7 @@ class FrontendUserController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("frontendUser")
      */
     public function newAction(FrontendUser $frontendUser = null): void
@@ -64,13 +65,13 @@ class FrontendUserController extends AbstractController
         // not for already logged-in users!
         if (FrontendUserSessionUtility::getLoggedInUserId()) {
 
-            if ($this->settings['users']['welcomePid']) {
+            if ($this->settings['welcomePid']) {
                 $this->redirect(
                     'index',
                     'Auth',
                     null,
                     null,
-                    $this->settings['users']['welcomePid']
+                    $this->settings['welcomePid']
                 );
             }
 
@@ -83,7 +84,7 @@ class FrontendUserController extends AbstractController
         ) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'frontendUserController.notice.new_introduction',
+                    'frontendUserController.notice.newIntroduction',
                     $this->extensionName,
                 ),
                 '',
@@ -118,12 +119,13 @@ class FrontendUserController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @TYPO3\CMS\Extbase\Annotation\Validate("RKW\RkwRegistration\Validation\FrontendUserValidator", param="frontendUser")
-     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\TermsValidator", param="frontendUser")
-     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\PrivacyValidator", param="frontendUser")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\TermsValidator", param="frontendUser")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\PrivacyValidator", param="frontendUser")
+     * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\MarketingValidator", param="frontendUser")
      */
     public function createAction(FrontendUser $frontendUser): void
     {
-        /** @var \RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration */
+        /** @var \RKW\RkwRegistration\Registration\FrontendUserRegistration */
         $this->frontendUserRegistration->setFrontendUser($frontendUser)
             ->setRequest($this->request)
             ->startRegistration();
@@ -135,18 +137,84 @@ class FrontendUserController extends AbstractController
             )
         );
 
-        if ($this->settings['users']['loginPid']) {
+        if ($this->settings['loginPid']) {
             $this->redirect(
                 'index',
                 'Auth',
                 null,
                 [],
-                $this->settings['users']['loginPid']
+                $this->settings['loginPid']
             );
         }
 
         $this->redirect('index');
     }
+
+
+    /**
+     * Takes optIn parameters and checks them
+     *
+     * @return void
+     * @throws \RKW\RkwRegistration\Exception
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    public function optInAction(): void
+    {
+        $token = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('token'));
+        $tokenUser = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('user'));
+
+        $check =  $this->frontendUserRegistration->setFrontendUserToken($tokenUser)
+            ->setRequest($this->getRequest())
+            ->validateOptIn($token);
+
+        if ($check < 300) {
+
+            $this->addFlashMessage(
+                LocalizationUtility::translate(
+                    'frontendUserController.message.registrationSuccessful',
+                    $this->extensionName
+                )
+            );
+
+        } elseif ($check < 400) {
+
+            $this->addFlashMessage(
+                LocalizationUtility::translate(
+                    'frontendUserController.message.registrationCanceled',
+                    $this->extensionName
+                )
+            );
+
+        } else {
+
+            $this->addFlashMessage(
+                LocalizationUtility::translate(
+                    'frontendUserController.error.registrationError',
+                    $this->extensionName
+                ),
+                '',
+                AbstractMessage::ERROR
+            );
+        }
+
+        $this->redirect(
+            'index',
+            'Auth',
+            null,
+            [],
+            $this->settings['loginPid']
+        );
+    }
+
 
 
     /**
@@ -250,13 +318,13 @@ class FrontendUserController extends AbstractController
 
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'frontendUserController.message.update_successful', $this->extensionName
+                'frontendUserController.message.updateSuccessful', $this->extensionName
             )
         );
 
         // redirect back to groups when we were originally redirected from there
         if (
-            ($this->settings['users']['groupsListPid'])
+            ($this->settings['groupsListPid'])
             && ($frontendUser->getTempFrontendUserGroup())
         ){
             $this->redirect(
@@ -266,17 +334,17 @@ class FrontendUserController extends AbstractController
                 [
                     'frontendUserGroup' => $frontendUser->getTempFrontendUserGroup()
                 ],
-                $this->settings['users']['groupsListPid']
+                $this->settings['groupsListPid']
             );
         }
 
-        if ($this->settings['users']['welcomePid']) {
+        if ($this->settings['welcomePid']) {
             $this->redirect(
                 'index',
                 'Registration',
                 null,
                 null,
-                $this->settings['users']['welcomePid']
+                $this->settings['welcomePid']
             );
         }
 
@@ -299,7 +367,7 @@ class FrontendUserController extends AbstractController
 
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'frontendUserController.warning.show_introduction',
+                'frontendUserController.warning.showIntroduction',
                 $this->extensionName,
             ),
             '',
@@ -339,18 +407,18 @@ class FrontendUserController extends AbstractController
 
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'frontendUserController.message.delete_successful',
+                'frontendUserController.message.deletedSuccessful',
                 $this->extensionName
             )
         );
 
-        if ($this->settings['users']['loginPid']) {
+        if ($this->settings['loginPid']) {
             $this->redirect(
                 'index',
                 'Auth',
                 null,
                 [],
-                $this->settings['users']['loginPid']
+                $this->settings['loginPid']
             );
         }
 

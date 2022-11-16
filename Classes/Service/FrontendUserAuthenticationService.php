@@ -27,7 +27,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
  * Class FrontendUserAuthenticationService
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -116,6 +116,7 @@ class FrontendUserAuthenticationService extends \TYPO3\CMS\Core\Authentication\A
 
         // if there was an error we increment the error-counter
         if ($result <= 0) {
+
             $newErrorCounterValue = intval($user[$this->db_user['usercounter_column']]) + 1;
 
         // if the login was successful we reset the error-counter
@@ -144,7 +145,7 @@ class FrontendUserAuthenticationService extends \TYPO3\CMS\Core\Authentication\A
                         $queryBuilder->createNamedParameter($user[$this->db_user['userid_column']])
                     )
                 )
-                ->set($this->db_user['usercounter_column'], intval($user[$this->db_user['usercounter_column']]) + 1)
+                ->set($this->db_user['usercounter_column'], intval($newErrorCounterValue))
                 ->execute();
         }
 
@@ -172,7 +173,7 @@ class FrontendUserAuthenticationService extends \TYPO3\CMS\Core\Authentication\A
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
+    protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
     {
         return GeneralUtility::getTyposcriptConfiguration('Rkwregistration', $which);
     }
@@ -188,4 +189,4 @@ class FrontendUserAuthenticationService extends \TYPO3\CMS\Core\Authentication\A
     }
 
 
-    }
+}

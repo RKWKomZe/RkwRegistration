@@ -14,10 +14,6 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-
 /**
  * AbstractRepository
  *
@@ -37,10 +33,11 @@ class AbstractRepository  extends \TYPO3\CMS\Extbase\Persistence\Repository
      */
     public function initializeObject()
     {
+
         // Fix: always use your own storagePid - even if called through another extension
         // This is important since the extension's registration feature is used by a lot of other extensions
         // Per default the storagePid of the calling extension is used
-        $settings =  \RKW\RkwBasics\Utility\GeneralUtility::getTyposcriptConfiguration('Rkwregistration',
+        $settings =  \RKW\RkwBasics\Utility\GeneralUtility::getTyposcriptConfiguration('rkwRegistration',
             \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
         );
 

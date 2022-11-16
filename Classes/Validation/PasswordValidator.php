@@ -2,18 +2,6 @@
 
 namespace RKW\RkwRegistration\Validation;
 
-use RKW\RkwBasics\Utility\GeneralUtility;
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
-use RKW\RkwRegistration\Utility\FrontendUserUtility;
-use TYPO3\CMS\Core\Authentication\LoginType;
-use TYPO3\CMS\Extbase\Error\Error;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use RKW\RkwRegistration\Service\FrontendUserAuthenticationService;
-use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -28,13 +16,18 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwBasics\Utility\GeneralUtility;
+use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use RKW\RkwRegistration\Utility\FrontendUserUtility;
+use TYPO3\CMS\Extbase\Error\Error;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Class PasswordValidator
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -64,10 +57,10 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
     /**
      * Validation of password
      *
-     * @param array $passwordArray
+     * @param array $value
      * @return boolean
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function isValid($value): bool
     {
@@ -106,7 +99,7 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
             $this->result->addError(
                 new Error(
                     LocalizationUtility::translate(
-                        'validator.passwords_not_all_set',
+                        'validator.passwordsNotAllSet',
                         'rkw_registration'
                     ), 1435068293
                 )
@@ -128,7 +121,7 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
             $this->result->addError(
                 new Error(
                     LocalizationUtility::translate(
-                        'validator.old_password_not_set',
+                        'validator.oldPasswordNotSet',
                         'rkw_registration'
                     ), 1649148502
                 )
@@ -155,7 +148,7 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
             $this->result->addError(
                 new Error(
                     LocalizationUtility::translate(
-                        'validator.password_old_wrong',
+                        'validator.passwordOldWrong',
                         'rkw_registration'
                     ), 1649151982
                 )
@@ -177,7 +170,7 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
             $this->result->addError(
                 new Error(
                     LocalizationUtility::translate(
-                        'validator.passwords_not_identical',
+                        'validator.passwordsNotIdentical',
                         'rkw_registration'
                     ), 1435068407
                 )
@@ -202,7 +195,7 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
             $this->result->addError(
                 new Error(
                     LocalizationUtility::translate(
-                        'validator.password_too_short',
+                        'validator.passwordTooShort',
                         'rkw_registration',
                         [$minLength]
                     ), 1435066509
@@ -219,7 +212,7 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
             $this->result->addError(
                 new Error(
                     LocalizationUtility::translate(
-                        'validator.password_too_long',
+                        'validator.passwordTooLong',
                         'rkw_registration',
                         [$maxLength]
                     ), 1649316598
@@ -247,7 +240,7 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
                 $this->result->addError(
                     new Error(
                         LocalizationUtility::translate(
-                            'validator.password_missing_signs',
+                            'validator.passwordMissingSigns',
                             'rkw_registration'
                         ), 1435066509
                     )
@@ -257,8 +250,6 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
             }
         }
     }
-
-
 
 }
 

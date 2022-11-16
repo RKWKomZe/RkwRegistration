@@ -9,6 +9,7 @@ CREATE TABLE tx_rkwregistration_domain_model_optin
 
 	frontend_user_uid    int(11) DEFAULT '0' NOT NULL,
 	frontend_user_update text         DEFAULT '' NOT NULL,
+	admins  							varchar(255) DEFAULT '' NOT NULL,
 	token_user           varchar(255) DEFAULT '' NOT NULL,
 	token_yes            varchar(255) DEFAULT '' NOT NULL,
 	token_no             varchar(255) DEFAULT '' NOT NULL,
@@ -56,9 +57,10 @@ CREATE TABLE fe_users
 
 	tx_rkwregistration_login_error_count      tinyint(4) DEFAULT '0' NOT NULL,
 
+	tx_rkwregistration_consent	    			    varchar(255) DEFAULT ''        NOT NULL,
+	tx_rkwregistration_consent_terms				  tinyint(1) DEFAULT '0' NOT NULL,
+	tx_rkwregistration_consent_marketing      tinyint(1) DEFAULT '0' NOT NULL,
 	tx_rkwregistration_data_protection_status tinyint(4) DEFAULT '0' NOT NULL,
-	tx_rkwregistration_privacy                varchar(255) DEFAULT ''        NOT NULL,
-
 );
 
 
@@ -91,19 +93,22 @@ CREATE TABLE tx_rkwregistration_fegroups_beusers_mm
 
 
 #
-# Table structure for table 'tx_rkwregistration_domain_model_privacy'
+# Table structure for table 'tx_rkwregistration_domain_model_consent'
 #
-CREATE TABLE tx_rkwregistration_domain_model_privacy
+CREATE TABLE tx_rkwregistration_domain_model_consent
 (
 
 	uid                    int(11) NOT NULL auto_increment,
 	pid                    int(11) DEFAULT '0' NOT NULL,
 
-	frontend_user          int(11) DEFAULT '0' NOT NULL,
-	registration_user_sha1 varchar(255) DEFAULT '' NOT NULL,
 	parent                 int(11) DEFAULT '0' NOT NULL,
+	child                  int(11) DEFAULT '0' NOT NULL,
+
+	frontend_user          int(11) DEFAULT '0' NOT NULL,
+	opt_in     						 int(11) DEFAULT '0' NOT NULL,
+
 	foreign_table          varchar(255) DEFAULT '' NOT NULL,
-	foreign_uid            int(11) DEFAULT '0' NOT NULL,
+	foreign_uid            varchar(255) DEFAULT '' NOT NULL,
 	ip_address             varchar(255) DEFAULT '' NOT NULL,
 	user_agent             longtext                NOT NULL,
 	extension_name         varchar(255) DEFAULT '' NOT NULL,
@@ -114,8 +119,9 @@ CREATE TABLE tx_rkwregistration_domain_model_privacy
 	server_host            varchar(255) DEFAULT '' NOT NULL,
 	server_uri             text                    NOT NULL,
 	server_referer_url     text                    NOT NULL,
-
-	child                  int(11) DEFAULT '0' NOT NULL,
+	consent_privacy        int(1) DEFAULT '0' NOT NULL,
+	consent_terms          int(1) DEFAULT '0' NOT NULL,
+	consent_marketing      int(1) DEFAULT '0' NOT NULL,
 
 	tstamp                 int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate                 int(11) unsigned DEFAULT '0' NOT NULL,
@@ -123,7 +129,7 @@ CREATE TABLE tx_rkwregistration_domain_model_privacy
 
 	PRIMARY KEY (uid),
 	KEY                    parent (pid),
-
+	KEY                    opt_in (opt_in),
 );
 
 #

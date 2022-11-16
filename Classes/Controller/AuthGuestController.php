@@ -15,7 +15,7 @@ namespace RKW\RkwRegistration\Controller;
  */
 
 use RKW\RkwRegistration\Domain\Model\GuestUser;
-use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
@@ -27,7 +27,7 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -35,7 +35,7 @@ class AuthGuestController extends AbstractController
 {
 
     /**
-     * @var \RKW\RkwRegistration\Registration\FrontendUser\GuestUserRegistration
+     * @var \RKW\RkwRegistration\Registration\GuestUserRegistration
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $guestUserRegistration;
@@ -56,11 +56,12 @@ class AuthGuestController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
     public function loginAction(string $token = ''): void
     {
         // send back already logged in user. Nothing to do here
-        if (FrontendUserSessionUtility::isUserLoggedIn()) {
+        if (FrontendUserSessionUtility::getLoggedInUserId()) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'authGuestController.error.guestLoginImpossible',

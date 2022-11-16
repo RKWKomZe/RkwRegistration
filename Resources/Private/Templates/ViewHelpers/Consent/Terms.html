@@ -1,0 +1,39 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true">
+
+    <f:layout name="Default" />
+
+    <f:section name="main">
+
+        <div class="form__field">
+            <f:form.checkbox
+                class="checkbox"
+                id="{namespace}-{type}"
+                name="{namespace}[{type}]"
+                value="1"
+                checked="{checked}"
+            />
+
+            <label for="{namespace}-{type}" class="checkbox-label">
+                <span class="text-smaller">
+                    <f:if condition="{key} == 'events'">
+                        <f:then>
+                            <f:translate key="templates_viewHelpers_consent_{type}.{key}.partOne" extensionName="rkwRegistration" />
+                            <f:link.page pageUid="{pageUid}" target="_blank"><f:translate key="templates_viewHelpers_consent_{type}.{key}.partTwo" extensionName="rkwRegistration" /></f:link.page><f:if condition="!{pageUid2}">.</f:if>
+                            <f:if condition="{pageUid2}">
+                                <f:translate key="templates_viewHelpers_consent_{type}.{key}.partThree" extensionName="rkwRegistration"  />
+                                <f:link.page pageUid="{pageUid2}" target="_blank"><f:translate key="templates_viewHelpers_consent_{type}.{key}.partFour" extensionName="rkwRegistration"  /></f:link.page>.
+                            </f:if>
+                            <f:translate key="templates_viewHelpers_consent_{type}.{key}.partFive" extensionName="rkwRegistration"  />
+                        </f:then>
+                        <f:else>
+                            <f:translate key="templates_viewHelpers_consent_{type}.{key}.partOne" extensionName="rkwRegistration" />
+                            <f:link.page pageUid="{pageUid}" target="_blank"><f:translate key="templates_viewHelpers_consent_{type}.{key}.partTwo" extensionName="rkwRegistration" /></f:link.page>.
+                        </f:else>
+                    </f:if>
+                </span>        
+            </label>
+        </div>
+    </f:section>
+
+</html>

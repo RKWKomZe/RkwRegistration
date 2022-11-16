@@ -11,7 +11,7 @@ routeEnhancers:
         _controller: 'Auth::logout'
       - routePath: '/rkw-registration/redirect'
         _controller: 'Auth::logoutRedirect'
-      - routePath: '/rkw-registration/login-guest/{tokenUser}'
+      - routePath: '/rkw-registration/login-guest/{token}'
         _controller: 'AuthGuest::login'
       - routePath: '/rkw-registration/login-hint'
         _controller: 'AuthGuest::loginHint'
@@ -23,15 +23,18 @@ routeEnhancers:
         _controller: 'FrontendUser::create'
       - routePath: '/rkw-registration/new'
         _controller: 'FrontendUser::new'
+      - routePath: '/rkw-registration/optin/{user}/{token}'
+        _controller: 'FrontendUser::optIn'
+      - routePath: '/rkw-registration/group-optin/{user}/{token}'
+        _controller: 'FrontendUserGroup::optIn'
       - routePath: '/rkw-registration/new-password'
         _controller: 'Password::new'
       - routePath: '/rkw-registration/create-password'
         _controller: 'Password::create'
-      - routePath: '/rkw-registration/optin/{tokenUser}/{token}'
-        _controller: 'Registration::optIn'
+
     defaultController: 'Auth::index'
     requirements:
-      tokenUser: '[a-zA-Z0-9]{60}'
+      user: '[a-zA-Z0-9]{60}'
       token: '[a-zA-Z0-9]{60}'
 
   RkwRegistration1:

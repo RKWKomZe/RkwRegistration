@@ -25,7 +25,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -102,67 +102,13 @@ class FrontendUserRepository extends AbstractRepository
     }
 
 
-
-
-
-
-
-
-
-
-
-    /**
-     * Finds deleted users
-     *
-     * @param int $uid
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
-     */
-    public function findOneDeletedByUid(int $uid)
-    {
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setIncludeDeleted(true);
-
-        $user = $query->matching(
-                $query->logicalAnd(
-                    $query->equals('uid', $uid),
-                    $query->equals('deleted', 1)
-                )
-            )->setLimit(1)
-            ->execute();
-
-        return $user->getFirst();
-    }
-
-
-    /**
-     * Finds deleted users
-     *
-     * @param int $uid
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|null
-     */
-    public function findOneDisabledByUid(int $uid): ?FrontendUser
-    {
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setIgnoreEnableFields(true);
-
-        $user = $query->matching(
-            $query->logicalAnd(
-                $query->equals('uid', $uid),
-                $query->equals('disable', 1)
-            )
-        )->setLimit(1)
-            ->execute();
-
-        return $user->getFirst();
-    }
-
-
     /**
      * Find all frontend users that have been expired x days ago
      *
      * @param int $daysExpired
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @api Used for cleanup via CLI*
      */
     public function findExpired (int $daysExpired = 7): QueryResultInterface {
 
@@ -191,6 +137,7 @@ class FrontendUserRepository extends AbstractRepository
      * @param int $daysDeleted
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @api Used for cleanup via CLI
      */
     public function findDeleted (int $daysDeleted = 7): QueryResultInterface
     {
@@ -214,117 +161,6 @@ class FrontendUserRepository extends AbstractRepository
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Finds inactive users - this is relevant for registration
-     * This way we can activate the user then
-     *
-     * @param int $uid
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
-     */
-    public function findByUidAlsoInactiveNonGuest(int $uid)
-    {
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setIgnoreEnableFields(true);
-
-        // the field "txRkwregistrationIsAnonymous" is deprecated. Solely not removed for backward compatibility reasons
-        $user = $query->matching(
-                $query->logicalAnd(
-                    $query->equals('uid', $uid),
-                    $query->logicalNot(
-                        $query->equals('txExtbaseType', '\RKW\RkwRegistration\Domain\Model\GuestUser')
-                    ),
-                    $query->logicalOr(
-                        $query->equals('txRkwregistrationIsAnonymous', null),
-                        $query->equals('txRkwregistrationIsAnonymous', 0)
-                    )
-                )
-            )->setLimit(1)
-            ->execute();
-
-        return $user->getFirst();
-    }
-
-
-
-
-    /**
-     * Finds an object matching the given identifier.
-     *
-     * @param int $uid The identifier of the object to find
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
-     * @api used by RKW Soap
-     */
-    public function findByUidSoap(int $uid)
-    {
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setRespectStoragePage(false);
-        $query->getQuerySettings()->setIncludeDeleted(true);
-        $query->getQuerySettings()->setIgnoreEnableFields(true);
-
-        $query->matching(
-            $query->equals('uid', $uid)
-        );
-
-        $query->setLimit(1);
-
-        return $query->execute()->getFirst();
-    }
-
-
-    /**
-     * Find all deleted users with optional timestamp tolerance
-     *
-     * @param int $tolerance Tolerance timestamp
-     * @param bool $guestOnly Only return guest users
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
-     */
-    public function findDeletedOrDisabled(int $tolerance = 0, bool $guestOnly = false): QueryResultInterface
-    {
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setIncludeDeleted(true);
-        $query->getQuerySettings()->setIgnoreEnableFields(true);
-
-        $timestamp = time();
-        if ($tolerance) {
-            $timestamp = $tolerance;
-        }
-
-        $constraints = [
-            $query->logicalOr(
-                $query->equals('deleted', 1),
-                $query->equals('disable', 1)
-            ),
-            $query->logicalAnd(
-                $query->greaterThan('tstamp', 0),
-                $query->lessThan('tstamp', $timestamp)
-            ),
-        ];
-
-        if ($guestOnly) {
-            $constraints[] = $query->equals('tx_extbase_type', '\RKW\RkwRegistration\Domain\Model\GuestUser');
-        }
-
-        $query->matching(
-            $query->logicalAnd($constraints)
-        );
-
-        return $query->execute();
-    }
-
-
-
     /**
      * Delete user from DB (really!)
      *
@@ -335,6 +171,7 @@ class FrontendUserRepository extends AbstractRepository
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @return bool
+     * tested implicitly
      */
     public function removeHard(FrontendUser $frontendUser): bool
     {
@@ -342,7 +179,7 @@ class FrontendUserRepository extends AbstractRepository
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
         $rows = $queryBuilder
             ->select('uid')
-            ->from('tx_rkwregistration_domain_model_privacy')
+            ->from('tx_rkwregistration_domain_model_consent')
             ->where(
                 $queryBuilder->expr()->eq(
                     'frontend_user', $queryBuilder->createNamedParameter($frontendUser->getUid(), \PDO::PARAM_INT)
@@ -378,220 +215,6 @@ class FrontendUserRepository extends AbstractRepository
 
         return false;
     }
-
-
-    /**
-     * Finds non-anonymous users
-     *
-     * @param int $uid
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
-     * @deprecated This method is deprecated and will be removed soon.
-     */
-    public function findByUidNoAnonymous(int $uid)
-    {
-        trigger_error('This method "' . __METHOD__ . '" is deprecated and will be removed soon. Do not use it anymore.', E_USER_DEPRECATED);
-
-        $query = $this->createQuery();
-        $user = $query->matching(
-            $query->logicalAnd(
-                $query->equals('uid', $uid),
-                $query->equals('txRkwregistrationIsAnonymous', 0)
-            )
-        )->setLimit(1)
-            ->execute();
-
-        return $user->getFirst();
-    }
-
-
-    /**
-     * Finds anonymous users
-     *
-     * @param string $username
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
-     * @deprecated Will be removed soon. Simply use magic function $guestUserRepository->findByUsername($token) instead
-     */
-    public function findOneByToken(string $token)
-    {
-        trigger_error('This method "' . __METHOD__ . '" is deprecated and will be removed soon. Do not use it anymore.', E_USER_DEPRECATED);
-
-        $query = $this->createQuery();
-
-        $user = $query->matching(
-            $query->logicalAnd(
-                $query->equals('username', $token),
-                $query->equals('txRkwregistrationIsAnonymous', 1)
-            )
-        )->setLimit(1)
-            ->execute();
-
-        return $user->getFirst();
-    }
-
-
-    /**
-     * Finds inactive users - this is relevant for registration
-     * This way we can activate the user then
-     *
-     * @param int $uid
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
-     * @deprecated Will be removed soon. Use findByUidInactiveNonGuest instead
-     */
-    public function findByUidInactiveNonAnonymous(int $uid)
-    {
-        trigger_error('This method "' . __METHOD__ . '" is deprecated and will be removed soon. Do not use it anymore.', E_USER_DEPRECATED);
-        return $this->findByUidAlsoInactiveNonGuest($uid);
-    }
-
-
-    /**
-     * Find all expired users with optional timestamp tolerance
-     *
-     * @param int $tolerance Tolerance timestamp
-     * @param bool $anonymousOnly Only return anonymous users
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
-     * @deprecated since 26.06.2018
-
-    public function findExpired(int $tolerance = 0, bool $anonymousOnly = false): QueryResultInterface
-    {
-        trigger_error('This method "' . __METHOD__ . '" is deprecated and will be removed soon. Do not use it anymore.', E_USER_DEPRECATED);
-
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setIgnoreEnableFields(true);
-
-        $timestamp = time();
-        if ($tolerance) {
-            $timestamp = intval($tolerance);
-        }
-
-        $constraints = [
-            $query->greaterThan('endtime', 0),
-            $query->lessThan('endtime', $timestamp),
-        ];
-
-        if ($anonymousOnly) {
-            $constraints[] = $query->equals('txRkwregistrationIsAnonymous', 1);
-        }
-
-        $query->matching(
-            $query->logicalAnd($constraints)
-        );
-
-        return $query->execute();
-    }
-
-
-
-    /**
-     * Find all deleted or expired users with optional timestamp tolerance
-     *
-     * @param int $tolerance Tolerance timestamp
-     * @param bool $anonymousOnly if true only anonymous users will be checked
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
-     * @deprecated since 19.12.2019
-     */
-    public function findExpiredOrDeletedByTstamp(int $tolerance = 0, bool $anonymousOnly = false): QueryResultInterface
-    {
-        trigger_error('This method "' . __METHOD__ . '" is deprecated and will be removed soon. Do not use it anymore.', E_USER_DEPRECATED);
-
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setIncludeDeleted(true);
-        $query->getQuerySettings()->setIgnoreEnableFields(true);
-
-        $timestamp = time();
-        if ($tolerance) {
-            $timestamp = $tolerance;
-        }
-
-        $constraints = [
-            $query->logicalOr(
-                $query->logicalAnd(
-                    $query->greaterThan('endtime', 0),
-                    $query->lessThan('endtime', $timestamp)
-                ),
-                $query->logicalAnd(
-                    $query->equals('deleted', 1),
-                    $query->logicalAnd(
-                        $query->greaterThan('tstamp', 0),
-                        $query->lessThan('tstamp', $timestamp)
-                    )
-                )
-            ),
-        ];
-
-        if ($anonymousOnly) {
-            $constraints[] = $query->equals('txRkwregistrationIsAnonymous', 1);
-        }
-
-        $query->matching(
-            $query->logicalAnd($constraints)
-        );
-
-        return $query->execute();
-    }
-
-
-    /**
-     * Finds inactive users - this is relevant for registration
-     * This way no one can register twice (only when deleted)
-     *
-     * @param string $username
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|object|null
-     * @deprecated NOT USED INSIDE COMPLETE /typo3conf/ext/
-     */
-    public function findOneByUsernameAlsoInactive($username)
-    {
-        trigger_error('This method "' . __METHOD__ . '" is deprecated and will be removed soon. Do not use it anymore.', E_USER_DEPRECATED);
-
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setIgnoreEnableFields(true);
-
-        $user = $query->matching(
-            $query->equals('username', $username)
-        )->setLimit(1)
-            ->execute();
-
-        return $user->getFirst();
-    }
-
-
-    /**
-     * Checks if user is already registered
-     *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @return boolean
-     * @deprecated NOT USED INSIDE COMPLETE /typo3conf/ext/
-     */
-    public function isUser(FrontendUser $frontendUser)
-    {
-        trigger_error('This method "' . __METHOD__ . '" is deprecated and will be removed soon. Do not use it anymore.', E_USER_DEPRECATED);
-
-        if ($this->findUser($frontendUser)) {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    /**
-     * Loads registered user from database
-     *
-     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
-     * @return \RKW\RkwRegistration\Domain\Model\FrontendUser|null
-     * @deprecated NOT USED INSIDE COMPLETE /typo3conf/ext/
-     */
-    public function findUser(FrontendUser $frontendUser)
-    {
-        if ($frontendUser = $this->findOneByUsername(strtolower($frontendUser->getUsername()))) {
-            return $frontendUser;
-        }
-
-        return null;
-    }
-
 
 }
 

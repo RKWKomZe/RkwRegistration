@@ -22,7 +22,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  * IsMandatoryFieldViewHelper
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright RkwKompetenzzentrum
+ * @copyright RKWKompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */

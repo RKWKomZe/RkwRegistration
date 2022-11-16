@@ -17,15 +17,7 @@
                             <h3 class="h4">{frontendUserGroup.title}</h3>
                             <p>{frontendUserGroup.description}</p>
 
-                            <f:if condition="{rkwRegistration:frontendUserGroups.isMembershipRequested(frontendUserGroup:frontendUserGroup, membershipsRequested:membershipsRequested)}">
-                                <f:then>
-                                    <div class="system-message" role="alert">
-                                        <div class="system-message__item system-message__item--severity2">
-                                            <f:translate key="templates_frontendUserGroup_list.membershipRequested" />
-                                        </div>
-                                    </div>
-                                </f:then>
-                            </f:if>
+                           
 
                             <f:if condition="{rkwRegistration:frontendUserGroups.isUserInGroup(frontendUserGroup:frontendUserGroup, frontendUser:frontendUser)}">
                                 <f:then>
@@ -41,11 +33,23 @@
                                     </div>
                                 </f:then>
                                 <f:else>
-                                    <div class="btn-list">
-                                        <f:link.action action="create" arguments="{frontendUserGroup: frontendUserGroup}" class="btn btn--primary">
-                                            <f:translate key="templates_frontendUserGroup_list.becomeMember" />
-                                        </f:link.action>
-                                    </div>
+                                    
+                                    <f:if condition="{rkwRegistration:frontendUserGroups.isMembershipRequested(frontendUserGroup:frontendUserGroup, membershipsRequested:membershipsRequested)}">
+                                        <f:then>
+                                            <div class="btn-list">
+                                                <button class="btn btn--primary btn--disabled" disabled>
+                                                    <f:translate key="templates_frontendUserGroup_list.membershipRequested" />
+                                                </button>
+                                            </div>
+                                        </f:then>
+                                        <f:else>
+                                            <div class="btn-list">
+                                                <f:link.action action="create" arguments="{frontendUserGroup: frontendUserGroup}" class="btn btn--primary">
+                                                    <f:translate key="templates_frontendUserGroup_list.becomeMember" />
+                                                </f:link.action>
+                                            </div>
+                                        </f:else>
+                                    </f:if>
                                 </f:else>
                             </f:if>
                         </td>

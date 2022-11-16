@@ -24,7 +24,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright RkwKompetenzzentrum
+ * @copyright RKWKompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -87,6 +87,7 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
      * checkUsername
      *
      * @return void
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     protected function checkUsername()
     {
@@ -95,7 +96,7 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
             $this->result->forProperty('email')->addError(
                 new Error(
                     LocalizationUtility::translate(
-                        'registrationController.error.username_exists',
+                        'frontendUserValidator.error.usernameExists',
                         'rkw_registration'
                     ), 1628688993
                 )
@@ -113,11 +114,11 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
     protected function checkEmail()
     {
         if ($this->frontendUser->getEmail()) {
-            if (!FrontendUserUtility::isEmailValid($this->frontendUser->getEmail())) {
+            if (! FrontendUserUtility::isEmailValid($this->frontendUser->getEmail())) {
                 $this->result->forProperty('email')->addError(
                     new Error(
                         LocalizationUtility::translate(
-                            'validator.email_invalid',
+                            'validator.emailInvalid',
                             'rkw_registration'
                         ), 1414589184
                     )
@@ -176,7 +177,7 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
                 $this->result->forProperty($property)->addError(
                     new Error(
                         LocalizationUtility::translate(
-                            'validator_field_not_filled',
+                            'validator.fieldNotFilled',
                             'rkw_registration'
                         ), 1414595322
                     )

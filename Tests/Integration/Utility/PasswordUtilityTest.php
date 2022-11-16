@@ -28,7 +28,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
  * PasswordUtilityTest
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -43,7 +43,9 @@ class PasswordUtilityTest extends FunctionalTestCase
      * @var string[]
      */
     protected $testExtensionsToLoad = [
+        'typo3conf/ext/rkw_ajax',
         'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/rkw_mailer',
         'typo3conf/ext/rkw_registration',
     ];
 
@@ -52,6 +54,7 @@ class PasswordUtilityTest extends FunctionalTestCase
      */
     protected $coreExtensionsToLoad = [
         'saltedpasswords',
+        'filemetadata',
         'extensionmanager'
     ];
 
@@ -105,7 +108,7 @@ class PasswordUtilityTest extends FunctionalTestCase
 
         $result = $utility->generatePassword($individualLength);
 
-        self::assertInternalType('string', $result);
+        self::assertIsString('string', $result);
         self::assertTrue(strlen($result) == $individualLength);
     }
 
@@ -130,7 +133,7 @@ class PasswordUtilityTest extends FunctionalTestCase
 
         $result = $utility::generatePassword();
 
-        self::assertInternalType('string', $result);
+        self::assertIsString('string', $result);
         self::assertTrue(strlen($result) == PasswordUtility::PASSWORD_DEFAULT_LENGTH);
     }
 
@@ -156,7 +159,7 @@ class PasswordUtilityTest extends FunctionalTestCase
 
         $result = $utility->generatePassword($individualLength);
 
-        self::assertInternalType('string', $result);
+        self::assertIsString('string', $result);
         self::assertTrue(strlen($result) == PasswordUtility::PASSWORD_MAX_LENGTH);
     }
 
@@ -185,7 +188,7 @@ class PasswordUtilityTest extends FunctionalTestCase
         do {
             $result = $utility->generatePassword($individualLength);
 
-            self::assertInternalType('string', $result);
+            self::assertIsString('string', $result);
             self::assertTrue(strlen($result) == PasswordUtility::PASSWORD_MIN_LENGTH);
 
             $individualLength++;
@@ -261,7 +264,7 @@ class PasswordUtilityTest extends FunctionalTestCase
 
         $result = $utility::saltPassword($customPassword);
 
-        self::assertInternalType('string', $result);
+        self::assertIsString('string', $result);
         self::assertNotEquals($result, $customPassword);
     }
 

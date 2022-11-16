@@ -15,13 +15,14 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
-use RKW\RkwRegistration\Register\GroupFrontendUser;
-use RKW\RkwRegistration\Utility\FrontendUserGroupUtility;
-use RKW\RkwRegistration\Utility\FrontendUserUtility;
-use RKW\RkwRegistration\Validation\FrontendUserValidator;
+use RKW\RkwRegistration\Domain\Model\OptIn;
+use RKW\RkwRegistration\Service\RkwMailService;
+use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -29,7 +30,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -51,7 +52,7 @@ class FrontendUserGroupController extends AbstractController
     const SIGNAL_SERVICE_DELETE = 'afterServiceDelete';
 
     /**
-     * @var \RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration
+     * @var \RKW\RkwRegistration\Registration\FrontendUserRegistration
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $frontendUserRegistration;
@@ -191,7 +192,7 @@ class FrontendUserGroupController extends AbstractController
         // to do this, we hypothetically set the new frontendUserGroup and evaluate against it
         $this->redirectIfUserHasMissingData($frontendUserGroup);
 
-        /** @var \RKW\RkwRegistration\Registration\FrontendUser\FrontendUserRegistration */
+        /** @var \RKW\RkwRegistration\Registration\FrontendUserRegistration */
         $this->frontendUserRegistration->setFrontendUser($this->getFrontendUser())
             ->setData($frontendUserGroup)
             ->setApproval($frontendUserGroup->getTxRkwregistrationMembershipAdmins())
@@ -210,88 +211,193 @@ class FrontendUserGroupController extends AbstractController
     }
 
 
-
-
-
-
     /**
-     * action show
+     * Takes optIn parameters and checks them
      *
-     * @param FrontendUserGroup $frontendUserGroup
      * @return void
+     * @throws \RKW\RkwRegistration\Exception
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
-     */
-    public function showAction(FrontendUserGroup $frontendUserGroup): void
-    {
-        // for logged in users only!
-        $this->redirectIfUserNotLoggedIn();
-
-        $this->view->assignMultiple(
-            [
-                'frontendUserGroup' => $frontendUserGroup,
-            ]
-        );
-    }
-
-
-
-    /**
-     * Takes opt-in parameters and checks them
-     *
-     * @return void
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
     public function optInAction(): void
     {
-        $tokenYes = preg_replace(
-            '/[^a-zA-Z0-9]/',
-            '',
-            ($this->request->hasArgument('token_yes') ? $this->request->getArgument('token_yes') : '')
-        );
-        $tokenNo = preg_replace(
-            '/[^a-zA-Z0-9]/',
-            '',
-            ($this->request->hasArgument('token_no') ? $this->request->getArgument('token_no') : '')
-        );
-        $serviceSha1 = preg_replace(
-            '/[^a-zA-Z0-9]/',
-            '',
-            $this->request->getArgument('service')
-        );
+        $token = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('token'));
+        $tokenUser = preg_replace('/[^a-zA-Z0-9]/', '', $this->request->getArgument('user'));
 
-        $service = $this->objectManager->get(GroupFrontendUser::class);
-        $check = $service->checkTokens($tokenYes, $tokenNo, $serviceSha1);
+        $check =  $this->frontendUserRegistration->setFrontendUserToken($tokenUser)
+            ->setRequest($this->getRequest())
+            ->setCategory('rkwRegistrationGroups')
+            ->validateOptIn($token);
 
-        if ($check == 1) {
+        if ($check < 300) {
 
-            $this->addFlashMessage(
-                LocalizationUtility::translate(
-                    'serviceController.message.service_optin_successfull',
-                    $this->extensionName
-                )
-            );
+            if ($check == 201) {
 
-        } elseif ($check == 2) {
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'frontendUserGroupController.warning.successfulButWaitingForAdmin',
+                        $this->extensionName
+                    ),
+                    '',
+                    AbstractMessage::WARNING
+                );
 
-            $this->addFlashMessage(
-                LocalizationUtility::translate(
-                    'serviceController.message.service_optin_canceled',
-                    $this->extensionName
-                )
-            );
+            } elseif ($check == 202) {
 
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'frontendUserGroupController.warning.successfulButWaitingForUser',
+                        $this->extensionName
+                    ),
+                    '',
+                    AbstractMessage::WARNING
+                );
+
+            } elseif ($check == 299) {
+
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'frontendUserGroupController.warning.successfulFinished',
+                        $this->extensionName
+                    ),
+                    '',
+                    AbstractMessage::WARNING
+                );
+
+            } else {
+
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'frontendUserGroupController.message.successful',
+                        $this->extensionName
+                    )
+                );
+            }
+
+
+        } elseif ($check < 400) {
+
+            if ($check == 301) {
+
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'frontendUserGroupController.warning.canceledByAdmin',
+                        $this->extensionName
+                    ),
+                    '',
+                    AbstractMessage::WARNING
+                );
+
+            } elseif ($check == 302) {
+
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'frontendUserGroupController.warning.canceledByUser',
+                        $this->extensionName
+                    ),
+                    '',
+                    AbstractMessage::WARNING
+                );
+
+            } elseif ($check == 399) {
+
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'frontendUserGroupController.warning.cancelingFinished',
+                        $this->extensionName
+                    ),
+                    '',
+                    AbstractMessage::WARNING
+                );
+
+            } else {
+
+                $this->addFlashMessage(
+                    LocalizationUtility::translate(
+                        'frontendUserGroupController.message.canceled',
+                        $this->extensionName
+                    )
+                );
+            }
 
         } else {
 
             $this->addFlashMessage(
                 LocalizationUtility::translate(
-                    'serviceController.error.service_optin_error',
+                    'frontendUserGroupController.error.unexpected',
                     $this->extensionName
                 ),
                 '',
                 AbstractMessage::ERROR
             );
+        }
+
+
+        // logged in user?
+        if (
+            (FrontendUserSessionUtility::getLoggedInUser())
+            && ($this->settings['groupsListPid'])
+        ){
+            $this->redirect(
+                'list',
+                'FrontendUserGroup',
+                null,
+                null,
+                $this->settings['groupsListPid']
+            );
+        }
+
+        // nah...
+        $this->redirect(
+            'index',
+            'Auth',
+            null,
+            [],
+            intval($this->settings['loginPid']) ?: null
+        );
+    }
+
+
+    /**
+     * Add user to frontendUserGroup
+     *
+     * ! used via SignalSlot !
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
+     * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
+     * @return void
+     * @throws \RKW\RkwMailer\Exception
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     */
+    public function createMembership (FrontendUser $frontendUser, OptIn $optIn): void
+    {
+
+        if (
+            ($frontendGroup = $optIn->getData())
+            && ($frontendGroup instanceof FrontendUserGroup)
+        ) {
+
+            // add user to group
+            $frontendUser->addUsergroup($frontendGroup);
+            $this->frontendUserRepository->update($frontendUser);
+            $this->persistenceManager->persistAll();
+
+            // trigger email
+            /** @var \RKW\RkwRegistration\Service\RkwMailService $mailService */
+            $mailService = GeneralUtility::makeInstance(RkwMailService::class);
+            $mailService->sendGroupConfirmationEmail($frontendUser, $optIn);
         }
     }
 
@@ -303,10 +409,9 @@ class FrontendUserGroupController extends AbstractController
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     public function deleteAction(FrontendUserGroup $frontendUserGroup): void
     {
@@ -314,23 +419,22 @@ class FrontendUserGroupController extends AbstractController
         $this->redirectIfUserNotLoggedIn();
 
         // remove group from user
-        $this->getFrontendUser()->removeUsergroup($frontendUserGroup);
-        $this->frontendUserRepository->update($this->getFrontendUser());
+        // we need to do this in a more complicated way, because the groups are based on the core-models here
+        $frontendUser = $this->getFrontendUser();
+        $objectStorage = GeneralUtility::makeInstance(ObjectStorage::class);
 
-        // dispatch event
-        $this->signalSlotDispatcher->dispatch(
-            __CLASS__,
-            self::SIGNAL_SERVICE_DELETE,
-            [
-                $this->getFrontendUser(),
-                $frontendUserGroup
-            ]
-        );
-
+        /** @var \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup $userGroup */
+        foreach ($frontendUser->getUsergroup() as $userGroup) {
+            if ($userGroup->getUid() != $frontendUserGroup->getUid()) {
+                $objectStorage->attach($userGroup);
+            }
+        }
+        $frontendUser->setUsergroup($objectStorage);
+        $this->frontendUserRepository->update($frontendUser);
 
         $this->addFlashMessage(
             LocalizationUtility::translate(
-                'serviceController.message.service_delete',
+                'frontendUserGroupController.message.membershipEnded',
                 $this->extensionName
             )
         );

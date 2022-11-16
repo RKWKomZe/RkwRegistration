@@ -17,7 +17,7 @@ namespace RKW\RkwRegistration\Tests\Integration\Service;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-use RKW\RkwRegistration\Registration\FrontendUser\AbstractRegistration;
+use RKW\RkwRegistration\Registration\AbstractRegistration;
 use RKW\RkwRegistration\Utility\ClientUtility;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -29,7 +29,7 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  * GuestUserAuthenticationServiceTest
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -56,6 +56,7 @@ class GuestUserAuthenticationServiceTest extends FunctionalTestCase
      * @var string[]
      */
     protected $testExtensionsToLoad = [
+        'typo3conf/ext/rkw_ajax',
         'typo3conf/ext/rkw_basics',
         'typo3conf/ext/rkw_registration',
     ];

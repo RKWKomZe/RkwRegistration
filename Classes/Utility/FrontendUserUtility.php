@@ -234,7 +234,7 @@ class FrontendUserUtility
      */
     public static function getMandatoryFields(FrontendUser $frontendUser = null): array
     {
-        $mandatoryFields = [];
+        $mandatoryFields = ['email'];
         $settings = self::getSettings();
 
         if (!$frontendUser) {
@@ -274,7 +274,7 @@ class FrontendUserUtility
             );
         }
 
-        return $mandatoryFields;
+        return array_values(array_unique($mandatoryFields));
     }
 
 
