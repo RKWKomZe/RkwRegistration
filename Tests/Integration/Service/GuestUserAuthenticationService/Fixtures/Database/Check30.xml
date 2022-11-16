@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <fe_users>
+        <uid>30</uid>
+        <pid>88</pid>
+        <crdate>10</crdate>
+        <disable>0</disable>
+        <deleted>0</deleted>
+        <tx_extbase_type>\RKW\RkwRegistration\Domain\Model\GuestUser</tx_extbase_type>
+        <username>wULYUsCeshrJRwqraU</username>
+        <password>$argon2i$v=19$m=65536,t=16,p=1$cG1DRXVXWlM5anZEMVpxZA$kQ4D1fE7XyrEYdELhAnhwRqBInkn1w5z6MzAlJUwqvA</password> <!-- test -->
+        <email>lauterbach@spd.de</email>
+        <tx_rkwregistration_language_key>de</tx_rkwregistration_language_key>
+        <tx_rkwregistration_login_error_count>1</tx_rkwregistration_login_error_count>
+    </fe_users>
+</dataset>

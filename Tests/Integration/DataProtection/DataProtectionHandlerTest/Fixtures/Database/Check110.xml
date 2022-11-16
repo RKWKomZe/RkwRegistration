@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <fe_users>
+        <uid>110</uid>
+        <pid>1</pid>
+        <username>anonymous1@rkw.de</username>
+        <email>anonymous1@rkw.de</email>
+        <first_name>Anonymous</first_name>
+        <last_name>Anonymous</last_name>
+        <company />
+        <address />
+        <zip />
+        <city />
+        <telephone />
+        <fax />
+        <title />
+        <www />
+        <tx_rkwregistration_gender>99</tx_rkwregistration_gender>
+        <tx_rkwregistration_title>0</tx_rkwregistration_title>
+        <tx_rkwregistration_mobile />
+        <tx_rkwregistration_facebook_url />
+        <tx_rkwregistration_twitter_url />
+        <tx_rkwregistration_xing_url />
+    </fe_users>
+
+    <tx_rkwregistration_domain_model_encrypteddata>
+        <uid>110</uid>
+        <pid>1</pid>
+        <frontend_user>110</frontend_user>
+        <foreign_uid>110</foreign_uid>
+        <foreign_table>fe_user</foreign_table>
+        <foreign_class>RKW\RkwRegistration\Domain\Model\FrontendUser</foreign_class>
+        <encrypted_data>a:22:{s:8:"username";s:49:"dai+aWnzkyssZGSzPO2a6Q==:IjvtEqdMUUBVNC17Kel4Pw==";s:5:"email";s:69:"cs10PAwUHeDv7Na4IFtdYMdU8KljgTgSz/GwWVfQ2t4=:b7r3MtqEkWuJCiEPMPQDmw==";s:4:"name";s:49:"XmEXePJ/Guk+b2YxobMJeA==:ys5Yha9lyzujV4wZrK2RMg==";s:9:"firstName";s:49:"ig3VUoL7Vqhg15xc8F2b9A==:28xus8UUJTil9kSmkRWZtQ==";s:10:"middleName";s:49:"eWBMbqzfQTvEe8DUNHmKmA==:MQxyobYbtUFhNuW2U7P83g==";s:8:"lastName";s:49:"GklW6qvmKJtcwLJWeF6n0w==:qQ5TbRR81D3oRoATCWYqTw==";s:7:"address";s:69:"ihnLSw/1MN4Ok6hnacFf863ODdPAZPW+6Ce0Te2qlUY=:mgdu4oq6yODJYHZzZf8/sg==";s:9:"telephone";s:49:"SVPAn6xu7QMqRT6mLjFyaA==:XW+Wd78QNlrWc+HUdppegA==";s:3:"fax";s:49:"fYM73G/nV/s4RcXR4DtviQ==:rUi7nYQp+a3SHAFuMvulKg==";s:5:"title";s:49:"aDtCMcwtT+hIioy4TgksbQ==:J0ykQRs4a99yLrKGBgRDqA==";s:3:"zip";s:49:"6DDQWduqXU5riYEu8kgu9g==:eIMcj0zA2JvgojlUskE4aA==";s:4:"city";s:49:"O9VqBeOnOEtwHfgzP73Adg==:GMkwTb//r/SlWrpHcKMyzA==";s:7:"country";s:49:"xfYSdfYsj8B9lRDFmJTk3A==:T5lSQHKHbolhLM7Fe4NaXQ==";s:3:"www";s:69:"Ye26LTJkiDVoO3HdC5l8u9kq7bGIvh1cR3gEs5CQlK8=:Kjcv5dWpWXTJwC4/NolhHA==";s:7:"company";s:49:"+aOgwL2nvGtecefXeoOiAA==:sbBuNnRzlPmKpuev0dR91w==";s:23:"txRkwregistrationMobile";s:49:"jp3lbIa5fSqd271C82d3nw==:F8Zl2lh6C1JRD+bi84hpSg==";s:23:"txRkwregistrationGender";s:49:"LXtmbQgLxNxpjlcD2uo6Jw==:fto+jFlp3yS/U4LolLXZEQ==";s:28:"txRkwregistrationFacebookUrl";s:89:"R8UXr4l3JJubSYobjeEu0as4yXW2mLvKxHiw4yci1qai0lHy91NkjnwhekNLnoix:Rdww+Xt3esxVyjjoXgxwgA==";s:27:"txRkwregistrationTwitterUrl";s:89:"UaVWqv1rIrk2NNTnQKvqNIsGGOQvs1Ew8Lhfo64UBHfdLXTK8Ok0YsPL5HvYI2/K:Yg6WCMVQHRaiC1DFWj8llA==";s:24:"txRkwregistrationXingUrl";s:69:"JDadP17CslGBDRa4sodVB2tgmHU2gUEd/7ZxMJhmsm4=:ONDxnTOhToa/R8YkEdA+JA==";s:27:"txRkwregistrationFacebookId";s:49:"8ILlwWbB/lwmpAFH/Vh+Fw==:qUuSwhoFVopvIWgPH+gC0A==";s:26:"txRkwregistrationTwitterId";s:49:"MO3KFY9EqeagMVBFitOg4A==:8o1kAcFhO+DGOPT3eDF0ig==";}</encrypted_data>
+    </tx_rkwregistration_domain_model_encrypteddata>
+
+
+</dataset>

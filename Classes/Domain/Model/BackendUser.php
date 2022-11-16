@@ -20,7 +20,7 @@ namespace RKW\RkwRegistration\Domain\Model;
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -37,20 +37,20 @@ class BackendUser extends \TYPO3\CMS\Extbase\Domain\Model\BackendUser
      *
      * @param string $lang
      */
-    public function setLang($lang)
+    public function setLang(string $lang)
     {
         $this->lang = $lang;
     }
+
 
     /**
      * Gets the lang of the user
      *
      * @return string
      */
-    public function getLang()
+    public function getLang(): string
     {
         return $this->lang;
     }
-
 
 }

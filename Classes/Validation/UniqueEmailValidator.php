@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Validation;
 
 /*
@@ -15,76 +14,65 @@ namespace RKW\RkwRegistration\Validation;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
+use RKW\RkwRegistration\Utility\FrontendUserUtility;
+use TYPO3\CMS\Extbase\Error\Error;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
+
 
 /**
  * Class UniqueEmailValidator
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class UniqueEmailValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator
+class UniqueEmailValidator extends AbstractValidator
 {
     /**
      * validation
      *
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser $givenFrontendUser
      * @return boolean
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser $value
      */
-    public function isValid($givenFrontendUser)
+    public function isValid($value): bool
     {
 
-        // check if given E-Mail is valid at all
+        // check if given eMail is valid at all
         if (
-            ($email = $givenFrontendUser->getEmail())
-            && (\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail($email))
-        ) {
+            (! $email = $value->getEmail())
+            || (! FrontendUserUtility::isEmailValid($email))
+        ){
+            $this->result->forProperty('email')->addError(
+                new Error(
+                    LocalizationUtility::translate(
+                        'validator.emailInvalid',
+                        'rkw_registration'
+                    ), 1434966688
+                )
+            );
 
-            // user may not be able to accept the email address of another person
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            $frontendUserRepository = $objectManager->get('RKW\\RkwRegistration\\Domain\\Repository\\FrontendUserRepository');
-
-            // check email is still available
-            if ($frontendUser = $frontendUserRepository->findOneByEmailOrUsernameInactive($email)) {
-
-                // for registered User
-                if ($frontendUser->getUid() != $givenFrontendUser->getUid()
-                    || !$givenFrontendUser->getUid()
-                ) {
-
-                    $this->result->forProperty('email')->addError(
-                        new \TYPO3\CMS\Extbase\Error\Error(
-                            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                                'validator.email_alreadyassigned',
-                                'rkw_registration'
-                            ), 1406119134
-                        )
-                    );
-
-                    return false;
-                    //===
-                }
-            }
-
-            return true;
-            //===
+            return false;
         }
 
-        $this->result->forProperty('email')->addError(
-            new \TYPO3\CMS\Extbase\Error\Error(
-                \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-                    'validator.email_invalid',
-                    'rkw_registration'
-                ), 1434966688
-            )
-        );
+        // check if given eMail is unique
+        if (! FrontendUserUtility::isUsernameUnique($email, FrontendUserSessionUtility::getLoggedInUser())) {
+            $this->result->forProperty('email')->addError(
+                new Error(
+                    LocalizationUtility::translate(
+                        'validator.emailAlreadyAssigned',
+                        'rkw_registration'
+                    ), 1406119134
+                )
+            );
 
-        return false;
-        //===
+            return false;
+        }
 
+        return true;
     }
-
-
 }

@@ -1,0 +1,30 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true">
+
+    <f:layout name="Default" />
+
+    <f:section name="main">
+
+        <div class="form__field">
+            <f:form.checkbox
+                class="checkbox"
+                id="{namespace}-{type}"
+                name="{namespace}[{type}]"
+                value="1"
+                checked="{checked}"
+            />
+            
+            <label for="{namespace}-{type}" class="checkbox-label">
+                <span class="text-smaller">
+                    <f:translate key="templates_viewHelpers_consent_privacy.{key}.partOne" extensionName="rkwRegistration" />
+                    <f:link.page pageUid="{pageUid}" target="_blank">
+                        <f:translate key="templates_viewHelpers_consent_privacy.{key}.partTwo" extensionName="rkwRegistration" />
+                    </f:link.page>
+                    <f:translate key="templates_viewHelpers_consent_privacy.{key}.partThree" extensionName="rkwRegistration"/>
+                </span>        
+            </label>
+        </div>
+
+    </f:section>
+
+</html>

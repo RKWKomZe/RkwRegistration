@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Domain\Repository;
 
 /*
@@ -19,28 +18,11 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * ShippingAddressRepository
  *
  * @author Christian Dilger <c.dilger@addorange.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ShippingAddressRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class ShippingAddressRepository extends AbstractRepository
 {
-
-    /**
-     * initializeObject
-     *
-     * @return void
-     */
-    public function initializeObject()
-    {
-        /** @var $querySettings \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings */
-        $querySettings = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Typo3QuerySettings');
-
-        // don't add the pid constraint
-        $querySettings->setRespectStoragePage(false);
-        $this->setDefaultQuerySettings($querySettings);
-    }
-
-
 
 }

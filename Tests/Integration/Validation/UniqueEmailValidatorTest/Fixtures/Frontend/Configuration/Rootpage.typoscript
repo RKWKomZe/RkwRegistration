@@ -1,0 +1,20 @@
+plugin.tx_rkwregistration  {
+    persistence {
+        storagePid = 1
+    }
+
+    settings {
+        users {
+
+        }
+    }
+}
+
+// for cronjob
+module.tx_rkwregistration < plugin.tx_rkwregistration
+
+page = PAGE
+page {
+    10 = TEXT
+    10.value = Hallo Welt!
+}

@@ -20,7 +20,7 @@ namespace RKW\RkwRegistration\Hooks;
  *
  * @author Maximilian Fäßler <maximilian@faesslerweb.de>
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
@@ -37,17 +37,16 @@ class DatahandlerHook
      * @param object $object \TYPO3\CMS\Core\DataHandling\DataHandler
      * @return void
      * @see \TYPO3\CMS\Core\DataHandling\DataHandler::deleteAction
+     * @todo write the fucking code
      */
     public function processCmdmap_deleteAction($table, $id, $recordToDelete, $recordWasDeleted, $object)
     {
 
         if ($table == 'fe_users') {
 
-            // @toDo: if this table is fe_users, then delete all tx_rkwregistration_domain_model_privacy entries of this user (do not remove!)
+            // @todo if this table is fe_users, then delete all tx_rkwregistration_domain_model_consent entries of this user (do not remove!)
         }
 
 
     }
 }
-
-?>

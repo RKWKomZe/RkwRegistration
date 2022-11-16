@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Domain\Repository;
 
 /*
@@ -19,13 +18,12 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * EncryptedDataRepository
  *
  * @author Steffen Kroggel <developer@steffenkroggel.de>
- * @copyright Rkw Kompetenzzentrum
+ * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class EncryptedDataRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class EncryptedDataRepository extends AbstractRepository
 {
-
 
 
 }
