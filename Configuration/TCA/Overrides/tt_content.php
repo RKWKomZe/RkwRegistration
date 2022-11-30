@@ -9,14 +9,14 @@ call_user_func(
         // Register Plugins
         //=================================================================
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-            'RkwRegistration',
-            'AuthInternal',
+            'RKW.RkwRegistration',
+            'Auth',
             'RKW Registration: Login'
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
             'RKW.RkwRegistration',
-            'LogoutInternal',
+            'Logout',
             'RKW Registration: Logout'
         );
 
@@ -28,50 +28,32 @@ call_user_func(
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
             'RKW.RkwRegistration',
-            'FrontendUserWelcome',
+            'Welcome',
             'RKW Registration: Willkommen'
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
             'RKW.RkwRegistration',
-            'FrontendUserEdit',
+            'UserEdit',
             'RKW Registration: FrontendUser (editieren)'
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
             'RKW.RkwRegistration',
-            'FrontendUserDelete',
+            'UserDelete',
             'RKW Registration: FrontendUser (löschen)'
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
             'RKW.RkwRegistration',
-            'FrontendUserGroup',
+            'Group',
             'RKW Registration: FrontendUserGroup'
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
             'RKW.RkwRegistration',
-            'ServiceOptIn',
-            'RKW Registration: Service (OptIn)'
-        );
-
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-            'RKW.RkwRegistration',
-            'RkwregistrationAjax',
-            'RKW Registration Ajax'
-        );
-
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-            'RKW.RkwRegistration',
             'Info',
-            'RKW Registration Info'
-        );
-
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-            'RKW.RkwRegistration',
-            'GoBack',
-            'RKW Registration: Zurück (Redirect-URL)'
+            'RKW Registration: Info'
         );
     }
 );

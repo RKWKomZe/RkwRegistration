@@ -18,12 +18,12 @@
 
         <rkwMailer:email.translate key="templates_email_group_optin.textOptIn" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" />\n
         <rkwMailer:email.uri.action action="optIn" controller="FrontendUserGroup" extensionName="rkwRegistration" pluginName="authInternal"
-             absolute="true" noCacheHash="true" pageUid="{settings.registrationPid}"
+             absolute="true" noCacheHash="true" pageUid="{settings.loginPid}"
              additionalParams="{tx_rkwregistration_authinternal: {token: tokenYes, user: tokenUser}}"/>\n\n
 
         <rkwMailer:email.translate key="templates_email_group_optin.textOptOut" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" arguments="{0: settings.users.daysForOptIn}" />\n
         <rkwMailer:email.uri.action action="optIn" controller="FrontendUserGroup" extensionName="rkwRegistration" pluginName="authInternal"
-             absolute="true" noCacheHash="true" pageUid="{settings.registrationPid}"
+             absolute="true" noCacheHash="true" pageUid="{settings.loginPid}"
              additionalParams="{tx_rkwregistration_authinternal: {token: tokenNo, user: tokenUser}}" />
     </rkwMailer:email.plaintextLineBreaks></f:section>
 
@@ -40,11 +40,11 @@
         <p><rkwMailer:email.translate key="templates_email_group_optin.text1" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" arguments="{0: frontendUserGroup.title}" /></p>
         <p>
             <rkwMailer:email.translate key="templates_email_group_optin.textOptIn" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/><br>
-            <a href="<rkwMailer:email.uri.action action='optIn' controller='FrontendUserGroup' extensionName='rkwRegistration' pluginName='authInternal' absolute='true' noCacheHash='true' pageUid='{settings.registrationPid}' additionalParams='{tx_rkwregistration_authinternal: {token: tokenYes, user: tokenUser}}' />"><rkwMailer:email.translate key="templates_email_group_optin.textOptInLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/></a>
+            <a href="<rkwMailer:email.uri.action action='optIn' controller='FrontendUserGroup' extensionName='rkwRegistration' pluginName='authInternal' absolute='true' noCacheHash='true' pageUid='{settings.loginPid}' additionalParams='{tx_rkwregistration_authinternal: {token: tokenYes, user: tokenUser}}' />"><rkwMailer:email.translate key="templates_email_group_optin.textOptInLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/></a>
         </p>
         <p>
             <rkwMailer:email.translate key="templates_email_group_optin.textOptOut" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration" arguments="{0: settings.users.daysForOptIn}" /><br>
-            <a href="<rkwMailer:email.uri.action action='optIn' controller='FrontendUserGroup' extensionName='rkwRegistration' pluginName='authInternal' absolute='true' noCacheHash='true' pageUid='{settings.registrationPid}' additionalParams='{tx_rkwregistration_authinternal: {token: tokenNo, user: tokenUser}}'  />"><rkwMailer:email.translate key="templates_email_group_optin.textOptOutLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/></a>
+            <a href="<rkwMailer:email.uri.action action='optIn' controller='FrontendUserGroup' extensionName='rkwRegistration' pluginName='authInternal' absolute='true' noCacheHash='true' pageUid='{settings.loginPid}' additionalParams='{tx_rkwregistration_authinternal: {token: tokenNo, user: tokenUser}}'  />"><rkwMailer:email.translate key="templates_email_group_optin.textOptOutLinkLabel" languageKey="{frontendUser.txRkwregistrationLanguageKey}" extensionName="rkwRegistration"/></a>
         </p>
     </f:section>
 </html>

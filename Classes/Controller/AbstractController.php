@@ -17,6 +17,7 @@ namespace RKW\RkwRegistration\Controller;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
+use RKW\RkwRegistration\Utility\ClientUtility;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Validation\FrontendUserValidator;
 use TYPO3\CMS\Core\Log\Logger;
@@ -24,6 +25,8 @@ use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -39,20 +42,28 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
 {
 
     /**
-     * logged in FrontendUser
-     *
+     * @const string
+     */
+    const SESSION_KEY_REFERRER = 'tx_rkwregistation_referrer';
+
+
+    /**
      * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
      */
     protected $frontendUser;
 
 
     /**
-     * FrontendUserRepository
-     *
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $frontendUserRepository;
+
+
+    /**
+     * @var string
+     */
+    protected $referrer = '';
 
 
     /**
@@ -62,8 +73,6 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
 
 
     /**
-     * Persistence Manager
-     *
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
@@ -76,6 +85,45 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
      */
     protected $objectManager;
 
+
+    /**
+     * initialize
+     */
+    public function initializeView(ViewInterface $view)
+    {
+        parent::initializeView($view);
+
+        // set referrer in session when calling Auth:Auth->index
+        // this is the main login page
+        if (
+            ($this->getRequest()->getPluginName() == 'Auth')
+            && ($this->getRequest()->getControllerName() == 'Auth')
+            && ($this->getRequest()->getControllerActionName() == 'index')
+        ) {
+            // referrer via variable always takes precedence
+            if (ClientUtility::isReferrerValid(GeneralUtility::_GP('referrer'))) {
+                $this->referrer = GeneralUtility::_GP('referrer');
+
+            // take referrer from $_SERVER - but only if no referrer has been set yet
+            } else if (
+                (ClientUtility::isReferrerValid($_SERVER['HTTP_REFERER']))
+                && (! $GLOBALS['TSFE']->fe_user->getSessionData(self::SESSION_KEY_REFERRER))
+            ) {
+                // may lead to unwanted behavior - what if I only want to log in to change my personal data?
+                // $this->referrer = $_SERVER['HTTP_REFERER'];
+            }
+
+            if ($this->referrer) {
+                $GLOBALS['TSFE']->fe_user->setAndSaveSessionData(self::SESSION_KEY_REFERRER, $this->referrer);
+            }
+        }
+
+        // set this->referrer based on session data and assign it to all actions
+        $this->referrer = $GLOBALS['TSFE']->fe_user->getSessionData(self::SESSION_KEY_REFERRER) ?: '';
+        if ($this->referrer) {
+            $this->view->assign('referrer', $this->referrer);
+        }
+    }
 
     /**
      * action index
@@ -120,6 +168,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
     }
 
 
+
     /**
      * Checks if user is logged in and redirects to login (if defined)
      *
@@ -127,6 +176,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     protected function redirectIfUserNotLoggedIn(): void
     {
@@ -143,15 +193,32 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     protected function redirectIfUserNotLoggedInOrGuest(): void
     {
-        if (!$this->getFrontendUser()
-            || (
-                ($frontendUser = $this->getFrontendUser())
-                && ($frontendUser instanceof GuestUser))
-        ){
+        if (!$this->getFrontendUser()) {
             $this->redirectToLogin();
+
+        } else if ($this->getFrontendUser() instanceof GuestUser) {
+            $this->redirectToWelcome();
+        }
+    }
+
+
+    /**
+     * Checks if user is logged in and redirects to welcome page
+     *
+     * @return void
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     */
+    protected function redirectIfUserLoggedIn(): void
+    {
+
+        if ($this->getFrontendUser()) {
+            $this->redirectToWelcome();
         }
     }
 
@@ -162,33 +229,92 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     protected function redirectToLogin(): void
     {
+        // offer a link for users
+        if (! $this->getFlashMessageCount()) {
 
-        $this->addFlashMessage(
-            LocalizationUtility::translate(
-                'abstractController.error.userNotLoggedIn',
-                'rkw_registration'
-            ),
-            '',
-            AbstractMessage::ERROR
-        );
-
-        if ($this->settings['loginPid']) {
-            $this->redirect(
-                'index',
-                'Auth',
-                null,
-                [],
-                $this->settings['loginPid']
+            $this->addFlashMessage(
+                LocalizationUtility::translate(
+                    'abstractController.error.userNotLoggedIn',
+                    'rkw_registration'
+                ),
+                '',
+                AbstractMessage::ERROR
             );
         }
 
         $this->redirect(
             'index',
             'Auth',
+            null,
+            [],
+            $this->settings['loginPid']?: 0
         );
+    }
+
+
+    /**
+     * Redirects user to welcome page or the referer from the login
+     *
+     * @param bool $newGuestLogin
+     * @return void
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     */
+    protected function redirectToWelcome(bool $newGuestLogin = false): void
+    {
+
+        // try redirecting to referrer
+        $this->redirectToReferer($newGuestLogin);
+
+        $pid = (($newGuestLogin && intval($this->settings['welcomeGuestPid']))
+            ? intval($this->settings['welcomeGuestPid'])
+            : intval($this->settings['welcomePid']));
+
+        // we need a real redirect for the login to be effective
+        /** @var  \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
+        $uriBuilder = $this->objectManager->get(UriBuilder::class);
+        $url = $uriBuilder->reset()
+            ->setTargetPageUid($pid)
+            ->setLinkAccessRestrictedPages(true)
+            ->setCreateAbsoluteUri(true)
+            ->setUseCacheHash(false)
+            ->setArguments(
+                [
+                    'tx_rkwregistration_' . ($pid ? 'welcome' : 'auth') => [
+                        'action' => ($pid ? 'welcome' : 'index'),
+                        'controller' => ($pid ? 'FrontendUser' : 'Auth'),
+                    ],
+                ]
+            )
+            ->build();
+
+        $this->redirectToUri($url);
+
+    }
+
+    /**
+     * Redirects to the referer from the login
+     *
+     * @param bool $newGuestLogin
+     * @return void
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     */
+    protected function redirectToReferer(bool $newGuestLogin = false): void
+    {
+        if (
+            (!$newGuestLogin)
+            && (ClientUtility::isReferrerValid($this->referrer))
+        ){
+            $GLOBALS['TSFE']->fe_user->setAndSaveSessionData(self::SESSION_KEY_REFERRER, '');
+            $this->redirectToUri($this->referrer);
+        }
     }
 
 
@@ -271,6 +397,24 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
         return $cnt;
     }
 
+
+    /**
+     * Returns storagePid
+     *
+     * @param
+     * @return int
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     */
+    protected function getStoragePid(): int
+    {
+        $storagePid = 0;
+        $settings = \RKW\RkwBasics\Utility\GeneralUtility::getTyposcriptConfiguration('Rkwregistration', ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        if (intval($settings['persistence']['storagePid'])) {
+            $storagePid = intval($settings['persistence']['storagePid']);
+        }
+
+        return $storagePid;
+    }
 
     /**
      * Returns logger instance

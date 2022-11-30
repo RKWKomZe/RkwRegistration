@@ -16,6 +16,7 @@ namespace RKW\RkwRegistration\Tests\Integration\Service;
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
+use RKW\RkwRegistration\Controller\AuthGuestController;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Registration\AbstractRegistration;
 use RKW\RkwRegistration\Utility\ClientUtility;
@@ -51,6 +52,14 @@ class GuestUserAuthenticationServiceTest extends FunctionalTestCase
      */
     private $frontendUserRepository;
 
+    /**
+     * @var string[]
+     */
+    protected $coreExtensionsToLoad = [
+        'saltedpasswords',
+        'filemetadata',
+        'extensionmanager'
+    ];
 
     /**
      * @var string[]
@@ -59,6 +68,7 @@ class GuestUserAuthenticationServiceTest extends FunctionalTestCase
         'typo3conf/ext/rkw_ajax',
         'typo3conf/ext/rkw_basics',
         'typo3conf/ext/rkw_registration',
+        'typo3conf/ext/rkw_mailer'
     ];
 
     /**
@@ -198,7 +208,7 @@ class GuestUserAuthenticationServiceTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByIdentifier(10);
 
         $_POST['logintype'] = 'login';
-        $_POST['user'] = $frontendUser->getUsername();
+        $_POST['user'] = AuthGuestController::
         $_POST['pass'] = '';
 
         $authService = GeneralUtility::makeInstance(FrontendUserAuthentication::class);

@@ -9,6 +9,23 @@
         </h1>
 
         <f:render partial="FlashMessages" arguments="{_all}" />
+        
+        <f:if condition="{showContinue}">
+            <div class="flex-container flex-basis-12 btn-list">
+                <f:if condition="{referrer}">
+                    <f:then>
+                        <f:link.action action="welcome" arguments="{redirectToReferrer: 1}" class="btn btn--primary full-width-narrow" >
+                            <f:translate key="templates_frontendUser_welcome.continue" />
+                        </f:link.action>
+                    </f:then>
+                    <f:else>
+                        <f:link.page pageUid="{settings.welcomePid}" class="btn btn--primary full-width-narrow" >
+                            <f:translate key="templates_frontendUser_welcome.continue" />
+                        </f:link.page>
+                    </f:else>
+                </f:if>
 
+            </div>            
+        </f:if>
     </f:section>
 </html>

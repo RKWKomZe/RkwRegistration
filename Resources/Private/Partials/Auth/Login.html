@@ -1,7 +1,7 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
     data-namespace-typo3-fluid="true">
 
-    <f:form action="login" name="frontendUser" >
+    <f:form action="login" name="frontendUser">
         <div class="flex-container">
             <div class="form flex flex-basis-12">
                 <div class="form__field width100">
@@ -25,15 +25,14 @@
                     <f:translate key="partials_auth_login.labelLogin" />
                 </button>
 
-                <f:if condition="{settings.users.allowGuestLogin}">
-                    <f:link.action
-                        class="mt-1 btn btn--secondary"
-                        action="login"
-                        controller="AuthGuest"
-                    >
-                        <f:translate key="partials_auth_login.guest" />
-                    </f:link.action>
-                </f:if>
+                <f:link.action
+                    class="mt-1 btn btn--secondary"
+                    action="new"
+                    controller="FrontendUser"
+                    pageUid="{settings.registrationPid}"
+                >
+                    <f:translate key="templates_auth_login.registerNow" />
+                </f:link.action>
             </div>
         </div>
     </f:form>

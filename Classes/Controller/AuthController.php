@@ -14,7 +14,10 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
+use RKW\RkwRegistration\Service\AbstractAuthenticationService;
+use RKW\RkwRegistration\Utility\ClientUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -47,6 +50,7 @@ class AuthController extends AbstractController
      */
     public function indexAction(string $flashMessageToInject = ''): void
     {
+
         parent::indexAction($flashMessageToInject);
 
         // offer a link for users
@@ -55,64 +59,12 @@ class AuthController extends AbstractController
             && (! $_POST)
         ) {
 
-            // offer a logout and re-login for guest-users
-            $registerLink = '';
-            if ($this->getFrontendUser() instanceof GuestUser) {
-
-                /** @var UriBuilder $uriBuilder */
-                $uriBuilder = $this->objectManager->get(UriBuilder::class);
-                $registerLink = $uriBuilder->reset()
-                    ->setTargetPageUid(intval($this->settings['logoutPid']))
-                    ->setUseCacheHash(false)
-                    ->setArguments(
-                        [
-                            'tx_rkwregistration_logoutinternal' => [
-                                'action' => 'logout',
-                                'redirectAction' => 'index',
-                                'redirectController' => 'Auth',
-                                'pageUid' => intval($this->settings['loginPid'])
-                            ],
-                        ]
-                    )
-                    ->build();
-
-                $this->addFlashMessage(
-                    LocalizationUtility::translate(
-                        'authController.warning.loginMessageGuest',
-                        $this->extensionName,
-                        [$registerLink]
-                    ),
-                    '',
-                    AbstractMessage::WARNING
-                );
-
-            // user is logged in as normal user
-            } else if ($frontendUser = $this->getFrontendUser()) {
-
-                $this->addFlashMessage(
-                    LocalizationUtility::translate(
-                        'authController.message.loggedIn',
-                        $this->extensionName,
-                        [$frontendUser->getUsername()]
-                    )
-                );
-
-                if ($this->settings['welcomePid']) {
-                    $this->redirect(
-                        'welcome',
-                        'FrontendUser',
-                        null,
-                        null,
-                        $this->settings['welcomePid']
-                    );
-                }
-
             // offer a registration link for not logged-in users
-            } else if (! $this->getFrontendUser()) {
+            if (! $this->getFrontendUser()) {
 
                 if ($this->settings['registrationPid']) {
 
-                    /** @var UriBuilder $uriBuilder */
+                    /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
                     $uriBuilder = $this->objectManager->get(UriBuilder::class);
                     $registerLink = $uriBuilder->reset()
                         ->setTargetPageUid(intval($this->settings['registrationPid']))
@@ -158,9 +110,13 @@ class AuthController extends AbstractController
      */
     public function loginAction(array $login): void
     {
+
         $_POST['logintype'] = 'login';
         $_POST['user'] = $login['username'];
         $_POST['pass'] = $login['password'];
+
+        // save storagePid in session because we have no access to the extension settings in the authentication service
+        $GLOBALS['TSFE']->fe_user->setAndSaveSessionData(AbstractAuthenticationService::SESSION_KEY, $this->getStoragePid());
 
         $authService = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         $authService->start();
@@ -169,17 +125,7 @@ class AuthController extends AbstractController
             !$authService->loginFailure
             && $authService->loginSessionStarted
         ) {
-            if ($this->settings['welcomePid']) {
-                $this->redirect(
-                    'welcome',
-                    'FrontendUser',
-                    null,
-                    null,
-                    $this->settings['welcomePid']
-                );
-            }
-
-            $this->redirect('index');
+            $this->redirectToWelcome();
         }
 
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
@@ -237,6 +183,7 @@ class AuthController extends AbstractController
 
         // do log-out here
         FrontendUserSessionUtility::logout();
+
         $this->redirect($redirectAction, $redirectController, $extensionName, $arguments, $pageUid);
     }
 
@@ -247,6 +194,7 @@ class AuthController extends AbstractController
      * @return void
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function logoutRedirectAction(): void
     {
@@ -256,18 +204,7 @@ class AuthController extends AbstractController
             )
         );
 
-        // redirect to login page (including message)
-        if ($this->settings['loginPid']) {
-            $this->redirect(
-                'index',
-                null,
-                null,
-                ['logoutMessage' => 1],
-                $this->settings['loginPid']
-            );
-        }
-
-        $this->redirect('index');
+        $this->redirectToLogin();
     }
 
 }

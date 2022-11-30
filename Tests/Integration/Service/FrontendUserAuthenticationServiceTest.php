@@ -50,6 +50,14 @@ class FrontendUserAuthenticationServiceTest extends FunctionalTestCase
      */
     private $frontendUserRepository;
 
+    /**
+     * @var string[]
+     */
+    protected $coreExtensionsToLoad = [
+        'saltedpasswords',
+        'filemetadata',
+        'extensionmanager'
+    ];
 
     /**
      * @var string[]
@@ -58,6 +66,7 @@ class FrontendUserAuthenticationServiceTest extends FunctionalTestCase
         'typo3conf/ext/rkw_ajax',
         'typo3conf/ext/rkw_basics',
         'typo3conf/ext/rkw_registration',
+        'typo3conf/ext/rkw_mailer'
     ];
 
     /**

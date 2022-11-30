@@ -27,6 +27,7 @@ use RKW\RkwRegistration\Utility\ClientUtility;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use RKW\RkwRegistration\Utility\PasswordUtility;
+use RKW\RkwRegistration\Utility\StringUtility;
 use RKW\RkwRegistration\Utility\TitleUtility;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogLevel;
@@ -48,11 +49,6 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 abstract class AbstractRegistration implements RegistrationInterface
 {
-
-    /**
-     * @const int
-     */
-    const RANDOM_STRING_LENGTH = 30;
 
     /**
      * Signal name for use in ext_localconf.php
@@ -560,9 +556,9 @@ abstract class AbstractRegistration implements RegistrationInterface
         $optIn->setFrontendUserUpdate($this->getFrontendUserOptInUpdate());
         $optIn->setCategory($this->getCategory());
         $optIn->setData($this->getData());
-        $optIn->setTokenUser($this->createUniqueRandomString());
-        $optIn->setTokenYes($this->createUniqueRandomString());
-        $optIn->setTokenNo($this->createUniqueRandomString());
+        $optIn->setTokenUser(StringUtility::getUniqueRandomString());
+        $optIn->setTokenYes(StringUtility::getUniqueRandomString());
+        $optIn->setTokenNo(StringUtility::getUniqueRandomString());
         $optIn->setEndtime(strtotime("+" . $settings['users']['daysForOptIn'] . " day", time()));
         $optIn->setAdminApproved(1);
 
@@ -596,8 +592,8 @@ abstract class AbstractRegistration implements RegistrationInterface
             }
 
             $optIn->setAdminApproved(0);
-            $optIn->setAdminTokenYes($this->createUniqueRandomString());
-            $optIn->setAdminTokenNo($this->createUniqueRandomString());
+            $optIn->setAdminTokenYes(StringUtility::getUniqueRandomString());
+            $optIn->setAdminTokenNo(StringUtility::getUniqueRandomString());
 
             $this->optInRepository->update($optIn);
             $this->persistenceManager->persistAll();
@@ -894,7 +890,7 @@ abstract class AbstractRegistration implements RegistrationInterface
 
             // clear email-address and set random username
             $this->frontendUser->setEmail('');
-            $this->frontendUser->setUsername($this->createUniqueRandomString());
+            $this->frontendUser->setUsername(StringUtility::getUniqueRandomString());
 
         } else {
 
@@ -945,20 +941,6 @@ abstract class AbstractRegistration implements RegistrationInterface
 
 
     /**
-     * creates a valid username for a guest user
-     *
-     * @return string
-     * @throws \Exception
-     */
-    protected function createUniqueRandomString(): string
-    {
-        /** @see https://www.php.net/manual/en/function.random-bytes.php */
-        $bytes = random_bytes(self::RANDOM_STRING_LENGTH);
-        return bin2hex($bytes);
-    }
-
-
-    /**
      * Dispatches the SignalSlots in two versions: with and without appended category-name
      *
      * @param string $name
@@ -971,6 +953,10 @@ abstract class AbstractRegistration implements RegistrationInterface
      */
     protected function dispatchSignalSlot (string $name, string $category = '')
     {
+        // no emails for GuestUser!
+        if ($this->getFrontendUserPersisted() instanceof GuestUser) {
+            return;
+        }
 
         $data = [
             $this->getFrontendUserPersisted(),
