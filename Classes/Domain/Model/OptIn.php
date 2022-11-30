@@ -14,7 +14,7 @@ namespace RKW\RkwRegistration\Domain\Model;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwBasics\Persistence\MarkerReducer;
+use Madj2k\Accelerator\Persistence\MarkerReducer;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 
