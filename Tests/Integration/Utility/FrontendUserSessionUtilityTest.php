@@ -18,6 +18,8 @@ use Exception;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
 use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 
@@ -287,6 +289,99 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
          */
 
         self::assertEquals(0, FrontendUserSessionUtility::getLoggedInUserId());
+    }
+
+    #====================================================================================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function getLoggedInUserReturnsNullIfNoUserLoggedIn ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given no user is logged in
+         * When the method is called
+         * Then zero is returned
+         */
+
+        self::assertNull(FrontendUserSessionUtility::getLoggedInUser());
+    }
+
+
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function getLoggedInUserWithNormalUserReturnsUserOfRightType ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given a persisted frontendUser
+         * Given this frontendUser is an instance of \RKW\RkwRegistration\Domain\Model\FrontendUser
+         * Given a persisted userGroup
+         * Given simulateLogin has been called with both as parameters before
+         * Given simulateLogin has returned true
+         * When the method is called
+         * Then an instance of \RKW\RkwRegistration\Domain\Model\FrontendUser is returned
+         * Then the uid of the returned instance is the one of the given frontendUser
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(10);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
+        $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(10);
+
+        self::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $result = FrontendUserSessionUtility::getLoggedInUser();
+        self::assertInstanceOf(FrontendUser::class, $result);
+        self::assertEquals($frontendUser->getUid(), $result->getUid());
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function getLoggedInUserWithGuestUserReturnsUserOfRightType ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given a persisted frontendUser
+         * Given this frontendUser is an instance of \RKW\RkwRegistration\Domain\Model\GuestUser
+         * Given a persisted userGroup
+         * Given simulateLogin has been called with both as parameters before
+         * Given simulateLogin has returned true
+         * When the method is called
+         * Then an instance of \RKW\RkwRegistration\Domain\Model\GuestUser is returned
+         * Then the uid of the returned instance is the one of the given frontendUser
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(20);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
+        $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(20);
+
+        self::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
+
+        /** @var \RKW\RkwRegistration\Domain\Model\GuestUser $frontendUser */
+        $result = FrontendUserSessionUtility::getLoggedInUser();
+        self::assertInstanceOf(GuestUser::class, $result);
+        self::assertEquals($frontendUser->getUid(), $result->getUid());
     }
 
     #====================================================================================================

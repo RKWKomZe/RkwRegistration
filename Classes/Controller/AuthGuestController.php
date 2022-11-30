@@ -15,6 +15,7 @@ namespace RKW\RkwRegistration\Controller;
  */
 
 use RKW\RkwRegistration\Domain\Model\GuestUser;
+use RKW\RkwRegistration\Service\AbstractAuthenticationService;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -57,10 +58,11 @@ class AuthGuestController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException
      */
     public function loginAction(string $token = ''): void
     {
-        // send back already logged in user. Nothing to do here
+        // send back already logged-in user. Nothing to do here
         if (FrontendUserSessionUtility::getLoggedInUserId()) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
@@ -75,7 +77,7 @@ class AuthGuestController extends AbstractController
 
         // if no token is given, a new guest user will be created
         // then we use his token
-        $newLogin = (bool) $token;
+        $newLogin = empty($token);
         if ($newLogin) {
 
             if ($this->guestUserRegistration->setRequest($this->request)->startRegistration()) {
@@ -94,6 +96,9 @@ class AuthGuestController extends AbstractController
         $_POST['user'] = $token;
         $_POST['pass'] = '';
 
+        // save storagePid in session because we have no access to the extension settings in the authentication service
+        $GLOBALS['TSFE']->fe_user->setAndSaveSessionData(AbstractAuthenticationService::SESSION_KEY, $this->getStoragePid());
+
         $authService = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         $authService->start();
 
@@ -101,24 +106,7 @@ class AuthGuestController extends AbstractController
             !$authService->loginFailure
             && $authService->loginSessionStarted
         ) {
-
-            if ($newLogin) {
-                $this->redirect('loginHint');
-            } else {
-                if ($this->settings['users']['guestRedirectPid']) {
-
-                    /** @var UriBuilder $uriBuilder */
-                    $uriBuilder = $this->objectManager->get(UriBuilder::class);
-                    $redirectUrl = $uriBuilder->reset()
-                        ->setTargetPageUid(intval($this->settings['users']['guestRedirectPid']))
-                        ->setCreateAbsoluteUri(true)
-                        ->setLinkAccessRestrictedPages(true)
-                        ->setUseCacheHash(false)
-                        ->buildFrontendUri();
-
-                    $this->redirectToUri($redirectUrl);
-                }
-            }
+            $this->redirectToWelcome($newLogin);
         }
 
         // if something went wrong on the way...
@@ -145,64 +133,10 @@ class AuthGuestController extends AbstractController
             );
         }
 
-        $this->redirect('index');
+        $this->redirect('index', 'Auth');
     }
 
 
-    /**
-     * action loginHint
-     *
-     * @return void
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
-     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
-     */
-    public function loginHintAction(): void
-    {
-        // if user has session AND is of type GuestUser
-        if (!$this->getFrontendUser() instanceof GuestUser) {
-
-            $this->addFlashMessage(
-                LocalizationUtility::translate(
-                    'authGuestController.error.guestLoginImpossible', $this->extensionName
-                ),
-                '',
-                AbstractMessage::ERROR
-            );
-
-            $this->redirect('loginExternal', 'Auth');
-        }
-
-        // generate link for copy&paste
-        $url = $this->uriBuilder->reset()
-            ->setUseCacheHash(false)
-            ->setArguments(
-                ['tx_rkwregistration_authexternal' =>
-                      [
-                          'controller' => 'AuthGuest',
-                          'action'     => 'login',
-                          'token'      => $this->getFrontendUser()->getUsername(),
-                      ],
-                ]
-            )
-            ->setCreateAbsoluteUri(true)
-            ->build();
-
-        // show link with token to anonymous user
-        $this->addFlashMessage(
-            LocalizationUtility::translate(
-                'authGuestController.message.guestLink',
-                $this->extensionName,
-                [
-                    intval(intval($this->settings['users']['guest']['lifetime']) / 60 / 60 / 24),
-                    $url,
-                ]
-            )
-        );
-
-        // for security reasons: redirect after creating special login link
-        $this->redirect('loginExternal', 'Auth');
-    }
 }
 
 

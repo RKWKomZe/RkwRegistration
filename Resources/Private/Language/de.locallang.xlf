@@ -304,17 +304,9 @@
                 <source>Welcome! You are logged in as guest.</source>
                 <target>Herzlich willkommen! Sie sind als Gast angemeldet.</target>
             </trans-unit>
-            <trans-unit id="authController.message.loggedIn">
-                <source>You are logged in with the e-mail address "%s".</source>
-                <target>Sie sind mit der E-Mailadresse "%s" angemeldet.</target>
-            </trans-unit>
             <trans-unit id="authController.message.logoutMessage">
                 <source>Woohoo! You have been successfully logged out.</source>
                 <target>Woohoo! Sie wurden erfolgreich abgemeldet.</target>
-            </trans-unit>
-            <trans-unit id="authController.warning.loginMessageGuest">
-                <source><![CDATA[You are currently logged in as a guest. To use this section, you must be logged in as a regular user. <a href="%s">Please log out here</a> and then log in again as a regular user.]]></source>
-                <target><![CDATA[Sie sind derzeit als Gast eingeloggt. Um diesen Bereich nutzen zu können, müssen Sie als regulärer User eingeloggt sein. <a href="%s">Bitte loggen Sie sich hier aus</a> und danach als regulärer User wieder ein.]]></target>
             </trans-unit>
 			<trans-unit id="authController.error.wrongLogin">
 				<source>Hm, unfortunately email or password are wrong. Please check the information again.</source>
@@ -327,10 +319,6 @@
 
 
             <!-- AuthGuestController -->
-            <trans-unit id="authGuestController.message.guestLink">
-                <source><![CDATA[Copy the link below and keep it safe. Only with this link you can log in again at a later time. The link is valid %s days.<br><br> %s]]></source>
-                <target><![CDATA[Kopieren Sie den nachstehenden Link und heben Sie ihn gut auf. Nur mit diesem Link können Sie sich zu einem späteren Zeitpunkt erneut einloggen. Der Link ist %s Tage gültig.<br><br> %s]]></target>
-            </trans-unit>
             <trans-unit id="authGuestController.error.invalidGuestToken">
                 <source>Sorry, the login link is invalid or expired. Please use a new guest account or register for free.</source>
                 <target>Der Login-Link ist leider ungültig oder abgelaufen. Bitte verwenden Sie einen neuen Gastzugang oder registrieren Sie sich kostenlos.</target>
@@ -345,6 +333,10 @@
 			<trans-unit id="frontendUserController.notice.newIntroduction">
                 <source>Register here for free.</source>
                 <target>Registrieren Sie sich hier kostenlos.</target>
+            </trans-unit>
+            <trans-unit id="frontendUserController.message.loggedIn">
+                <source>You are logged in with the e-mail address "%s".</source>
+                <target>Sie sind mit der E-Mailadresse "%s" angemeldet.</target>
             </trans-unit>
 			<trans-unit id="frontendUserController.notice.editIntroduction">
                 <source>Please provide your current contact information below. Voluntary information is marked accordingly.</source>
@@ -385,6 +377,10 @@
 				<source>Please select which group you want to join or change your membership status here.</source>
 				<target>Wählen Sie bitte aus, in welcher Gruppe Sie Mitglied werden wollen oder ändern Sie Ihren Mitgliedsstatus hier.</target>
 			</trans-unit>
+            <trans-unit id="frontendUserController.message.guestLink">
+                <source><![CDATA[Copy the link below and keep it safe. Only with this link you can log in again at a later time. The link is valid %s days.<br><br> %s]]></source>
+                <target><![CDATA[Kopieren Sie den nachstehenden Link und heben Sie ihn gut auf. Nur mit diesem Link können Sie sich zu einem späteren Zeitpunkt erneut einloggen. Der Link ist %s Tage gültig.<br><br> %s]]></target>
+            </trans-unit>
   			<trans-unit id="frontendUserGroupController.message.registrationWatchForEmail">
                 <source><![CDATA[Almost there! To make sure you are really you, we have just sent you an email to the address you provided. Please confirm your wish to join the group via the link in the email. If you do not receive an email from us within the next 2-3 minutes, please check your spam filter. Our <a href="mailto:service@rkw.de">Support</a> will be happy to help you if you have any problems.]]></source>
                 <target><![CDATA[Fast geschafft! Um sicherzustellen, dass Sie auch wirklich Sie sind, haben wir Ihnen gerade eine E-Mail an die angegebene Adresse geschickt. Bitte bestätigen Sie über den Link in der E-Mail Ihren Wunsch des Gruppenbeitritts. Sollten Sie innerhalb der nächsten 2-3 Minuten keine E-Mail von uns erhalten, prüfen Sie bitte Ihren Spam-Filter. Unser <a href="mailto:service@rkw.de">Support</a> hilft Ihnen bei Problemen gerne weiter.]]></target>
@@ -468,21 +464,13 @@
 
 
 			<!-- Templates/Auth/Index.html -->
-            <trans-unit id="templates_auth_index.loginHeadline">
-                <source>Login</source>
-                <target>Anmelden</target>
-            </trans-unit>
             <trans-unit id="templates_auth_index.orHeadline">
                 <source>or</source>
                 <target>oder</target>
             </trans-unit>
-            <trans-unit id="templates_auth_index.registerHeadline">
-                <source>Create free account</source>
-                <target>Kostenlos registrieren</target>
-            </trans-unit>
-            <trans-unit id="templates_auth_index.registerNow">
-                <source>Register now</source>
-                <target>Jetzt registrieren</target>
+          <trans-unit id="templates_auth_index.guest">
+                <source>Continue as guest</source>
+                <target>Weiter als Gast</target>
             </trans-unit>
 
 
@@ -495,16 +483,9 @@
                 <source>Forgotten password?</source>
                 <target>Passwort vergessen?</target>
             </trans-unit>
-            <trans-unit id="partials_auth_login.guest">
-                <source>Continue as guest</source>
-                <target>Weiter als Gast</target>
-            </trans-unit>
-
-
-            <!-- Templates/AuthGuest/LoginHint.html -->
-            <trans-unit id="templates_authGuest_loginHint.continue">
-                <source>Continue</source>
-                <target>Fortfahren</target>
+            <trans-unit id="templates_auth_login.registerNow">
+                <source>Register now</source>
+                <target>Jetzt registrieren</target>
             </trans-unit>
 
 
@@ -555,6 +536,10 @@
 				<source>Welcome %s %s!</source>
 				<target>Willkommen %s %s!</target>
 			</trans-unit>
+            <trans-unit id="templates_frontendUser_welcome.continue">
+                <source>Continue</source>
+                <target>Fortfahren</target>
+            </trans-unit>
 
 
        		<!-- Templates/Password/Edit.html -->

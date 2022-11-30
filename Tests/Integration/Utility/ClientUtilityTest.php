@@ -15,6 +15,7 @@ namespace RKW\RkwRegistration\Tests\Integration\Utility;
  */
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
 use RKW\RkwRegistration\Utility\ClientUtility;
 
 /**
@@ -59,8 +60,11 @@ class ClientUtilityTest extends FunctionalTestCase
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
-            ]
+            ],
+            ['rkw-kompetenzzentrum.local' => self::FIXTURE_PATH .  '/Frontend/Configuration/config.yaml']
         );
+
+        FrontendSimulatorUtility::simulateFrontendEnvironment(1);
 
     }
 
@@ -122,11 +126,66 @@ class ClientUtilityTest extends FunctionalTestCase
     #==============================================================================
 
     /**
+     * @test
+     */
+    public function isReferrerValidReturnsFalse ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a referrer that does not match the current domain
+         * When the method is called
+         * Then false is returned
+         */
+
+        self::assertFalse(ClientUtility::isReferrerValid('https://www.google.de'));
+    }
+
+
+    /**
+     * @test
+     */
+    public function isReferrerValidReturnsTrue ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a referrer that does match the current domain
+         * When the method is called
+         * Then true is returned
+         */
+
+        self::assertTrue(ClientUtility::isReferrerValid('http://www.rkw-kompetenzzentrum.rkw.local/'));
+    }
+
+    /**
+     * @test
+     */
+    public function isReferrerValidReturnsTrueAndIgnoresProtocol ()
+    {
+        /**
+         * Scenario:
+         *
+         * Given a referrer that does match the current domain
+         * Given the referrer uses another protocol than the current domain
+         * When the method is called
+         * Then true is returned
+         */
+
+        self::assertTrue(ClientUtility::isReferrerValid('https://www.rkw-kompetenzzentrum.rkw.local/'));
+    }
+
+    #==============================================================================
+
+
+    /**
      * TearDown
      */
     protected function teardown(): void
     {
         parent::tearDown();
+        FrontendSimulatorUtility::resetFrontendEnvironment();
+
     }
 
 }

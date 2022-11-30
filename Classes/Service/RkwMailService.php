@@ -431,6 +431,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @param string $plaintextPassword
+     * @param string $referrer
      * @return void
      * @throws \RKW\RkwMailer\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
@@ -438,7 +439,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function sendResetPasswordEmail(FrontendUser $frontendUser, string $plaintextPassword)
+    public function sendResetPasswordEmail(FrontendUser $frontendUser, string $plaintextPassword, string $referrer = '')
     {
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -458,6 +459,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
                         'frontendUser'             => $frontendUser,
                         'settings'                 => $settingsDefault,
                         'pageUid'                  => intval($GLOBALS['TSFE']->id),
+                        'referrer'                 => $referrer
                     ],
                 ]
             );

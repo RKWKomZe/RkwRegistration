@@ -48,6 +48,8 @@ class PasswordController extends AbstractController
      */
     public function initializeAction()
     {
+        parent::initializeAction();
+
         // intercept disabled user (e.g. after input too often the wrong password)
         if (
             ($this->getFrontendUser())
@@ -72,11 +74,11 @@ class PasswordController extends AbstractController
     }
 
 
-
     /**
      * action forgot password show
      *
      * @return void
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function newAction(): void
     {
@@ -108,6 +110,7 @@ class PasswordController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException
      */
     public function createAction(string $username): void
     {
@@ -125,7 +128,7 @@ class PasswordController extends AbstractController
         }
 
         // check if user exists
-        /** @var  @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         if ($frontendUser= $this->frontendUserRepository->findOneByUsername(strtolower($username))) {
 
             // reset password
@@ -137,7 +140,7 @@ class PasswordController extends AbstractController
             $this->signalSlotDispatcher->dispatch(
                 __CLASS__,
                 self::SIGNAL_AFTER_USER_PASSWORD_RESET,
-                [$frontendUser, $plaintextPassword]
+                [$frontendUser, $plaintextPassword, $this->referrer]
             );
         }
 

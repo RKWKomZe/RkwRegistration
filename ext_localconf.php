@@ -7,36 +7,47 @@ call_user_func(
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
-            'AuthInternal',
+            'Auth',
             [
                 'Auth' => 'index, login, logout, logoutRedirect',
-                'AuthGuest' => 'login, loginHint',
+                'AuthGuest' => 'login',
                 'FrontendUser' => 'new, create, optIn, index',
                 'FrontendUserGroup' => 'optIn',
-                'Password' => 'new, create',
-
-                //'Registration' => 'new, create, optIn, index',
-                //'Password' => 'new, create',
+                'Password'=> 'new, create',
             ],
             // non-cacheable actions
             [
-                'Auth' => 'index, login, logout, logoutRedirect',
-                'AuthGuest' => 'login, loginHint',
+                'Auth' => 'index, login, loginRedirect, logout, logoutRedirect',
+                'AuthGuest' => 'login, loginRedirect',
                 'FrontendUser' => 'new, create, optIn, index',
                 'FrontendUserGroup' => 'optIn',
-                'Password' => 'new, create',
+                'Password'=> 'new, create',
             ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
-            'LogoutInternal',
+            'Welcome',
             [
-                'Auth' => 'logout, logoutRedirect, index',
+                'FrontendUser' => 'welcome, index',
+                'Auth'=> 'index',
             ],
             // non-cacheable actions
             [
-                'Auth' => 'logout, logoutRedirect, index',
+                'FrontendUser' => 'welcome, index',
+                'Auth'=> 'index',
+            ]
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'RKW.' . $extKey,
+            'Logout',
+            [
+                'Auth'=> 'logout, logoutRedirect, index',
+            ],
+            // non-cacheable actions
+            [
+                'Auth'=> 'logout, logoutRedirect, index',
             ]
         );
 
@@ -46,72 +57,58 @@ call_user_func(
             'Password',
             [
                 'Password' => 'edit, update, redirectDisabledUser',
-                'Auth' => 'index',
+                'Auth'=> 'index',
                 'FrontendUser' => 'index'
             ],
             // non-cacheable actions
             [
                 'Password' => 'edit, update, redirectDisabledUser',
-                'Auth' => 'index',
+                'Auth'=> 'index',
                 'FrontendUser' => 'index'
             ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
-            'FrontendUserWelcome',
-            [
-                'FrontendUser' => 'welcome, index',
-                'Auth' => 'index'
-            ],
-            // non-cacheable actions
-            [
-                'FrontendUser' => 'welcome, index',
-                'Auth' => 'index'
-            ]
-        );
-
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'RKW.' . $extKey,
-            'FrontendUserEdit',
+            'UserEdit',
             [
                 'FrontendUser' => 'edit, update, index',
-                'Auth' => 'index'
+                'Auth'=> 'index'
             ],
             // non-cacheable actions
             [
                 'FrontendUser' => 'edit, update, index',
-                'Auth' => 'index'
+                'Auth'=> 'index'
             ]
         );
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
-            'FrontendUserDelete',
+            'UserDelete',
             [
                 'FrontendUser' => 'show, delete, index',
-                'Auth' => 'index'
+                'Auth'=> 'index'
             ],
             // non-cacheable actions
             [
                 'FrontendUser' => 'show, delete, index',
-                'Auth' => 'index'
+                'Auth'=> 'index'
             ]
         );
 
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'RKW.' . $extKey,
-            'FrontendUserGroup',
+            'Group',
             [
                 'FrontendUserGroup' => 'list, show, create, delete',
-                'Auth' => 'index',
+                'Auth'=> 'index',
                 'FrontendUser' => 'index'
             ],
             // non-cacheable actions
             [
                 'FrontendUserGroup' => 'list, show, create, delete',
-                'Auth' => 'index',
+                'Auth'=> 'index',
                 'FrontendUser' => 'index'            ]
         );
 
@@ -120,11 +117,11 @@ call_user_func(
             'RKW.' . $extKey,
             'Info',
             [
-                'Info' => 'index, loginInfo'
+                'Info' => 'loginInfo'
             ],
             // non-cacheable actions
             [
-                'Info' => 'index, loginInfo'
+                'Info' => 'loginInfo'
             ]
         );
 
@@ -249,6 +246,13 @@ call_user_func(
                 'className' => \RKW\RkwRegistration\Service\GuestUserAuthenticationService::class
             ]
         );
+
+        //=================================================================
+        // XClasses
+        //=================================================================
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication::class] = [
+            'className' => RKW\RkwRegistration\XClasses\Frontend\Authentication\FrontendUserAuthentication::class
+        ];
 
     },
     $_EXTKEY

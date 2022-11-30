@@ -14,7 +14,9 @@ namespace RKW\RkwRegistration\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
+use \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class ClientUtility
@@ -45,5 +47,33 @@ class ClientUtility
         }
 
         return $remoteAddress ?: '127.0.0.1';
+    }
+
+
+    /**
+     * Checks if the given referrer is part of the current domain
+     *
+     * @param string|null $referrer
+     * @return bool
+     */
+    public static function isReferrerValid(?string $referrer): bool
+    {
+
+        /** @var }TYPO3\CMS\Extbase\Object\ObjectManager\ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+
+        /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
+        $uriBuilder = $objectManager->get(UriBuilder::class);
+
+        $url = $uriBuilder
+            ->reset()
+            ->setTargetPageUid(1)
+            ->setCreateAbsoluteUri(true)
+            ->build();
+
+        $parsedUrl = parse_url($url);
+        $parsedReferer = parse_url($referrer);
+
+        return ($parsedReferer['host'] == $parsedUrl['host']);
     }
 }

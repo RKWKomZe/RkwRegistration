@@ -35,6 +35,9 @@ plugin.tx_rkwregistration {
         # cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of welcome page
         welcomePid =
 
+        # cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of welcome page for guests
+        welcomeGuestPid =
+
         # cat=plugin.tx_rkwregistration//a; type=integer; label=Pid of edit user mask
         editUserPid =
 
@@ -54,6 +57,9 @@ plugin.tx_rkwregistration {
         marketingPid =
 
         users {
+
+            # cat=plugin.tx_rkwregistration//a; type=boolean; label=Allow guest login
+            allowGuestLogin = 1
 
             # cat=plugin.tx_rkwregistration//a; type=string; label=Anonymize after days
             anonymizeAfterDays =
