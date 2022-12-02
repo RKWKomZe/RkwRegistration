@@ -15,7 +15,7 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -67,7 +67,7 @@ class GetAllFlashMessageIdentifierViewHelper extends AbstractViewHelper
      */
     protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT)
     {
-        return GeneralUtility::getTyposcriptConfiguration('Rkwregistration', $which);
+        return GeneralUtility::getTypoScriptConfiguration('Rkwregistration', $which);
     }
 
 

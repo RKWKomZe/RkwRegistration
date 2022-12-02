@@ -3,7 +3,7 @@
 namespace RKW\RkwRegistration\Tests\Integration\ViewHelpers;
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwRegistration\ViewHelpers\GetAllFlashMessageIdentifierViewHelper;
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;

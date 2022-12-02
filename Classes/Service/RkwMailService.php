@@ -15,7 +15,7 @@ namespace RKW\RkwRegistration\Service;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwMailer\Service\MailService;
 use RKW\RkwMailer\Utility\FrontendLocalizationUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
@@ -490,6 +490,6 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      */
     protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
     {
-        return GeneralUtility::getTyposcriptConfiguration('Rkwregistration', $which);
+        return GeneralUtility::getTypoScriptConfiguration('Rkwregistration', $which);
     }
 }

@@ -16,8 +16,8 @@ namespace RKW\RkwRegistration\Tests\Integration\Validation;
  */
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;

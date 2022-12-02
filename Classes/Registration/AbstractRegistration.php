@@ -14,7 +14,7 @@ namespace RKW\RkwRegistration\Registration;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwRegistration\DataProtection\ConsentHandler;
 use RKW\RkwRegistration\Domain\Model\BackendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
@@ -992,7 +992,7 @@ abstract class AbstractRegistration implements RegistrationInterface
     protected function getSettings(string $type = \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
     {
         if (!$this->settings) {
-            $this->settings = GeneralUtility::getTyposcriptConfiguration('Rkwregistration', $type);
+            $this->settings = GeneralUtility::getTypoScriptConfiguration('Rkwregistration', $type);
         }
 
         if ($this->settings) {

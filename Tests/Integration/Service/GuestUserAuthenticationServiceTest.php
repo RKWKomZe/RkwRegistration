@@ -15,7 +15,7 @@ namespace RKW\RkwRegistration\Tests\Integration\Service;
  */
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
+use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
 use RKW\RkwRegistration\Controller\AuthGuestController;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Registration\AbstractRegistration;

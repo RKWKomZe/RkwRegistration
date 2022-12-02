@@ -16,7 +16,7 @@ namespace RKW\RkwRegistration\Validation;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use TYPO3\CMS\Extbase\Error\Error;
@@ -66,7 +66,7 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
     {
         $this->passwordArray = $value;
 
-        $settings = GeneralUtility::getTyposcriptConfiguration('Rkwregistration');
+        $settings = GeneralUtility::getTypoScriptConfiguration('Rkwregistration');
         $this->passwordSettings = $settings['users']['passwordSettings'];
 
         $this->checkOldPasswordGiven();

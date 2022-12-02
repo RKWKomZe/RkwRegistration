@@ -38,7 +38,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractController
+abstract class AbstractController extends \Madj2k\AjaxApi\Controller\AjaxAbstractController
 {
 
     /**
@@ -382,7 +382,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
      */
     protected function getFlashMessageCount(): int
     {
-        $frameworkSettings = \RKW\RkwBasics\Utility\GeneralUtility::getTyposcriptConfiguration(
+        $frameworkSettings = \Madj2k\CoreExtended\Utility\GeneralUtility::getTypoScriptConfiguration(
             'Rkwregistration',
             ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
         );
@@ -408,7 +408,7 @@ abstract class AbstractController extends \RKW\RkwAjax\Controller\AjaxAbstractCo
     protected function getStoragePid(): int
     {
         $storagePid = 0;
-        $settings = \RKW\RkwBasics\Utility\GeneralUtility::getTyposcriptConfiguration('Rkwregistration', ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $settings = \Madj2k\CoreExtended\Utility\GeneralUtility::getTypoScriptConfiguration('Rkwregistration', ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         if (intval($settings['persistence']['storagePid'])) {
             $storagePid = intval($settings['persistence']['storagePid']);
         }

@@ -14,7 +14,7 @@ namespace RKW\RkwRegistration\Service;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Registration\AbstractRegistration;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
@@ -102,7 +102,7 @@ class AbstractAuthenticationService extends \TYPO3\CMS\Core\Authentication\Authe
     protected function getStoragePid(): int
     {
         $storagePid = 0;
-        $settings = GeneralUtility::getTyposcriptConfiguration('Rkwregistration', ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $settings = GeneralUtility::getTypoScriptConfiguration('Rkwregistration', ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         if (intval($settings['persistence']['storagePid'])) {
             $storagePid = intval($settings['persistence']['storagePid']);
         }

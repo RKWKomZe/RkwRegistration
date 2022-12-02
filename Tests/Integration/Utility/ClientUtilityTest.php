@@ -15,7 +15,7 @@ namespace RKW\RkwRegistration\Tests\Integration\Utility;
  */
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
+use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
 use RKW\RkwRegistration\Utility\ClientUtility;
 
 /**

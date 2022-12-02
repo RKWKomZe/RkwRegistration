@@ -15,7 +15,7 @@ namespace RKW\RkwRegistration\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Request as WebRequest;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
@@ -126,7 +126,7 @@ class ConsentViewHelper extends AbstractViewHelper
      */
     public function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
     {
-        return GeneralUtility::getTyposcriptConfiguration('Rkwregistration', $which);
+        return GeneralUtility::getTypoScriptConfiguration('Rkwregistration', $which);
     }
 
 }

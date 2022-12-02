@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -589,7 +589,7 @@ class DataProtectionHandler
      */
     protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
     {
-        return GeneralUtility::getTyposcriptConfiguration('rkwregistration', $which);
+        return GeneralUtility::getTypoScriptConfiguration('rkwregistration', $which);
     }
 
 
