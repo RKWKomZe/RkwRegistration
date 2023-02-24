@@ -22,7 +22,7 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AbstractRepository  extends \TYPO3\CMS\Extbase\Persistence\Repository
+class AbstractRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
 
     /**
@@ -31,7 +31,7 @@ class AbstractRepository  extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @return void
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function initializeObject()
+    public function initializeObject(): void
     {
 
         // Fix: always use your own storagePid - even if called through another extension

@@ -15,14 +15,8 @@ namespace RKW\RkwRegistration\Service;
  */
 
 use Madj2k\CoreExtended\Utility\GeneralUtility;
-use RKW\RkwRegistration\Domain\Model\GuestUser;
-use RKW\RkwRegistration\Registration\AbstractRegistration;
-use RKW\RkwRegistration\Utility\FrontendUserUtility;
-use RKW\RkwRegistration\Utility\PasswordUtility;
 use TYPO3\CMS\Core\Authentication\AbstractUserAuthentication;
-use TYPO3\CMS\Core\Authentication\LoginType;
-use TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException;
-use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
@@ -50,9 +44,10 @@ class AbstractAuthenticationService extends \TYPO3\CMS\Core\Authentication\Authe
      * @param array $loginData Submitted login form data
      * @param array $authInfo Information array. Holds submitted form data etc.
      * @param AbstractUserAuthentication $pObj Parent object
+     * @return void
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function initAuth($mode, $loginData, $authInfo, $pObj)
+    public function initAuth($mode, $loginData, $authInfo, $pObj): void
     {
         parent::initAuth($mode, $loginData, $authInfo, $pObj);
 
@@ -63,6 +58,7 @@ class AbstractAuthenticationService extends \TYPO3\CMS\Core\Authentication\Authe
         $this->db_user['check_pid_clause'] = '`pid` IN (' . $this->getStoragePid() . ')';
 
     }
+
 
     /**
      * Process the submitted credentials.
@@ -91,7 +87,6 @@ class AbstractAuthenticationService extends \TYPO3\CMS\Core\Authentication\Authe
     }
 
 
-
     /**
      * Returns storagePid
      *
@@ -102,7 +97,10 @@ class AbstractAuthenticationService extends \TYPO3\CMS\Core\Authentication\Authe
     protected function getStoragePid(): int
     {
         $storagePid = 0;
-        $settings = GeneralUtility::getTypoScriptConfiguration('Rkwregistration', ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $settings = GeneralUtility::getTypoScriptConfiguration(
+            'Rkwregistration',
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
+        );
         if (intval($settings['persistence']['storagePid'])) {
             $storagePid = intval($settings['persistence']['storagePid']);
         }
@@ -114,14 +112,15 @@ class AbstractAuthenticationService extends \TYPO3\CMS\Core\Authentication\Authe
         return $storagePid;
     }
 
+
     /**
      * Returns logger instance
      *
      * @return \TYPO3\CMS\Core\Log\Logger
      */
-    protected static function getLogger(): \TYPO3\CMS\Core\Log\Logger
+    protected static function getLogger(): Logger
     {
-        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+        return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
     }
 
 }

@@ -20,7 +20,6 @@ use TYPO3\CMS\Extbase\Error\Error;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
-
 /**
  * Class UniqueEmailValidator
  *
@@ -32,6 +31,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
  */
 class UniqueEmailValidator extends AbstractValidator
 {
+
     /**
      * validation
      *

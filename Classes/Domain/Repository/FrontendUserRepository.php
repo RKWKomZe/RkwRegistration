@@ -13,11 +13,10 @@ namespace RKW\RkwRegistration\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
@@ -31,7 +30,6 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  */
 class FrontendUserRepository extends AbstractRepository
 {
-
 
     /**
      * Finds users which have the given uid even if they are disabled

@@ -29,6 +29,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class GetAllFlashMessageIdentifierViewHelper extends AbstractViewHelper
 {
+
     const PREFIX = 'extbase.flashmessages.';
 
 
@@ -65,7 +66,7 @@ class GetAllFlashMessageIdentifierViewHelper extends AbstractViewHelper
      * @return array
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    protected function getSettings($which = ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT)
+    protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT): array
     {
         return GeneralUtility::getTypoScriptConfiguration('Rkwregistration', $which);
     }

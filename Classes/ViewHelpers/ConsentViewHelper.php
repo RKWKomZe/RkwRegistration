@@ -14,11 +14,11 @@ namespace RKW\RkwRegistration\ViewHelpers;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use Madj2k\CoreExtended\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Web\Request as WebRequest;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+
 /**
  * Class ConsentViewHelper
  *
@@ -36,6 +36,7 @@ class ConsentViewHelper extends AbstractViewHelper
      */
     const NAMESPACE = 'tx_rkwregistration';
 
+
     /**
      * As this ViewHelper renders HTML, the output must not be escaped.
      *
@@ -43,19 +44,20 @@ class ConsentViewHelper extends AbstractViewHelper
      */
     protected $escapeOutput = false;
 
+
     /**
      * Initialize arguments.
      *
+     * @return void
      * @throws \TYPO3Fluid\Fluid\Core\ViewHelper\Exception
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('key', 'string', 'The key to use for the text.', false, 'default');
         $this->registerArgument('pageUid', 'int', 'The pid of the first page which will be linked.', false, '0');
         $this->registerArgument('pageUid2', 'int', 'The pid of the second page which will be linked.', false, '0');
         $this->registerArgument('type', 'string', 'The type. Allowed values are: privacy, terms, marketing.', false, 'privacy');
-
     }
 
 

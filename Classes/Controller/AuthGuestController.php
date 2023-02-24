@@ -14,12 +14,11 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwRegistration\Domain\Model\GuestUser;
+use RKW\RkwRegistration\Registration\GuestUserRegistration;
 use RKW\RkwRegistration\Service\AbstractAuthenticationService;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
@@ -39,7 +38,7 @@ class AuthGuestController extends AbstractController
      * @var \RKW\RkwRegistration\Registration\GuestUserRegistration
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $guestUserRegistration;
+    protected GuestUserRegistration $guestUserRegistration;
 
 
     /**
@@ -135,7 +134,6 @@ class AuthGuestController extends AbstractController
 
         $this->redirect('index', 'Auth');
     }
-
 
 }
 

@@ -41,6 +41,7 @@ class FrontendUserAuthenticationService extends AbstractAuthenticationService
         return parent::getUser();
     }
 
+
     /**
      * Authenticate a user: Check submitted user credentials against stored hashed password,
      * check domain lock if configured.

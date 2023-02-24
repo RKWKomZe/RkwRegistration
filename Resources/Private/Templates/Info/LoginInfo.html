@@ -7,7 +7,7 @@
     <f:section name="main">
 
         <template class="ajax" 
-            id="tx-rkwregistration-login-info-ajax" data-ajax-ignore="1" data-ajax-url="{f:uri.action(action:'loginInfo', absolute:'1', addQueryString:'1', additionalParams:'{rkw_ajax : \'{key: ajaxHelper.key, cid: ajaxHelper.contentUid, idl: \\\'1\\\'}\'}') -> f:format.raw()}"></template>
+            id="tx-rkwregistration-login-info-ajax" data-ajax-ignore="1" data-ajax-url="{f:uri.action(action:'loginInfo', absolute:'1', addQueryString:'1', additionalParams:'{ajax_api : \'{key: ajaxHelper.key, cid: ajaxHelper.contentUid, idl: \\\'1\\\'}\'}') -> f:format.raw()}"></template>
         
         <f:comment><!-- only do an ajax-call if fe-cookie is set. This is to reduce requests to the server--></f:comment>
         <script type="text/javascript">

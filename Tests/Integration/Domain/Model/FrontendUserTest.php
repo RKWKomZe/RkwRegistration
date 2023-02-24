@@ -46,45 +46,53 @@ class FrontendUserTest extends FunctionalTestCase
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration',
     ];
+
 
     /**
      * @var string[]
      */
     protected $coreExtensionsToLoad = [];
 
-    /**
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
-     */
-    private $frontendUser = null;
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Model\Title
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser|null
      */
-    private $title = null;
+    private ?FrontendUser $frontendUser = null;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @var \RKW\RkwRegistration\Domain\Model\Title|null
      */
-    private $frontendUserRepository;
+    private ?Title $title = null;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\TitleRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository|null
      */
-    private $titleRepository;
+    private ?FrontendUserRepository $frontendUserRepository;
+
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     * @var \RKW\RkwRegistration\Domain\Repository\TitleRepository|null
      */
-    private $persistenceManager = null;
+    private ?TitleRepository $titleRepository;
+
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager|null
      */
-    private $objectManager = null;
+    private ?PersistenceManager $persistenceManager = null;
+
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager|null
+     */
+    private ?ObjectManager $objectManager = null;
+
 
     /**
      * Setup
@@ -133,6 +141,8 @@ class FrontendUserTest extends FunctionalTestCase
         self::assertEquals($fixture, $this->frontendUser->getTxRkwregistrationTitle()->getName());
 
     }
+
+    //=============================================
 
     /**
      * TearDown

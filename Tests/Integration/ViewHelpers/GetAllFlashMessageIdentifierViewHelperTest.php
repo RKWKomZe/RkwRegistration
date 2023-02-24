@@ -1,14 +1,5 @@
 <?php
-
 namespace RKW\RkwRegistration\Tests\Integration\ViewHelpers;
-
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use Madj2k\CoreExtended\Utility\GeneralUtility;
-use RKW\RkwRegistration\ViewHelpers\GetAllFlashMessageIdentifierViewHelper;
-use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -22,6 +13,11 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use RKW\RkwRegistration\ViewHelpers\GetAllFlashMessageIdentifierViewHelper;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Class GetAllFlashMessageIdentifierViewHelper
@@ -38,12 +34,13 @@ class GetAllFlashMessageIdentifierViewHelperTest extends FunctionalTestCase
      */
     const FIXTURE_PATH = __DIR__ . '/GetAllFlashMessageIdentifierViewHelperTest/Fixtures';
 
+
     /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration'
     ];
 
@@ -61,7 +58,7 @@ class GetAllFlashMessageIdentifierViewHelperTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
             ]
@@ -80,7 +77,6 @@ class GetAllFlashMessageIdentifierViewHelperTest extends FunctionalTestCase
     }
 
     #==============================================================================
-
 
     /**
      * @test

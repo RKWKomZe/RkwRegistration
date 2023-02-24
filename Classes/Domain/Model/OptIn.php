@@ -17,7 +17,6 @@ namespace RKW\RkwRegistration\Domain\Model;
 use Madj2k\Accelerator\Persistence\MarkerReducer;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-
 /**
  * OptIn
  *
@@ -30,114 +29,89 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
 
     /**
-     * FrontendUserUid
      * Has to be an uid only because disabled objects are not loaded via extbase
      *
      * @var int
      */
-    protected $frontendUserUid = 0;
+    protected int $frontendUserUid = 0;
 
 
     /**
-     * frontendUserUpdate
-     *
      * @var string
      */
-    protected $frontendUserUpdate = '';
+    protected string $frontendUserUpdate = '';
 
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser>
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser>|null
      */
-    protected $admins;
+    protected ?ObjectStorage $admins = null;
 
 
     /**
-     * tokenUser
-     *
      * @var string
      */
-    protected $tokenUser = '';
+    protected string $tokenUser = '';
 
 
     /**
-     * adminTokenYes
-     *
      * @var string
      */
-    protected $tokenYes = '';
+    protected string $tokenYes = '';
 
 
     /**
-     * tokenNo
-     *
      * @var string
      */
-    protected $tokenNo = '';
+    protected string $tokenNo = '';
 
 
     /**
-     * adminTokenYes
-     *
      * @var string
      */
-    protected $adminTokenYes = '';
+    protected string $adminTokenYes = '';
 
 
     /**
-     * adminTokenNo
-     *
      * @var string
      */
-    protected $adminTokenNo = '';
+    protected string $adminTokenNo = '';
 
 
     /**
-     * category
-     *
      * @var string
      */
-    protected $category = '';
+    protected string $category = '';
 
 
     /**
-     * foreignTable
-     *
      * @var string
      */
-    protected $foreignTable = '';
+    protected string $foreignTable = '';
 
 
     /**
-     * foreignUid
-     *
      * @var int
      */
-    protected $foreignUid = 0;
+    protected int $foreignUid = 0;
 
 
     /**
-     * approved
-     *
      * @var int
      */
-    protected $approved = 0;
+    protected int $approved = 0;
 
 
     /**
-     * adminApproved
-     *
      * @var int
      */
-    protected $adminApproved = 0;
+    protected int $adminApproved = 0;
 
 
     /**
-     * data
-     *
      * @var string
      */
-    protected $data = '';
+    protected string $data = '';
 
 
     /**
@@ -146,32 +120,25 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @var string
      */
-    protected $_rawdata = '';
+    protected string $_rawdata = '';
 
 
     /**
-     * starttime
-     *
-     * @var integer
+     * @var int
      */
-    protected $starttime = 0;
+    protected int $starttime = 0;
 
 
     /**
-     * endtime
-     *
-     * @var integer
+     * @var int
      */
-    protected $endtime = 0;
+    protected int $endtime = 0;
 
 
     /**
-     * deleted
-     *
      * @var bool
      */
-    protected $deleted = false;
-
+    protected bool $deleted = false;
 
 
     /**
@@ -251,7 +218,7 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Adds a backendUser for the admins
      *
-     * @param \RKW\RkwRegistration\Domain\Model\BackendUser for the admins $backendUser
+     * @param \RKW\RkwRegistration\Domain\Model\BackendUser
      * @return void
      * @api
      */
@@ -606,7 +573,7 @@ class OptIn extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param int $endtime
      * @return void
      */
-    public function setEndtime(int $endtime)
+    public function setEndtime(int $endtime): void
     {
         $this->endtime = $endtime;
     }

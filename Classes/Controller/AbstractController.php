@@ -17,6 +17,7 @@ namespace RKW\RkwRegistration\Controller;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Utility\ClientUtility;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Validation\FrontendUserValidator;
@@ -27,6 +28,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -46,50 +49,43 @@ abstract class AbstractController extends \Madj2k\AjaxApi\Controller\AjaxAbstrac
      */
     const SESSION_KEY_REFERRER = 'tx_rkwregistation_referrer';
 
+    /**
+     * @var string
+     */
+    protected string $referrer = '';
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser|null
      */
-    protected $frontendUser;
+    protected ?FrontendUser $frontendUser = null;
 
 
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $frontendUserRepository;
-
-
-    /**
-     * @var string
-     */
-    protected $referrer = '';
-
-
-    /**
-     * @var \TYPO3\CMS\Core\Log\Logger
-     */
-    protected $logger;
-
+    protected FrontendUserRepository $frontendUserRepository;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $persistenceManager;
+    protected PersistenceManager $persistenceManager;
 
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var \TYPO3\CMS\Core\Log\Logger|null
      */
-    protected $objectManager;
+    protected ?Logger $logger = null;
 
 
     /**
      * initialize
+     *
+     * @param \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view
      */
-    public function initializeView(ViewInterface $view)
+    public function initializeView(ViewInterface $view): void
     {
         parent::initializeView($view);
 
@@ -125,6 +121,7 @@ abstract class AbstractController extends \Madj2k\AjaxApi\Controller\AjaxAbstrac
         }
     }
 
+
     /**
      * action index
      * This is the default action
@@ -144,6 +141,7 @@ abstract class AbstractController extends \Madj2k\AjaxApi\Controller\AjaxAbstrac
 
         // nothing else to do here - is only a fallback
     }
+
 
     /**
      * Remove ErrorFlashMessage
@@ -166,7 +164,6 @@ abstract class AbstractController extends \Madj2k\AjaxApi\Controller\AjaxAbstrac
     {
         return FrontendUserSessionUtility::getLoggedInUser();
     }
-
 
 
     /**
@@ -294,8 +291,8 @@ abstract class AbstractController extends \Madj2k\AjaxApi\Controller\AjaxAbstrac
             ->build();
 
         $this->redirectToUri($url);
-
     }
+
 
     /**
      * Redirects to the referer from the login
@@ -375,6 +372,7 @@ abstract class AbstractController extends \Madj2k\AjaxApi\Controller\AjaxAbstrac
         }
     }
 
+
     /**
      * Returns the number of flashMessages of all configured plugins
      * @return int
@@ -408,7 +406,11 @@ abstract class AbstractController extends \Madj2k\AjaxApi\Controller\AjaxAbstrac
     protected function getStoragePid(): int
     {
         $storagePid = 0;
-        $settings = \Madj2k\CoreExtended\Utility\GeneralUtility::getTypoScriptConfiguration('Rkwregistration', ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $settings = \Madj2k\CoreExtended\Utility\GeneralUtility::getTypoScriptConfiguration(
+            'Rkwregistration',
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
+        );
+
         if (intval($settings['persistence']['storagePid'])) {
             $storagePid = intval($settings['persistence']['storagePid']);
         }

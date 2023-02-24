@@ -17,6 +17,7 @@ namespace RKW\RkwRegistration\ViewHelpers\FrontendUserGroups;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+
 /**
  * IsUserInGroupViewHelper
  *
@@ -30,14 +31,16 @@ class IsUserInGroupViewHelper extends AbstractViewHelper
     /**
      * Initialize arguments.
      *
+     * @return void
      * @throws \TYPO3Fluid\Fluid\Core\ViewHelper\Exception
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('frontendUserGroup', FrontendUserGroup::class, 'The frontendUserGroup to check for an existing membership.', true);
         $this->registerArgument('frontendUser', FrontendUser::class, 'The frontendUser we check for a membership.', true);
     }
+
 
     /**
      * @return int

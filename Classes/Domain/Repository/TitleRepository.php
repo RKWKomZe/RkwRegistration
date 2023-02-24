@@ -15,6 +15,7 @@ namespace RKW\RkwRegistration\Domain\Repository;
  */
 
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * TitleRepository
@@ -32,8 +33,9 @@ class TitleRepository extends AbstractRepository
      * initializeObject
      *
      * @return void
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function initializeObject()
+    public function initializeObject(): void
     {
         parent::initializeObject();
 
@@ -52,13 +54,13 @@ class TitleRepository extends AbstractRepository
      * @param boolean $showTitleBefore
      * @param boolean $showTitleAfter
      * @param boolean $returnArray
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
     public function findAllOfType(
         bool $showTitleBefore = true,
         bool $showTitleAfter = false,
         bool $returnArray = false
-    ) {
+    ): QueryResultInterface {
         $query = $this->createQuery();
         return $query
             ->matching(

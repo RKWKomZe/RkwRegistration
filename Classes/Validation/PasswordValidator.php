@@ -34,25 +34,22 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator
 {
     /**
-     * passwordArray
-     *
      * @var array
      */
-    protected $passwordArray = [];
+    protected array $passwordArray = [];
+
 
     /**
-     * passwordSettings
-     *
      * @var array
      */
-    protected $passwordSettings = [];
+    protected array $passwordSettings = [];
+
 
     /**
-     * isValid
-     *
      * @var bool
      */
-    protected $isValid = true;
+    protected bool $isValid = true;
+
 
     /**
      * Validation of password
@@ -158,6 +155,7 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
         }
     }
 
+
     /**
      * checkEquality
      *
@@ -250,6 +248,5 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
             }
         }
     }
-
 }
 

@@ -26,49 +26,39 @@ namespace RKW\RkwRegistration\Domain\Model;
 class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
-     * frontendUser
-     *
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser|null
      */
-    public $frontendUser;
+    public ?FrontendUser $frontendUser = null;
 
 
     /**
      * @var string
      */
-    protected $searchKey = '';
+    protected string $searchKey = '';
 
 
     /**
-     * foreignUid
-     *
-     * @var integer
+     * @var int
      */
-    public $foreignUid = 0;
+    public int $foreignUid = 0;
 
 
     /**
-     * foreignTable
-     *
      * @var string
      */
-    public $foreignTable = '';
+    public string $foreignTable = '';
 
 
     /**
-     * foreignClass
-     *
      * @var string
      */
-    public $foreignClass = '';
+    public string $foreignClass = '';
 
 
     /**
-     * encryptedData
-     *
      * @var string
      */
-    public $encryptedData = '';
+    public string $encryptedData = '';
 
 
     /**
@@ -132,7 +122,7 @@ class EncryptedData extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the foreignUid value
      *
-     * @return integer
+     * @return int
      */
     public function getForeignUid(): int
     {

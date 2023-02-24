@@ -1,17 +1,6 @@
 <?php
 namespace RKW\RkwRegistration\Tests\Integration\Utility;
 
-
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-use RKW\RkwRegistration\Utility\PasswordUtility;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -24,6 +13,13 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use RKW\RkwRegistration\Utility\PasswordUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+
 /**
  * PasswordUtilityTest
  *
@@ -39,15 +35,17 @@ class PasswordUtilityTest extends FunctionalTestCase
      */
     const FIXTURE_PATH = __DIR__ . '/PasswordUtilityTest/Fixtures';
 
+
     /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_mailer',
         'typo3conf/ext/rkw_registration',
     ];
+
 
     /**
      * @var string[]
@@ -58,10 +56,11 @@ class PasswordUtilityTest extends FunctionalTestCase
         'extensionmanager'
     ];
 
+
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository|null
      */
-    private $frontendUserRepository = null;
+    private ?FrontendUserRepository $frontendUserRepository = null;
 
 
     /**
@@ -76,8 +75,8 @@ class PasswordUtilityTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
@@ -86,7 +85,7 @@ class PasswordUtilityTest extends FunctionalTestCase
 
     }
 
-
+    #==============================================================================
 
     /**
      * @test
@@ -113,7 +112,6 @@ class PasswordUtilityTest extends FunctionalTestCase
     }
 
 
-
     /**
      * @test
      */
@@ -136,7 +134,6 @@ class PasswordUtilityTest extends FunctionalTestCase
         self::assertIsString('string', $result);
         self::assertTrue(strlen($result) == PasswordUtility::PASSWORD_DEFAULT_LENGTH);
     }
-
 
 
     /**
@@ -162,7 +159,6 @@ class PasswordUtilityTest extends FunctionalTestCase
         self::assertIsString('string', $result);
         self::assertTrue(strlen($result) == PasswordUtility::PASSWORD_MAX_LENGTH);
     }
-
 
 
     /**
@@ -197,7 +193,6 @@ class PasswordUtilityTest extends FunctionalTestCase
     }
 
 
-
     /**
      * @test
      */
@@ -220,7 +215,6 @@ class PasswordUtilityTest extends FunctionalTestCase
     }
 
 
-
     /**
      * @test
      */
@@ -241,7 +235,6 @@ class PasswordUtilityTest extends FunctionalTestCase
 
         self::assertFalse(ctype_alnum($result));
     }
-
 
 
     /**
@@ -269,7 +262,6 @@ class PasswordUtilityTest extends FunctionalTestCase
     }
 
 
-
     /**
      * @test
      */
@@ -290,7 +282,7 @@ class PasswordUtilityTest extends FunctionalTestCase
         self::assertTrue(true);
     }
 
-
+    #==============================================================================
 
     /**
      * TearDown

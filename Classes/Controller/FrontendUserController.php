@@ -19,9 +19,10 @@ use RKW\RkwMailer\UriBuilder\EmailUriBuilder;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
+use RKW\RkwRegistration\Domain\Repository\TitleRepository;
+use RKW\RkwRegistration\Registration\FrontendUserRegistration;
 use RKW\RkwRegistration\Utility\TitleUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
-use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -40,14 +41,14 @@ class FrontendUserController extends AbstractController
      * @var \RKW\RkwRegistration\Registration\FrontendUserRegistration
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $frontendUserRegistration;
+    protected FrontendUserRegistration $frontendUserRegistration;
 
 
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\TitleRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $titleRepository;
+    protected TitleRepository $titleRepository;
 
 
     /**
@@ -98,15 +99,13 @@ class FrontendUserController extends AbstractController
      * @return void
      * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @TYPO3\CMS\Extbase\Annotation\Validate("RKW\RkwRegistration\Validation\FrontendUserValidator", param="frontendUser")
      * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\TermsValidator", param="frontendUser")
      * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\Consent\PrivacyValidator", param="frontendUser")
@@ -160,6 +159,7 @@ class FrontendUserController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
+     * @throws \TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException
      */
     public function optInAction(): void
     {
@@ -268,8 +268,7 @@ class FrontendUserController extends AbstractController
                 )
             );
 
-
-            // user is logged in as normal user
+        // user is logged in as normal user
         } else if ($this->getFrontendUser() instanceof FrontendUser) {
 
             $this->addFlashMessage(
@@ -283,7 +282,6 @@ class FrontendUserController extends AbstractController
             $this->redirectIfUserHasMissingData();
         }
 
-
         $currentPageUid = intval($GLOBALS["TSFE"]->id);
         $this->view->assignMultiple(
             [
@@ -292,6 +290,7 @@ class FrontendUserController extends AbstractController
             ]
         );
     }
+
 
     /**
      * action editUser
@@ -350,6 +349,7 @@ class FrontendUserController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @TYPO3\CMS\Extbase\Annotation\Validate("RKW\RkwRegistration\Validation\FrontendUserValidator", param="frontendUser")
      */
     public function updateAction(FrontendUser $frontendUser): void
@@ -405,6 +405,7 @@ class FrontendUserController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function showAction(): void
     {

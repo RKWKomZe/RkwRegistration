@@ -55,6 +55,7 @@ class FrontendUserUtility
         return $frontendUser;
     }
 
+
     /**
      * converts a frontendUser to an array
      *
@@ -276,7 +277,6 @@ class FrontendUserUtility
 
         return array_values(array_unique($mandatoryFields));
     }
-
 
 
     /**

@@ -14,6 +14,7 @@ namespace RKW\RkwRegistration\Validation;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use TYPO3\CMS\Extbase\Error\Error;
@@ -32,25 +33,21 @@ class FrontendUserValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abst
 {
 
     /**
-     * frontendUser
-     *
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser|null
      */
-    protected $frontendUser;
+    protected ?FrontendUser $frontendUser = null;
+
 
     /**
-     * isValid
-     *
      * @var bool
      */
-    protected $isValid = true;
+    protected bool $isValid = true;
+
 
     /**
-     * requiredFields
-     *
      * @var array
      */
-    protected $requiredFields = [];
+    protected array$requiredFields = [];
 
 
     /**

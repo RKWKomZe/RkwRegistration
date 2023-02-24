@@ -34,7 +34,6 @@ class LoginValidator extends AbstractValidator
      *
      * @param array $login
      * @return boolean
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function isValid($login): bool
     {

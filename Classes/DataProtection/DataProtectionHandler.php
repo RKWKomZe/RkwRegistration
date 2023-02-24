@@ -16,15 +16,19 @@ namespace RKW\RkwRegistration\DataProtection;
 
 use RKW\RkwRegistration\Domain\Model\EncryptedData;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Repository\EncryptedDataRepository;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Exception;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
 use Madj2k\CoreExtended\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
@@ -38,41 +42,45 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class DataProtectionHandler
 {
+
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $frontendUserRepository;
+    protected FrontendUserRepository $frontendUserRepository;
+
 
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\EncryptedDataRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $encryptedDataRepository;
+    protected EncryptedDataRepository $encryptedDataRepository;
+
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $persistenceManager;
+    protected PersistenceManager $persistenceManager;
+
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManager
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $objectManager;
+    protected ObjectManager $objectManager;
 
 
     /**
-     * @var Logger
+     * @var Logger|null
      */
-    protected $logger;
+    protected ?Logger $logger = null;
 
 
     /**
      * @var string
      */
-    protected $encryptionKey;
+    protected string $encryptionKey = '';
 
 
     /***
@@ -170,10 +178,24 @@ class DataProtectionHandler
                             ];
                             $adds[] = $encryptedData;
 
-                            $this->getLogger()->log(LogLevel::INFO, sprintf('Anonymized and encrypted data of main-model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
+                            $this->getLogger()->log(
+                                LogLevel::INFO,
+                                sprintf(
+                                    'Anonymized and encrypted data of main-model "%s" of user-id %s.',
+                                    $modelClassName,
+                                    $frontendUser->getUid()
+                                )
+                            );
 
                         } else {
-                            $this->getLogger()->log(LogLevel::WARNING, sprintf('Could not anonymize and encrypt data of main-model "%s" of user-id %s.', $modelClassName, $frontendUser->getUid()));
+                            $this->getLogger()->log(
+                                LogLevel::WARNING,
+                                sprintf(
+                                    'Could not anonymize and encrypt data of main-model "%s" of user-id %s.',
+                                    $modelClassName,
+                                    $frontendUser->getUid()
+                                )
+                            );
                             continue(2);
                         }
 
@@ -270,7 +292,6 @@ class DataProtectionHandler
     }
 
 
-
     /**
      * Anonymizes data of a given object
      *
@@ -314,7 +335,7 @@ class DataProtectionHandler
      * @throws \RKW\RkwRegistration\Exception
      * @return \RKW\RkwRegistration\Domain\Model\EncryptedData|null
      */
-    public function encryptObject(AbstractEntity $object, FrontendUser $frontendUser) :? EncryptedData
+    public function encryptObject(AbstractEntity $object, FrontendUser $frontendUser):? EncryptedData
     {
         if ($object->_isNew()) {
             throw new Exception('Given object is not persisted.');
@@ -498,7 +519,6 @@ class DataProtectionHandler
      * @param string $email
      * @return string
      * @throws \RKW\RkwRegistration\Exception
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @see https://gist.github.com/turret-io/957e82d44fd6f4493533, thanks!
      */
     public function getEncryptedString($data, string $email): string
@@ -534,7 +554,6 @@ class DataProtectionHandler
      * @param string $email
      * @return string
      * @throws \RKW\RkwRegistration\Exception
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @see https://gist.github.com/turret-io/957e82d44fd6f4493533, thanks!
      */
     public function getDecryptedString(string $data, string $email): string
@@ -561,7 +580,7 @@ class DataProtectionHandler
      *
      * @param \TYPO3\CMS\Extbase\Persistence\Repository $repository
      * @param string $property
-     * @param integer $uid
+     * @param int $uid
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
     protected function getRepositoryResults(Repository $repository, string $property, int $uid): QueryResultInterface
@@ -579,7 +598,6 @@ class DataProtectionHandler
     }
 
 
-
     /**
      * Returns TYPO3 settings
      *
@@ -593,7 +611,6 @@ class DataProtectionHandler
     }
 
 
-
     /**
      * Returns logger instance
      *
@@ -603,10 +620,9 @@ class DataProtectionHandler
     {
 
         if (!$this->logger instanceof Logger) {
-            $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
         }
 
         return $this->logger;
     }
-
 }

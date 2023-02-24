@@ -38,19 +38,22 @@ class FrontendUserUtilityTest extends FunctionalTestCase
      */
     const FIXTURE_PATH = __DIR__ . '/FrontendUserUtilityTest/Fixtures';
 
+
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
      */
     private $frontendUserRepository;
 
+
     /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration',
     ];
+
 
     /**
      * Setup
@@ -64,8 +67,8 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
@@ -84,7 +87,6 @@ class FrontendUserUtilityTest extends FunctionalTestCase
     }
 
     #==============================================================================
-
 
     /**
      * @test
@@ -110,7 +112,6 @@ class FrontendUserUtilityTest extends FunctionalTestCase
     }
 
 
-
     /**
      * @test
      */
@@ -130,7 +131,6 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUserObject = FrontendUserUtility::convertArrayToObject($frontendUserArray);
         self::assertInstanceOf(FrontendUser::class, $frontendUserObject);
     }
-
 
 
     /**
@@ -160,9 +160,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         self::assertEquals($frontendUserArray['email'], $frontendUserObject->getEmail());
     }
 
-
     #==============================================================================
-
 
     /**
      * @test
@@ -195,6 +193,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         self::assertEquals(123456, $result['zip']);
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -224,6 +223,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         self::assertEquals('test', $result['username']);
         self::assertEquals(123456, $result['zip']);
     }
+
 
     /**
      * @test
@@ -292,6 +292,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         self::assertFalse(FrontendUserUtility::isEmailValid($email));
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -333,6 +334,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         self::assertTrue(FrontendUserUtility::isUsernameUnique('lauterbach@spd.de'));
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -355,6 +357,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         self::assertTrue(FrontendUserUtility::isUsernameUnique('lauterbach@spd.de', $frontendUser));
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -372,6 +375,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $this->importDataSet(self::FIXTURE_PATH  . '/Database/Check10.xml');
         self::assertFalse(FrontendUserUtility::isUsernameUnique('lauterbachUsername@spd.de'));
     }
+
 
     /**
      * @test
@@ -463,8 +467,8 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         self::assertTrue(FrontendUserUtility::isPasswordValid($frontendUser, 'testtest'));
     }
 
-
     #==============================================================================
+
     /**
      * @test
      * @throws \Exception
@@ -486,8 +490,8 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/RootpageMinimal.typoscript',
@@ -500,8 +504,8 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
 
         self::assertEquals(10 ,FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
-
     }
+
 
     /**
      * @test
@@ -523,8 +527,8 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUser = GeneralUtility::makeInstance(FrontendUser::class);
 
         self::assertEquals(8, FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
-
     }
+
 
     /**
      * @test
@@ -548,8 +552,8 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $frontendUser->setTxRkwregistrationLoginErrorCount(5);
 
         self::assertEquals(3 ,FrontendUserUtility::getRemainingLoginAttempts($frontendUser));
-
     }
+
 
     /**
      * @test
@@ -596,8 +600,8 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/RootpageMinimal.typoscript',
@@ -610,6 +614,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
 
         self::assertEquals(10 ,FrontendUserUtility::getRemainingLoginAttemptsNumeric(0));
     }
+
 
     /**
      * @test
@@ -628,6 +633,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         self::assertEquals(8 ,FrontendUserUtility::getRemainingLoginAttemptsNumeric(0));
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -645,6 +651,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         self::assertEquals(3 ,FrontendUserUtility::getRemainingLoginAttemptsNumeric(5));
 
     }
+
 
     /**
      * @test
@@ -685,8 +692,8 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/RootpageMinimal.typoscript',
@@ -701,6 +708,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         self::assertEquals('email', $result[0]);
 
     }
+
 
     /**
      * @test
@@ -729,6 +737,7 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         self::assertEquals('lastName', $result[2]);
 
     }
+
 
     /**
      * @test
@@ -766,7 +775,6 @@ class FrontendUserUtilityTest extends FunctionalTestCase
         self::assertEquals('middleName', $result[3]);
         self::assertEquals('zip', $result[4]);
         self::assertEquals('city', $result[5]);
-
 
     }
 

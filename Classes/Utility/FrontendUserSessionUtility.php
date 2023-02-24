@@ -128,7 +128,7 @@ class FrontendUserSessionUtility
     /**
      * Id of logged-in User
      *
-     * @return integer
+     * @return int
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     public static function getLoggedInUserId(): int
@@ -145,6 +145,7 @@ class FrontendUserSessionUtility
 
         return 0;
     }
+
 
     /**
      * Id of logged-in User

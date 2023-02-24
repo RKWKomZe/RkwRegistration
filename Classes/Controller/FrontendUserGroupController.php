@@ -18,10 +18,16 @@ namespace RKW\RkwRegistration\Controller;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Domain\Model\OptIn;
+use RKW\RkwRegistration\Domain\Repository\BackendUserRepository;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
+use RKW\RkwRegistration\Domain\Repository\OptInRepository;
+use RKW\RkwRegistration\Registration\FrontendUserRegistration;
 use RKW\RkwRegistration\Service\RkwMailService;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -51,63 +57,33 @@ class FrontendUserGroupController extends AbstractController
      */
     const SIGNAL_SERVICE_DELETE = 'afterServiceDelete';
 
+
     /**
      * @var \RKW\RkwRegistration\Registration\FrontendUserRegistration
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $frontendUserRegistration;
-
+    protected FrontendUserRegistration $frontendUserRegistration;
 
 
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $frontendUserGroupRepository;
+    protected FrontendUserGroupRepository $frontendUserGroupRepository;
 
 
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\OptInRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $optInRepository;
+    protected OptInRepository $optInRepository;
 
 
     /**
-     * @var \TYPO3\CMS\Extbase\Domain\Repository\BackendUserRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\BackendUserRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $backendUserRepository;
-
-
-    /**
-     * Persistence Manager
-     *
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected $persistenceManager;
-
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected $objectManager;
-
-
-    /**
-     * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected $signalSlotDispatcher;
-
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected $configurationManager;
+    protected BackendUserRepository $backendUserRepository;
 
 
     /**
@@ -173,15 +149,13 @@ class FrontendUserGroupController extends AbstractController
      * @return void
      * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      */
     public function createAction(FrontendUserGroup $frontendUserGroup): void
     {
@@ -216,18 +190,19 @@ class FrontendUserGroupController extends AbstractController
      *
      * @return void
      * @throws \RKW\RkwRegistration\Exception
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
     public function optInAction(): void
     {
@@ -283,7 +258,6 @@ class FrontendUserGroupController extends AbstractController
                     )
                 );
             }
-
 
         } elseif ($check < 400) {
 
@@ -383,7 +357,6 @@ class FrontendUserGroupController extends AbstractController
      */
     public function createMembership (FrontendUser $frontendUser, OptIn $optIn): void
     {
-
         if (
             ($frontendGroup = $optIn->getData())
             && ($frontendGroup instanceof FrontendUserGroup)
@@ -412,6 +385,7 @@ class FrontendUserGroupController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function deleteAction(FrontendUserGroup $frontendUserGroup): void
     {
@@ -441,6 +415,5 @@ class FrontendUserGroupController extends AbstractController
 
         $this->redirect('list');
     }
-
 
 }

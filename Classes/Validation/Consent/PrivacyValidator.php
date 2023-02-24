@@ -1,6 +1,6 @@
 <?php
-
 namespace RKW\RkwRegistration\Validation\Consent;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *

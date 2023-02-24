@@ -36,11 +36,10 @@ class TitleUtility
      *
      * @param string $title
      * @param array $settings
-     *
      * @return Title
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
-    public static function extractTxRegistrationTitle($title = '', $settings = []): Title
+    public static function extractTxRegistrationTitle(string $title = '', array $settings = []): Title
     {
         /** @var ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);

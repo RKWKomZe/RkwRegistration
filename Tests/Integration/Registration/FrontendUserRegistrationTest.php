@@ -34,7 +34,6 @@ use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
-
 /**
  * FrontendUserRegisterTest
  *
@@ -51,15 +50,17 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
      */
     const FIXTURE_PATH = __DIR__ . '/FrontendUserRegistrationTest/Fixtures';
 
+
     /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration',
         'typo3conf/ext/rkw_mailer',
     ];
+
 
     /**
      * @var string[]
@@ -68,40 +69,47 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         'filemetadata'
     ];
 
-    /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
-     */
-    private $frontendUserRepository;
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository|null
      */
-    private $frontendUserGroupRepository;
+    private ?FrontendUserRepository $frontendUserRepository;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\BackendUserRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository|null
      */
-    private $backendUserRepository;
+    private ?FrontendUserGroupRepository $frontendUserGroupRepository;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\OptInRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\BackendUserRepository|null
      */
-    private $optInRepository;
+    private ?BackendUserRepository $backendUserRepository;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\ConsentRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\OptInRepository|null
      */
-    private $consentRepository;
+    private ?OptInRepository $optInRepository;
+
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @var \RKW\RkwRegistration\Domain\Repository\ConsentRepository|null
      */
-    private $objectManager;
+    private ?ConsentRepository $consentRepository;
+
 
     /**
-     * @var \RKW\RkwRegistration\Registration\FrontendUserRegistration
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager|null
      */
-    private $fixture;
+    private ?ObjectManager $objectManager;
+
+
+    /**
+     * @var \RKW\RkwRegistration\Registration\FrontendUserRegistration|null
+     */
+    private ?FrontendUserRegistration $fixture;
 
 
     /**
@@ -116,8 +124,8 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.typoscript',
-                'EXT:rkw_basics/Configuration/TypoScript/constants.typoscript',
+                'EXT:core_extended/Configuration/TypoScript/setup.typoscript',
+                'EXT:core_extended/Configuration/TypoScript/constants.typoscript',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.typoscript',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.typoscript',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
@@ -152,7 +160,6 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
-
     #==============================================================================
     /**
      * @test
@@ -178,10 +185,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertInstanceOf(FrontendUserRepository::class, $this->fixture->getContextAwareFrontendUserRepository());
     }
 
-
     #==============================================================================
-
-
 
     /**
      * @test
@@ -206,8 +210,8 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser->setEmail('TEST');
 
         $this->fixture->setFrontendUser($frontendUser);
-
     }
+
 
     /**
      * @test
@@ -234,8 +238,8 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser->setUsername('TEST');
 
         $this->fixture->setFrontendUser($frontendUser);
-
     }
+
 
     /**
      * @test
@@ -273,8 +277,8 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $this->fixture->setFrontendUser($frontendUser);
 
         FrontendSimulatorUtility::resetFrontendEnvironment();
-
     }
+
 
     /**
      * @test
@@ -331,6 +335,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -355,6 +360,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertEquals('ru', $frontendUser->getTxRkwregistrationLanguageKey());
 
     }
+
 
     /**
      * @test
@@ -407,6 +413,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertGreaterThan(time() -5, $frontendUser->getCrdate());
 
     }
+
 
     /**
      * @test
@@ -462,6 +469,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -489,6 +497,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -514,6 +523,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertEquals('127.0.0.1', $frontendUser->getTxRkwregistrationRegisterRemoteIp());
 
     }
+
 
     /**
      * @test
@@ -541,6 +551,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -566,6 +577,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertGreaterThanOrEqual(time() + (intval(7 * 24 * 60 * 60) -5), $frontendUser->getEndtime());
 
     }
+
 
     /**
      * @test
@@ -596,6 +608,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -621,6 +634,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertEquals(99, $frontendUser->getPid());
 
     }*/
+
 
     /**
      * @test
@@ -682,6 +696,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -708,6 +723,8 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertEmpty($this->fixture->getFrontendUserToken());
 
     }
+
+
     /**
      * @test
      * @throws \Exception
@@ -794,6 +811,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -820,6 +838,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertNull($this->fixture->getFrontendUser());
 
     }
+
 
     /**
      * @test
@@ -850,6 +869,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertNull($this->fixture->getFrontendUserPersisted());
 
     }
+
 
     /**
      * @test
@@ -922,6 +942,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -951,6 +972,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertEquals('test', $result['city']);
         self::assertEquals(123456, $result['zip']);
     }
+
 
     /**
      * @test
@@ -1024,6 +1046,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -1063,6 +1086,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -1101,6 +1125,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUserDatabase = $this->frontendUserRepository->findByIdentifierIncludingDisabled(20);
         self::assertEquals($frontendUserDatabase, $result);
     }
+
 
     /**
      * @test
@@ -1186,6 +1211,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertEquals($frontendUserDatabase, $result);
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -1219,6 +1245,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUserDatabase = $this->frontendUserRepository->findByIdentifier(40);
         self::assertEquals($frontendUserDatabase, $result);
     }
+
 
     /**
      * @test
@@ -1255,6 +1282,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertEquals($frontendUserDatabase, $result);
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -1289,6 +1317,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUserDatabase = $this->frontendUserRepository->findByIdentifierIncludingDisabled(90);
         self::assertEquals($frontendUserDatabase, $result);
     }
+
 
     /**
      * @test
@@ -1355,6 +1384,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $optIn = $this->optInRepository->findByIdentifier(40);
         self::assertEquals($optIn, $result);
     }
+
 
     /**
      * @test
@@ -1459,6 +1489,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertEquals($optIn, $result);
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -1558,6 +1589,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -1626,9 +1658,8 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertNotEmpty($optIn->getTokenNo());
         self::assertGreaterThan(time() + (intval(7 * 24 * 60 * 60) -5), $optIn->getEndtime());
         self::assertEquals(1, $optIn->getAdminApproved());
-
-
     }
+
 
     /**
      * @test
@@ -1711,9 +1742,8 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
         self::assertInstanceOf(OptIn::class, $optIn);
         self::assertSame($optIn, $this->fixture->getOptInPersisted());
-
-
     }
+
 
     /**
      * @test
@@ -1774,6 +1804,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -1817,8 +1848,6 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertInstanceOf(OptIn::class, $optIn);
         self::assertEquals('fe_groups', $optIn->getForeignTable());
         self::assertEquals(140, $optIn->getForeignUid());
-
-
 
     }
 
@@ -1888,6 +1917,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }*/
 
+
     /**
      * @test
      * @throws \Exception
@@ -1917,6 +1947,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertEquals(0, $this->optInRepository->countAll());
 
     }
+
 
     /**
      * @test
@@ -1953,7 +1984,6 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertFalse($frontendUser->getDisable());
         self::assertEquals(1, $this->optInRepository->countAll());
         self::assertEquals(0, $this->consentRepository->countAll());
-
     }
 
 
@@ -1994,8 +2024,8 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertFalse($frontendUser->getDisable());
         self::assertEquals(1, $this->optInRepository->countAll());
         self::assertEquals(1, $this->consentRepository->countAll());
-
     }
+
 
     /**
      * @test
@@ -2038,8 +2068,8 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
         self::assertEquals(1, $this->optInRepository->countAll());
         self::assertEquals(0, $this->consentRepository->countAll());
-
     }
+
 
     /**
      * @test
@@ -2110,6 +2140,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -2135,8 +2166,8 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
         $this->fixture->setFrontendUserToken('abcdef');
         self::assertEquals(999, $this->fixture->validateOptIn('test_yes'));
-
     }
+
 
     /**
      * @test
@@ -2165,6 +2196,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertEquals(999, $this->fixture->validateOptIn('test_yes'));
 
     }
+
 
     /**
      * @test
@@ -2196,8 +2228,8 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
         self::assertEquals(399, $this->fixture->validateOptIn('test_yes'));
         self::assertEquals(0, $this->consentRepository->countAll());
-
     }
+
 
     /**
      * @test
@@ -2336,6 +2368,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertTrue($frontendUser->getDisable());
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -2380,6 +2413,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByIdentifierIncludingDisabled(120);
         self::assertTrue($frontendUser->getDisable());
     }
+
 
     /**
      * @test
@@ -2482,6 +2516,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertTrue($frontendUser->getDisable());
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -2531,8 +2566,8 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByIdentifierIncludingDisabled(130);
         self::assertFalse($frontendUser->getDisable());
-
     }
+
 
     /**
      * @test
@@ -2578,8 +2613,9 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         $frontendUser = $this->frontendUserRepository->findByIdentifierIncludingDisabled(170);
         self::assertTrue($frontendUser->getDisable());
-
     }
+
+
     /**
      * @test
      * @throws \Exception
@@ -2694,6 +2730,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -2759,8 +2796,6 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $this->fixture->setFrontendUserToken('test');
         self::assertEquals(399, $this->fixture->validateOptIn('test_no'));
         self::assertEquals(0, $this->consentRepository->countAll());
-
-
     }
 
     #==============================================================================
@@ -2792,6 +2827,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -2817,6 +2853,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertFalse($this->fixture->completeRegistration());
 
     }
+
 
     /**
      * @test
@@ -2863,6 +2900,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertEquals(21, $usergroups[1]->getUid());
 
     }
+
 
     /**
      * @test
@@ -2958,6 +2996,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -2991,6 +3030,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         $frontendUser = $this->frontendUserRepository->findByIdentifierIncludingDeleted(20);
         self::assertTrue($frontendUser->getDeleted());
     }
+
 
     /**
      * @test
@@ -3031,6 +3071,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
     }
 
     #==============================================================================
+
     /**
      * @test
      * @throws \Exception
@@ -3098,8 +3139,8 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
         FrontendSimulatorUtility::resetFrontendEnvironment();
 
-
     }
+
 
     /**
      * @test
@@ -3136,6 +3177,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -3170,6 +3212,7 @@ class FrontendUserRegistrationTest extends FunctionalTestCase
         self::assertFalse($frontendUser->getDeleted());
 
     }
+
 
     /**
      * @test
