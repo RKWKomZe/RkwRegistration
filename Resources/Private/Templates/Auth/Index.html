@@ -12,26 +12,24 @@
             <f:else>
                 <div class="alternatives">
                     <div class="alternatives__item">
-                        <h3 class="h4"><f:translate key="templates_auth_index.loginHeadline" /></h3>
                         <f:render partial="Auth/Login" arguments="{_all}" />
                     </div>
 
-                    <div class="alternatives__item alternatives__item--between">
-                        <f:translate key="templates_auth_index.orHeadline" />
-                    </div>
-
-                    <div class="alternatives__item">
-                        <h3 class="h4"><f:translate key="templates_auth_index.registerHeadline" /></h3>
-                        <f:link.action
-                            class="btn btn--secondary"
-                            action="new"
-                            controller="FrontendUser"
-                            pageUid="{settings.registrationPid}"
-                        >
-                            <f:translate key="templates_auth_index.registerNow" />
-                        </f:link.action>
-                    </div>
-                </div>
+                    <f:if condition="{settings.users.allowGuestLogin}">
+                        <div class="alternatives__item alternatives__item--between">
+                            <f:translate key="templates_auth_index.orHeadline" />
+                        </div>
+    
+                        <div class="alternatives__item">
+                            <f:link.action
+                                class="mt-1 btn btn--primary"
+                                action="login"
+                                controller="AuthGuest"
+                            >
+                                <f:translate key="templates_auth_index.guest" />
+                            </f:link.action>
+                        </div>
+                    </f:if>
             </f:else>
         </f:security.ifAuthenticated>
 

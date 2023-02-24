@@ -14,7 +14,8 @@ namespace RKW\RkwRegistration\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class ClientUtility
@@ -25,25 +26,34 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ClientUtility
+class ClientUtility extends \Madj2k\CoreExtended\Utility\ClientUtility
 {
+
+
     /**
-     * Returns the client's ip
+     * Checks if the given referrer is part of the current domain
      *
-     * @return string
+     * @param string|null $referrer
+     * @return bool
      */
-    public static function getIp(): string
+    public static function isReferrerValid(?string $referrer): bool
     {
 
-        // set users server ip-address
-        $remoteAddress = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
-        if ($_SERVER['HTTP_X_FORWARDED_FOR']) {
-            $ips = GeneralUtility::trimExplode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-            if ($ips[0]) {
-                $remoteAddress = filter_var($ips[0], FILTER_VALIDATE_IP);
-            }
-        }
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
 
-        return $remoteAddress ?: '127.0.0.1';
+        /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
+        $uriBuilder = $objectManager->get(UriBuilder::class);
+
+        $url = $uriBuilder
+            ->reset()
+            ->setTargetPageUid(1)
+            ->setCreateAbsoluteUri(true)
+            ->build();
+
+        $parsedUrl = parse_url($url);
+        $parsedReferer = parse_url($referrer);
+
+        return ($parsedReferer['host'] == $parsedUrl['host']);
     }
 }

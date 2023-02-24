@@ -1,7 +1,7 @@
 routeEnhancers:
   RkwRegistration:
     type: Extbase
-    namespace: 'tx_rkwregistration_authinternal'
+    namespace: 'tx_rkwregistration_auth'
     routes:
       - routePath: '/rkw-registration/auth'
         _controller: 'Auth::index'
@@ -11,6 +11,8 @@ routeEnhancers:
         _controller: 'Auth::logout'
       - routePath: '/rkw-registration/redirect'
         _controller: 'Auth::logoutRedirect'
+      - routePath: '/rkw-registration/login-guest'
+        _controller: 'AuthGuest::login'
       - routePath: '/rkw-registration/login-guest/{token}'
         _controller: 'AuthGuest::login'
       - routePath: '/rkw-registration/login-hint'
@@ -31,16 +33,17 @@ routeEnhancers:
         _controller: 'Password::new'
       - routePath: '/rkw-registration/create-password'
         _controller: 'Password::create'
-
     defaultController: 'Auth::index'
     requirements:
-      user: '[a-zA-Z0-9]{60}'
-      token: '[a-zA-Z0-9]{60}'
+      user: '[a-zA-Z0-9]{30}'
+      token: '[a-zA-Z0-9]{30}'
 
   RkwRegistration1:
     type: Extbase
-    namespace: 'tx_rkwregistration_logoutinternal'
+    namespace: 'tx_rkwregistration_logout'
     routes:
+      - routePath: '/rkw-registration1/auth'
+        _controller: 'Auth::index'
       - routePath: '/rkw-registration1/logout'
         _controller: 'Auth::logout'
       - routePath: '/rkw-registration1/redirect'
@@ -59,15 +62,19 @@ routeEnhancers:
 
   RkwRegistration3:
     type: Extbase
-    namespace: 'tx_rkwregistration_frontenduserwelcome'
+    namespace: 'tx_rkwregistration_welcome'
     routes:
       - routePath: '/rkw-registration/welcome'
         _controller: 'FrontendUser::welcome'
+      - routePath: '/rkw-registration/welcome/{redirectToReferrer}'
+        _controller: 'FrontendUser::welcome'
     defaultController: 'Auth::index'
+    requirements:
+      redirectToReferrer: '[01]{1}'
 
   RkwRegistration4:
     type: Extbase
-    namespace: 'tx_rkwregistration_frontenduseredit'
+    namespace: 'tx_rkwregistration_useredit'
     routes:
       - routePath: '/rkw-registration/edit/{frontendUser}'
         _controller: 'FrontendUser::edit'
@@ -79,7 +86,7 @@ routeEnhancers:
 
   RkwRegistration5:
     type: Extbase
-    namespace: 'tx_rkwregistration_frontenduserdelete'
+    namespace: 'tx_rkwregistration_userdelete'
     routes:
       - routePath: '/rkw-registration/show'
         _controller: 'FrontendUser::show'
@@ -89,7 +96,7 @@ routeEnhancers:
 
   RkwRegistration6:
     type: Extbase
-    namespace: 'tx_rkwregistration_frontendusergroup'
+    namespace: 'tx_rkwregistration_group'
     routes:
       - routePath: '/rkw-registration/group-list'
         _controller: 'FrontendUserGroup::list'

@@ -15,7 +15,7 @@ namespace RKW\RkwRegistration\Tests\Integration\Registration;
  */
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
+use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
@@ -27,7 +27,6 @@ use RKW\RkwRegistration\Registration\GuestUserRegistration;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-
 
 /**
  * GuestUserRegisterTest
@@ -45,15 +44,17 @@ class GuestUserRegistrationTest extends FunctionalTestCase
      */
     const FIXTURE_PATH = __DIR__ . '/GuestUserRegistrationTest/Fixtures';
 
+
     /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration',
         'typo3conf/ext/rkw_mailer',
     ];
+
 
     /**
      * @var string[]
@@ -62,36 +63,41 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         'filemetadata'
     ];
 
-    /**
-     * @var \RKW\RkwRegistration\Domain\Repository\GuestUserRepository
-     */
-    private $guestUserRepository;
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\GuestUserRepository|null
      */
-    private $frontendUserGroupRepository;
-
-    /**
-     * @var \RKW\RkwRegistration\Domain\Repository\OptInRepository
-     */
-    private $optInRepository;
-
-    /**
-     * @var \RKW\RkwRegistration\Domain\Repository\ConsentRepository
-     */
-    private $consentRepository;
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
-     */
-    private $objectManager;
+    private ?GuestUserRepository $guestUserRepository = null;
 
 
     /**
-     * @var \RKW\RkwRegistration\Registration\GuestUserRegistration
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository|null
      */
-    private $fixture;
+    private ?FrontendUserGroupRepository $frontendUserGroupRepository = null;
+
+
+    /**
+     * @var \RKW\RkwRegistration\Domain\Repository\OptInRepository|null
+     */
+    private ?OptInRepository $optInRepository = null;
+
+
+    /**
+     * @var \RKW\RkwRegistration\Domain\Repository\ConsentRepository|null
+     */
+    private ?ConsentRepository $consentRepository = null;
+
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager|null
+     */
+    private ?ObjectManager $objectManager = null;
+
+
+    /**
+     * @var \RKW\RkwRegistration\Registration\GuestUserRegistration|null
+     */
+    private ?GuestUserRegistration $fixture = null;
 
 
     /**
@@ -107,8 +113,8 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
@@ -135,6 +141,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
     }
 
     #==============================================================================
+
     /**
      * @test
      * @throws \Exception
@@ -220,6 +227,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -242,6 +250,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         self::assertEquals('ru', $guestUser->getTxRkwregistrationLanguageKey());
 
     }
+
 
     /**
      * @test
@@ -290,6 +299,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         self::assertGreaterThan(time() -5, $guestUser->getCrdate());
 
     }
+
 
     /**
      * @test
@@ -341,6 +351,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -365,6 +376,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         self::assertEquals(0, $guestUser->getDisable());
 
     }
+
 
     /**
      * @test
@@ -392,6 +404,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -417,6 +430,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -440,6 +454,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         self::assertGreaterThanOrEqual(time() + (intval(7 * 24 * 60 * 60) -5), $guestUser->getEndtime());
 
     }
+
 
     /**
      * @test
@@ -499,6 +514,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -524,6 +540,8 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         self::assertEmpty($this->fixture->getFrontendUserToken());
 
     }
+
+
     /**
      * @test
      * @throws \Exception
@@ -561,6 +579,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         self::assertNull($this->fixture->getOptInPersisted());
 
     }
+
     #==============================================================================
 
     /**
@@ -616,6 +635,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -639,6 +659,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
         self::assertFalse($this->fixture->startRegistration());
 
     }
+
 
     /**
      * @test
@@ -675,6 +696,7 @@ class GuestUserRegistrationTest extends FunctionalTestCase
 
     }
 
+    #==============================================================================
 
     /**
      * TearDown

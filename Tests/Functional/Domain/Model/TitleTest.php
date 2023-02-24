@@ -46,44 +46,52 @@ class TitleTest extends FunctionalTestCase
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration',
     ];
+
 
     /**
      * @var string[]
      */
     protected $coreExtensionsToLoad = [];
 
-    /**
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
-     */
-    private $frontendUser = null;
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Model\Title
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser|null
      */
-    private $title = null;
+    private ?FrontendUser $frontendUser = null;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @var \RKW\RkwRegistration\Domain\Model\Title|null
      */
-    private $frontendUserRepository;
+    private ?Title $title = null;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\TitleRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository|null
      */
-    private $titleRepository;
+    private ?FrontendUserRepository $frontendUserRepository = null;
+
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     * @var \RKW\RkwRegistration\Domain\Repository\TitleRepository|null
      */
-    private $persistenceManager = null;
+    private ?TitleRepository $titleRepository;
+
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager|null
      */
-    private $objectManager = null;
+    private ?PersistenceManager $persistenceManager = null;
+
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager|null
+     */
+    private ?ObjectManager $objectManager = null;
+
 
     /**
      * Setup
@@ -131,11 +139,12 @@ class TitleTest extends FunctionalTestCase
 
         $databaseResult = $this->getDatabaseConnection()->selectSingleRow('*', 'tx_rkwregistration_domain_model_title','name = "Dr. med."');
 
-        $this->assertFalse(empty($databaseResult));
+        $this->assertNotEmpty($databaseResult);
         $this->assertNotNull($databaseResult['is_checked']);
         $this->assertTrue(isset($databaseResult['is_checked']));
         $this->assertEquals($fixture['isChecked'], (bool) $databaseResult['is_checked']);
     }
+
 
     /**
      * @test
@@ -163,6 +172,7 @@ class TitleTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      */
@@ -185,6 +195,7 @@ class TitleTest extends FunctionalTestCase
         $this->assertEquals($fixture['isIncludedInSalutation'], (bool) $databaseResult['is_included_in_salutation']);
     }
 
+
     /**
      * @test
      */
@@ -201,10 +212,11 @@ class TitleTest extends FunctionalTestCase
 
         $databaseResult = $this->getDatabaseConnection()->selectSingleRow('*', 'tx_rkwregistration_domain_model_title','name = "Dipl.-Kaufmann"');
 
-        $this->assertFalse(empty($databaseResult));
+        $this->assertNotEmpty($databaseResult);
         $this->assertTrue(isset($databaseResult['name_female']));
         $this->assertEquals($fixture['nameFemale'], $databaseResult['name_female']);
     }
+
 
     /**
      * @test
@@ -224,12 +236,13 @@ class TitleTest extends FunctionalTestCase
 
         $databaseResult = $this->getDatabaseConnection()->selectSingleRow('*', 'tx_rkwregistration_domain_model_title','name = "Dipl.-Kaufmann"');
 
-        $this->assertFalse(empty($databaseResult));
+        $this->assertNotEmpty($databaseResult);
         $this->assertTrue(isset($databaseResult['name_female']));
         $this->assertTrue(isset($databaseResult['name_female_long']));
         $this->assertEquals($fixture['nameFemale'], $databaseResult['name_female']);
         $this->assertEquals($fixture['nameFemaleLong'], $databaseResult['name_female_long']);
     }
+
 
     /**
      * @test
@@ -257,6 +270,7 @@ class TitleTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      */
@@ -277,6 +291,7 @@ class TitleTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      */
@@ -293,6 +308,7 @@ class TitleTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      */
@@ -303,6 +319,7 @@ class TitleTest extends FunctionalTestCase
 
         self::assertTrue($this->title->getIsIncludedInSalutation());
     }
+
 
     /**
      * @test
@@ -324,6 +341,7 @@ class TitleTest extends FunctionalTestCase
         self::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText($checkIncludedInSalutation = true));
 
     }
+
 
     /**
      * @test
@@ -349,6 +367,7 @@ class TitleTest extends FunctionalTestCase
         self::assertEquals($fixture, $this->frontendUser->getCompleteSalutationText($checkIncludedInSalutation = true));
 
     }
+
 
     /**
      * @test
@@ -376,6 +395,7 @@ class TitleTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      */
@@ -401,6 +421,7 @@ class TitleTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      */
@@ -418,6 +439,8 @@ class TitleTest extends FunctionalTestCase
         self::assertEquals('Max Mustermann', $this->frontendUser->getName());
 
     }
+
+    #=======================================================
 
     /**
      * TearDown

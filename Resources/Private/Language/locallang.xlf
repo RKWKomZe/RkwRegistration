@@ -236,14 +236,8 @@
 			<trans-unit id="authController.message.guest_login_welcome">
 				<source>Welcome! You are logged in as guest.</source>
 			</trans-unit>
-			<trans-unit id="authController.message.loggedIn">
-				<source>You are logged in with the e-mail address "%s".</source>
-			</trans-unit>
 			<trans-unit id="authController.message.logoutMessage">
 				<source>Woohoo! You have been successfully logged out.</source>
-			</trans-unit>
-			<trans-unit id="authController.warning.loginMessageGuest">
-				<source><![CDATA[You are currently logged in as a guest. To use this section, you must be logged in as a regular user. <a href="%s">Please log out here</a> and then log in again as a regular user.]]></source>
 			</trans-unit>
 			<trans-unit id="authController.error.wrongLogin">
 				<source>Hm, unfortunately email or password are wrong. Please check the information again.</source>
@@ -254,9 +248,6 @@
 
 
 			<!-- AuthGuestController -->
-			<trans-unit id="authGuestController.message.guestLink">
-				<source><![CDATA[Copy the link below and keep it safe. Only with this link you can log in again at a later time. The link is valid %s days.<br><br> %s]]></source>
-			</trans-unit>
 			<trans-unit id="authGuestController.error.invalidGuestToken">
 				<source>Sorry, the login link is invalid or expired. Please use a new guest account or register for free.</source>
 			</trans-unit>
@@ -268,6 +259,12 @@
 			<!-- FrontendUserController -->
 			<trans-unit id="frontendUserController.notice.newIntroduction">
 				<source>Register here for free.</source>
+			</trans-unit>
+			<trans-unit id="frontendUserController.message.loggedIn">
+				<source>You are logged in with the e-mail address "%s".</source>
+			</trans-unit>
+			<trans-unit id="frontendUserController.message.guestLink">
+				<source><![CDATA[Copy the link below and keep it safe. Only with this link you can log in again at a later time. The link is valid %s days.<br><br> %s]]></source>
 			</trans-unit>
 			<trans-unit id="frontendUserController.notice.editIntroduction">
 				<source>Please provide your current contact information below. Voluntary information is marked accordingly.</source>
@@ -363,17 +360,11 @@
 
 
 			<!-- Templates/Auth/Index.html -->
-			<trans-unit id="templates_auth_index.loginHeadline">
-				<source>Login</source>
-			</trans-unit>
 			<trans-unit id="templates_auth_index.orHeadline">
 				<source>or</source>
 			</trans-unit>
-			<trans-unit id="templates_auth_index.registerHeadline">
-				<source>Create free account</source>
-			</trans-unit>
-			<trans-unit id="templates_auth_index.registerNow">
-				<source>Register now</source>
+			<trans-unit id="templates_auth_index.guest">
+				<source>Continue as guest</source>
 			</trans-unit>
 
 
@@ -384,14 +375,8 @@
 			<trans-unit id="partials_auth_login.passwordForgot">
 				<source>Forgotten password?</source>
 			</trans-unit>
-			<trans-unit id="partials_auth_login.guest">
-				<source>Continue as guest</source>
-			</trans-unit>
-
-
-			<!-- Templates/AuthGuest/LoginHint.html -->
-			<trans-unit id="templates_authGuest_loginHint.continue">
-				<source>Continue</source>
+			<trans-unit id="templates_auth_login.registerNow">
+				<source>Register now</source>
 			</trans-unit>
 
 
@@ -432,6 +417,9 @@
 			<!-- Templates/FrontendUser/Welcome.html -->
 			<trans-unit id="templates_frontendUser_welcome.headline">
 				<source>Welcome %s %s!</source>
+			</trans-unit>
+			<trans-unit id="templates_frontendUser_welcome.continue">
+				<source>Continue</source>
 			</trans-unit>
 
 
@@ -606,6 +594,15 @@
 			<trans-unit id="partials_labelSuffix.labelRequired">
 				<source>(Required)</source>
 			</trans-unit>
+
+
+            <!-- Partials/Captcha.html -->
+            <trans-unit id="partials_captcha.label">
+                <source>Spam-Protection</source>
+            </trans-unit>
+            <trans-unit id="partials_captcha.labelRequired">
+                <source>(Required)</source>
+            </trans-unit>
 
 
 			<!-- Templates/Email/OptIn.html -->

@@ -28,151 +28,111 @@ class Consent extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
 
     /**
-     * frontendUser
-     *
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser|null
      */
-    public $frontendUser;
+    public ?FrontendUser $frontendUser = null;
 
 
     /**
-     * optIn
-     *
-     * @var \RKW\RkwRegistration\Domain\Model\OptIn
+     * @var \RKW\RkwRegistration\Domain\Model\OptIn|null
      */
-    public $optIn;
+    public ?OptIn $optIn = null;
 
 
     /**
-     * parent
-     *
-     * @var \RKW\RkwRegistration\Domain\Model\Consent
+     * @var \RKW\RkwRegistration\Domain\Model\Consent|null
      */
-    public $parent;
+    public ?Consent $parent = null;
 
 
     /**
-     * foreignTable
-     *
      * @var string
      */
-    public $foreignTable = '';
+    public string $foreignTable = '';
 
 
     /**
-     * foreignUid
-     *
      * @var string
      */
-    public $foreignUid = '';
+    public string $foreignUid = '';
 
 
     /**
-     * ipAddress
-     *
      * @var string
      */
-    public $ipAddress = '';
+    public string $ipAddress = '';
 
 
     /**
-     * userAgent
-     *
      * @var string
      */
-    public $userAgent = '';
+    public string $userAgent = '';
 
 
     /**
-     * extensionName
-     *
      * @var string
      */
-    public $extensionName = '';
+    public string $extensionName = '';
 
 
     /**
-     * pluginName
-     *
      * @var string
      */
-    public $pluginName = '';
+    public string $pluginName = '';
 
 
     /**
-     * controllerName
-     *
      * @var string
      */
-    public $controllerName = '';
+    public string $controllerName = '';
 
 
     /**
-     * actionName
-     *
      * @var string
      */
-    public $actionName = '';
+    public string $actionName = '';
 
 
     /**
-     * comment
-     *
      * @var string
      */
-    public $comment = '';
+    public string $comment = '';
 
 
     /**
-     * serverHost
-     *
      * @var string
      */
-    public $serverHost = '';
+    public string $serverHost = '';
 
 
     /**
-     * serverUri
-     *
      * @var string
      */
-    public $serverUri = '';
+    public string $serverUri = '';
 
 
     /**
-     * serverRefererUrl
-     *
      * @var string
      */
-    public $serverRefererUrl = '';
+    public string $serverRefererUrl = '';
 
 
     /**
-     * consentPrivacy
-     *
      * @var bool
      */
-    public $consentPrivacy = false;
+    public bool $consentPrivacy = false;
 
 
     /**
-     * consentTerms
-     *
      * @var bool
      */
-    public $consentTerms = false;
+    public bool $consentTerms = false;
 
 
     /**
-     * consentMarketing
-     *
      * @var bool
      */
-    public $consentMarketing = false;
-
-
-
-
+    public bool $consentMarketing = false;
 
 
     /**
@@ -249,7 +209,7 @@ class Consent extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return \RKW\RkwRegistration\Domain\Model\Consent $parent
      */
-    public function getParent() :? Consent
+    public function getParent():? Consent
     {
         return $this->parent;
     }

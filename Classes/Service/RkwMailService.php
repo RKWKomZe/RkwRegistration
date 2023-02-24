@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Service;
 
 /*
@@ -15,14 +14,12 @@ namespace RKW\RkwRegistration\Service;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwMailer\Service\MailService;
 use RKW\RkwMailer\Utility\FrontendLocalizationUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\OptIn;
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -48,7 +45,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function sendOptInEmail(FrontendUser $frontendUser, OptIn $optIn)
+    public function sendOptInEmail(FrontendUser $frontendUser, OptIn $optIn): void
     {
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -88,7 +85,6 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
     }
 
 
-
     /**
      * Handles register user event (after user has done his OptIn)
      *
@@ -101,7 +97,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function sendConfirmationEmail(FrontendUser $frontendUser, OptIn $optIn)
+    public function sendConfirmationEmail(FrontendUser $frontendUser, OptIn $optIn): void
     {
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -146,15 +142,13 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @param \RKW\RkwRegistration\Domain\Model\OptIn $optIn
-     * @param mixed $signalInformation
      * @return void
      * @throws \RKW\RkwMailer\Exception
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      */
-    public function sendGroupOptInEmail(FrontendUser $frontendUser, OptIn $optIn)
+    public function sendGroupOptInEmail(FrontendUser $frontendUser, OptIn $optIn): void
     {
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -208,7 +202,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function sendGroupOptInEmailAdmin(FrontendUser $frontendUser, OptIn $optIn, ObjectStorage $approvals)
+    public function sendGroupOptInEmailAdmin(FrontendUser $frontendUser, OptIn $optIn, ObjectStorage $approvals): void
     {
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -274,7 +268,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function sendGroupConfirmationEmail(FrontendUser $frontendUser, OptIn $optIn)
+    public function sendGroupConfirmationEmail(FrontendUser $frontendUser, OptIn $optIn): void
     {
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -325,8 +319,12 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function sendGroupOptInWithdrawEmailAdmin (FrontendUser $frontendUser, OptIn $optIn, ObjectStorage $approvals)
-    {
+    public function sendGroupOptInWithdrawEmailAdmin (
+        FrontendUser $frontendUser,
+        OptIn $optIn,
+        ObjectStorage $approvals
+    ): void {
+
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $settingsDefault = $this->getSettings();
@@ -388,7 +386,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function sendGroupOptInDenialEmail (FrontendUser $frontendUser, OptIn $optIn)
+    public function sendGroupOptInDenialEmail (FrontendUser $frontendUser, OptIn $optIn): void
     {
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -431,6 +429,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      *
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @param string $plaintextPassword
+     * @param string $referrer
      * @return void
      * @throws \RKW\RkwMailer\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
@@ -438,8 +437,12 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function sendResetPasswordEmail(FrontendUser $frontendUser, string $plaintextPassword)
-    {
+    public function sendResetPasswordEmail(
+        FrontendUser $frontendUser,
+        string $plaintextPassword,
+        string $referrer = ''
+    ): void {
+
         // get settings
         $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $settingsDefault = $this->getSettings();
@@ -458,6 +461,7 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
                         'frontendUser'             => $frontendUser,
                         'settings'                 => $settingsDefault,
                         'pageUid'                  => intval($GLOBALS['TSFE']->id),
+                        'referrer'                 => $referrer
                     ],
                 ]
             );
@@ -488,6 +492,6 @@ class RkwMailService implements \TYPO3\CMS\Core\SingletonInterface
      */
     protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
     {
-        return GeneralUtility::getTyposcriptConfiguration('Rkwregistration', $which);
+        return GeneralUtility::getTypoScriptConfiguration('Rkwregistration', $which);
     }
 }

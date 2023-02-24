@@ -33,7 +33,7 @@ class BackendUserRepository extends AbstractRepository
      * @return void
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function initializeObject()
+    public function initializeObject(): void
     {
         parent::initializeObject();
 

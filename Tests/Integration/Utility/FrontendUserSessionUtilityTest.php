@@ -16,11 +16,11 @@ namespace RKW\RkwRegistration\Tests\Integration\Utility;
 
 use Exception;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
+use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\UserAspect;
@@ -38,29 +38,33 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  */
 class FrontendUserSessionUtilityTest extends FunctionalTestCase
 {
+
     /**
      * @const
      */
     const FIXTURE_PATH = __DIR__ . '/FrontendUserSessionUtilityTest/Fixtures';
 
+
     /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration',
     ];
 
-    /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
-     */
-    private $frontendUserRepository = null;
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository|null
      */
-    private $frontendUserGroupRepository = null;
+    private ?FrontendUserRepository $frontendUserRepository = null;
+
+
+    /**
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository|null
+     */
+    private ?FrontendUserGroupRepository $frontendUserGroupRepository = null;
 
 
     /**
@@ -75,8 +79,8 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
@@ -238,7 +242,6 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
         self::assertFalse(FrontendUserSessionUtility::logout());
     }
 
-
     #====================================================================================================
 
     /**
@@ -287,6 +290,98 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
          */
 
         self::assertEquals(0, FrontendUserSessionUtility::getLoggedInUserId());
+    }
+
+    #====================================================================================================
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function getLoggedInUserReturnsNullIfNoUserLoggedIn ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given no user is logged in
+         * When the method is called
+         * Then zero is returned
+         */
+
+        self::assertNull(FrontendUserSessionUtility::getLoggedInUser());
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function getLoggedInUserWithNormalUserReturnsUserOfRightType ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given a persisted frontendUser
+         * Given this frontendUser is an instance of \RKW\RkwRegistration\Domain\Model\FrontendUser
+         * Given a persisted userGroup
+         * Given simulateLogin has been called with both as parameters before
+         * Given simulateLogin has returned true
+         * When the method is called
+         * Then an instance of \RKW\RkwRegistration\Domain\Model\FrontendUser is returned
+         * Then the uid of the returned instance is the one of the given frontendUser
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check10.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(10);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
+        $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(10);
+
+        self::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $result = FrontendUserSessionUtility::getLoggedInUser();
+        self::assertInstanceOf(FrontendUser::class, $result);
+        self::assertEquals($frontendUser->getUid(), $result->getUid());
+    }
+
+
+    /**
+     * @test
+     * @throws \Exception
+     */
+    public function getLoggedInUserWithGuestUserReturnsUserOfRightType ()
+    {
+
+        /**
+         * Scenario:
+         *
+         * Given a persisted frontendUser
+         * Given this frontendUser is an instance of \RKW\RkwRegistration\Domain\Model\GuestUser
+         * Given a persisted userGroup
+         * Given simulateLogin has been called with both as parameters before
+         * Given simulateLogin has returned true
+         * When the method is called
+         * Then an instance of \RKW\RkwRegistration\Domain\Model\GuestUser is returned
+         * Then the uid of the returned instance is the one of the given frontendUser
+         */
+        $this->importDataSet(self::FIXTURE_PATH . '/Database/Check20.xml');
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        $frontendUser = $this->frontendUserRepository->findByUid(20);
+
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup $frontendUserGroup */
+        $frontendUserGroup = $this->frontendUserGroupRepository->findByUid(20);
+
+        self::assertTrue(FrontendUserSessionUtility::simulateLogin($frontendUser, $frontendUserGroup));
+
+        /** @var \RKW\RkwRegistration\Domain\Model\GuestUser $frontendUser */
+        $result = FrontendUserSessionUtility::getLoggedInUser();
+        self::assertInstanceOf(GuestUser::class, $result);
+        self::assertEquals($frontendUser->getUid(), $result->getUid());
     }
 
     #====================================================================================================

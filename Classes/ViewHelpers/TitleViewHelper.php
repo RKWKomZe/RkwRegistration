@@ -18,8 +18,6 @@ namespace RKW\RkwRegistration\ViewHelpers;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
-
-
 /**
  * Class TitleViewHelper
  *
@@ -34,11 +32,11 @@ class TitleViewHelper extends AbstractViewHelper
     /**
      * Return the title
      *
-     * @param \RKW\RkwRegistration\Domain\Model\Title $title
+     * @param \RKW\RkwRegistration\Domain\Model\Title|null $title
      * @param bool $titleAfter
      * @return string $string
      */
-    public function render(\RKW\RkwRegistration\Domain\Model\Title $title = null, $titleAfter = false)
+    public function render(\RKW\RkwRegistration\Domain\Model\Title $title = null, bool $titleAfter = false): string
     {
 
         return static::renderStatic(

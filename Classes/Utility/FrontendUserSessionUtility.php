@@ -15,7 +15,7 @@ namespace RKW\RkwRegistration\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\GuestUserRepository;
@@ -128,7 +128,7 @@ class FrontendUserSessionUtility
     /**
      * Id of logged-in User
      *
-     * @return integer
+     * @return int
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     public static function getLoggedInUserId(): int
@@ -146,6 +146,7 @@ class FrontendUserSessionUtility
         return 0;
     }
 
+
     /**
      * Id of logged-in User
      *
@@ -157,7 +158,6 @@ class FrontendUserSessionUtility
 
         if ($uid = self::getLoggedInUserId()) {
 
-            // user may not be able to accept the email address of another person
             /** @var }TYPO3\CMS\Extbase\Object\ObjectManager\ObjectManager $objectManager */
             $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
 
@@ -167,13 +167,13 @@ class FrontendUserSessionUtility
             /** @var \RKW\RkwRegistration\Domain\Repository\GuestUserRepository $guestUserRepository */
             $guestUserRepository = $objectManager->get(GuestUserRepository::class);
 
-            /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-            if ($frontendUser = $frontendUserRepository->findByIdentifier($uid)) {
+            /** @var \RKW\RkwRegistration\Domain\Model\GuestUser $frontendUser */
+            if ($frontendUser = $guestUserRepository->findByIdentifier($uid)) {
                 return $frontendUser;
             }
 
             /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
-            if ($frontendUser = $guestUserRepository->findByIdentifier($uid)) {
+            if ($frontendUser = $frontendUserRepository->findByIdentifier($uid)) {
                 return $frontendUser;
             }
         }

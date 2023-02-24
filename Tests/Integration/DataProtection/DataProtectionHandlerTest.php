@@ -42,58 +42,70 @@ class DataProtectionHandlerTest extends FunctionalTestCase
      */
     const FIXTURE_PATH = __DIR__ . '/DataProtectionHandlerTest/Fixtures';
 
+
     /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration',
     ];
+
+
     /**
      * @var string[]
      */
     protected $coreExtensionsToLoad = [];
 
-    /**
-     * @var \RKW\RkwRegistration\DataProtection\DataProtectionHandler
-     */
-    private $subject = null;
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @var \RKW\RkwRegistration\DataProtection\DataProtectionHandler|null
      */
-    private $frontendUserRepository = null;
+    private ?DataProtectionHandler $subject = null;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\BackendUserRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository|null
      */
-    private $backendUserRepository = null;
+    private ?FrontendUserRepository $frontendUserRepository = null;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\BackendUserRepository|null
      */
-    private $shippingAddressRepository = null;
+    private ?BackendUserRepository $backendUserRepository = null;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\ConsentRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository|null
      */
-    private $consentRepository = null;
+    private ?ShippingAddressRepository $shippingAddressRepository = null;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\EncryptedDataRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\ConsentRepository|null
      */
-    private $encryptedDataRepository = null;
+    private ?ConsentRepository $consentRepository = null;
+
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+     * @var \RKW\RkwRegistration\Domain\Repository\EncryptedDataRepository|null
      */
-    private $persistenceManager = null;
+    private ?EncryptedDataRepository $encryptedDataRepository = null;
+
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager|null
      */
-    private $objectManager = null;
+    private ?PersistenceManager $persistenceManager = null;
+
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager|null
+     */
+    private ?ObjectManager $objectManager = null;
+
 
     /**
      * Setup
@@ -107,8 +119,8 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
@@ -129,6 +141,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->subject->setEncryptionKey('o4uSZ0oo4zTFIIoN2NkuBBwyS6Lv3v/EYVObucPHcW8=');
 
     }
+
     //===================================================================
 
     /**
@@ -172,7 +185,6 @@ class DataProtectionHandlerTest extends FunctionalTestCase
 
     }
 
-
     //===================================================================
 
     /**
@@ -214,9 +226,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         self::assertEquals(\RKW\RkwRegistration\Domain\Model\FrontendUser::class, $encryptedData->getForeignClass());
         self::assertEquals($frontendUser->getUid(), $encryptedData->getForeignUid());
 
-
     }
-
 
 
     /**
@@ -279,7 +289,6 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         self::assertEquals($consent->getUid(), $encryptedData->getForeignUid());
         self::assertEquals('tx_rkwregistration_domain_model_consent', $encryptedData->getForeignTable());
         self::assertEquals('RKW\RkwRegistration\Domain\Model\Consent', $encryptedData->getForeignClass());
-
     }
 
 
@@ -365,7 +374,6 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         self::assertEquals('tx_rkwregistration_domain_model_shippingaddress', $encryptedData->getForeignTable());
         self::assertEquals(\RKW\RkwRegistration\Domain\Model\ShippingAddress::class, $encryptedData->getForeignClass());
         self::assertEquals($shippingAddress->getUid(), $encryptedData->getForeignUid());
-
     }
 
 
@@ -411,7 +419,6 @@ class DataProtectionHandlerTest extends FunctionalTestCase
 
     }
 
-
     //===================================================================
 
     /**
@@ -438,6 +445,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -462,6 +470,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
 
         self::assertFalse($this->subject->anonymizeObject($backendUser, $frontendUser));
     }
+
 
     /**
      * @test
@@ -505,7 +514,6 @@ class DataProtectionHandlerTest extends FunctionalTestCase
 
     }
 
-
     //===================================================================
 
     /**
@@ -535,6 +543,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         $this->subject->anonymizeObject($shippingAddress, $frontendUser);
 
     }
+
 
     /**
      * @test
@@ -596,6 +605,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
 
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -636,7 +646,6 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         self::assertEquals(49, strlen($encryptedDataArray['username']));
 
     }
-
 
     //===================================================================
 
@@ -709,9 +718,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         self::assertCount(7, $encryptedDataArray);
         self::assertEquals(49, strlen($encryptedDataArray['firstName']));
         self::assertEquals(49, strlen($encryptedDataArray['lastName']));
-
     }
-
 
     //===================================================================
 
@@ -740,8 +747,8 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         static::expectException(\RKW\RkwRegistration\Exception::class);
 
         $this->subject->encryptObject($consent, $frontendUser);
-
     }
+
 
     /**
      * @test
@@ -786,7 +793,6 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         self::assertEquals(133, strlen($encryptedDataArray['userAgent']));
 
     }
-
 
     //===================================================================
 
@@ -839,6 +845,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         self::assertNull($this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -862,6 +869,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
 
         self::assertNull($this->subject->decryptObject($encryptedData, 'lauterbach@spd.de'));
     }
+
 
     /**
      * @test
@@ -932,6 +940,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         self::assertEmpty($this->subject->getPropertyMapByModelClassName('Test\Model'));
     }
 
+
     /**
      * @test
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
@@ -975,7 +984,6 @@ class DataProtectionHandlerTest extends FunctionalTestCase
     }
 
 
-
     /**
      * @test
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
@@ -1015,6 +1023,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         */
         self::assertEmpty($this->subject->getFrontendUserPropertyByModelClassName('RKW\RkwRegistration\Domain\Model\Service'));
     }
+
 
     /**
      * @test
@@ -1073,6 +1082,7 @@ class DataProtectionHandlerTest extends FunctionalTestCase
         );
     }
 
+    //===================================================================
 
     /**
      * TearDown

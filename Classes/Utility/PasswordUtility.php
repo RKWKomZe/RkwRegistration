@@ -15,6 +15,7 @@ namespace RKW\RkwRegistration\Utility;
  */
 
 use RKW\RkwRegistration\Exception;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -40,12 +41,14 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
      */
     const PASSWORD_DEFAULT_LENGTH = 10;
 
+
     /**
      * Min length of password
      *
      * @const integer
      */
     const PASSWORD_MIN_LENGTH = 5;
+
 
     /**
      * Max length of password
@@ -60,7 +63,7 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
      * Generates a password
      *
      * @see saltPassword for description
-     * @param integer $length
+     * @param int $length
      * @param bool $addNonAlphanumeric
      * @return string
      */
@@ -128,17 +131,14 @@ class PasswordUtility implements \TYPO3\CMS\Core\SingletonInterface
     }
 
 
-
     /**
      * Returns logger instance
      *
      * @return \TYPO3\CMS\Core\Log\Logger
      */
-    protected static function getLogger(): \TYPO3\CMS\Core\Log\Logger
+    protected static function getLogger(): Logger
     {
         return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
     }
-
-
 
 }

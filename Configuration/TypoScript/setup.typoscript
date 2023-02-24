@@ -6,7 +6,7 @@ config.tx_extbase.persistence {
 
 	classes {
 
-        TYPO3\CMS\Extbase\Domain\Model\BackendUser {
+        Madj2k\CoreExtended\Domain\Model\BackendUser {
             subclasses {
                 Tx_RkwRegistration_BackendUser = RKW\RkwRegistration\Domain\Model\BackendUser
             }
@@ -27,7 +27,7 @@ config.tx_extbase.persistence {
 
         #===============================================
 
-        TYPO3\CMS\Extbase\Domain\Model\FrontendUser {
+        Madj2k\CoreExtended\Domain\Model\FrontendUser {
             subclasses {
                 Tx_RkwRegistration_FrontendUser = RKW\RkwRegistration\Domain\Model\FrontendUser
                 Tx_RkwRegistration_GuestUser = RKW\RkwRegistration\Domain\Model\GuestUser
@@ -46,7 +46,7 @@ config.tx_extbase.persistence {
 
 				# if we set an value, we filter by it
 				# if do not set anything, all records are found
-				recordType =
+				recordType = 0
 
 				# mapping to properties of class
 				columns {
@@ -211,6 +211,7 @@ plugin.tx_rkwregistration {
         logoutPid = {$plugin.tx_rkwregistration.settings.logoutPid}
         registrationPid = {$plugin.tx_rkwregistration.settings.registrationPid}
         welcomePid = {$plugin.tx_rkwregistration.settings.welcomePid}
+        welcomeGuestPid = {$plugin.tx_rkwregistration.settings.welcomeGuestPid}
         editUserPid = {$plugin.tx_rkwregistration.settings.editUserPid}
         groupsListPid = {$plugin.tx_rkwregistration.settings.groupsListPid}
         termsPid = {$plugin.tx_rkwregistration.settings.termsPid}
@@ -220,6 +221,7 @@ plugin.tx_rkwregistration {
 
         users {
 
+            allowGuestLogin = {$plugin.tx_rkwregistration.settings.users.allowGuestLogin}
             lifetime = {$plugin.tx_rkwregistration.settings.users.lifetime}
             loginText = {$plugin.tx_rkwregistration.settings.users.loginText}
 
@@ -333,15 +335,14 @@ plugin.tx_rkwregistration {
 
 // set settings to every plugin
 // ! Hint: Do not remove following plugin entries. Is used by GetAllFlashMessageIdentifierViewHelper !
-plugin.tx_rkwregistration_authinternal < plugin.tx_rkwregistration
-plugin.tx_rkwregistration_logoutinternal < plugin.tx_rkwregistration
+plugin.tx_rkwregistration_auth < plugin.tx_rkwregistration
+plugin.tx_rkwregistration_logout < plugin.tx_rkwregistration
 plugin.tx_rkwregistration_password < plugin.tx_rkwregistration
-plugin.tx_rkwregistration_frontenduserwelcome < plugin.tx_rkwregistration
-plugin.tx_rkwregistration_frontenduseredit < plugin.tx_rkwregistration
-plugin.tx_rkwregistration_frontenduserdelete < plugin.tx_rkwregistration
-plugin.tx_rkwregistration_frontendusergroup < plugin.tx_rkwregistration
-plugin.tx_rkwregistration_registrationajax < plugin.tx_rkwregistration
-plugin.tx_rkwregistration_registrationinfo < plugin.tx_rkwregistration
+plugin.tx_rkwregistration_welcome < plugin.tx_rkwregistration
+plugin.tx_rkwregistration_useredit < plugin.tx_rkwregistration
+plugin.tx_rkwregistration_userdelete < plugin.tx_rkwregistration
+plugin.tx_rkwregistration_group < plugin.tx_rkwregistration
+plugin.tx_rkwregistration_info < plugin.tx_rkwregistration
 
 
 // for cronjob

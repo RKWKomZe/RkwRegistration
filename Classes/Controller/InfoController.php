@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Controller;
 
 /*
@@ -18,7 +17,6 @@ namespace RKW\RkwRegistration\Controller;
 /**
  * Class InfoController
  *
-
  * @author Steffen Kroggel <developer@steffenkroggel.de>
  * @copyright RKW Kompetenzzentrum
  * @package RKW_RkwRegistration

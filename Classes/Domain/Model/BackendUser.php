@@ -24,33 +24,7 @@ namespace RKW\RkwRegistration\Domain\Model;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class BackendUser extends \TYPO3\CMS\Extbase\Domain\Model\BackendUser
+class BackendUser extends \Madj2k\CoreExtended\Domain\Model\BackendUser
 {
-    /**
-     * @var string
-     */
-    protected $lang = 'en';
-
-
-    /**
-     * Gets the lang of the user
-     *
-     * @param string $lang
-     */
-    public function setLang(string $lang)
-    {
-        $this->lang = $lang;
-    }
-
-
-    /**
-     * Gets the lang of the user
-     *
-     * @return string
-     */
-    public function getLang(): string
-    {
-        return $this->lang;
-    }
 
 }

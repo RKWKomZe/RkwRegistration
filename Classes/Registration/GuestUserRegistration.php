@@ -15,7 +15,7 @@ namespace RKW\RkwRegistration\Registration;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Exception;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
@@ -56,6 +56,7 @@ class GuestUserRegistration extends AbstractRegistration
      * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException
      * @api
      */
     public function startRegistration(): bool

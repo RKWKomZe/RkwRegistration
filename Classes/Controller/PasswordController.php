@@ -1,12 +1,5 @@
 <?php
-
 namespace RKW\RkwRegistration\Controller;
-
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Utility\FrontendUserUtility;
-use RKW\RkwRegistration\Utility\PasswordUtility;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -20,6 +13,12 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use RKW\RkwRegistration\Domain\Model\FrontendUser;
+use RKW\RkwRegistration\Utility\FrontendUserUtility;
+use RKW\RkwRegistration\Utility\PasswordUtility;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Class PasswordController
@@ -39,6 +38,7 @@ class PasswordController extends AbstractController
      */
     const SIGNAL_AFTER_USER_PASSWORD_RESET = 'afterUserPasswordReset';
 
+
     /**
      * initialize
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
@@ -48,6 +48,8 @@ class PasswordController extends AbstractController
      */
     public function initializeAction()
     {
+        parent::initializeAction();
+
         // intercept disabled user (e.g. after input too often the wrong password)
         if (
             ($this->getFrontendUser())
@@ -72,11 +74,11 @@ class PasswordController extends AbstractController
     }
 
 
-
     /**
      * action forgot password show
      *
      * @return void
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function newAction(): void
     {
@@ -108,6 +110,7 @@ class PasswordController extends AbstractController
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException
      */
     public function createAction(string $username): void
     {
@@ -125,7 +128,7 @@ class PasswordController extends AbstractController
         }
 
         // check if user exists
-        /** @var  @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
+        /** @var \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser */
         if ($frontendUser= $this->frontendUserRepository->findOneByUsername(strtolower($username))) {
 
             // reset password
@@ -137,7 +140,7 @@ class PasswordController extends AbstractController
             $this->signalSlotDispatcher->dispatch(
                 __CLASS__,
                 self::SIGNAL_AFTER_USER_PASSWORD_RESET,
-                [$frontendUser, $plaintextPassword]
+                [$frontendUser, $plaintextPassword, $this->referrer]
             );
         }
 
@@ -159,6 +162,8 @@ class PasswordController extends AbstractController
      * action edit
      *
      * @return void
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      */
@@ -191,15 +196,16 @@ class PasswordController extends AbstractController
     /**
      * action update password
      *
-     * @param array  $passwordNew
+     * @param array $passwordNew
      * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\PasswordValidator", param="passwordNew")
      * @return void
-     * @throws \RKW\RkwRegistration\Exception
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException
      */
     public function updateAction(array $passwordNew): void
     {
@@ -244,7 +250,6 @@ class PasswordController extends AbstractController
         );
 
         $this->redirect('edit');
-
     }
 
 }

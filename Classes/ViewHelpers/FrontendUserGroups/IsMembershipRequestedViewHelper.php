@@ -33,14 +33,16 @@ class IsMembershipRequestedViewHelper extends AbstractViewHelper
     /**
      * Initialize arguments.
      *
+     * @return void
      * @throws \TYPO3Fluid\Fluid\Core\ViewHelper\Exception
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('frontendUserGroup', FrontendUserGroup::class, 'The frontendUserGroup to check for pending memberships.', true);
         $this->registerArgument('membershipsRequested', QueryResultInterface::class, 'List of pending optIns for memberships in frontendUserGroups..', true);
     }
+
 
     /**
      * @return int

@@ -15,6 +15,7 @@ namespace RKW\RkwRegistration\Tests\Integration\Utility;
  */
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
 use RKW\RkwRegistration\Utility\ClientUtility;
 
 /**
@@ -33,14 +34,16 @@ class ClientUtilityTest extends FunctionalTestCase
      */
     const FIXTURE_PATH = __DIR__ . '/ClientUtilityTest/Fixtures';
 
+
     /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration',
     ];
+
 
     /**
      * Setup
@@ -54,14 +57,17 @@ class ClientUtilityTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
-            ]
+            ],
+            ['rkw-kompetenzzentrum.local' => self::FIXTURE_PATH .  '/Frontend/Configuration/config.yaml']
         );
 
+        FrontendSimulatorUtility::simulateFrontendEnvironment(1);
+
     }
 
     #==============================================================================
@@ -69,57 +75,56 @@ class ClientUtilityTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getIpReturnsLocalHost ()
+    public function isReferrerValidReturnsFalse ()
     {
         /**
          * Scenario:
          *
-         * Given a request without a proxy
-         * Given no remote-address is set
+         * Given a referrer that does not match the current domain
          * When the method is called
-         * Then localhost is returned
+         * Then false is returned
          */
 
-        self::assertEquals('127.0.0.1', ClientUtility::getIp());
+        self::assertFalse(ClientUtility::isReferrerValid('https://www.google.de'));
     }
+
 
     /**
      * @test
      */
-    public function getIpReturnsClientIp ()
+    public function isReferrerValidReturnsTrue ()
     {
         /**
          * Scenario:
          *
-         * Given a request without a proxy
-         * Given $_SERVER['REMOTE_ADDR'] is set
+         * Given a referrer that does match the current domain
          * When the method is called
-         * Then the remote-address is returned
+         * Then true is returned
          */
 
-        $_SERVER['REMOTE_ADDR'] = '1.1.2.1';
-        self::assertEquals('1.1.2.1', ClientUtility::getIp());
+        self::assertTrue(ClientUtility::isReferrerValid('http://www.rkw-kompetenzzentrum.rkw.local/'));
     }
+
 
     /**
      * @test
      */
-    public function getIpReturnsClientIpWithProxy ()
+    public function isReferrerValidReturnsTrueAndIgnoresProtocol ()
     {
         /**
          * Scenario:
          *
-         * Given a request with a proxy
-         * Given $_SERVER['HTTP_X_FORWARDED_FOR'] is set
+         * Given a referrer that does match the current domain
+         * Given the referrer uses another protocol than the current domain
          * When the method is called
-         * Then the first IP in $_SERVER['HTTP_X_FORWARDED_FOR']  is returned
+         * Then true is returned
          */
 
-        $_SERVER['HTTP_X_FORWARDED_FOR'] = '1.1.2.1, 2.2.1.2, 3.3.2.3';
-        self::assertEquals('1.1.2.1', ClientUtility::getIp());
+        self::assertTrue(ClientUtility::isReferrerValid('https://www.rkw-kompetenzzentrum.rkw.local/'));
     }
 
     #==============================================================================
+
 
     /**
      * TearDown
@@ -127,6 +132,8 @@ class ClientUtilityTest extends FunctionalTestCase
     protected function teardown(): void
     {
         parent::tearDown();
+        FrontendSimulatorUtility::resetFrontendEnvironment();
+
     }
 
 }

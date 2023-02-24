@@ -32,14 +32,16 @@ class IsMandatoryFieldViewHelper extends AbstractViewHelper
     /**
      * Initialize arguments.
      *
+     * @return void
      * @throws \TYPO3Fluid\Fluid\Core\ViewHelper\Exception
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('fieldName', 'string', 'Name of field that is to check.', true);
         $this->registerArgument('frontendUser', FrontendUser::class, 'The frontendUser-object that is to check.', false, null);
     }
+
 
     /**
      * @return int

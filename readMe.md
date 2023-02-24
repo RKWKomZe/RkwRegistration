@@ -202,7 +202,7 @@ The following code can be used to obtain the appropriate consent. It is importan
 ```
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 	xmlns:rkwRegistration="http://typo3.org/ns/RKW/RkwRegistration/ViewHelpers"
-	xmlns:rkwAjax="http://typo3.org/ns/RKW/RkwAjax/ViewHelpers"
+	xmlns:ajaxApi="http://typo3.org/ns/Madj2k/AjaxApi/ViewHelpers"
 	data-namespace-typo3-fluid="true">
 
 	<f:form action="create" name="alert" object="{alert}">

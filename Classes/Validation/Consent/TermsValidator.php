@@ -16,7 +16,6 @@ namespace RKW\RkwRegistration\Validation\Consent;
 
 use RKW\RkwRegistration\ViewHelpers\ConsentViewHelper;
 
-
 /**
  * Class TermsValidator
  *
@@ -28,8 +27,6 @@ use RKW\RkwRegistration\ViewHelpers\ConsentViewHelper;
  */
 class TermsValidator extends AbstractValidator
 {
-
-
 
     /**
      * Validation of terms checkbox

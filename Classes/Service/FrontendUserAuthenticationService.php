@@ -14,14 +14,10 @@ namespace RKW\RkwRegistration\Service;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwBasics\Utility\GeneralUtility;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
-use TYPO3\CMS\Core\Authentication\AbstractUserAuthentication;
 use TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Log\LogLevel;
-use TYPO3\CMS\Core\Log\LogManager;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * Class FrontendUserAuthenticationService
@@ -31,42 +27,9 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class FrontendUserAuthenticationService extends \TYPO3\CMS\Core\Authentication\AuthenticationService
+class FrontendUserAuthenticationService extends AbstractAuthenticationService
 {
 
-    /**
-     * Initialize authentication service
-     *
-     * @param string $mode Subtype of the service which is used to call the service.
-     * @param array $loginData Submitted login form data
-     * @param array $authInfo Information array. Holds submitted form data etc.
-     * @param AbstractUserAuthentication $pObj Parent object
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     */
-    public function initAuth($mode, $loginData, $authInfo, $pObj)
-    {
-        parent::initAuth($mode, $loginData, $authInfo, $pObj);
-
-        // set counter field and storage pid according to settings
-        $settings = $this->getSettings(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-
-        $this->db_user['usercounter_column'] = 'tx_rkwregistration_login_error_count';
-        $this->db_user['check_pid_clause'] = '`pid` IN (' . (intval($settings['persistence']['storagePid']) ?: 0) . ')';
-
-    }
-
-    /**
-     * Process the submitted credentials.
-     * In this case hash the clear text password if it has been submitted.
-     *
-     * @param array $loginData Credentials that are submitted and potentially modified by other services
-     * @param string $passwordTransmissionStrategy Keyword of how the password has been hashed or encrypted before submission
-     * @return bool
-     */
-    public function processLoginData(array &$loginData, $passwordTransmissionStrategy): bool
-    {
-        return parent::processLoginData($loginData, $passwordTransmissionStrategy);
-    }
 
     /**
      * Find a user (eg. look up the user record in database when a login is sent)
@@ -77,6 +40,7 @@ class FrontendUserAuthenticationService extends \TYPO3\CMS\Core\Authentication\A
     {
         return parent::getUser();
     }
+
 
     /**
      * Authenticate a user: Check submitted user credentials against stored hashed password,
@@ -152,41 +116,5 @@ class FrontendUserAuthenticationService extends \TYPO3\CMS\Core\Authentication\A
         return $result;
 
     }
-
-    /**
-     * Find usergroup records, currently only for frontend
-     *
-     * @param array $user Data of user.
-     * @param array $knownGroups Group data array of already known groups. This is handy if you want select other related groups. Keys in this array are unique IDs of those groups.
-     * @return mixed Groups array, keys = uid which must be unique
-     */
-    public function getGroups($user, $knownGroups)
-    {
-        return parent::getGroups($user, $knownGroups);
-    }
-
-
-    /**
-     * Returns TYPO3 settings
-     *
-     * @param string $which Which type of settings will be loaded
-     * @return array
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
-     */
-    protected function getSettings(string $which = ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
-    {
-        return GeneralUtility::getTyposcriptConfiguration('Rkwregistration', $which);
-    }
-
-    /**
-     * Returns logger instance
-     *
-     * @return \TYPO3\CMS\Core\Log\Logger
-     */
-    protected static function getLogger(): \TYPO3\CMS\Core\Log\Logger
-    {
-        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
-    }
-
 
 }

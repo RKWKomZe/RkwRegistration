@@ -1,10 +1,5 @@
 <?php
-
 namespace RKW\RkwRegistration\ViewHelpers;
-
-use RKW\RkwRegistration\Domain\Repository\TitleRepository;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -19,6 +14,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  * The TYPO3 project - inspiring people to share!
  */
 
+use RKW\RkwRegistration\Domain\Repository\TitleRepository;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+
 /**
  * Class TitleListViewHelper
  *
@@ -30,22 +28,27 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class TitleListViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper
 {
+
     /**
      * Returns a list of user title options
      *
      * This example is equal to a findAll: <rkwRegistration:titleList showTitleAfter='true' />
      * Shorthand for showing only title after: <rkwRegistration:titleList showTitleBefore='false' />
      *
-     * @param boolean $showTitleBefore
-     * @param boolean $showTitleAfter
-     * @param boolean $returnArray
-     * @param boolean $returnJson
+     * @param bool $showTitleBefore
+     * @param bool $showTitleAfter
+     * @param bool $returnArray
+     * @param bool $returnJson
      * @param string $mapProperty
-     *
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function render($showTitleBefore = true, $showTitleAfter = false, $returnArray = false, $returnJson = false, $mapProperty = '')
-    {
+    public function render(
+        bool $showTitleBefore = true,
+        bool $showTitleAfter = false,
+        bool $returnArray = false,
+        bool $returnJson = false,
+        string $mapProperty = ''
+    ) {
         // a) This avoids possible empty results by calling <rkwRegistration:titleList showTitleBefore='false' showTitleAfter='false' />
         // b) Makes a shorter invoke possible for showing up only "isTitleAfter"-Elements (see PHPdocs example above)
         if (!$showTitleBefore) {
