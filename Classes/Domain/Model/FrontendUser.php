@@ -48,9 +48,10 @@ class FrontendUser extends \Madj2k\CoreExtended\Domain\Model\FrontendUser
 
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Model\Title|null
+     * @var string
+     * @validate \SJBR\SrFreecap\Validation\Validator\CaptchaValidator
      */
-    protected ?Title $txRkwregistrationTitle = null;
+    protected string $captchaResponse = '';
 
 
     /**
@@ -120,6 +121,12 @@ class FrontendUser extends \Madj2k\CoreExtended\Domain\Model\FrontendUser
 
 
     /**
+     * @var \RKW\RkwRegistration\Domain\Model\Title|null
+     */
+    protected ?Title $txRkwregistrationTitle = null;
+
+
+    /**
      * Gets the plaintext password
      * !!! SHOULD NEVER BE PERSISTED!!!
      *
@@ -168,6 +175,27 @@ class FrontendUser extends \Madj2k\CoreExtended\Domain\Model\FrontendUser
     public function setTempFrontendUserGroup(FrontendUserGroup $tempFrontendUserGroup): void
     {
         $this->_tempFrontendUserGroup = $tempFrontendUserGroup;
+    }
+
+
+    /**
+     * Sets the captchaResponse
+     *
+     * @param string $captchaResponse
+     * @return void
+     */
+    public function setCaptchaResponse(string $captchaResponse): void {
+        $this->captchaResponse = $captchaResponse;
+    }
+
+
+    /**
+     * Getter for captchaResponse
+     *
+     * @return string
+     */
+    public function getCaptchaResponse(): string {
+        return $this->captchaResponse;
     }
 
 
