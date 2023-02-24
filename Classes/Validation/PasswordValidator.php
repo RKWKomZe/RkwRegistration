@@ -16,7 +16,7 @@ namespace RKW\RkwRegistration\Validation;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use TYPO3\CMS\Extbase\Error\Error;
@@ -34,25 +34,22 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator
 {
     /**
-     * passwordArray
-     *
      * @var array
      */
-    protected $passwordArray = [];
+    protected array $passwordArray = [];
+
 
     /**
-     * passwordSettings
-     *
      * @var array
      */
-    protected $passwordSettings = [];
+    protected array $passwordSettings = [];
+
 
     /**
-     * isValid
-     *
      * @var bool
      */
-    protected $isValid = true;
+    protected bool $isValid = true;
+
 
     /**
      * Validation of password
@@ -66,7 +63,7 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
     {
         $this->passwordArray = $value;
 
-        $settings = GeneralUtility::getTyposcriptConfiguration('Rkwregistration');
+        $settings = GeneralUtility::getTypoScriptConfiguration('Rkwregistration');
         $this->passwordSettings = $settings['users']['passwordSettings'];
 
         $this->checkOldPasswordGiven();
@@ -157,6 +154,7 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
             $this->isValid = false;
         }
     }
+
 
     /**
      * checkEquality
@@ -250,6 +248,5 @@ class PasswordValidator extends \TYPO3\CMS\Extbase\Validation\Validator\Abstract
             }
         }
     }
-
 }
 

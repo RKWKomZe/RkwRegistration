@@ -28,7 +28,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
-class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+class FrontendUser extends \Madj2k\CoreExtended\Domain\Model\FrontendUser
 {
 
     /**
@@ -36,7 +36,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      *
      * @var string
      */
-    protected $_tempPlaintextPassword = '';
+    protected string $_tempPlaintextPassword = '';
 
 
     /**
@@ -44,125 +44,86 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      *
      * @var \RKW\RkwRegistration\Domain\Model\FrontendUserGroup
      */
-    protected $_tempFrontendUserGroup;
+    protected string $_tempFrontendUserGroup;
 
 
     /**
-     * @var int
+     * @var string
+     * @validate \SJBR\SrFreecap\Validation\Validator\CaptchaValidator
      */
-    protected $crdate;
-
-
-    /**
-     * @var int
-     */
-    protected $tstamp;
-
-
-    /**
-     * @var int
-     */
-    protected $starttime = 0;
-
-
-    /**
-     * @var int
-     */
-    protected $endtime = 0;
-
-
-    /**
-     * @var bool
-     */
-    protected $disable = false;
-
-
-    /**
-     * @var bool
-     */
-    protected $deleted = false;
+    protected string $captchaResponse = '';
 
 
     /**
      * @var string
      */
-    protected $email = '';
-
+    protected string $txRkwregistrationMobile = '';
 
 
     /**
-     * txRkwregistrationTitle
-     *
+     * @var int
+     */
+    protected int $txRkwregistrationGender = 99;
+
+
+    /**
+     * @var string
+     */
+    protected string $txRkwregistrationRegisterRemoteIp = '';
+
+
+    /**
+     * @var int
+     */
+    protected int $txRkwregistrationLoginErrorCount = 0;
+
+
+    /**
+     * @var string
+     */
+    protected string $txRkwregistrationLanguageKey = '';
+
+
+    /**
+     * @var string
+     */
+    protected string $txRkwregistrationFacebookUrl = '';
+
+
+    /**
+     * @var string
+     */
+    protected string $txRkwregistrationTwitterUrl = '';
+
+
+    /**
+     * @var string
+     */
+    protected string $txRkwregistrationXingUrl = '';
+
+
+    /**
+     * @var int
+     */
+    protected int $txRkwregistrationDataProtectionStatus = 0;
+
+
+    /**
+     * @var bool
+     */
+    protected bool $txRkwregistrationConsentTerms = false;
+
+
+    /**
+     * @var bool
+     */
+    protected bool $txRkwregistrationConsentMarketing = false;
+
+
+    /**
      * @var \RKW\RkwRegistration\Domain\Model\Title|null
      */
-    protected $txRkwregistrationTitle;
-
-
-    /**
-     * @var string
-     */
-    protected $txRkwregistrationMobile = '';
-
-
-    /**
-     * @var int
-     */
-    protected $txRkwregistrationGender = 99;
-
-
-    /**
-     * @var string
-     */
-    protected $txRkwregistrationRegisterRemoteIp = '';
-
-
-    /**
-     * @var int
-     */
-    protected $txRkwregistrationLoginErrorCount = 0;
-
-
-    /**
-     * @var string
-     */
-    protected $txRkwregistrationLanguageKey = '';
-
-
-    /**
-     * @var string
-     */
-    protected $txRkwregistrationFacebookUrl = '';
-
-
-    /**
-     * @var string
-     */
-    protected $txRkwregistrationTwitterUrl = '';
-
-
-    /**
-     * @var string
-     */
-    protected $txRkwregistrationXingUrl = '';
-
-
-    /**
-     * @var int
-     */
-    protected $txRkwregistrationDataProtectionStatus = 0;
-
-
-    /**
-     * @var bool
-     */
-    protected $txRkwregistrationConsentTerms = 0;
-
-
-    /**
-     * @var bool
-     */
-    protected $txRkwregistrationConsentMarketing = 0;
-
+    protected ?Title $txRkwregistrationTitle = null;
 
 
     /**
@@ -218,283 +179,23 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 
 
     /**
-     * Sets the crdate value
+     * Sets the captchaResponse
      *
-     * @param int $crdate
-     * @api
-     */
-    public function setCrdate(int $crdate): void
-    {
-        $this->crdate = $crdate;
-    }
-
-
-    /**
-     * Returns the crdate value
-     *
-     * @return int
-     * @api
-     */
-    public function getCrdate(): int
-    {
-        return $this->crdate;
-    }
-
-
-    /**
-     * Sets the tstamp value
-     *
-     * @param int $tstamp
-     * @api
-     */
-    public function setTstamp(int $tstamp): void
-    {
-        $this->tstamp = $tstamp;
-    }
-
-
-    /**
-     * Returns the tstamp value
-     *
-     * @return int
-     * @api
-     */
-    public function getTstamp(): int
-    {
-        return $this->tstamp;
-    }
-
-
-    /**
-     * Sets the starttime value
-     *
-     * @param int $starttime
-     * @api
-     */
-    public function setStarttime(int $starttime): void
-    {
-        $this->starttime = $starttime;
-    }
-
-
-    /**
-     * Returns the starttime value
-     *
-     * @return int
-     * @api
-     */
-    public function getStarttime(): int
-    {
-        return $this->starttime;
-    }
-
-
-    /**
-     * Sets the endtime value
-     *
-     * @param int $endtime
-     * @api
-     */
-    public function setEndtime(int $endtime): void
-    {
-        $this->endtime = $endtime;
-    }
-
-
-    /**
-     * Returns the endtime value
-     *
-     * @return int
-     * @api
-     */
-    public function getEndtime(): int
-    {
-        return $this->endtime;
-    }
-
-
-    /**
-     * Sets the disable value
-     *
-     * @param bool $disable
+     * @param string $captchaResponse
      * @return void
-     *
      */
-    public function setDisable(bool $disable): void
-    {
-        $this->disable = $disable;
+    public function setCaptchaResponse(string $captchaResponse): void {
+        $this->captchaResponse = $captchaResponse;
     }
 
 
     /**
-     * Returns the disable value
-     *
-     * @return bool
-     */
-    public function getDisable(): bool
-    {
-        return $this->disable;
-    }
-
-
-    /**
-     * Sets the deleted value
-     *
-     * @param bool $deleted
-     * @return void
-     *
-     */
-    public function setDeleted(bool $deleted): void
-    {
-        $this->deleted = $deleted;
-    }
-
-
-    /**
-     * Returns the deleted value
-     *
-     * @return bool
-     *
-     */
-    public function getDeleted(): bool
-    {
-        return $this->deleted;
-    }
-
-
-    /**
-     * Sets the username value
-     * ! Important: We need to lowercase it !
-     *
-     * @param string $username
-     * @return void
-     * @api
-     */
-    public function setUsername($username): void
-    {
-        $this->username = strtolower($username);
-    }
-
-
-    /**
-     * Sets the email value
-     * ! Important: We need to lowercase it !
-     *
-     * @param string $email
-     * @return void
-     * @api
-     */
-    public function setEmail($email): void
-    {
-        $this->email = strtolower($email);
-    }
-
-
-    /**
-     * Returns the title
+     * Getter for captchaResponse
      *
      * @return string
-     * @api
      */
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-
-    /**
-     * Sets the title
-     *
-     * @param string $title
-     * @api
-     */
-    public function setTitle($title): void
-    {
-        $this->title = $title;
-    }
-
-
-
-    /**
-     * Returns the txRkwregistrationTitle
-     *
-     * @return \RKW\RkwRegistration\Domain\Model\Title $txRkwregistrationTitle
-     */
-    public function getTxRkwregistrationTitle(): Title
-    {
-        if ($this->txRkwregistrationTitle === null) {
-            $txRkwregistrationTitle = new Title();
-            $txRkwregistrationTitle->setName($this->getTitle());
-
-            return $txRkwregistrationTitle;
-        }
-
-        return $this->txRkwregistrationTitle;
-    }
-
-
-    /**
-     * Sets the txRkwregistrationTitle
-     *
-     * Hint: default "null" is needed to make value in forms optional
-     *
-     * @param \RKW\RkwRegistration\Domain\Model\Title|null $txRkwregistrationTitle
-     * @return void
-     */
-    public function setTxRkwregistrationTitle(Title $txRkwregistrationTitle = null): void
-    {
-        if (
-            ($txRkwregistrationTitle)
-            && ($txRkwregistrationTitle->getName() !== '')
-        ){
-            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
-            /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
-            $titleRepository = $objectManager->get(TitleRepository::class);
-
-            if ($existingTitle = $titleRepository->findOneByName($txRkwregistrationTitle->getName())) {
-                $this->txRkwregistrationTitle = $existingTitle;
-            } else {
-                $this->setTitle($txRkwregistrationTitle->getName());
-            }
-        }
-    }
-
-
-    /**
-     * Sets the firstName
-     *
-     * @param string $firstName
-     * @api
-     */
-    public function setFirstName($firstName): void
-    {
-        $this->firstName = $firstName;
-
-        if ($this->getLastName()) {
-            $this->name = $this->getFirstName() . ' ' . $this->getLastName();
-        } else {
-            $this->name = $this->getFirstName();
-        }
-    }
-
-
-    /**
-     * Sets the lastName
-     *
-     * @param string $lastName
-     * @api
-     */
-    public function setLastName($lastName): void
-    {
-
-        $this->lastName = $lastName;
-
-        if ($this->getFirstName()) {
-            $this->name = $this->getFirstName() . ' ' . $this->getLastName();
-        } else {
-            $this->name = $this->getLastName();
-        }
+    public function getCaptchaResponse(): string {
+        return $this->captchaResponse;
     }
 
 
@@ -771,6 +472,53 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     // Special-methods that are NOT simply getter or setter below
     //=================================================================================
 
+
+    /**
+     * Returns the txRkwregistrationTitle
+     *
+     * @return \RKW\RkwRegistration\Domain\Model\Title $txRkwregistrationTitle
+     */
+    public function getTxRkwregistrationTitle(): Title
+    {
+        if ($this->txRkwregistrationTitle === null) {
+            $txRkwregistrationTitle = new Title();
+            $txRkwregistrationTitle->setName($this->getTitle());
+
+            return $txRkwregistrationTitle;
+        }
+
+        return $this->txRkwregistrationTitle;
+    }
+
+
+    /**
+     * Sets the txRkwregistrationTitle
+     *
+     * Hint: default "null" is needed to make value in forms optional
+     *
+     * @param \RKW\RkwRegistration\Domain\Model\Title|null $txRkwregistrationTitle
+     * @return void
+     */
+    public function setTxRkwregistrationTitle(Title $txRkwregistrationTitle = null): void
+    {
+        if (
+            ($txRkwregistrationTitle)
+            && ($txRkwregistrationTitle->getName() !== '')
+        ){
+            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
+            /** @var \RKW\RkwRegistration\Domain\Repository\TitleRepository $titleRepository */
+            $titleRepository = $objectManager->get(TitleRepository::class);
+
+            if ($existingTitle = $titleRepository->findOneByName($txRkwregistrationTitle->getName())) {
+                $this->txRkwregistrationTitle = $existingTitle;
+            } else {
+                $this->setTitle($txRkwregistrationTitle->getName());
+            }
+        }
+    }
+
+
     /**
      * Increments the loginErrorCount value
      *
@@ -780,6 +528,7 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
     {
         $this->txRkwregistrationLoginErrorCount++;
     }
+
 
     /**
      * Returns the gender as string

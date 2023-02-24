@@ -760,6 +760,17 @@
             </trans-unit>
 
 
+            <!-- Partials/Captcha.html -->
+            <trans-unit id="partials_captcha.label">
+                <source>Spam-Protection</source>
+                <target>Spam-Schutz</target>
+            </trans-unit>
+            <trans-unit id="partials_captcha.labelRequired">
+                <source>(Required)</source>
+                <target>(Pflichtfeld)</target>
+            </trans-unit>
+
+
   			<!-- Templates/Email/OptIn.html -->
             <trans-unit id="templates_email_optin.headline">
                 <source>Nearly done</source>

@@ -16,8 +16,8 @@ namespace RKW\RkwRegistration\Tests\Integration\Validation;
  */
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
@@ -40,30 +40,33 @@ class PasswordValidatorTest extends FunctionalTestCase
      */
     const FIXTURE_PATH = __DIR__ . '/PasswordValidatorTest/Fixtures';
 
-    /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
-     */
-    private $objectManager;
-
-    /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
-     */
-    private $frontendUserRepository;
-
-    /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
-     */
-    private $frontendUserGroupRepository;
-
 
     /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration'
     ];
+
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager|null
+     */
+    private ?ObjectManager $objectManager = null;
+
+
+    /**
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository|null
+     */
+    private ?FrontendUserRepository $frontendUserRepository = null;
+
+
+    /**
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository|null
+     */
+    private ?FrontendUserGroupRepository $frontendUserGroupRepository = null;
 
 
     /**
@@ -78,7 +81,7 @@ class PasswordValidatorTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.typoscript',
+                'EXT:core_extended/Configuration/TypoScript/setup.typoscript',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.typoscript',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
             ]
@@ -105,7 +108,6 @@ class PasswordValidatorTest extends FunctionalTestCase
     }
 
     #==============================================================================
-
 
     /**
      * @test
@@ -139,6 +141,7 @@ class PasswordValidatorTest extends FunctionalTestCase
         self::assertFalse($result);
     }
 
+
     /**
      * @test
      */
@@ -170,6 +173,7 @@ class PasswordValidatorTest extends FunctionalTestCase
 
         self::assertFalse($result);
     }
+
 
     /**
      * @test
@@ -344,6 +348,7 @@ class PasswordValidatorTest extends FunctionalTestCase
         self::assertFalse($result);
     }
 
+
     /**
      * @test
      */
@@ -379,6 +384,7 @@ class PasswordValidatorTest extends FunctionalTestCase
 
         self::assertFalse($result);
     }
+
 
     /**
      * @test
@@ -416,6 +422,7 @@ class PasswordValidatorTest extends FunctionalTestCase
         self::assertFalse($result);
     }
 
+
     /**
      * @test
      */
@@ -452,7 +459,6 @@ class PasswordValidatorTest extends FunctionalTestCase
 
         self::assertTrue($result);
     }
-
 
     #==============================================================================
 

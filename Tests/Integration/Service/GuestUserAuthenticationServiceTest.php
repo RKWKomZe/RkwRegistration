@@ -15,7 +15,7 @@ namespace RKW\RkwRegistration\Tests\Integration\Service;
  */
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
+use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
 use RKW\RkwRegistration\Controller\AuthGuestController;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Registration\AbstractRegistration;
@@ -42,17 +42,6 @@ class GuestUserAuthenticationServiceTest extends FunctionalTestCase
     const FIXTURE_PATH = __DIR__ . '/GuestUserAuthenticationService/Fixtures';
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
-     */
-    private $objectManager;
-
-
-    /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
-     */
-    private $frontendUserRepository;
-
-    /**
      * @var string[]
      */
     protected $coreExtensionsToLoad = [
@@ -65,11 +54,24 @@ class GuestUserAuthenticationServiceTest extends FunctionalTestCase
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration',
         'typo3conf/ext/rkw_mailer'
     ];
+
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager|null
+     */
+    private ?ObjectManager $objectManager = null;
+
+
+    /**
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository|null
+     */
+    private ?FrontendUserRepository $frontendUserRepository = null;
+
 
     /**
      * Setup
@@ -83,8 +85,8 @@ class GuestUserAuthenticationServiceTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
@@ -142,6 +144,7 @@ class GuestUserAuthenticationServiceTest extends FunctionalTestCase
         FrontendSimulatorUtility::resetFrontendEnvironment();
     }
 
+
     /**
      * @test
      * @throws \Exception
@@ -181,6 +184,7 @@ class GuestUserAuthenticationServiceTest extends FunctionalTestCase
 
         FrontendSimulatorUtility::resetFrontendEnvironment();
     }
+
 
     /**
      * @test
@@ -222,6 +226,7 @@ class GuestUserAuthenticationServiceTest extends FunctionalTestCase
 
         FrontendSimulatorUtility::resetFrontendEnvironment();
     }
+
 
     /**
      * @test

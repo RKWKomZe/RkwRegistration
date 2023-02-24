@@ -15,8 +15,8 @@ namespace RKW\RkwRegistration\Tests\Integration\Validation;
  */
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
@@ -40,30 +40,34 @@ class FrontendUserValidatorTest extends FunctionalTestCase
      */
     const FIXTURE_PATH = __DIR__ . '/FrontendUserValidatorTest/Fixtures';
 
+
     /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration'
     ];
 
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager|null
      */
-    private $objectManager;
+    private ?ObjectManager $objectManager = null;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository|null
      */
-    private $frontendUserRepository;
+    private ?FrontendUserRepository $frontendUserRepository = null;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository|null
      */
-    private $frontendUserGroupRepository;
+    private ?FrontendUserGroupRepository $frontendUserGroupRepository = null;
+
 
     /**
      * Setup
@@ -78,7 +82,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.typoscript',
+                'EXT:core_extended/Configuration/TypoScript/setup.typoscript',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.typoscript',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
             ]
@@ -98,7 +102,6 @@ class FrontendUserValidatorTest extends FunctionalTestCase
     }
 
     #==============================================================================
-
 
     /**
      * @test
@@ -132,6 +135,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         self::assertTrue($result);
     }
 
+
     /**
      * @test
      */
@@ -151,7 +155,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.typoscript',
+                'EXT:core_extended/Configuration/TypoScript/setup.typoscript',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.typoscript',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Check10.typoscript',
             ]
@@ -173,6 +177,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         $result = $frontendUserValidator->isValid($frontendUserFormData);
         self::assertTrue($result);
     }
+
 
     /**
      * @test
@@ -205,6 +210,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         $result = $frontendUserValidator->isValid($frontendUserFormData);
         self::assertFalse($result);
     }
+
 
     /**
      * @test
@@ -245,6 +251,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         $result = $frontendUserValidator->isValid($frontendUserFormData);
         self::assertFalse($result);
     }
+
 
     /**
      * @test
@@ -328,8 +335,10 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         self::assertFalse($result);
     }
 
+
     /**
      * @test
+     * @throws \Exception
      */
     public function isValidWithCompleteMandatoryFieldsForTemporaryGroupReturnTrue ()
     {
@@ -369,8 +378,10 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         self::assertTrue($result);
     }
 
+
     /**
      * @test
+     * @throws \Exception
      */
     public function isValidWithAlreadyUsedEmailAddressReturnsFalse ()
     {
@@ -402,8 +413,10 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         self::assertFalse($result);
     }
 
+
     /**
      * @test
+     * @throws \Exception
      */
     public function isValidWithAlreadyUsedEmailAddressButLoggedInReturnsTrue ()
     {
@@ -447,8 +460,10 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         FrontendSimulatorUtility::resetFrontendEnvironment();
     }
 
+
     /**
      * @test
+     * @throws \Exception
      */
     public function isValidWithInvalidEmailAddressReturnsFalse ()
     {
@@ -552,6 +567,7 @@ class FrontendUserValidatorTest extends FunctionalTestCase
         self::assertFalse($result);
     }
 
+    #==============================================================================
 
     /**
      * TearDown

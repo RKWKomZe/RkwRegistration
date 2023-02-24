@@ -16,13 +16,11 @@ namespace RKW\RkwRegistration\Tests\Integration\Utility;
 
 use Exception;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
+use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
-
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\UserAspect;
@@ -40,29 +38,33 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  */
 class FrontendUserSessionUtilityTest extends FunctionalTestCase
 {
+
     /**
      * @const
      */
     const FIXTURE_PATH = __DIR__ . '/FrontendUserSessionUtilityTest/Fixtures';
 
+
     /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration',
     ];
 
-    /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
-     */
-    private $frontendUserRepository = null;
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository|null
      */
-    private $frontendUserGroupRepository = null;
+    private ?FrontendUserRepository $frontendUserRepository = null;
+
+
+    /**
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository|null
+     */
+    private ?FrontendUserGroupRepository $frontendUserGroupRepository = null;
 
 
     /**
@@ -77,8 +79,8 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
@@ -240,7 +242,6 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
         self::assertFalse(FrontendUserSessionUtility::logout());
     }
 
-
     #====================================================================================================
 
     /**
@@ -312,8 +313,6 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
     }
 
 
-
-
     /**
      * @test
      * @throws \Exception
@@ -348,6 +347,7 @@ class FrontendUserSessionUtilityTest extends FunctionalTestCase
         self::assertInstanceOf(FrontendUser::class, $result);
         self::assertEquals($frontendUser->getUid(), $result->getUid());
     }
+
 
     /**
      * @test

@@ -596,6 +596,15 @@
 			</trans-unit>
 
 
+            <!-- Partials/Captcha.html -->
+            <trans-unit id="partials_captcha.label">
+                <source>Spam-Protection</source>
+            </trans-unit>
+            <trans-unit id="partials_captcha.labelRequired">
+                <source>(Required)</source>
+            </trans-unit>
+
+
 			<!-- Templates/Email/OptIn.html -->
 			<trans-unit id="templates_email_optin.headline">
 				<source>Nearly done</source>

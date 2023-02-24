@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Tests\Integration\ViewHelpers;
 
 /*
@@ -16,7 +15,7 @@ namespace RKW\RkwRegistration\Tests\Integration\ViewHelpers;
  */
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
+use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
@@ -35,12 +34,13 @@ class ConsentViewHelperTest extends FunctionalTestCase
      */
     const FIXTURE_PATH = __DIR__ . '/ConsentViewHelperTest/Fixtures';
 
+
     /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration'
     ];
 
@@ -58,7 +58,7 @@ class ConsentViewHelperTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
             ],
@@ -102,6 +102,7 @@ class ConsentViewHelperTest extends FunctionalTestCase
 
         self::assertStringContainsString('tx_rkwregistration[marketing]', $result);
     }
+
 
     /**
      * @test
@@ -171,6 +172,7 @@ class ConsentViewHelperTest extends FunctionalTestCase
         self::assertStringContainsString('We would like to point out that images, sound and video recordings may be made at this event', $result);
     }
 
+
     /**
      * @test
      */
@@ -196,7 +198,6 @@ class ConsentViewHelperTest extends FunctionalTestCase
     }
 
     #==============================================================================
-
 
     /**
      * TearDown

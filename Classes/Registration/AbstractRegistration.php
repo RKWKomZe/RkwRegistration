@@ -14,20 +14,22 @@ namespace RKW\RkwRegistration\Registration;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwRegistration\DataProtection\ConsentHandler;
 use RKW\RkwRegistration\Domain\Model\BackendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Domain\Model\OptIn;
+use RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
+use RKW\RkwRegistration\Domain\Repository\GuestUserRepository;
+use RKW\RkwRegistration\Domain\Repository\OptInRepository;
 use RKW\RkwRegistration\Exception;
 use RKW\RkwRegistration\Utility\ClientUtility;
 use RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use RKW\RkwRegistration\Utility\PasswordUtility;
-use RKW\RkwRegistration\Utility\StringUtility;
 use RKW\RkwRegistration\Utility\TitleUtility;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogLevel;
@@ -38,6 +40,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Class AbstractRegistration
@@ -57,12 +60,14 @@ abstract class AbstractRegistration implements RegistrationInterface
      */
     const SIGNAL_AFTER_CREATING_OPTIN = 'afterCreatingOptin';
 
+
     /**
      * Signal name for use in ext_localconf.php
      *
      * @const string
      */
     const SIGNAL_AFTER_CREATING_OPTIN_ADMIN = 'afterCreatingOptinAdmin';
+
 
     /**
      * Signal name for use in ext_localconf.php
@@ -71,12 +76,14 @@ abstract class AbstractRegistration implements RegistrationInterface
      */
     const SIGNAL_AFTER_APPROVAL_OPTIN = 'afterApprovalOptin';
 
+
     /**
      * Signal name for use in ext_localconf.php
      *
      * @const string
      */
     const SIGNAL_AFTER_APPROVAL_OPTIN_ADMIN = 'afterApprovalOptinAdmin';
+
 
     /**
      * Signal name for use in ext_localconf.php
@@ -85,6 +92,7 @@ abstract class AbstractRegistration implements RegistrationInterface
      */
     const SIGNAL_AFTER_DENIAL_OPTIN = 'afterDenialOptin';
 
+
     /**
      * Signal name for use in ext_localconf.php
      *
@@ -92,8 +100,10 @@ abstract class AbstractRegistration implements RegistrationInterface
      */
     const SIGNAL_AFTER_DENIAL_OPTIN_ADMIN = 'afterDenialOptinAdmin';
 
+
     /**
      * Signal name for use in ext_localconf.php
+     *
      * @const string
      */
     const SIGNAL_AFTER_REGISTRATION_COMPLETED = 'afterRegistrationCompleted';
@@ -101,6 +111,7 @@ abstract class AbstractRegistration implements RegistrationInterface
 
     /**
      * Signal name for use in ext_localconf.php
+     *
      * @const string
      */
     const SIGNAL_AFTER_REGISTRATION_CANCELED = 'afterRegistrationCanceled';
@@ -108,51 +119,52 @@ abstract class AbstractRegistration implements RegistrationInterface
 
     /**
      * Signal name for use in ext_localconf.php
+     *
      * @const string
      */
     const SIGNAL_AFTER_REGISTRATION_ENDED = 'afterRegistrationEnded';
 
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser|null
      */
-    protected $frontendUser;
+    protected ?FrontendUser $frontendUser = null;
 
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser|null
      */
-    protected $frontendUserPersisted;
+    protected ?FrontendUser $frontendUserPersisted = null;
 
 
     /**
      * @var string
      */
-    protected $frontendUserToken = '';
+    protected string $frontendUserToken = '';
 
 
     /**
      * @var array
      */
-    protected $frontendUserOptInUpdate = [];
+    protected array $frontendUserOptInUpdate = [];
 
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Model\OptIn
+     * @var \RKW\RkwRegistration\Domain\Model\OptIn|null
      */
-    protected $optInPersisted;
+    protected ?OptIn $optInPersisted = null;
 
 
     /**
-     * @var \TYPO3\CMS\Extbase\Mvc\Request
+     * @var \TYPO3\CMS\Extbase\Mvc\Request|null
      */
-    protected $request;
+    protected ?Request $request = null;
 
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser>
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser>|null
      */
-    protected $approval;
+    protected ?ObjectStorage $approval = null;
 
 
     /**
@@ -164,68 +176,68 @@ abstract class AbstractRegistration implements RegistrationInterface
     /**
      * @var string
      */
-    protected $category = '';
+    protected string $category = '';
 
 
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\OptInRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $optInRepository;
+    protected OptInRepository $optInRepository;
 
 
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $frontendUserRepository;
+    protected FrontendUserRepository $frontendUserRepository;
 
 
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\GuestUserRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $guestUserRepository;
+    protected GuestUserRepository $guestUserRepository;
 
 
     /**
      * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserGroupRepository
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $frontendUserGroupRepository;
+    protected FrontendUserGroupRepository $frontendUserGroupRepository;
 
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $persistenceManager;
+    protected PersistenceManager $persistenceManager;
 
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManager
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $objectManager;
+    protected ObjectManager $objectManager;
 
 
     /**
      * @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
-    protected $signalSlotDispatcher;
+    protected Dispatcher $signalSlotDispatcher;
 
 
     /**
      * @var array
      */
-    protected $settings;
+    protected array $settings = [];
 
 
     /**
-     * @var Logger
+     * @var Logger|null
      */
-    protected $logger;
+    protected ?Logger $logger = null;
 
 
     /**
@@ -278,8 +290,8 @@ abstract class AbstractRegistration implements RegistrationInterface
         $this->prepareFrontendUser();
 
         return $this;
-
     }
+
 
     /**
      * Get the frontendUserToken
@@ -299,6 +311,7 @@ abstract class AbstractRegistration implements RegistrationInterface
      * @return self
      * @throws Exception
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
     public function setFrontendUserToken(string $frontendUserToken): self
     {
@@ -389,6 +402,7 @@ abstract class AbstractRegistration implements RegistrationInterface
                 $this->frontendUserPersisted = $this->getContextAwareFrontendUserRepository()->findByIdentifierIncludingDisabled($optIn->getFrontendUserUid());
             }
         }
+
         return $this->frontendUserPersisted;
     }
 
@@ -415,7 +429,6 @@ abstract class AbstractRegistration implements RegistrationInterface
 
         return $this->optInPersisted;
     }
-
 
 
     /**
@@ -530,7 +543,6 @@ abstract class AbstractRegistration implements RegistrationInterface
     }
 
 
-
     /**
      * Creates an opt-in for a frontendUser
      *
@@ -556,9 +568,9 @@ abstract class AbstractRegistration implements RegistrationInterface
         $optIn->setFrontendUserUpdate($this->getFrontendUserOptInUpdate());
         $optIn->setCategory($this->getCategory());
         $optIn->setData($this->getData());
-        $optIn->setTokenUser(StringUtility::getUniqueRandomString());
-        $optIn->setTokenYes(StringUtility::getUniqueRandomString());
-        $optIn->setTokenNo(StringUtility::getUniqueRandomString());
+        $optIn->setTokenUser(GeneralUtility::getUniqueRandomString());
+        $optIn->setTokenYes(GeneralUtility::getUniqueRandomString());
+        $optIn->setTokenNo(GeneralUtility::getUniqueRandomString());
         $optIn->setEndtime(strtotime("+" . $settings['users']['daysForOptIn'] . " day", time()));
         $optIn->setAdminApproved(1);
 
@@ -592,8 +604,8 @@ abstract class AbstractRegistration implements RegistrationInterface
             }
 
             $optIn->setAdminApproved(0);
-            $optIn->setAdminTokenYes(StringUtility::getUniqueRandomString());
-            $optIn->setAdminTokenNo(StringUtility::getUniqueRandomString());
+            $optIn->setAdminTokenYes(GeneralUtility::getUniqueRandomString());
+            $optIn->setAdminTokenNo(GeneralUtility::getUniqueRandomString());
 
             $this->optInRepository->update($optIn);
             $this->persistenceManager->persistAll();
@@ -605,7 +617,6 @@ abstract class AbstractRegistration implements RegistrationInterface
             // This way we either send a mail from this extension or from another - never both!
             $this->dispatchSignalSlot(self::SIGNAL_AFTER_CREATING_OPTIN_ADMIN . ucfirst($this->getCategory()));
         }
-
 
         // add privacy-object for non-existing user
         if ($request = $this->getRequest()) {
@@ -733,7 +744,6 @@ abstract class AbstractRegistration implements RegistrationInterface
             return true;
         }
 
-
         // e.g. if we have an opt-in for an existing user
         // we do NOT set a category-parameter here. We use the append-method instead.
         // This way we do not send mails from this extension
@@ -755,6 +765,7 @@ abstract class AbstractRegistration implements RegistrationInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      * @api
      */
     public function cancelRegistration(): bool
@@ -806,6 +817,7 @@ abstract class AbstractRegistration implements RegistrationInterface
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
      */
     public function endRegistration(): bool
     {
@@ -890,7 +902,7 @@ abstract class AbstractRegistration implements RegistrationInterface
 
             // clear email-address and set random username
             $this->frontendUser->setEmail('');
-            $this->frontendUser->setUsername(StringUtility::getUniqueRandomString());
+            $this->frontendUser->setUsername(GeneralUtility::getUniqueRandomString());
 
         } else {
 
@@ -982,6 +994,7 @@ abstract class AbstractRegistration implements RegistrationInterface
         }
     }
 
+
     /**
      * Returns TYPO3 settings
      *
@@ -992,7 +1005,7 @@ abstract class AbstractRegistration implements RegistrationInterface
     protected function getSettings(string $type = \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS): array
     {
         if (!$this->settings) {
-            $this->settings = GeneralUtility::getTyposcriptConfiguration('Rkwregistration', $type);
+            $this->settings = GeneralUtility::getTypoScriptConfiguration('Rkwregistration', $type);
         }
 
         if ($this->settings) {

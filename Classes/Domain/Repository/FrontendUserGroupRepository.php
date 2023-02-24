@@ -1,6 +1,6 @@
 <?php
-
 namespace RKW\RkwRegistration\Domain\Repository;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -54,6 +54,4 @@ class FrontendUserGroupRepository extends AbstractRepository
 
         return $query->execute();
     }
-
-
 }

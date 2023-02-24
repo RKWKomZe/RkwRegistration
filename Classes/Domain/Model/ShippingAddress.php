@@ -28,85 +28,65 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
 
     /**
-     * frontendUser
-     *
-     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser
+     * @var \RKW\RkwRegistration\Domain\Model\FrontendUser|null
      */
-    protected $frontendUser;
+    protected ?FrontendUser $frontendUser = null;
 
 
     /**
-     * gender
-     *
-     * @var integer
+     * @var int
      * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\GenderValidator")
      */
-    protected $gender = 99;
+    protected int $gender = 99;
 
 
     /**
-     * title
-     *
-     * @var \RKW\RkwRegistration\Domain\Model\Title
+     * @var \RKW\RkwRegistration\Domain\Model\Title|null
      */
-    protected $title;
+    protected ?Title $title = null;
 
 
     /**
-     * firstName
-     *
      * @var string
      */
-    protected $firstName = '';
+    protected string $firstName = '';
 
 
     /**
-     * lastName
-     *
      * @var string
      */
-    protected $lastName = '';
+    protected string $lastName = '';
 
 
     /**
-     * company
-     *
      * @var string
      */
-    protected $company = '';
+    protected string $company = '';
 
 
     /**
-     * fullName
-     *
      * @var string
      */
-    protected $fullName = '';
+    protected string $fullName = '';
 
 
     /**
-     * address
-     *
      * @var string
      */
-    protected $address = '';
+    protected string $address = '';
 
 
     /**
-     * zip
-     *
      * @var string
      * @TYPO3\CMS\Extbase\Annotation\Validate("\RKW\RkwRegistration\Validation\ZipValidator")
      */
-    protected $zip = '';
+    protected string $zip = '';
 
 
     /**
-     * city
-     *
      * @var string
      */
-    protected $city = '';
+    protected string $city = '';
 
 
     /**
@@ -135,7 +115,7 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the gender
      *
-     * @return integer $gender
+     * @return int $gender
      */
     public function getGender(): int
     {
@@ -146,7 +126,7 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the gender
      *
-     * @param integer $gender
+     * @param int $gender
      * @return void
      */
     public function setGender(int $gender): void
@@ -160,7 +140,7 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return \RKW\RkwRegistration\Domain\Model\Title $title
      */
-    public function getTitle() :? Title
+    public function getTitle():? Title
     {
         return $this->title;
     }
@@ -252,7 +232,7 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Additional getter without database support
      *
-     * @return string $fullName
+     * @return string
      */
     public function getFullName(): string
     {
@@ -286,7 +266,7 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the zip
      *
-     * @return string $zip
+     * @return string
      */
     public function getZip(): string
     {
@@ -309,7 +289,7 @@ class ShippingAddress extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the city
      *
-     * @return string $city
+     * @return string
      */
     public function getCity(): string
     {

@@ -22,7 +22,7 @@ namespace RKW\RkwRegistration\Domain\Repository;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AbstractRepository  extends \TYPO3\CMS\Extbase\Persistence\Repository
+class AbstractRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
 
     /**
@@ -31,13 +31,13 @@ class AbstractRepository  extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @return void
      * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
      */
-    public function initializeObject()
+    public function initializeObject(): void
     {
 
         // Fix: always use your own storagePid - even if called through another extension
         // This is important since the extension's registration feature is used by a lot of other extensions
         // Per default the storagePid of the calling extension is used
-        $settings =  \RKW\RkwBasics\Utility\GeneralUtility::getTyposcriptConfiguration('rkwRegistration',
+        $settings =  \Madj2k\CoreExtended\Utility\GeneralUtility::getTypoScriptConfiguration('rkwRegistration',
             \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
         );
 

@@ -1,5 +1,4 @@
 <?php
-
 namespace RKW\RkwRegistration\Domain\Model;
 
 /*
@@ -30,63 +29,63 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
 {
 
     /**
-     * @var integer
+     * @var int
      */
-    protected $crdate;
+    protected int $crdate;
 
 
     /**
-     * @var integer
+     * @var int
      */
-    protected $tstamp;
-
-
-    /**
-     * @var bool
-     */
-    protected $hidden = true;
+    protected int $tstamp;
 
 
     /**
      * @var bool
      */
-    protected $deleted = false;
+    protected bool $hidden = true;
 
 
     /**
      * @var bool
      */
-    protected $txRkwregistrationIsMembership = false;
+    protected bool $deleted = false;
 
 
     /**
-     * @var integer
+     * @var bool
      */
-    protected $txRkwregistrationMembershipOpeningDate = 0;
+    protected bool $txRkwregistrationIsMembership = false;
 
 
     /**
-     * @var integer
+     * @var int
      */
-    protected $txRkwregistrationMembershipClosingDate = 0;
+    protected int $txRkwregistrationMembershipOpeningDate = 0;
+
+
+    /**
+     * @var int
+     */
+    protected int $txRkwregistrationMembershipClosingDate = 0;
 
 
     /**
      * @var string
      */
-    protected $txRkwregistrationMembershipMandatoryFields = '';
+    protected string $txRkwregistrationMembershipMandatoryFields = '';
 
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser>
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser>|null
      */
-    protected $txRkwregistrationMembershipAdmins;
+    protected ?ObjectStorage $txRkwregistrationMembershipAdmins = null;
 
 
     /**
-     * @var integer
+     * @var int
      */
-    protected $txRkwregistrationMembershipPid = 0;
+    protected int $txRkwregistrationMembershipPid = 0;
 
 
     /**
@@ -119,7 +118,7 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
     /**
      * Returns the crdate value
      *
-     * @return integer
+     * @return int
      * @api
      */
     public function getCrdate(): int
@@ -127,10 +126,11 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
         return $this->crdate;
     }
 
+
     /**
      * Returns the tstamp value
      *
-     * @return integer
+     * @return int
      * @api
      */
     public function getTstamp(): int
@@ -172,7 +172,7 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
      */
     public function setTxRkwregistrationIsMembership(bool $txRkwregistrationIsMembership): void
     {
-        $this->txRkwregistrationIsUserMembership = $txRkwregistrationIsMembership;
+        $this->txRkwregistrationIsMembership = $txRkwregistrationIsMembership;
     }
 
 
@@ -199,6 +199,7 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
     {
         $this->txRkwregistrationMembershipOpeningDate = $txRkwregistrationMembershipOpeningDate;
     }
+
 
     /**
      * Returns the txRkwregistrationOpeningDate value
@@ -277,7 +278,7 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
     /**
      * Removes a BackendUser
      *
-     * @param \RKW\RkwRegistration\Domain\Model\BackendUser $adminToRemove The BackendUser to be removed
+     * @param \RKW\RkwRegistration\Domain\Model\BackendUser $adminToRemove
      * @return void
      */
     public function removeTxRkwregistrationMembershipAdmins(BackendUser $adminToRemove): void
@@ -289,7 +290,7 @@ class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGrou
     /**
      * Returns the TxRkwregistrationMembershipAdmins
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser> $admins
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\RKW\RkwRegistration\Domain\Model\BackendUser>
      */
     public function getTxRkwregistrationMembershipAdmins(): ObjectStorage
     {

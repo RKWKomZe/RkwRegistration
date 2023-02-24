@@ -15,7 +15,7 @@ namespace RKW\RkwRegistration\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUserGroup;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use RKW\RkwRegistration\Domain\Repository\GuestUserRepository;
@@ -128,7 +128,7 @@ class FrontendUserSessionUtility
     /**
      * Id of logged-in User
      *
-     * @return integer
+     * @return int
      * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
      */
     public static function getLoggedInUserId(): int
@@ -145,6 +145,7 @@ class FrontendUserSessionUtility
 
         return 0;
     }
+
 
     /**
      * Id of logged-in User

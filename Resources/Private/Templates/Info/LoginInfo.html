@@ -1,5 +1,5 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-    xmlns:rkwAjax="http://typo3.org/ns/RKW/RkwAjax/ViewHelpers"
+    xmlns:ajaxApi="http://typo3.org/ns/Madj2k/AjaxApi/ViewHelpers"
     data-namespace-typo3-fluid="true">
 
     <f:layout name="Default" />
@@ -7,7 +7,7 @@
     <f:section name="main">
 
         <template class="ajax" 
-            id="tx-rkwregistration-login-info-ajax" data-ajax-ignore="1" data-ajax-url="{f:uri.action(action:'loginInfo', absolute:'1', addQueryString:'1', additionalParams:'{rkw_ajax : \'{key: ajaxHelper.key, cid: ajaxHelper.contentUid, idl: \\\'1\\\'}\'}') -> f:format.raw()}"></template>
+            id="tx-rkwregistration-login-info-ajax" data-ajax-ignore="1" data-ajax-url="{f:uri.action(action:'loginInfo', absolute:'1', addQueryString:'1', additionalParams:'{ajax_api : \'{key: ajaxHelper.key, cid: ajaxHelper.contentUid, idl: \\\'1\\\'}\'}') -> f:format.raw()}"></template>
         
         <f:comment><!-- only do an ajax-call if fe-cookie is set. This is to reduce requests to the server--></f:comment>
         <script type="text/javascript">
@@ -16,7 +16,7 @@
             }
         </script>
 
-        <rkwAjax:ajaxWrapper ajaxHelper="{ajaxHelper}" ajaxAction="replace" ajaxId="1">
+        <ajaxApi:ajaxWrapper ajaxHelper="{ajaxHelper}" ajaxAction="replace" ajaxId="1">
             <div>
                 <f:if condition="{ajaxHelper.isAjaxCall}">
                     <f:if condition="{frontendUser}">
@@ -43,7 +43,7 @@
                     </f:if>
                 </f:if>
             </div>
-        </rkwAjax:ajaxWrapper>
+        </ajaxApi:ajaxWrapper>
 
     </f:section>
 </html>

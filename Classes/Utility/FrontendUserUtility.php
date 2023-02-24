@@ -14,7 +14,7 @@ namespace RKW\RkwRegistration\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwBasics\Utility\GeneralUtility;
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\FrontendUser;
 use RKW\RkwRegistration\Domain\Repository\FrontendUserRepository;
 use TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException;
@@ -54,6 +54,7 @@ class FrontendUserUtility
 
         return $frontendUser;
     }
+
 
     /**
      * converts a frontendUser to an array
@@ -278,7 +279,6 @@ class FrontendUserUtility
     }
 
 
-
     /**
      * Returns TYPO3 settings
      *
@@ -287,7 +287,7 @@ class FrontendUserUtility
      */
     protected static function getSettings(): array
     {
-        return GeneralUtility::getTyposcriptConfiguration('Rkwregistration');
+        return GeneralUtility::getTypoScriptConfiguration('Rkwregistration');
     }
 
 }

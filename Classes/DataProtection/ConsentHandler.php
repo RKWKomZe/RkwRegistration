@@ -28,7 +28,6 @@ use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class Privacy
@@ -51,7 +50,6 @@ class ConsentHandler implements \TYPO3\CMS\Core\SingletonInterface
      *    RKW\RkwRegistration\Domain\Model\Registration it will be automatically identified and set below in $this->setDataObject
      * 2. After successful optIn the 5th param is used to create the relationship between the two created privacy-datasets
      *
-     * @param \RKW\RkwRegistration\Domain\Model\Consent $consent
      * @param \TYPO3\CMS\Extbase\Mvc\Request $request
      * @param \RKW\RkwRegistration\Domain\Model\FrontendUser $frontendUser
      * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity|\TYPO3\CMS\Extbase\Persistence\ObjectStorage|null $referenceObject
@@ -60,7 +58,6 @@ class ConsentHandler implements \TYPO3\CMS\Core\SingletonInterface
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
      */
     protected static function setObject(
         Request $request,
@@ -217,9 +214,6 @@ class ConsentHandler implements \TYPO3\CMS\Core\SingletonInterface
             );
             $consent->setForeignUid($referenceObject->getUid() ?? 0);
         }
-
-
-
     }
 
 

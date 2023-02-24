@@ -36,24 +36,28 @@ class TitleUtilityTest extends FunctionalTestCase
      */
     const FIXTURE_PATH = __DIR__ . '/TitleUtilityTest/Fixtures';
 
-    /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
-     */
-    private $objectManager = null;
-
-    /**
-     * @var \RKW\RkwRegistration\Domain\Repository\TitleRepository
-     */
-    private $titleRepository = null;
 
     /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration',
     ];
+
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager|null
+     */
+    private ?ObjectManager $objectManager = null;
+
+
+    /**
+     * @var \RKW\RkwRegistration\Domain\Repository\TitleRepository|null
+     */
+    private ?TitleRepository $titleRepository = null;
+
 
     /**
      * Setup
@@ -67,8 +71,8 @@ class TitleUtilityTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
@@ -83,6 +87,7 @@ class TitleUtilityTest extends FunctionalTestCase
 
     }
 
+    #==============================================================================
 
     /**
      * @test
@@ -105,7 +110,6 @@ class TitleUtilityTest extends FunctionalTestCase
 
         self::assertEquals($someTitle, $result->getName());
     }
-
 
 
     /**
@@ -136,6 +140,7 @@ class TitleUtilityTest extends FunctionalTestCase
         self::assertEquals($countBeforeFunction, $countAfterFunction);
     }
 
+    #==============================================================================
 
     /**
      * TearDown

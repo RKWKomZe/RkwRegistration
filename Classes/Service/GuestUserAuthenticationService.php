@@ -14,11 +14,10 @@ namespace RKW\RkwRegistration\Service;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Madj2k\CoreExtended\Utility\GeneralUtility;
 use RKW\RkwRegistration\Domain\Model\GuestUser;
-use RKW\RkwRegistration\Registration\AbstractRegistration;
 use RKW\RkwRegistration\Utility\FrontendUserUtility;
 use RKW\RkwRegistration\Utility\PasswordUtility;
-use RKW\RkwRegistration\Utility\StringUtility;
 use TYPO3\CMS\Core\Authentication\LoginType;
 use TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException;
 use TYPO3\CMS\Core\Log\LogLevel;
@@ -47,7 +46,6 @@ class GuestUserAuthenticationService extends AbstractAuthenticationService
             return false;
         }
 
-
         $user = $this->fetchUserRecord($this->login['uname']);
         if (!is_array($user)) {
             // Failed login attempt (no username found)
@@ -65,6 +63,7 @@ class GuestUserAuthenticationService extends AbstractAuthenticationService
         return $user;
     }
 
+
     /**
      * Authenticate a user: Check submitted user credentials against stored hashed password,
      * check domain lock if configured.
@@ -77,7 +76,7 @@ class GuestUserAuthenticationService extends AbstractAuthenticationService
      *
      * @param array $user User data
      * @return int Authentication status code, one of 0, 100, 200
-     * @throws InvalidPasswordHashException
+     * @throws \TYPO3\CMS\Core\Crypto\PasswordHashing\InvalidPasswordHashException
      */
     public function authUser(array $user): int
     {
@@ -88,7 +87,7 @@ class GuestUserAuthenticationService extends AbstractAuthenticationService
         if (
             ($user[$this->db_user['type_column']] != '\\' . GuestUser::class)
             || (FrontendUserUtility::isEmailValid($user[$this->db_user['username_column']]))
-            || (strlen($user[$this->db_user['username_column']]) != StringUtility::RANDOM_STRING_LENGTH)
+            || (strlen($user[$this->db_user['username_column']]) != GeneralUtility::RANDOM_STRING_LENGTH)
         ){
             return 100;
         }

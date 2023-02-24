@@ -15,7 +15,7 @@ namespace RKW\RkwRegistration\Tests\Integration\Utility;
  */
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use RKW\RkwBasics\Utility\FrontendSimulatorUtility;
+use Madj2k\CoreExtended\Utility\FrontendSimulatorUtility;
 use RKW\RkwRegistration\Utility\ClientUtility;
 
 /**
@@ -34,14 +34,16 @@ class ClientUtilityTest extends FunctionalTestCase
      */
     const FIXTURE_PATH = __DIR__ . '/ClientUtilityTest/Fixtures';
 
+
     /**
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration',
     ];
+
 
     /**
      * Setup
@@ -55,8 +57,8 @@ class ClientUtilityTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
@@ -66,61 +68,6 @@ class ClientUtilityTest extends FunctionalTestCase
 
         FrontendSimulatorUtility::simulateFrontendEnvironment(1);
 
-    }
-
-    #==============================================================================
-
-    /**
-     * @test
-     */
-    public function getIpReturnsLocalHost ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given a request without a proxy
-         * Given no remote-address is set
-         * When the method is called
-         * Then localhost is returned
-         */
-
-        self::assertEquals('127.0.0.1', ClientUtility::getIp());
-    }
-
-    /**
-     * @test
-     */
-    public function getIpReturnsClientIp ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given a request without a proxy
-         * Given $_SERVER['REMOTE_ADDR'] is set
-         * When the method is called
-         * Then the remote-address is returned
-         */
-
-        $_SERVER['REMOTE_ADDR'] = '1.1.2.1';
-        self::assertEquals('1.1.2.1', ClientUtility::getIp());
-    }
-
-    /**
-     * @test
-     */
-    public function getIpReturnsClientIpWithProxy ()
-    {
-        /**
-         * Scenario:
-         *
-         * Given a request with a proxy
-         * Given $_SERVER['HTTP_X_FORWARDED_FOR'] is set
-         * When the method is called
-         * Then the first IP in $_SERVER['HTTP_X_FORWARDED_FOR']  is returned
-         */
-
-        $_SERVER['HTTP_X_FORWARDED_FOR'] = '1.1.2.1, 2.2.1.2, 3.3.2.3';
-        self::assertEquals('1.1.2.1', ClientUtility::getIp());
     }
 
     #==============================================================================
@@ -157,6 +104,7 @@ class ClientUtilityTest extends FunctionalTestCase
 
         self::assertTrue(ClientUtility::isReferrerValid('http://www.rkw-kompetenzzentrum.rkw.local/'));
     }
+
 
     /**
      * @test

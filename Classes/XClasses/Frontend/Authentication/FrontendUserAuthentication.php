@@ -53,9 +53,10 @@ class FrontendUserAuthentication extends \TYPO3\CMS\Frontend\Authentication\Fron
     /**
      * Sets the session cookie for the current disposal.
      *
+     * @return void
      * @throws Exception
      */
-    protected function setSessionCookie()
+    protected function setSessionCookie(): void
     {
         $isSetSessionCookie = $this->isSetSessionCookie();
         $isRefreshTimeBasedCookie = $this->isRefreshTimeBasedCookie();
@@ -86,7 +87,7 @@ class FrontendUserAuthentication extends \TYPO3\CMS\Frontend\Authentication\Fron
                     $cookiePath,
                     $cookieDomain,
                     $cookieSecure,
-                    false, // only change
+                    false, // RKW: only change. HttpOnly prevents JavaScript from accessing the session cookie.
                     false,
                     $cookieSameSite
                 );
@@ -102,6 +103,10 @@ class FrontendUserAuthentication extends \TYPO3\CMS\Frontend\Authentication\Fron
         }
     }
 
+    /**
+     * @param string $cookieSameSite
+     * @return string
+     */
     private function sanitizeSameSiteCookieValue(string $cookieSameSite): string
     {
         if (!in_array($cookieSameSite, [Cookie::SAMESITE_STRICT, Cookie::SAMESITE_LAX, Cookie::SAMESITE_NONE], true)) {

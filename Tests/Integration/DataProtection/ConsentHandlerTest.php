@@ -27,7 +27,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-
 /**
  * ConsentHandlerTest
  *
@@ -47,10 +46,11 @@ class ConsentHandlerTest extends FunctionalTestCase
      * @var string[]
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/rkw_ajax',
-        'typo3conf/ext/rkw_basics',
+        'typo3conf/ext/ajax_api',
+        'typo3conf/ext/core_extended',
         'typo3conf/ext/rkw_registration',
     ];
+
 
     /**
      * @var string[]
@@ -58,30 +58,36 @@ class ConsentHandlerTest extends FunctionalTestCase
     protected $coreExtensionsToLoad = [
     ];
 
-    /**
-     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository
-     */
-    private $frontendUserRepository = null;
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\OptInRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\FrontendUserRepository|null
      */
-    private $optInRepository = null;
+    private ?FrontendUserRepository $frontendUserRepository = null;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\OptInRepository|null
      */
-    private $shippingAddressRepository = null;
+    private ?OptInRepository $optInRepository = null;
+
 
     /**
-     * @var \RKW\RkwRegistration\Domain\Repository\ConsentRepository
+     * @var \RKW\RkwRegistration\Domain\Repository\ShippingAddressRepository|null
      */
-    private $consentRepository = null;
+    private ?ShippingAddressRepository $shippingAddressRepository = null;
+
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @var \RKW\RkwRegistration\Domain\Repository\ConsentRepository|null
+     */
+    private ?ConsentRepository $consentRepository = null;
+
+
+    /**
+     * @var ?ObjectManager \TYPO3\CMS\Extbase\Object\ObjectManager|null
      */
     private $objectManager = null;
+
 
     /**
      * Setup
@@ -96,8 +102,8 @@ class ConsentHandlerTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:rkw_basics/Configuration/TypoScript/setup.txt',
-                'EXT:rkw_basics/Configuration/TypoScript/constants.txt',
+                'EXT:core_extended/Configuration/TypoScript/setup.txt',
+                'EXT:core_extended/Configuration/TypoScript/constants.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/setup.txt',
                 'EXT:rkw_registration/Configuration/TypoScript/constants.txt',
                 self::FIXTURE_PATH . '/Frontend/Configuration/Rootpage.typoscript',
@@ -190,7 +196,6 @@ class ConsentHandlerTest extends FunctionalTestCase
         self::assertEquals($frontendUser->getUid(), $result->getFrontendUser()->getUid());
         self::assertEquals($optIn->getUid(), $result->getOptIn()->getUid());
     }
-
 
 
     /**
@@ -286,7 +291,6 @@ class ConsentHandlerTest extends FunctionalTestCase
         self::assertEquals('tx_rkwregistration_domain_model_optin', $result->getForeignTable());
         self::assertEquals($optIn->getUid(), $result->getForeignUid());
     }
-
 
 
     /**
@@ -639,7 +643,6 @@ class ConsentHandlerTest extends FunctionalTestCase
         self::assertEquals(true, $frontendUser->getTxRkwregistrationConsentTerms());
         self::assertEquals(true, $frontendUser->getTxRkwregistrationConsentMarketing());
 
-
     }
 
 
@@ -696,8 +699,6 @@ class ConsentHandlerTest extends FunctionalTestCase
 
         self::assertEquals(true, $frontendUser->getTxRkwregistrationConsentTerms());
         self::assertEquals(true, $frontendUser->getTxRkwregistrationConsentMarketing());
-
-
     }
 
     //===================================================================

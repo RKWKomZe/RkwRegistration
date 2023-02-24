@@ -34,10 +34,11 @@ class ZipValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValid
      */
     protected $acceptsEmptyValues = false;
 
+
     /**
      * Checks if the given property ($propertyValue) has 5 digits, is integer and not null.
      *
-     * @param integer $value
+     * @param int $value
      * @return void
      */
     public function isValid($value): void

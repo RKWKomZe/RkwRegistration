@@ -6,7 +6,7 @@ config.tx_extbase.persistence {
 
 	classes {
 
-        TYPO3\CMS\Extbase\Domain\Model\BackendUser {
+        Madj2k\CoreExtended\Domain\Model\BackendUser {
             subclasses {
                 Tx_RkwRegistration_BackendUser = RKW\RkwRegistration\Domain\Model\BackendUser
             }
@@ -27,7 +27,7 @@ config.tx_extbase.persistence {
 
         #===============================================
 
-        TYPO3\CMS\Extbase\Domain\Model\FrontendUser {
+        Madj2k\CoreExtended\Domain\Model\FrontendUser {
             subclasses {
                 Tx_RkwRegistration_FrontendUser = RKW\RkwRegistration\Domain\Model\FrontendUser
                 Tx_RkwRegistration_GuestUser = RKW\RkwRegistration\Domain\Model\GuestUser

@@ -14,10 +14,7 @@ namespace RKW\RkwRegistration\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use RKW\RkwRegistration\Domain\Model\FrontendUser;
-use RKW\RkwRegistration\Domain\Model\GuestUser;
 use RKW\RkwRegistration\Service\AbstractAuthenticationService;
-use RKW\RkwRegistration\Utility\ClientUtility;
 use \RKW\RkwRegistration\Utility\FrontendUserSessionUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -208,5 +205,3 @@ class AuthController extends AbstractController
     }
 
 }
-
-

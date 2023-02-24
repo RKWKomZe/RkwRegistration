@@ -86,6 +86,7 @@ class OptInRepository extends AbstractRepository
         return $optIn->getFirst();
     }
 
+
     /**
      * Finds optIns by tokenUser even if they are deleted
      *

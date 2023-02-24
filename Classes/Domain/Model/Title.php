@@ -26,90 +26,76 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
 
     /**
-     * @var integer
+     * @var int
      */
-    protected $crdate;
+    protected int $crdate = 0;
 
 
     /**
-     * @var integer
+     * @var int
      */
-    protected $tstamp;
+    protected int $tstamp = 0;
 
 
     /**
-     * @var integer
+     * @var bool
      */
-    protected $hidden = 0;
+    protected bool $hidden = false;
 
 
     /**
-     * @var integer
+     * @var bool
      */
-    protected $deleted = 0;
+    protected bool $deleted = false;
 
 
     /**
-     * name
-     *
      * @var string
      */
-    protected $name = '';
+    protected string $name = '';
 
 
     /**
-     * nameFemale
-     *
      * @var string
      */
-    protected $nameFemale = '';
+    protected string $nameFemale = '';
 
 
     /**
-     * nameLong
-     *
      * @var string
      */
-    protected $nameLong = '';
+    protected string $nameLong = '';
 
 
     /**
-     * nameFemaleLong
-     *
      * @var string
      */
-    protected $nameFemaleLong = '';
+    protected string $nameFemaleLong = '';
 
 
     /**
-     * isTitleAfter
-     *
-     * @var boolean
+     * @var bool
      */
-    protected $isTitleAfter = false;
+    protected bool $isTitleAfter = false;
 
 
     /**
-     * isIncludedInSalutation
-     *
-     * @var boolean
+     * @var bool
      */
-    protected $isIncludedInSalutation = false;
+    protected bool $isIncludedInSalutation = false;
 
 
     /**
-     * isChecked
-     *
-     * @var boolean
+     * @var bool
      */
-    protected $isChecked = false;
+    protected bool $isChecked = false;
 
 
 
     /**
      * Returns the crdate value
      *
-     * @return integer
+     * @return int
      * @api
      */
     public function getCrdate(): int
@@ -121,7 +107,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the tstamp value
      *
-     * @return integer
+     * @return int
      * @api
      */
     public function getTstamp(): int
@@ -157,7 +143,7 @@ class Title extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the deleted value
      *
-     * @param bool$deleted
+     * @param bool $deleted
      * @api
      */
     public function setDeleted(bool $deleted): void

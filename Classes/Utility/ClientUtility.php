@@ -14,8 +14,7 @@ namespace RKW\RkwRegistration\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
-use \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
@@ -27,27 +26,8 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  * @package RKW_RkwRegistration
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ClientUtility
+class ClientUtility extends \Madj2k\CoreExtended\Utility\ClientUtility
 {
-    /**
-     * Returns the client's ip
-     *
-     * @return string
-     */
-    public static function getIp(): string
-    {
-
-        // set users server ip-address
-        $remoteAddress = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
-        if ($_SERVER['HTTP_X_FORWARDED_FOR']) {
-            $ips = GeneralUtility::trimExplode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-            if ($ips[0]) {
-                $remoteAddress = filter_var($ips[0], FILTER_VALIDATE_IP);
-            }
-        }
-
-        return $remoteAddress ?: '127.0.0.1';
-    }
 
 
     /**
@@ -59,7 +39,7 @@ class ClientUtility
     public static function isReferrerValid(?string $referrer): bool
     {
 
-        /** @var }TYPO3\CMS\Extbase\Object\ObjectManager\ObjectManager $objectManager */
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
 
         /** @var \TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder $uriBuilder */
